@@ -3,7 +3,7 @@ package org.reduxkotlin
 /**
  * see also https://github.com/reactjs/redux/blob/master/docs/Glossary.md#reducer
  */
-typealias Reducer<ReducerStateType> = (state: ReducerStateType, action: Any) -> ReducerStateType
+typealias Reducer = (state: Any, action: Any) -> Any
 typealias GetState<S> = () -> S
 typealias StoreSubscriber = ()-> Unit
 typealias StoreSubscription = () -> Unit

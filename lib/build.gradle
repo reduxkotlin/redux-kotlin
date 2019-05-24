@@ -1,3 +1,6 @@
+repositories {
+    maven { url "https://dl.bintray.com/spekframework/spek-dev" }
+}
 apply plugin: 'java'
 apply plugin: 'kotlin-multiplatform'
 
@@ -35,10 +38,13 @@ kotlin {
             }
         }
         commonTest {
-            kotlin.srcDir('src/test')
+            kotlin.srcDir('src/test/kotlin')
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
+                implementation "org.spekframework.spek2:spek-dsl-metadata:$project.versions.spek"
+                implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:$project.versions.atrium"
+                implementation "io.mockk:mockk-common:1.9.3"
             }
         }
 
@@ -52,7 +58,12 @@ kotlin {
             dependencies {
                 implementation kotlin("test")
                 implementation kotlin("test-junit")
-                implementation 'junit:junit:4.12'
+                implementation "org.spekframework.spek2:spek-dsl-jvm:$project.versions.spek"
+                implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll:$project.versions.atrium"
+                implementation "io.mockk:mockk:1.9.3"
+
+                runtimeOnly "org.spekframework.spek2:spek-runner-junit5:$project.versions.spek"
+                runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect'
             }
         }
         jsMain {
@@ -118,3 +129,8 @@ publishing {
     }
 }
 
+jvmTest {
+    useJUnitPlatform {
+        includeEngines 'spek2'
+    }
+}
