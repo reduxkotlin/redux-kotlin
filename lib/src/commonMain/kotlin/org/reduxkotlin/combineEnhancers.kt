@@ -1,7 +1,7 @@
 package org.reduxkotlin
 
 
-fun <S> combineEnhancers(vararg enhancers: StoreEnhancer<S>): StoreEnhancer<S> =
+fun combineEnhancers(vararg enhancers: StoreEnhancer): StoreEnhancer =
         { storeCreator ->
             compose(enhancers.map { it })(storeCreator)
         }

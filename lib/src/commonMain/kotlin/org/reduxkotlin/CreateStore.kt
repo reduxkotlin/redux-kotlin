@@ -25,11 +25,11 @@ import org.reduxkotlin.utils.isPlainObject
  * @returns {Store} A Redux store that lets you read the state, dispatch actions
  * and subscribe to changes.
  */
-fun <S> createStore(reducer: Reducer<S>, preloadedState: S, enhancer: StoreEnhancer<S>? = null): Store<S> {
+fun createStore(reducer: Reducer, preloadedState: Any, enhancer: StoreEnhancer? = null): Store {
 
 
     if (enhancer != null) {
-        return enhancer { reducer, initialState -> createStore(reducer, initialState) }(reducer, preloadedState)
+        return enhancer { reducer, initialState, en -> createStore(reducer, initialState) }(reducer, preloadedState, null)
     }
 
 
@@ -57,7 +57,7 @@ fun <S> createStore(reducer: Reducer<S>, preloadedState: S, enhancer: StoreEnhan
      *
      * @returns {S} The current state tree of your application.
      */
-    fun getState(): S {
+    fun getState(): Any {
         if (isDispatching) {
             throw Exception(
                     """You may not call store.getState() while the reducer is executing.
@@ -184,7 +184,7 @@ fun <S> createStore(reducer: Reducer<S>, preloadedState: S, enhancer: StoreEnhan
      * @param {function} nextReducer The reducer for the store to use instead.
      * @returns {void}
      */
-    fun replaceReducer(nextReducer: Reducer<S>) {
+    fun replaceReducer(nextReducer: Reducer) {
         currentReducer = nextReducer
 
         // This action has a similar effect to ActionTypes.INIT.
