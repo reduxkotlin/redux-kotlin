@@ -16,23 +16,21 @@ package org.reduxkotlin
  * @param {vararg Middleware} [middleware] The middleware chain to be applied.
  * @returns {StoreEnhancer} A store enhancer applying the middleware.
  */
-fun <S : Any> applyMiddleware(vararg middlewares: Middleware<S>): StoreEnhancer<S> {
+fun applyMiddleware(vararg middlewares: Middleware): StoreEnhancer {
     return { storeCreator ->
-        { reducer, initialState ->
-            val store = storeCreator(reducer, initialState)
-            //TODO determine if handling dispatching while constructing middleware is needed.
-            //reduxjs throws an exception if action is dispatched before applymiddleware is complete
-            /*
+        { reducer, initialState, en ->
+            val store = storeCreator(reducer, initialState, en)
             var dispatch: Dispatcher = { action: Any ->
                 throw Exception(
                         """Dispatching while constructing your middleware is not allowed.
                     Other middleware would not be applied to this dispatch.""")
             }
-             */
+            store.dispatch = dispatch
+            val chain = middlewares.map { middleware -> middleware(store) }
+            dispatch = compose(chain)(store.dispatch)
 
-            val combinedDispatch = middlewares.foldRight(store.dispatch) { middleware, next -> {action -> middleware(store.getState, next, action)}}
             Store(getState = store.getState,
-                    dispatch = combinedDispatch,
+                    dispatch = dispatch,
                     subscribe = store.subscribe,
                     replaceReducer = store.replaceReducer)
         }

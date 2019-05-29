@@ -12,7 +12,6 @@ buildscript {
     dependencies {
         classpath deps.plugins.kotlin
         classpath deps.plugins.dokka
-        classpath deps.plugins.node
     }
 }
 apply from: "$rootDir/gradle/dependencies.gradle"
@@ -22,6 +21,7 @@ allprojects {
         google()
         jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://dl.bintray.com/spekframework/spek-dev" }
 
     }
 
