@@ -10,7 +10,7 @@ A redux standard for Kotlin that supports multiplatform projects
 Provide a stadard redux for Kotlin in order to foster a ecosystem of middleware, store enhancers, & dev tools.  These core values will guide descisions for the project:
 * core redux-kotlin will be a minimal implementation that other libraries can build upon
 * modular development (follow example of https://github.com/reduxjs)
-* support for all platforms supported by Kotlin multiplatform
+* support for all platforms supported by Kotlin multiplatform (JVM, iOS, Native, JS, WASM)
 * developed in open and enable discussion for all interested parties via open channels (slack, github, etc. TBD)
 * not owned by a individual or company
 
