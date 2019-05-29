@@ -1,5 +1,7 @@
 package org.reduxkotlin
 
+import kotlin.reflect.KClass
+
 /**
  * see also https://github.com/reactjs/redux/blob/master/docs/Glossary.md#reducer
  */
@@ -56,3 +58,22 @@ fun middleware(dispatch: (Store, dispatch: Dispatcher, action: Any) -> Any): Mid
             }
         }
     }
+
+/**
+ * Creates a function that returns reducers with state casted to given state.
+ * This is to assist in readability of creating reducers and remove the need to cast.
+ * usage:
+ *   * create reducers with castingReducer:
+ *      val reducer = castingReducer { state: MyState, action ->
+ *              when (action) {
+ *                  is Todo -> state.copy(...)
+ *              }
+ *          }
+ */
+inline fun <reified T> castingReducer(crossinline reducer: ((T, Any) -> Any)): Reducer = { state: Any, action: Any ->
+    if (T::class.isInstance(state)) {
+        reducer(state as T, action)
+    } else {
+        { state: Any, action: Any -> state }
+    }
+}

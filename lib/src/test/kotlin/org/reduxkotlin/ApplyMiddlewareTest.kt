@@ -7,50 +7,7 @@ import io.mockk.spyk
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
-import kotlin.test.expect
 
-data class AddTodo(val id: String, val text: String)
-data class Todo(val id: String, val text: String, val completed: Boolean = false)
-
-data class TestState(val todos: List<Todo> = listOf())
-
-fun todos(state: Any, action: Any): Any =
-    if (state is TestState) {
-        when (action) {
-            is AddTodo -> state.copy(todos = state.todos.plus(Todo(action.id, action.text, false)))
-            else -> state
-            /*
-            case 'TOGGLE_TODO':
-            return state.map(todo =>
-            (todo.id === action.id)
-            ? {...todo, completed: !todo.completed}
-            : todo
-            )
-            default:
-            return state
-
-             */
-        }
-    } else {
-        state
-    }
-
-val reduce = castingReducer { state, action ->
-    when (action) {
-
-    }
-}
-
-fun castingReducer(reducer: ((TestState, Any) -> Any)): Reducer = { state: Any, action: Any ->
-    if (state is TestState) {
-        when (action) {
-            is AddTodo -> state
-            else -> state
-        }
-    } else {
-        state
-    }
-}
 
 object ApplyMiddlewareSpec : Spek({
     describe("middleware") {
@@ -76,7 +33,7 @@ object ApplyMiddlewareSpec : Spek({
 
             expect {
                 val storeEnhancer = applyMiddleware(::dispatchingMiddleware)
-                storeEnhancer(::createStore)(::todos, Any(), null)
+                storeEnhancer(::createStore)(todos, Any(), null)
             }.toThrow<Exception> {}
         }
 
@@ -110,3 +67,25 @@ object ApplyMiddlewareSpec : Spek({
 
     }
 })
+
+/************** Test Reducer & actions - tobe moved into example app *********/
+
+data class AddTodo(val id: String, val text: String)
+data class ToggleTodo(val id: String)
+data class Todo(val id: String, val text: String, val completed: Boolean = false)
+
+data class TestState(val todos: List<Todo> = listOf())
+
+val todos = castingReducer { state: TestState, action ->
+        when (action) {
+            is AddTodo -> state.copy(todos = state.todos.plus(Todo(action.id, action.text, false)))
+            is ToggleTodo -> state.copy(todos = state.todos.map {
+                if (it.id == action.id) {
+                    it.copy(completed = !it.completed)
+                } else {
+                    it
+                }
+            })
+            else -> state
+        }
+    }

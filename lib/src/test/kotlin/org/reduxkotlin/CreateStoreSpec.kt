@@ -9,7 +9,7 @@ object CreateStoreSpec : Spek({
     describe("createStore") {
         it("passes the initial state") {
             val store = createStore(
-                ::todos, TestState(
+                todos, TestState(
                     listOf(
                         Todo(
                             id = "1",
@@ -31,7 +31,7 @@ object CreateStoreSpec : Spek({
             )
         }
         it("applies the reducer to the previous state") {
-            val store = createStore(::todos, TestState())
+            val store = createStore(todos, TestState())
             expect(store.getState()).toBe(TestState())
 
             store.dispatch(Any())
@@ -69,7 +69,7 @@ object CreateStoreSpec : Spek({
 
         it("applies the reducer to the initial state") {
             val store = createStore(
-                ::todos, TestState(
+                todos, TestState(
                     listOf(
                         Todo(
                             id = "1",
