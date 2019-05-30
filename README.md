@@ -23,7 +23,7 @@ Provide a stadard redux for Kotlin in order to foster a ecosystem of middleware,
 * not owned by a individual or company
 
 
-Redux in Kotlin, and in mobile in particular, may differ a bit from javascript.  Many have found the basic pattern useful on Android & iOS leading to tens of opensource redux libraries in Kotlin, Java, and Swift, yet an ecosystem has yet to emerge.  A port of javascript redux is a good starting point and in doing so will aid in cross-pollination of middleware, store enhancers, & dev tools from the javascript world.  
+Redux in Kotlin, and in mobile in particular, may differ a bit from javascript.  Many have found the basic pattern useful on Android & iOS leading to tens of opensource redux libraries in Kotlin, Java, and Swift, yet an ecosystem has yet to emerge.  A port of javascript redux is a good starting point for creating a standard and will aid in cross-pollination of middleware, store enhancers, & dev tools from the javascript world.  
 
 Redux has proven helpful for state managment in mobile and having a multiplatform Kotlin implementation & ecosystem will increase developer productivity.
 
