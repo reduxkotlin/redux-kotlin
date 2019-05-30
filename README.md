@@ -27,6 +27,27 @@ Redux in Kotlin, and in mobile in particular, may differ a bit from javascript. 
 
 Redux has proven helpful for state managment in mobile and having a multiplatform Kotlin implementation & ecosystem will increase developer productivity.
 
+
+__How to add to project:__
+
+Artifacts are hosted on maven central.  For multiplatform, add the following to your shared module:
+
+```
+kotlin {
+  sourceSets {
+        commonMain { //   <---  name may vary on your project
+            dependencies {
+                implementation "org.reduxkotlin:redux-kotlin:0.2"
+            }
+        }
+ }
+```
+
+For JVM only:
+```
+  implementation "org.reduxkotlin:redux-kotlin-jvm:0.2"
+```
+
 [badge-android]: http://img.shields.io/badge/platform-android-brightgreen.svg?style=flat
 [badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat	
 [badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat
