@@ -20,19 +20,16 @@ fun applyMiddleware(vararg middlewares: Middleware): StoreEnhancer {
     return { storeCreator ->
         { reducer, initialState, en ->
             val store = storeCreator(reducer, initialState, en)
-            var dispatch: Dispatcher = { action: Any ->
+            val origDispatch = store.dispatch
+            val dispatch: Dispatcher = {
                 throw Exception(
-                        """Dispatching while constructing your middleware is not allowed.
+                    """Dispatching while constructing your middleware is not allowed.
                     Other middleware would not be applied to this dispatch.""")
             }
             store.dispatch = dispatch
             val chain = middlewares.map { middleware -> middleware(store) }
-            dispatch = compose(chain)(store.dispatch)
-
-            Store(getState = store.getState,
-                    dispatch = dispatch,
-                    subscribe = store.subscribe,
-                    replaceReducer = store.replaceReducer)
+            store.dispatch = compose(chain)(origDispatch)
+            store
         }
     }
 }
