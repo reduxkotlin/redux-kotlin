@@ -1,6 +1,5 @@
 package org.reduxkotlin
 
-import kotlin.reflect.KClass
 
 /**
  * see also https://github.com/reactjs/redux/blob/master/docs/Glossary.md#reducer
@@ -20,6 +19,7 @@ typealias StoreEnhancer = (next: StoreCreator) -> StoreCreator
 
 /**
  * wrapper class is needed here to avoid a recursive type declaration.
+ * TODO: Find work around for JS.  Fails with: Implementing function interface is prohibited in JavaScript
  */
 class StoreEnhancerWrapper(val storeEnhancer2: StoreEnhancer) : StoreEnhancer {
     override fun invoke(p1: StoreCreator): StoreCreator {
@@ -74,6 +74,6 @@ inline fun <reified T> castingReducer(crossinline reducer: ((T, Any) -> Any)): R
     if (T::class.isInstance(state)) {
         reducer(state as T, action)
     } else {
-        { state: Any, action: Any -> state }
+        { s: Any, _: Any -> s }
     }
 }

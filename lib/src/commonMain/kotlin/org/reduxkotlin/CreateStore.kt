@@ -29,7 +29,7 @@ fun createStore(reducer: Reducer, preloadedState: Any, enhancer: StoreEnhancer? 
 
 
     if (enhancer != null) {
-        return enhancer { reducer, initialState, en -> createStore(reducer, initialState) }(reducer, preloadedState, null)
+        return enhancer { r, initialState, _ -> createStore(r, initialState) }(reducer, preloadedState, null)
     }
 
 
