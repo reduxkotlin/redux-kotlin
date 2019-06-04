@@ -12,7 +12,7 @@ typealias StoreSubscription = () -> Unit
 typealias Dispatcher = (Any) -> Any
 typealias StoreCreator = (reducer: Reducer, initialState: Any, s: StoreEnhancerWrapper?) -> Store
 /**
- * get a store creator and return a new enhanced one
+ * Take a store creator and return a new enhanced one
  * see https://github.com/reactjs/redux/blob/master/docs/Glossary.md#store-enhancer
  */
 typealias StoreEnhancer = (next: StoreCreator) -> StoreCreator
@@ -28,7 +28,7 @@ class StoreEnhancerWrapper(val storeEnhancer2: StoreEnhancer) : StoreEnhancer {
 }
 
 /**
- * see also https://github.com/reactjs/redux/blob/master/docs/Glossary.md#middleware
+ *  https://github.com/reactjs/redux/blob/master/docs/Glossary.md#middleware
  */
 typealias Middleware = (store: Store) -> (next: Dispatcher) -> (action: Any) -> Any
 
