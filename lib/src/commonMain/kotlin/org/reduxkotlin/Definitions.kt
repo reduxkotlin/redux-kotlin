@@ -10,22 +10,14 @@ typealias GetState = () -> Any
 typealias StoreSubscriber = () -> Unit
 typealias StoreSubscription = () -> Unit
 typealias Dispatcher = (Any) -> Any
-typealias StoreCreator = (reducer: Reducer, initialState: Any, s: StoreEnhancerWrapper?) -> Store
+//Enhancer is type Any? to avoid a circular dependency of types
+typealias StoreCreator = (reducer: Reducer, initialState: Any, enhancer: Any?) -> Store
+
 /**
  * Take a store creator and return a new enhanced one
  * see https://github.com/reactjs/redux/blob/master/docs/Glossary.md#store-enhancer
  */
-typealias StoreEnhancer = (next: StoreCreator) -> StoreCreator
-
-/**
- * wrapper class is needed here to avoid a recursive type declaration.
- * TODO: Find work around for JS.  Fails with: Implementing function interface is prohibited in JavaScript
- */
-class StoreEnhancerWrapper(val storeEnhancer2: StoreEnhancer) : StoreEnhancer {
-    override fun invoke(p1: StoreCreator): StoreCreator {
-        return storeEnhancer2(p1)
-    }
-}
+typealias StoreEnhancer = (((Reducer, Any, Any?) -> Store) -> ((Reducer, Any, Any?) -> Store))
 
 /**
  *  https://github.com/reactjs/redux/blob/master/docs/Glossary.md#middleware

@@ -32,7 +32,7 @@ object ApplyMiddlewareSpec : Spek({
             }
 
             expect {
-                val storeEnhancer = applyMiddleware(::dispatchingMiddleware)
+                val storeEnhancer: StoreEnhancer = applyMiddleware(::dispatchingMiddleware)
                 storeEnhancer(::createStore)(todos, Any(), null)
             }.toThrow<Exception> {}
         }
