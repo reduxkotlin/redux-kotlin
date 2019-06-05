@@ -48,6 +48,62 @@ For JVM only:
   implementation "org.reduxkotlin:redux-kotlin-jvm:0.2"
 ```
 
+Usage is very similar to JS Redux and those docs will be useful https://redux.js.org/.  These docs are not an intro to Redux, and just documentation on Kotlin specific bits.  For more info on Redux in general, check out https://redux.js.org/.
+
+__Create an AppState class__
+```
+  data class AppState(val user: User, val feed: List<Feed>)
+```
+
+__Create Reducers:__
+```
+  val reducer = castingReducer { state: Appstate, action ->
+    when (action) {
+        is UserLoggedInAction -> state.copy(user = action.user)
+        ...
+    }
+  }
+```
+
+__Create Middleware:__
+There are a few ways to create middleware:
+
+Using a curried function stored in a val/var:
+```
+  val loggingMiddleware: Middleware = 
+          { store ->
+              { next ->
+                  { action ->
+                        //log here
+                        next(action)
+                   }
+               }
+            }
+```
+Using a function:
+```
+  fun logginMiddleware(store: Store) = { next: Dispatcher -> 
+              { action: Any -> 
+                     //log here
+                     next(action)
+               }
+```
+
+Using the convinence helper function `middleware`:
+```
+   val loggingMiddleware = middleware { store, next, action -> 
+          //log here
+          next(action)
+          }
+```
+
+__Create a store__
+```
+  val store = createStore(::reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
+```
+
+You then will have access to dispatch and subscribe functions from the `store`.
+
 [badge-android]: http://img.shields.io/badge/platform-android-brightgreen.svg?style=flat
 [badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat	
 [badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat
