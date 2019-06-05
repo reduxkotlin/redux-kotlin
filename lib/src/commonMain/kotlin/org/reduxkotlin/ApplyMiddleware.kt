@@ -17,8 +17,8 @@ package org.reduxkotlin
  * @returns {StoreEnhancer} A store enhancer applying the middleware.
  */
 fun applyMiddleware(vararg middlewares: Middleware): StoreEnhancer {
-    return { storeCreator ->
-        { reducer, initialState, en ->
+    return { storeCreator: StoreCreator ->
+        { reducer: Reducer, initialState: Any, en: Any? ->
             val store = storeCreator(reducer, initialState, en)
             val origDispatch = store.dispatch
             val dispatch: Dispatcher = {
