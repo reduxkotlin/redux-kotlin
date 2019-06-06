@@ -104,7 +104,7 @@ Using the convinence helper function `middleware`:
 
 __Create a store__
 ```
-  val store = createStore(::reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
+  val store = createStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
 ```
 
 You then will have access to dispatch and subscribe functions from the `store`.
