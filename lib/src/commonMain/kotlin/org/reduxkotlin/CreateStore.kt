@@ -27,7 +27,6 @@ import org.reduxkotlin.utils.isPlainObject
  */
 fun createStore(reducer: Reducer, preloadedState: Any, enhancer:Any ? = null): Store {
 
-
     if (enhancer != null) {
         try {
             return (enhancer as StoreEnhancer) { r, initialState, _ -> createStore(r, initialState) }(
