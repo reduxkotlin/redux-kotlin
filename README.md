@@ -109,6 +109,13 @@ __Create a store__
 
 You then will have access to dispatch and subscribe functions from the `store`.
 
+## Communication
+Want to give feedback, contribute, or ask questions?
+
+__\#redux__ slack channel in [kotlinlang](https://kotlinlang.slack.com) & [AndroidStudyGroup](https://androidstudygroup.slack.com)
+
+Or create an issue on github.
+
 [badge-android]: http://img.shields.io/badge/platform-android-brightgreen.svg?style=flat
 [badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat	
 [badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat
