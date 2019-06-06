@@ -44,9 +44,7 @@ fun middleware(dispatch: (Store, dispatch: Dispatcher, action: Any) -> Any): Mid
     { store ->
         { next ->
             { action: Any ->
-                {
-                    dispatch(store, next, action)
-                }
+                dispatch(store, next, action)
             }
         }
     }
