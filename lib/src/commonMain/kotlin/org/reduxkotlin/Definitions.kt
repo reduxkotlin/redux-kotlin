@@ -17,7 +17,7 @@ typealias StoreCreator = (reducer: Reducer, initialState: Any, enhancer: Any?) -
  * Take a store creator and return a new enhanced one
  * see https://github.com/reactjs/redux/blob/master/docs/Glossary.md#store-enhancer
  */
-typealias StoreEnhancer = (((Reducer, Any, Any?) -> Store) -> ((Reducer, Any, Any?) -> Store))
+typealias StoreEnhancer = (StoreCreator) -> StoreCreator
 
 /**
  *  https://github.com/reactjs/redux/blob/master/docs/Glossary.md#middleware
