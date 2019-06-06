@@ -37,7 +37,7 @@ kotlin {
   sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin:0.2.1"
+                implementation "org.reduxkotlin:redux-kotlin:0.2.2"
             }
         }
  }
@@ -45,7 +45,7 @@ kotlin {
 
 For JVM only:
 ```
-  implementation "org.reduxkotlin:redux-kotlin-jvm:0.2.1"
+  implementation "org.reduxkotlin:redux-kotlin-jvm:0.2.2"
 ```
 
 Usage is very similar to JS Redux and those docs will be useful https://redux.js.org/.  These docs are not an intro to Redux, and just documentation on Kotlin specific bits.  For more info on Redux in general, check out https://redux.js.org/.
