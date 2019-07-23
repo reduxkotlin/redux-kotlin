@@ -61,9 +61,8 @@ fun middleware(dispatch: (Store, dispatch: Dispatcher, action: Any) -> Any): Mid
  *          }
  */
 inline fun <reified T> castingReducer(crossinline reducer: ((T, Any) -> Any)): Reducer = { state: Any, action: Any ->
-    if (T::class.isInstance(state)) {
-        reducer(state as T, action)
-    } else {
+    if (state is T) {
+        reducer(state, action)
+    } else
         { s: Any, _: Any -> s }
     }
-}
