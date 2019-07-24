@@ -114,6 +114,8 @@ Want to give feedback, contribute, or ask questions?
 
 __\#redux__ slack channel in [kotlinlang](https://kotlinlang.slack.com) & [AndroidStudyGroup](https://androidstudygroup.slack.com)
 
+Trello board - https://trello.com/b/Y7iq5b2t/reduxkotlin
+
 Or create an issue on github.
 
 [badge-android]: http://img.shields.io/badge/platform-android-brightgreen.svg?style=flat
