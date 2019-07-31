@@ -112,7 +112,7 @@ You then will have access to dispatch and subscribe functions from the `store`.
 ## Communication
 Want to give feedback, contribute, or ask questions?
 
-__\#redux__ slack channel in [kotlinlang](https://kotlinlang.slack.com) & [AndroidStudyGroup](https://androidstudygroup.slack.com)
+__\#redux__ slack channel in [kotlinlang](https://kotlinlang.slack.com)
 
 Trello board - https://trello.com/b/Y7iq5b2t/reduxkotlin
 
