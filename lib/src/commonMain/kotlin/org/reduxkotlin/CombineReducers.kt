@@ -1,6 +1,6 @@
 package org.reduxkotlin
 
-fun combineReducers(vararg reducers: Reducer): Reducer =
+fun <State> combineReducers(vararg reducers: Reducer<State>): Reducer<State> =
     { state, action ->
         reducers.fold(state, { s, reducer -> reducer(s, action) })
     }
@@ -8,6 +8,6 @@ fun combineReducers(vararg reducers: Reducer): Reducer =
 /**
  * combine two reducer with + operator
  */
-operator fun Reducer.plus(other: Reducer): Reducer = { s, a ->
+operator fun <State> Reducer<State>.plus(other: Reducer<State>): Reducer<State> = { s, a ->
     other(this(s, a), a)
 }
