@@ -25,18 +25,14 @@ import org.reduxkotlin.utils.isPlainObject
  * @returns {Store} A Redux store that lets you read the state, dispatch actions
  * and subscribe to changes.
  */
- fun <State> createStore(reducer: Reducer<State>, preloadedState: State, enhancer:Any ? = null): Store<State> {
+ fun <State> createStore(reducer: Reducer<State>, preloadedState: State, enhancer:StoreEnhancer<State> ? = null): Store<State> {
 
     if (enhancer != null) {
-        try {
-            return (enhancer as StoreEnhancer<State>) { r, initialState, _ -> createStore(r, initialState) }(
-                reducer,
-                preloadedState,
-                null
-            )
-        } catch (e: Exception) {
-            throw IllegalArgumentException("Enhancer argument must be of type StoreEnhancer.")
-        }
+        return enhancer { r, initialState, _ -> createStore(r, initialState) }(
+            reducer,
+            preloadedState,
+            null
+        )
     }
 
 

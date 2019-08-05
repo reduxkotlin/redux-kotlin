@@ -20,7 +20,7 @@ object ApplyMiddlewareSpec : Spek({
 
     describe("applyMiddleware") {
         it("warns when dispatching during middleware setup") {
-            fun dispatchingMiddleware(store: Store): (next: Dispatcher) -> (action: Any) -> Any {
+            fun dispatchingMiddleware(store: Store<TestState>): (next: Dispatcher) -> (action: Any) -> Any {
                 store.dispatch(AddTodo("1", "Dont dispatch in middleware setup"));
                 return { next ->
                     { action ->
@@ -32,8 +32,8 @@ object ApplyMiddlewareSpec : Spek({
             }
 
             expect {
-                val storeEnhancer: StoreEnhancer = applyMiddleware(::dispatchingMiddleware)
-                storeEnhancer(::createStore)(todos, Any(), null)
+                val storeEnhancer: StoreEnhancer<TestState> = applyMiddleware(::dispatchingMiddleware)
+                createStore(todos, TestState(), storeEnhancer)
             }.toThrow<Exception> {}
         }
 
@@ -76,7 +76,7 @@ data class Todo(val id: String, val text: String, val completed: Boolean = false
 
 data class TestState(val todos: List<Todo> = listOf())
 
-val todos = castingReducer { state: TestState, action ->
+val todos = { state: TestState, action: Any ->
         when (action) {
             is AddTodo -> state.copy(todos = state.todos.plus(Todo(action.id, action.text, false)))
             is ToggleTodo -> state.copy(todos = state.todos.map {
