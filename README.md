@@ -42,7 +42,7 @@ kotlin {
   sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin:0.2.2"
+                implementation "org.reduxkotlin:redux-kotlin:0.2.6"
             }
         }
  }
@@ -50,7 +50,7 @@ kotlin {
 
 For JVM only:
 ```
-  implementation "org.reduxkotlin:redux-kotlin-jvm:0.2.2"
+  implementation "org.reduxkotlin:redux-kotlin-jvm:0.2.6"
 ```
 
 Usage is very similar to JS Redux and those docs will be useful https://redux.js.org/.  These docs are not an intro to Redux, and just documentation on Kotlin specific bits.  For more info on Redux in general, check out https://redux.js.org/.
@@ -62,7 +62,7 @@ __Create an AppState class__
 
 __Create Reducers:__
 ```
-  val reducer = castingReducer { state: Appstate, action ->
+  val reducer: Reducer<AppState> =  { state, action ->
     when (action) {
         is UserLoggedInAction -> state.copy(user = action.user)
         ...
@@ -87,7 +87,7 @@ Using a curried function stored in a val/var:
 ```
 Using a function:
 ```
-  fun logginMiddleware(store: Store) = { next: Dispatcher -> 
+  fun loggingMiddleware(store: Store) = { next: Dispatcher -> 
               { action: Any -> 
                      //log here
                      next(action)
