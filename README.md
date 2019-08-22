@@ -35,7 +35,7 @@ Redux has proven helpful for state managment in mobile. A multiplatform Kotlin i
 
 __How to add to project:__
 
-Artifacts are hosted on maven central.  For multiplatform, add the following to your shared module:
+Artifacts are hosted on maven central.  They are published with gradle metadata, so you may need to enable with `enableFeaturePreview("GRADLE_METADATA")` in your settings.gradle file.  For multiplatform, add the following to your shared module:
 
 ```
 kotlin {
