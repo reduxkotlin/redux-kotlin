@@ -27,6 +27,8 @@ Redux in Kotlin, and in mobile in particular, may differ a bit from javascript. 
 
 Redux has proven helpful for state managment in mobile. A multiplatform Kotlin implementation & ecosystem will increase developer productivity and code reuse across platforms.
 
+[Droidcon NYC Slides](https://www.slideshare.net/PatrickJackson14/reduxkotlinorg-droidcon-nyc-2019)
+Video TBA
 
 ##  *** PLEASE FILL OUT THE [Redux on Mobile Survey](https://docs.google.com/forms/d/e/1FAIpQLScEQ9zGndU48AUeGKR6PPE13IqhIFmTL570wDodQUEilhwMzw/viewform?usp=sf_link) ***
 
