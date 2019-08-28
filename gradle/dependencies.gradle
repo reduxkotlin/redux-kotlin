@@ -1,7 +1,7 @@
 ext.versions = [
         kotlin          : '1.3.50',
         dokka           : '0.9.17',
-        spek            : '2.1.0-alpha.0.9+3d5d865',
+        spek            : '2.1.0-alpha.0.11+d97ef33',
         atrium          : '0.8.0'
 ]
 
