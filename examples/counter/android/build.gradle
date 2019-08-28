@@ -1,0 +1,74 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+        maven { url "https://kotlin.bintray.com/kotlinx" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.versions.kotlin"
+    }
+}
+
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId "org.reduxkotlin.example.counter"
+        minSdkVersion 26
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            // MPP libraries don't currently get this resolution automatically
+            matchingFallbacks = ['release']
+        }
+    }
+//    signingConfigs {
+//        debug {
+//            storeFile file("./debug.keystore")
+//            storePassword 'android'
+//            keyAlias 'android'
+//            keyPassword 'android'
+//        }
+//    }
+    packagingOptions {
+        exclude 'META-INF/*.kotlin_module'
+    }
+    tasks.lint.enabled = false
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.versions.kotlin"
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+
+    implementation project(':examples:counter:common')
+    implementation project(':lib')
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}

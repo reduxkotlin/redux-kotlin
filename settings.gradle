@@ -8,7 +8,7 @@ pluginManagement {
     }
 }
 
-include ':lib', ':examples:counter'
+include ':lib', ':examples:counter:common', ':examples:counter:android'
 rootProject.name='Redux-Kotlin'
 
 
