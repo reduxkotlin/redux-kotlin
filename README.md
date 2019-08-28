@@ -116,7 +116,7 @@ Want to give feedback, contribute, or ask questions?
 
 __\#redux__ slack channel in [kotlinlang](https://kotlinlang.slack.com)
 
-Trello board - https://trello.com/b/Y7iq5b2t/reduxkotlin
+Trello boards - https://trello.com/reduxkotlinorg
 
 Or create an issue on github.
 
