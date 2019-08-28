@@ -8,24 +8,28 @@ import org.reduxkotlin.utils.isPlainObject
  *
  * There should only be a single store in your app. To specify how different
  * parts of the state tree respond to actions, you may combine several reducers
- * into a single reducer fun  by using `combineReducers`.
+ * into a single reducer function by using `combineReducers`.
  *
- * @param {Reducer} [reducer] A fun  that returns the next state tree, given
+ * @param {Reducer} [reducer] A function that returns the next state tree, given
  * the current state tree and the action to handle.
  *
- * @param {Any} [preloadedState] The initial state. You may optionally specify it
- * to hydrate the state from the server in universal apps, or to restore a
+ * @param {Any} [preloadedState] The initial state. You may optionally specify
+ * it to hydrate the state from the server in universal apps, or to restore a
  * previously serialized user session.
  *
- * @param {Enhancer} [enhancer] The store enhancer. You may optionally specify it
- * to enhance the store with third-party capabilities such as middleware,
+ * @param {Enhancer} [enhancer] The store enhancer. You may optionally specify
+ * it to enhance the store with third-party capabilities such as middleware,
  * time travel, persistence, etc. The only store enhancer that ships with Redux
  * is `applyMiddleware()`.
  *
  * @returns {Store} A Redux store that lets you read the state, dispatch actions
  * and subscribe to changes.
  */
- fun <State> createStore(reducer: Reducer<State>, preloadedState: State, enhancer:StoreEnhancer<State> ? = null): Store<State> {
+ fun <State> createStore(
+  reducer: Reducer<State>,
+  preloadedState: State,
+  enhancer:StoreEnhancer<State> ? = null
+): Store<State> {
 
     if (enhancer != null) {
         return enhancer { r, initialState, _ -> createStore(r, initialState) }(
@@ -34,7 +38,6 @@ import org.reduxkotlin.utils.isPlainObject
             null
         )
     }
-
 
     var currentReducer = reducer
     var currentState = preloadedState
@@ -61,48 +64,49 @@ import org.reduxkotlin.utils.isPlainObject
      * @returns {S} The current state tree of your application.
      */
     fun getState(): State {
-        if (isDispatching) {
-            throw Exception(
-                    """You may not call store.getState() while the reducer is executing.
-                            The reducer has already received the state as an argument.
-                            Pass it down from the top reducer instead of reading it from the store."""
-            )
+        check(!isDispatching) {
+          """|You may not call store.getState() while the reducer is executing.
+             |The reducer has already received the state as an argument.
+             |Pass it down from the top reducer instead of reading it from the 
+             |store.""".trimMargin()
         }
 
         return currentState
     }
 
     /**
-     * Adds a change listener. It will be called any time an action is dispatched,
-     * and some part of the state tree may potentially have changed. You may then
-     * call `getState()` to read the current state tree inside the callback.
+     * Adds a change listener. It will be called any time an action is
+     * dispatched, and some part of the state tree may potentially have changed.
+     * You may then call `getState()` to read the current state tree inside the
+     * callback.
      *
      * You may call `dispatch()` from a change listener, with the following
      * caveats:
      *
      * 1. The subscriptions are snapshotted just before every `dispatch()` call.
-     * If you subscribe or unsubscribe while the listeners are being invoked, this
-     * will not have any effect on the `dispatch()` that is currently in progress.
-     * However, the next `dispatch()` call, whether nested or not, will use a more
-     * recent snapshot of the subscription list.
+     * If you subscribe or unsubscribe while the listeners are being invoked,
+     * this will not have any effect on the `dispatch()` that is currently in
+     * progress. However, the next `dispatch()` call, whether nested or not,
+     * will use a more recent snapshot of the subscription list.
      *
      * 2. The listener should not expect to see all state changes, as the state
-     * might have been updated multiple times during a nested `dispatch()` before
-     * the listener is called. It is, however, guaranteed that all subscribers
-     * registered before the `dispatch()` started will be called with the latest
-     * state by the time it exits.
+     * might have been updated multiple times during a nested `dispatch()`
+     * before the listener is called. It is, however, guaranteed that all
+     * subscribers registered before the `dispatch()` started will be called
+     * with the latest state by the time it exits.
      *
-     * @param {StoreSubscriber} [listener] A callback to be invoked on every dispatch.
+     * @param {StoreSubscriber} [listener] A callback to be invoked on every
+     * dispatch.
      * @returns {StoreSubscription} A fun  to remove this change listener.
      */
     fun subscribe(listener: StoreSubscriber): StoreSubscription {
-        if (isDispatching) {
-            throw Exception(
-                    """You may not call store.subscribe() while the reducer is executing.
-                            If you would like to be notified after the store has been updated, subscribe from a
-                            component and invoke store.getState() in the callback to access the latest state.
-                            See https://redux.js.org/api-reference/store#subscribe(listener) for more details."""
-            )
+        check(!isDispatching) {
+          """|You may not call store.subscribe() while the reducer is executing.
+             |If you would like to be notified after the store has been updated, 
+             |subscribe from a component and invoke store.getState() in the 
+             |callback to access the latest state. See 
+             |https://redux.js.org/api-reference/store#subscribe(listener) 
+             |for more details.""".trimMargin()
         }
 
         var isSubscribed = true
@@ -115,11 +119,11 @@ import org.reduxkotlin.utils.isPlainObject
                 Unit
             }
 
-            if (isDispatching) {
-                throw Exception(
-                        """You may not unsubscribe from a store listener while the reducer is executing.
-                                'See https://redux.js.org/api-reference/store#subscribe(listener) for more details."""
-                )
+            check(!isDispatching) {
+              """You may not unsubscribe from a store listener while the reducer
+                 |is executing. See 
+                 |https://redux.js.org/api-reference/store#subscribe(listener) 
+                 |for more details.""".trimMargin()
             }
 
             isSubscribed = false
@@ -138,15 +142,16 @@ import org.reduxkotlin.utils.isPlainObject
      * be considered the **next** state of the tree, and the change listeners
      * will be notified.
      *
-     * The base implementation only supports plain object actions. If you want to
-     * dispatch a something else, such as a function or 'thunk' you need to
+     * The base implementation only supports plain object actions. If you want
+     * to dispatch something else, such as a function or 'thunk' you need to
      * wrap your store creating function into the corresponding middleware. For
      * example, see the documentation for the `redux-thunk` package. Even the
-     * middleware will eventually dispatch plain object actions using this method.
+     * middleware will eventually dispatch plain object actions using this
+     * method.
      *
      * @param {Any} [action] A plain object representing “what changed”. It is
-     * a good idea to keep actions serializable so you can record and replay user
-     * sessions, or use the time travelling `redux-devtools`.
+     * a good idea to keep actions serializable so you can record and replay
+     * user sessions, or use the time travelling `redux-devtools`.
      *
      * @returns {Any} For convenience, the same action object you dispatched.
      *
@@ -154,13 +159,13 @@ import org.reduxkotlin.utils.isPlainObject
      * return something else (for example, a Promise you can await).
      */
     fun dispatch(action: Any): Any {
-        if (!isPlainObject(action)) {
-            throw Exception(
-                    "Actions must be plain objects. Use custom middleware for async actions.")
+        require(isPlainObject(action)) {
+          """Actions must be plain objects. Use custom middleware for async 
+            |actions.""".trimMargin()
         }
 
-        if (isDispatching) {
-            throw Exception("Reducers may not dispatch actions.")
+        check(!isDispatching) {
+          "Reducers may not dispatch actions."
         }
 
         try {
