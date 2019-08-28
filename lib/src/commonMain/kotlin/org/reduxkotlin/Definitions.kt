@@ -6,6 +6,12 @@ package org.reduxkotlin
  */
 typealias Reducer<State> = (state: State, action: Any) -> State
 
+/**
+ * Reducer for a particular subclass of actions.  Useful for Sealed classes &
+ * exhaustive when statements.  see [sealedReducer]
+ */
+typealias SealedReducer<TState, TAction> = (state: TState, action: TAction) -> TState
+
 typealias GetState<State> = () -> State
 typealias StoreSubscriber = () -> Unit
 typealias StoreSubscription = () -> Unit
@@ -40,7 +46,7 @@ data class Store<State>(
 }
 
 /**
- * Convenience function for creating a middleware
+ * Convenience function for creating a [Middleware]
  * usage:
  *    val myMiddleware = middleware { store, next, action -> doStuff() }
  */
@@ -52,3 +58,26 @@ fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -
             }
         }
     }
+
+
+/**
+ * Convenience function for creating a [SealedReducer]
+ * usage:
+ *   sealed class LoginScreenAction
+ *   data class LoginComplete(val user: User): LoginScreenAction()
+ *
+ *   val loginReducer = sealedReducer<AppState, LoginAction> { state, action ->
+ *       when(action) {
+ *           is LoginComplete -> state.copy(user = action.user)
+ *       }
+ *   }
+ */
+inline fun <TState, reified TAction> sealedReducer(crossinline reducer: SealedReducer<TState, TAction>): Reducer<TState> {
+    return {state, action ->
+        if (action is TAction) {
+            reducer(state, action)
+        } else {
+            state
+        }
+    }
+}
