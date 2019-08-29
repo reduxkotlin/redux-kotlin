@@ -6,7 +6,7 @@ version: 2.1
 jobs:
   publish_release:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/android:api-29
     working_directory: ~/repo
     environment:
       # Customize the JVM maximum heap limit

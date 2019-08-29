@@ -10,6 +10,12 @@ import org.reduxkotlin.examples.counter.Decrement
 import org.reduxkotlin.examples.counter.Increment
 import org.reduxkotlin.examples.counter.reducer
 
+/**
+ * This is a sample of basic redux behavior.
+ * This is NOT best practice for structuring a multiplatform App.
+ */
+
+
 val store = createStore(reducer, 0)
 
 class MainActivity: AppCompatActivity() {
