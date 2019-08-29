@@ -9,5 +9,6 @@ ext.deps = [
         plugins: [
                 kotlin : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
                 dokka  : "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
+                android: "com.android.tools.build:gradle:3.5.0"
         ]
 ]

@@ -25,10 +25,10 @@ import org.reduxkotlin.utils.isPlainObject
  * @returns {Store} A Redux store that lets you read the state, dispatch actions
  * and subscribe to changes.
  */
- fun <State> createStore(
-  reducer: Reducer<State>,
-  preloadedState: State,
-  enhancer:StoreEnhancer<State> ? = null
+fun <State> createStore(
+    reducer: Reducer<State>,
+    preloadedState: State,
+    enhancer: StoreEnhancer<State>? = null
 ): Store<State> {
 
     if (enhancer != null) {
@@ -41,7 +41,7 @@ import org.reduxkotlin.utils.isPlainObject
 
     var currentReducer = reducer
     var currentState = preloadedState
-    var currentListeners = mutableListOf<()->Unit>()
+    var currentListeners = mutableListOf<() -> Unit>()
     var nextListeners = currentListeners
     var isDispatching = false
 
@@ -65,7 +65,7 @@ import org.reduxkotlin.utils.isPlainObject
      */
     fun getState(): State {
         check(!isDispatching) {
-          """|You may not call store.getState() while the reducer is executing.
+            """|You may not call store.getState() while the reducer is executing.
              |The reducer has already received the state as an argument.
              |Pass it down from the top reducer instead of reading it from the 
              |store.""".trimMargin()
@@ -101,7 +101,7 @@ import org.reduxkotlin.utils.isPlainObject
      */
     fun subscribe(listener: StoreSubscriber): StoreSubscription {
         check(!isDispatching) {
-          """|You may not call store.subscribe() while the reducer is executing.
+            """|You may not call store.subscribe() while the reducer is executing.
              |If you would like to be notified after the store has been updated, 
              |subscribe from a component and invoke store.getState() in the 
              |callback to access the latest state. See 
@@ -120,7 +120,7 @@ import org.reduxkotlin.utils.isPlainObject
             }
 
             check(!isDispatching) {
-              """You may not unsubscribe from a store listener while the reducer
+                """You may not unsubscribe from a store listener while the reducer
                  |is executing. See 
                  |https://redux.js.org/api-reference/store#subscribe(listener) 
                  |for more details.""".trimMargin()
@@ -160,12 +160,12 @@ import org.reduxkotlin.utils.isPlainObject
      */
     fun dispatch(action: Any): Any {
         require(isPlainObject(action)) {
-          """Actions must be plain objects. Use custom middleware for async 
+            """Actions must be plain objects. Use custom middleware for async 
             |actions.""".trimMargin()
         }
 
         check(!isDispatching) {
-          "Reducers may not dispatch actions."
+            "Reducers may not dispatch actions."
         }
 
         try {
@@ -218,9 +218,9 @@ import org.reduxkotlin.utils.isPlainObject
     dispatch(ActionTypes.INIT)
 
     return Store(
-            dispatch = ::dispatch,
-            subscribe = ::subscribe,
-            getState = ::getState,
-            replaceReducer = ::replaceReducer
+        dispatch = ::dispatch,
+        subscribe = ::subscribe,
+        getState = ::getState,
+        replaceReducer = ::replaceReducer
     )
 }

@@ -10,11 +10,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$project.versions.kotlin"
-
         classpath deps.plugins.kotlin
         classpath deps.plugins.dokka
+        classpath deps.plugins.android
     }
 }
 apply from: "$rootDir/gradle/dependencies.gradle"
