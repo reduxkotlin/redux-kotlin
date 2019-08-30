@@ -1,0 +1,61 @@
+{
+  "docs": {
+    "Introduction": [
+      "introduction/getting-started",
+      "introduction/installation",
+      "introduction/motivation",
+      "introduction/core-concepts",
+      "introduction/three-principles",
+      "introduction/prior-art",
+      "introduction/learning-resources",
+      "introduction/ecosystem",
+      "introduction/examples"
+    ],
+    "Basic Tutorial": [
+      "basics/basic-tutorial",
+      "basics/actions",
+      "basics/reducers",
+      "basics/store",
+      "basics/data-flow",
+      "basics/usage-with-react",
+      "basics/example"
+    ],
+    "Advanced Tutorial": [
+      "advanced/advanced-tutorial",
+      "advanced/async-actions",
+      "advanced/async-flow",
+      "advanced/middleware",
+      "advanced/usage-with-react-router",
+      "advanced/example-reddit-api",
+      "advanced/next-steps"
+    ],
+    "FAQ": [
+      "faq",
+      "faq/general",
+      "faq/reducers",
+      "faq/organizing-state",
+      "faq/store-setup",
+      "faq/actions",
+      "faq/immutable-data",
+      "faq/code-structure",
+      "faq/performance",
+      "faq/design-decisions",
+      "faq/react-redux",
+      "faq/miscellaneous"
+    ],
+    "Other": [
+      "glossary",
+      "troubleshooting",
+      "feedback"
+    ],
+    "API Reference": [
+      "api/api-reference",
+      "api/createstore",
+      "api/store",
+      "api/combinereducers",
+      "api/applymiddleware",
+      "api/bindactioncreators",
+      "api/compose"
+    ]
+  }
+}
