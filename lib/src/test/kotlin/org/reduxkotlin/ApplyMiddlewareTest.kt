@@ -1,23 +1,13 @@
 package org.reduxkotlin
 
-import ch.tutteli.atrium.api.cc.en_GB.toBe
 import ch.tutteli.atrium.api.cc.en_GB.toThrow
+import ch.tutteli.atrium.domain.creating.AnyAssertions
 import ch.tutteli.atrium.verbs.expect
-import io.mockk.spyk
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import kotlin.test.assertEquals
 
 
 object ApplyMiddlewareSpec : Spek({
-    describe("middleware") {
-        it("fails") {
-            spyk(Any())
-            expect(1).toBe(1)
-            assertEquals(1, 1)
-        }
-    }
-
     describe("applyMiddleware") {
         it("warns when dispatching during middleware setup") {
             fun dispatchingMiddleware(store: Store<TestState>): (next: Dispatcher) -> (action: Any) -> Any {
@@ -89,3 +79,4 @@ val todos = { state: TestState, action: Any ->
             else -> state
         }
     }
+
