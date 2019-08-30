@@ -31,14 +31,6 @@ android {
             matchingFallbacks = ['release']
         }
     }
-//    signingConfigs {
-//        debug {
-//            storeFile file("./debug.keystore")
-//            storePassword 'android'
-//            keyAlias 'android'
-//            keyPassword 'android'
-//        }
-//    }
     packagingOptions {
         exclude 'META-INF/*.kotlin_module'
     }
@@ -47,8 +39,7 @@ android {
 
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$project.versions.kotlin"
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$project.versions.kotlin"
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
 
     implementation project(':examples:counter:common')

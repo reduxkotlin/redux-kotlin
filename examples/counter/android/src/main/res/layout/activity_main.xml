@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -24,7 +23,7 @@
                 android:id="@+id/btn_increment"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/ic_arrow_upward_black_24dp" />
+                android:src="@drawable/ic_arrow_upward_white_24dp" />
 
         <ImageButton
                 android:id="@+id/btn_decrement"

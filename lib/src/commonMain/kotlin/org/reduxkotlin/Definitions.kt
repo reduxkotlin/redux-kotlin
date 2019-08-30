@@ -8,7 +8,7 @@ typealias Reducer<State> = (state: State, action: Any) -> State
 
 /**
  * Reducer for a particular subclass of actions.  Useful for Sealed classes &
- * exhaustive when statements.  see [reducerForActionType]
+ * exhaustive when statements.  See [reducerForActionType].
  */
 typealias ReducerForActionType<TState, TAction> = (state: TState, action: TAction) -> TState
 
@@ -66,18 +66,32 @@ fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -
  *   sealed class LoginScreenAction
  *   data class LoginComplete(val user: User): LoginScreenAction()
  *
- *   val loginReducer = sealedReducer<AppState, LoginAction> { state, action ->
+ *   val loginReducer = reducerForActionType<AppState, LoginAction> { state, action ->
  *       when(action) {
  *           is LoginComplete -> state.copy(user = action.user)
  *       }
  *   }
+ *
+ *   sealed class FeedScreenAction
+ *   data class FeedLoaded(val items: FeedItems): FeedScreenAction
+ *   data class FeedLoadError(val msg: String): FeedScreenAction
+ *
+ *   val feedReducer = reducerForActionType<AppState, FeedScreeAction> { state, action ->
+ *       when(action) {
+ *          is FeedLoaded -> state.copy(feedItems = action.items)
+ *          is FeedLoadError -> state.copy(errorMsg = action.msg)
+ *       }
+ *   }
+ *
+ *   val rootReducer = combineReducers(loginReducer, feedReducer)
+ *   val store = createStore(rootReducer, AppState())
  */
-inline fun <TState, reified TAction> reducerForActionType(crossinline reducer: ReducerForActionType<TState, TAction>): Reducer<TState> {
-    return {state, action ->
-        if (action is TAction) {
-            reducer(state, action)
-        } else {
-            state
+inline fun <TState, reified TAction> reducerForActionType(
+    crossinline reducer: ReducerForActionType<TState, TAction>
+): Reducer<TState> =
+    { state, action ->
+        when (action) {
+            is TAction -> reducer(state, action)
+            else -> state
         }
     }
-}

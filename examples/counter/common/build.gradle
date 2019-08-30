@@ -72,7 +72,6 @@ kotlin {
             compileKotlinJs {
                 kotlinOptions.metaInfo = true
                 kotlinOptions.sourceMap = true
-                kotlinOptions.suppressWarnings = true
                 kotlinOptions.verbose = true
                 kotlinOptions.main = "call"
                 kotlinOptions.moduleKind = "umd"
