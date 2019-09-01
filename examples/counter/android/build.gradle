@@ -9,22 +9,22 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
-    compileSdkVersion 29
+    compileSdkVersion(29)
     defaultConfig {
-        applicationId "org.reduxkotlin.example.counter"
-        minSdkVersion 26
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        applicationId = "org.reduxkotlin.example.counter"
+        minSdkVersion(26)
+        targetSdkVersion(29)
+        versionCode = 1
+        versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled = false
+            proguardFiles(getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro')
         }
         debug {
             // MPP libraries don't currently get this resolution automatically
@@ -39,13 +39,9 @@ android {
 
 
 dependencies {
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$project.versions.kotlin"
-    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation(Libs.kotlin_stdlib_jdk8)
+    implementation(Libs.appcompat)
 
-    implementation project(':examples:counter:common')
-    implementation project(':lib')
-
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation(project(':examples:counter:common'))
+    implementation(project(':lib'))
 }

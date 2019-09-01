@@ -15,6 +15,11 @@ buildscript {
         classpath deps.plugins.android
     }
 }
+
+plugins {
+    id("de.fayard.buildSrcVersions") version "0.4.2"
+}
+
 apply from: "$rootDir/gradle/dependencies.gradle"
 
 allprojects {
