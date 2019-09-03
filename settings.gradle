@@ -8,11 +8,13 @@ pluginManagement {
     }
 }
 
-include ':lib', ':examples:counter:common', ':examples:counter:android'
-rootProject.name='Redux-Kotlin'
+include(
+    ':lib',
+    ':examples:counter:common',
+    ':examples:counter:android'
+)
 
+rootProject.name = 'Redux-Kotlin'
 
-rootProject.name = 'test'
 enableFeaturePreview('GRADLE_METADATA')
 enableFeaturePreview('STABLE_PUBLISHING')
-
