@@ -7,40 +7,44 @@ hide_title: true
 
 # Getting Started with ReduxKotlin
 
-Redux is a predictable state container for JavaScript apps.
+ReduxKotlin is a predictable state container for Kotlin apps that supports all platforms that Kotlin can target (JVM, native, JS, WASM).
 
-ReduxKotlin is a port of Redux to Kotlin that supports all kotlin platforms.
+ReduxKotlin is a port of [Redux for Javascript](https://redux.js.org) that aims to become a standard implementation of Redux for Kotlin.  Much of the information on redux.js.org applies to ReduxKotlin, however, there is also a lot of Javascript specific information that may not apply to ReduxKotlin.  This site documents how to get started and examples of using ReduxKotlin in projects.  There are suggestions and examples, but ultimately the core ReduxLibrary is not opinionated on how it is used is up to you. 
 
-It helps you write applications that behave consistently, run in different environments (client, server, and native), and are easy to test.
+It helps you write applications that behave consistently, share code between platforms (Android, iOS, Web), and are easy to test.
 
-How redux is used in your app is up to you.  There are sample apps available on github.  Also many tutorials/talks/blogposts on the web.
 
 ## Installation
 
-ReduxKotlin is available on Maven central.  It is published with Gradle meta-data, so only needs to be specified in your common sourceset:
+ReduxKotlin is available on Maven central.  
 
-```bash
-npm install --save redux
+__For a multiplatform project:__
+
+It is published with Gradle meta-data, so only needs to be specified in your common sourceset:
+
+```groovy
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation "org.reduxkotlin:redux-kotlin:0.2.6"
+            }
+        }
+    }
+}
 ```
-
-TODO: what about single platform projects?
 
 Gradle meta-data is a preview feature, and will need to be turned on with `enableFeaturePreview("GRADLE_METADATA")`in your gradle.settings file.
 
+__For single platform project (i.e. just Android):__
+
+```groovy
+dependencies {
+    implementation "org.reduxkotlin:redux-kotlin:0.2.6"
+}
+```
+
 For more details, see the [Installation](Installation.md) page.
-
-## Redux Starter Kit
-
-Redux itself is small and unopinionated. We also have a separate package called **[redux-starter-kit](https://redux-starter-kit.js.org/)**,
-which includes some opinionated defaults that help you use Redux more effectively.
-
-It helps simplify a lot of common use cases, including [store setup](https://redux-starter-kit.js.org/api/configureStore),
-[creating reducers and writing immutable update logic](https://redux-starter-kit.js.org/api/createreducer),
-and even [creating entire "slices" of state at once](https://redux-starter-kit.js.org/api/createslice).
-
-Whether you're a brand new Redux user setting up your first project, or an experienced user who wants to
-simplify an existing application, **[redux-starter-kit](https://redux-starter-kit.js.org/)** can help you
-make your Redux code better.
 
 ## Basic Example
 
@@ -50,133 +54,80 @@ To specify how the actions transform the state tree, you write pure _reducers_.
 
 That's it!
 
-```js
-import { createStore } from 'redux'
-
+```kotlin
 /**
- * This is a reducer, a pure function with (state, action) => state signature.
+ * This is a reducer, a pure function with (state, action) -> state signature.
  * It describes how an action transforms the state into the next state.
  *
  * The shape of the state is up to you: it can be a primitive, an array, an object,
- * or even an Immutable.js data structure. The only important part is that you should
- * not mutate the state object, but return a new object if the state changes.
+ * Usually this will be a data class.  The copy method is useful for creating the new state.
+ * In this contrived example, we are just using an Int for the state.
  *
- * In this example, we use a `switch` statement and strings, but you can use a helper that
- * follows a different convention (such as function maps) if it makes sense for your
- * project.
+ * In this example, we use a `when` statement and type checking, but other methods are possible,
+ * such as a 'type' string field, or delegating the reduction to a method on the action objects.
  */
-function counter(state = 0, action) {
-  switch (action.type) {
-    case 'INCREMENT':
-      return state + 1
-    case 'DECREMENT':
-      return state - 1
-    default:
-      return state
-  }
+val reducer: Reducer<Int> = { state, action ->
+    when (action) {
+        is Increment -> state + 1
+        is Decrement -> state - 1
+        else -> state
+    }
 }
 
+/**
+ * Actions are plain objects that represent a action in the app.  These can be 
+ * plain objects or data classes and have fields that hold data necessary for
+ * the reducer to update the state.
+ */
+class Increment
+class Decrement
+
 // Create a Redux store holding the state of your app.
-// Its API is { subscribe, dispatch, getState }.
-let store = createStore(counter)
+// 0 is the initial state
+val store = createStore(reducer, 0)
 
 // You can use subscribe() to update the UI in response to state changes.
-// Normally you'd use a view binding library (e.g. React Redux) rather than subscribe() directly.
-// However it can also be handy to persist the current state in the localStorage.
+// Normally you'd use an additional layer or view binding library rather than subscribe() directly.
 
-store.subscribe(() => console.log(store.getState()))
+store.subscribe { logger.debug(store.state)}
 
 // The only way to mutate the internal state is to dispatch an action.
-// The actions can be serialized, logged or stored and later replayed.
-store.dispatch({ type: 'INCREMENT' })
+// The actions can be serialized, logged or stored.
+store.dispatch(Increment())
 // 1
-store.dispatch({ type: 'INCREMENT' })
+store.dispatch(Increment())
 // 2
-store.dispatch({ type: 'DECREMENT' })
+store.dispatch(Decrement())
 // 1
 ```
 
 Instead of mutating the state directly, you specify the mutations you want to happen with plain objects called _actions_. Then you write a special function called a _reducer_ to decide how every action transforms the entire application's state.
 
-In a typical Redux app, there is just a single store with a single root reducing function. As your app grows, you split the root reducer into smaller reducers independently operating on the different parts of the state tree. This is exactly like how there is just one root component in a React app, but it is composed out of many small components.
+In a typical Redux app, there is just a single store with a single root reducing function. As your app grows, you split the root reducer into smaller reducers independently operating on the different parts of the state tree.  Again Redux is unopinonated and how reducers and actions are organized is up to you.  Useful patterns will be documented here soon.TODO
 
 This architecture might seem like an overkill for a counter app, but the beauty of this pattern is how well it scales to large and complex apps. It also enables very powerful developer tools, because it is possible to trace every mutation to the action that caused it. You can record user sessions and reproduce them just by replaying every action.
 
 ## Examples
 
-The Redux repository contains several example projects demonstrating various aspects of how to use Redux. Almost all examples have a corresponding CodeSandbox sandbox. This is an interactive version of the code that you can play with online.
+The ReduxKotlin github contains several example projects demonstrating various aspects of how to use ReduxKotlin.
 
-- [**Counter Vanilla**](/introduction/examples#counter-vanilla): [Source](https://github.com/reduxjs/redux/tree/master/examples/counter-vanilla)
-- [**Counter**](/introduction/examples#counter): [Source](https://github.com/reduxjs/redux/tree/master/examples/counter) | [Sandbox](https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/counter)
-- [**Todos**](/introduction/examples#todos): [Source](https://github.com/reduxjs/redux/tree/master/examples/todos) | [Sandbox](https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/todos)
-- [**Todos with Undo**](/introduction/examples#todos-with-undo): [Source](https://github.com/reduxjs/redux/tree/master/examples/todos-with-undo) | [Sandbox](https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/todos-with-undo)
-- [**TodoMVC**](/introduction/examples#todomvc): [Source](https://github.com/reduxjs/redux/tree/master/examples/todomvc) | [Sandbox](https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/todomvc)
-- [**Shopping Cart**](/introduction/examples#shopping-cart): [Source](https://github.com/reduxjs/redux/tree/master/examples/shopping-cart) | [Sandbox](https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/shopping-cart)
-- [**Tree View**](/introduction/examples#tree-view): [Source](https://github.com/reduxjs/redux/tree/master/examples/tree-view) | [Sandbox](https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/tree-view)
-- [**Async**](/introduction/examples#async): [Source](https://github.com/reduxjs/redux/tree/master/examples/async) | [Sandbox](https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/async)
-- [**Universal**](/introduction/examples#universal): [Source](https://github.com/reduxjs/redux/tree/master/examples/universal)
-- [**Real World**](/introduction/examples#real-world): [Source](https://github.com/reduxjs/redux/tree/master/examples/real-world) | [Sandbox](https://codesandbox.io/s/github/reduxjs/redux/tree/master/examples/real-world)
-
-## Learn Redux
-
-We have a variety of resources available to help you learn Redux, no matter what your background or learning style is.
-
-### Just the Basics
-
-If you're brand new to Redux and want to understand the basic concepts, see:
-
-- The **[Motivation](./Motivation.md)** behind building Redux, the **[Core Concepts](./CoreConcepts.md)**, and the **[Three Principles](./ThreePrinciples.md)**.
-- The **[basic tutorial in the Redux docs](../basics/README.md)**
-- Redux creator Dan Abramov's **free ["Getting Started with Redux" video series](https://egghead.io/series/getting-started-with-redux)** on Egghead.io
-- Redux co-maintainer Mark Erikson's **["Redux Fundamentals" slideshow](http://blog.isquaredsoftware.com/2018/03/presentation-reactathon-redux-fundamentals/)** and **[list of suggested resources for learning Redux](http://blog.isquaredsoftware.com/2017/12/blogged-answers-learn-redux/)**
-- If you learn best by looking at code and playing with it, check out our list of **[Redux example applications](./Examples.md)**, available as separate projects in the Redux repo, and also as interactive online examples on CodeSandbox.
-- The **[Redux Tutorials](https://github.com/markerikson/react-redux-links/blob/master/redux-tutorials.md)** section of the **[React/Redux links list](https://github.com/markerikson/react-redux-links)**. Here's a top list of our recommended tutorials:
-  - Dave Ceddia's posts [What Does Redux Do? (and when should you use it?)](https://daveceddia.com/what-does-redux-do/) and [How Redux Works: A Counter-Example](https://daveceddia.com/how-does-redux-work/) are a great intro to the basics of Redux and how to use it with React, as is this post on [React and Redux: An Introduction](http://jakesidsmith.com/blog/post/2017-11-18-redux-and-react-an-introduction/).
-  - Valentino Gagliardi's post [React Redux Tutorial for Beginners: Learning Redux in 2018](https://www.valentinog.com/blog/react-redux-tutorial-beginners/) is an excellent extended introduction to many aspects of using Redux.
-  - The CSS Tricks article [Leveling Up with React: Redux](https://css-tricks.com/learning-react-redux/) covers the Redux basics well.
-  - This [DevGuides: Introduction to Redux](http://devguides.io/redux/) tutorial covers several aspects of Redux, including actions, reducers, usage with React, and middleware.
-
-### Intermediate Concepts
-
-Once you've picked up the basics of working with actions, reducers, and the store, you may have questions about topics like working with asynchronous logic and AJAX requests, connecting a UI framework like React to your Redux store, and setting up an application to use Redux:
-
-- The **["Advanced" docs section](../advanced/README.md)** covers working with async logic, middleware, routing.
-- The Redux docs **["Learning Resources"](./LearningResources.md)** page points to recommended articles on a variety of Redux-related topics.
-- Sophie DeBenedetto's 8-part **[Building a Simple CRUD App with React + Redux](http://www.thegreatcodeadventure.com/building-a-simple-crud-app-with-react-redux-part-1/)** series shows how to put together a basic CRUD app from scratch.
-
-### Real-World Usage
-
-Going from a TodoMVC app to a real production application can be a big jump, but we've got plenty of resources to help:
-
-- Redux creator Dan Abramov's **[free "Building React Applications with Idiomatic Redux" video series](https://egghead.io/courses/building-react-applications-with-idiomatic-redux)** builds on his first video series and covers topics like middleware, routing, and persistence.
-- The **[Redux FAQ](../FAQ.md)** answers many common questions about how to use Redux, and the **["Recipes" docs section](../recipes/README.md)** has information on handling derived data, testing, structuring reducer logic, and reducing boilerplate.
-- Redux co-maintainer Mark Erikson's **["Practical Redux" tutorial series](http://blog.isquaredsoftware.com/series/practical-redux/)** demonstrates real-world intermediate and advanced techniques for working with React and Redux (also available as **[an interactive course on Educative.io](https://www.educative.io/collection/5687753853370368/5707702298738688)**).
-- The **[React/Redux links list](https://github.com/markerikson/react-redux-links)** has categorized articles on working with [reducers and selectors](https://github.com/markerikson/react-redux-links/blob/master/redux-reducers-selectors.md), [managing side effects](https://github.com/markerikson/react-redux-links/blob/master/redux-side-effects.md), [Redux architecture and best practices](https://github.com/markerikson/react-redux-links/blob/master/redux-architecture.md), and more.
-- Our community has created thousands of Redux-related libraries, addons, and tools. The **["Ecosystem" docs page](./Ecosystem.md)** lists our recommendations, and there's a complete listing available in the **[Redux addons catalog](https://github.com/markerikson/redux-ecosystem-links)**.
-- If you're looking to learn from actual application codebases, the addons catalog also has a list of **[purpose-built examples and real-world applications](https://github.com/markerikson/redux-ecosystem-links/blob/master/apps-and-examples.md)**.
+- [**Counter**](/introduction/examples#counter): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/counter)
+- [**Name Game**](/introduction/examples#real-world): [Source](https://github.com/reduxkotlin/NameGameSampleApp)
+- [**Reading List**](/introduction/examples#real-world): [Source](https://github.com/reduxkotlin/ReadingListSampleApp)
 
 ## Help and Discussion
 
-The **[#redux channel](https://discord.gg/0ZcbPKXt5bZ6au5t)** of the **[Reactiflux Discord community](http://www.reactiflux.com)** is our official resource for all questions related to learning and using Redux. Reactiflux is a great place to hang out, ask questions, and learn - come join us!
-
-You can also ask questions on [Stack Overflow](https://stackoverflow.com) using the **[#redux tag](https://stackoverflow.com/questions/tagged/redux)**.
+The **[#redux channel](https://kotlinlang.slack.com/messages/C8A8G5F9Q)** of the **[KotlinLang Slack](http://kotlinlang.slack.com)** is our is our channel for collaborating and ReduxKotlin questions. Invites are [here.](https://slack.kotlinlang.org) 
 
 ## Should You Use Redux?
 
-Redux is a valuable tool for organizing your state, but you should also consider whether it's appropriate for your situation. **Don't use Redux just because someone said you should - take some time to understand the potential benefits and tradeoffs of using it**.
+Redux can be a powerful pattern and has grown in popularity for mobile developers, however it is still a lesser practiced architecture, so some of the best practices and patterns for your app may be up to you.  Redux looks very promising as a pattern for multiplatform apps targeting iOS, Android, & possibly web.  Especially considering the new declarative UI frameworks Jetpack Compose and SwiftUI.
+Many of the samples and multiplatform patterns are experimental at this point.  The library itself is stable, however the best practices for multiplatform apps are still being decided and the ecostystem is still forming.  There is opportunity to contribute to libraries and samples.
+
+This site will continue to grow and post examples, best practices, FAQs, and tutorials.  
+
 
 Here are some suggestions on when it makes sense to use Redux:
 
 - You have reasonable amounts of data changing over time
 - You need a single source of truth for your state
-- You find that keeping all your state in a top-level component is no longer sufficient
-
-Yes, these guidelines are subjective and vague, but this is for good reason. The point at which you should integrate Redux into your application is different for every user and different for every application.
-
-> **For more thoughts on how Redux is meant to be used, see:**<br>
->
-> - **[Redux FAQ: When should I use Redux?](../faq/General.md#when-should-i-use-redux)**
-> - **[You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)**<br>
-> - **[The Tao of Redux, Part 1 - Implementation and Intent](http://blog.isquaredsoftware.com/2017/05/idiomatic-redux-tao-of-redux-part-1/)**<br>
-> - **[The Tao of Redux, Part 2 - Practice and Philosophy](http://blog.isquaredsoftware.com/2017/05/idiomatic-redux-tao-of-redux-part-2/)**
-> - **[Redux FAQ](../FAQ.md)**
