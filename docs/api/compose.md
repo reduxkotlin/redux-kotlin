@@ -5,7 +5,7 @@ sidebar_label: compose
 hide_title: true
 ---
 
-# `compose(...functions)`
+# `compose(vararg functions: (T) -> T): (T) -> T`
 
 Composes functions from right to left.
 
@@ -24,19 +24,14 @@ You might want to use it to apply several [store enhancers](../Glossary.md#store
 
 This example demonstrates how to use `compose` to enhance a [store](Store.md) with [`applyMiddleware`](applyMiddleware.md) and a few developer tools from the [redux-devtools](https://github.com/reduxjs/redux-devtools) package.
 
-```js
-import { createStore, applyMiddleware, compose } from 'redux'
-import thunk from 'redux-thunk'
-import DevTools from './containers/DevTools'
-import reducer from '../reducers'
-
-const store = createStore(
+```kotlin
+val store = createStore(
   reducer,
   compose(
-    applyMiddleware(thunk),
-    DevTools.instrument()
+        presenterEnhancer(uiContext),
+        applyMiddleware(thunk)
+    )
   )
-)
 ```
 
 #### Tips
