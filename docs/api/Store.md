@@ -10,12 +10,12 @@ hide_title: true
 A store holds the whole [state tree](../Glossary.md#state) of your application.
 The only way to change the state inside it is to dispatch an [action](../Glossary.md#action) on it.
 
-A store is not a class. It's just an object with a few methods on it.
+A store is just a plain object that contains your current state and a 4 functions.
 To create it, pass your root [reducing function](../Glossary.md#reducer) to [`createStore`](createStore.md).
 
 > ##### A Note for Flux Users
 >
-> If you're coming from Flux, there is a single important difference you need to understand. Redux doesn't have a Dispatcher or support many stores. **Instead, there is just a single store with a single root [reducing function](../Glossary.md#reducer).** As your app grows, instead of adding stores, you split the root reducer into smaller reducers independently operating on the different parts of the state tree. You can use a helper like [`combineReducers`](combineReducers.md) to combine them. This is similar to how there is just one root component in a React app, but it is composed out of many small components.
+> If you're coming from Flux, there is a single important difference you need to understand. Redux doesn't have a Dispatcher or support many stores. **Instead, there is just a single store with a single root [reducing function](../Glossary.md#reducer).** As your app grows, instead of adding stores, you split the root reducer into smaller reducers independently operating on the different parts of the state tree. You can use a helper like [`combineReducers`](combineReducers.md) to combine them.  There is also an opportunity to use [annotation processors, or Kotlin compiler plugins, to make combining reducers easier](https://trello.com/c/WXS3RRKM/15-make-easy-to-register-reducers).
 
 ### Store Methods
 
@@ -26,18 +26,19 @@ To create it, pass your root [reducing function](../Glossary.md#reducer) to [`cr
 
 ## Store Methods
 
-### getState()
+### getState() _or_ `state` property
 
 Returns the current state tree of your application.
 It is equal to the last value returned by the store's reducer.
+`state` property has been included since it is more idiomatic Kotlin
 
 #### Returns
 
-_(any)_: The current state tree of your application.
+_(State)_: The current state tree of your application with the generic `State` type supplied to the store.
 
 <hr>
 
-### dispatch(action)
+### dispatch(action: Any): Any
 
 Dispatches an action. This is the only way to trigger a state change.
 
@@ -51,42 +52,38 @@ The store's reducing function will be called with the current [`getState()`](#ge
 
 #### Arguments
 
-1. `action` (_Object_<sup>†</sup>): A plain object describing the change that makes sense for your application. Actions are the only way to get data into the store, so any data, whether from the UI events, network callbacks, or other sources such as WebSockets needs to eventually be dispatched as actions. Actions must have a `type` field that indicates the type of action being performed. Types can be defined as constants and imported from another module. It's better to use strings for `type` than [Symbols](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Symbol) because strings are serializable. Other than `type`, the structure of an action object is really up to you. If you're interested, check out [Flux Standard Action](https://github.com/acdlite/flux-standard-action) for recommendations on how actions could be constructed.
+1. `action` (`Any`): A plain object describing the change that makes sense for your application. Actions are the only way to get data into the store, so any data, whether from the UI events, network callbacks, or other sources such as WebSockets needs to eventually be dispatched as actions.  Actions can be defined as classes or data classes.  How they are grouped and where they are defined is up to you and your team.  Javascript Redux uses a `type` string field to denote the type of action, but in Kotlin it is recommended to use seperate types for seperate actions.
 
 #### Returns
 
-(Object<sup>†</sup>): The dispatched action (see notes).
+(`Any`): The dispatched action (see notes).
 
 #### Notes
 
 <sup>†</sup> The “vanilla” store implementation you get by calling [`createStore`](createStore.md) only supports plain object actions and hands them immediately to the reducer.
 
-However, if you wrap [`createStore`](createStore.md) with [`applyMiddleware`](applyMiddleware.md), the middleware can interpret actions differently, and provide support for dispatching [async actions](../Glossary.md#async-action). Async actions are usually asynchronous primitives like Promises, Observables, or thunks.
+However, if you wrap [`createStore`](createStore.md) with [`applyMiddleware`](applyMiddleware.md), the middleware can interpret actions differently, and provide support for dispatching [async actions](../Glossary.md#async-action). Async actions are usually asynchronous primitives like thunks.
 
-Middleware is created by the community and does not ship with Redux by default. You need to explicitly install packages like [redux-thunk](https://github.com/gaearon/redux-thunk) or [redux-promise](https://github.com/acdlite/redux-promise) to use it. You may also create your own middleware.
+Middleware is created by the community and does not ship with Redux by default. You need to explicitly install packages like [redux-thunk](https://github.com/reduxkotlin/redux-kotlin-thunk). You may also create your own middleware.
 
 To learn how to describe asynchronous API calls, read the current state inside action creators, perform side effects, or chain them to execute in a sequence, see the examples for [`applyMiddleware`](applyMiddleware.md).
 
 #### Example
 
-```js
-import { createStore } from 'redux'
-const store = createStore(todos, ['Use Redux'])
+```kotlin
+val store = createStore(todos, AppState(list = listOf("Use Redux")))
 
-function addTodo(text) {
-  return {
-    type: 'ADD_TODO',
-    text
-  }
-}
+data class AddTodo(
+    val text: String
+)
 
-store.dispatch(addTodo('Read the docs'))
-store.dispatch(addTodo('Read about the middleware'))
+store.dispatch(AddTodo("Read the docs"))
+store.dispatch(AddTodo("Read about the middleware"))
 ```
 
 <hr>
 
-### subscribe(listener)
+### subscribe(listener: StoreSubstriber)
 
 Adds a change listener. It will be called any time an action is dispatched, and some part of the state tree may potentially have changed. You may then call [`getState()`](#getState) to read the current state tree inside the callback.
 
@@ -104,46 +101,43 @@ To unsubscribe the change listener, invoke the function returned by `subscribe`.
 
 #### Arguments
 
-1. `listener` (_Function_): The callback to be invoked any time an action has been dispatched, and the state tree might have changed. You may call [`getState()`](#getState) inside this callback to read the current state tree. It is reasonable to expect that the store's reducer is a pure function, so you may compare references to some deep path in the state tree to learn whether its value has changed.
+1. `listener` (`() -> Unit`): The callback to be invoked any time an action has been dispatched, and the state tree might have changed. You may call [`getState()`](#getState) inside this callback to read the current state tree. It is reasonable to expect that the store's reducer is a pure function, so you may compare references to some deep path in the state tree to learn whether its value has changed.
 
 ##### Returns
 
-(_Function_): A function that unsubscribes the change listener.
+(`StoreSubscription`): A function(`()-> Unit`) that unsubscribes the change listener.
 
 ##### Example
 
-```js
-function select(state) {
+```kotlin
+fun select(state) {
   return state.some.deep.property
 }
 
-let currentValue
-function handleChange() {
-  let previousValue = currentValue
-  currentValue = select(store.getState())
+var currentValue: String?
+fun handleChange() {
+  var previousValue = currentValue
+  currentValue = store.some.deep.property
 
-  if (previousValue !== currentValue) {
-    console.log(
-      'Some deep nested property changed from',
-      previousValue,
-      'to',
-      currentValue
-    )
+  if (previousValue != currentValue) {
+    console.log("Some deep nested property changed from $previousValue to $currentvalue")
   }
 }
 
-const unsubscribe = store.subscribe(handleChange)
+val unsubscribe = store.subscribe(handleChange)
+
+//later when no longer needed
 unsubscribe()
 ```
 
 <hr>
 
-### replaceReducer(nextReducer)
+### replaceReducer(nextReducer: Reducer<State>): Unit
 
 Replaces the reducer currently used by the store to calculate the state.
 
-It is an advanced API. You might need this if your app implements code splitting, and you want to load some of the reducers dynamically. You might also need this if you implement a hot reloading mechanism for Redux.
+It is an advanced API. In JS Redux it is needed if your app implements code splitting, and you want to load some of the reducers dynamically. You might also need this if you implement a hot reloading mechanism for Redux.
 
 #### Arguments
 
-1. `nextReducer` (_Function_) The next reducer for the store to use.
+1. `nextReducer` (`Reducer<State>`) The next reducer for the store to use.
