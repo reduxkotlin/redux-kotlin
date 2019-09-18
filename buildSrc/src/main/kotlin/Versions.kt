@@ -39,6 +39,11 @@ object Versions {
   const val org_spekframework_spek2: String = "2.1.0-alpha.0.11+d97ef33"
        // available: "2.1.0-alpha.0.24+0fdeb6e"
 
+  const val constraint_layout = "1.1.2"
+
+  const val reyclerview = "28.0.0"
+
+
   /**
    *
    * See issue 19: How to update Gradle itself?

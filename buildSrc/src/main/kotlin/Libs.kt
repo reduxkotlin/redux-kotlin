@@ -13,6 +13,16 @@ object Libs {
   const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
 
   /**
+   * https://developer.android.com/reference/android/support/constraint/ConstraintLayout
+   */
+  const val constraintLayout = "com.android.support.constraint:constraint-layout:" + Versions.constraint_layout
+
+  /**
+   * https://developer.android.com/guide/topics/ui/layout/recyclerview
+   */
+  const val recyclerView = "com.android.support:recyclerview-v7:" + Versions.reyclerview
+
+  /**
    * https://developer.android.com/testing
    */
   const val espresso_core: String = "androidx.test.espresso:espresso-core:" + Versions.espresso_core
