@@ -9,9 +9,9 @@ hide_title: true
 
 ReduxKotlin is a predictable state container for Kotlin apps that supports all platforms that Kotlin can target (JVM, native, JS, WASM).
 
-ReduxKotlin is a port of [Redux for Javascript](https://redux.js.org) that aims to become a standard implementation of Redux for Kotlin.  Much of the information on redux.js.org applies to ReduxKotlin, however, there is also a lot of Javascript specific information that may not apply to ReduxKotlin.  This site documents how to get started and examples of using ReduxKotlin in projects.  There are suggestions and examples, but ultimately the core ReduxLibrary is not opinionated on how it is used is up to you. 
+ReduxKotlin is a port of [Redux for Javascript](https://redux.js.org) that aims to become a standard implementation of Redux for Kotlin.  Much of the information on redux.js.org applies to ReduxKotlin, however, there is also a lot of Javascript specific information that may _not_ apply to ReduxKotlin.  This site documents how to get started and examples of using ReduxKotlin in projects.  There are suggestions and examples, but ultimately the core ReduxLibrary is not opinionated.  How you use it in your project is up to you.  This site will continue to be updated as Kotlin multiplatform matures.
 
-It helps you write applications that behave consistently, share code between platforms (Android, iOS, Web), and are easy to test.
+It helps you write applications share code between platforms (Android, iOS, Web), behave consistently, and are easy to test.
 
 
 ## Installation
@@ -66,13 +66,12 @@ That's it!
  * In this example, we use a `when` statement and type checking, but other methods are possible,
  * such as a 'type' string field, or delegating the reduction to a method on the action objects.
  */
-val reducer: Reducer<Int> = { state, action ->
+fun reducer(state: Int, action: Action) =
     when (action) {
         is Increment -> state + 1
         is Decrement -> state - 1
         else -> state
     }
-}
 
 /**
  * Actions are plain objects that represent a action in the app.  These can be 
@@ -112,17 +111,18 @@ This architecture might seem like an overkill for a counter app, but the beauty 
 The ReduxKotlin github contains several example projects demonstrating various aspects of how to use ReduxKotlin.
 
 - [**Counter**](/introduction/examples#counter): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/counter)
+- [**Todos**](/introduction/examples#todos): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/todos)
 - [**Name Game**](/introduction/examples#real-world): [Source](https://github.com/reduxkotlin/NameGameSampleApp)
 - [**Reading List**](/introduction/examples#real-world): [Source](https://github.com/reduxkotlin/ReadingListSampleApp)
 
 ## Help and Discussion
 
-The **[#redux channel](https://kotlinlang.slack.com/messages/C8A8G5F9Q)** of the **[KotlinLang Slack](http://kotlinlang.slack.com)** is our is our channel for collaborating and ReduxKotlin questions. Invites are [here.](https://slack.kotlinlang.org) 
+The **[#redux channel](https://kotlinlang.slack.com/messages/C8A8G5F9Q)** of the **[KotlinLang Slack](http://kotlinlang.slack.com)** is our is our channel for ReduxKotlin questions and collaborating. Invites are [here.](https://slack.kotlinlang.org) 
 
 ## Should You Use Redux?
 
-Redux can be a powerful pattern and has grown in popularity for mobile developers, however it is still a lesser practiced architecture, so some of the best practices and patterns for your app may be up to you.  Redux looks very promising as a pattern for multiplatform apps targeting iOS, Android, & possibly web.  Especially considering the new declarative UI frameworks Jetpack Compose and SwiftUI.
-Many of the samples and multiplatform patterns are experimental at this point.  The library itself is stable, however the best practices for multiplatform apps are still being decided and the ecostystem is still forming.  There is opportunity to contribute to libraries and samples.
+Redux can be a powerful pattern and has grown in popularity for mobile developers, however it is still a lesser practiced architecture, so some of the best practices and patterns for your app will be up to you.  Redux looks very promising as a pattern for multiplatform apps targeting iOS, Android, & possibly web.  Especially considering the new declarative UI frameworks Jetpack Compose and SwiftUI.
+Many of the samples and multiplatform patterns are experimental at this point.  The library itself is stable, however the best practices for multiplatform apps are still being decided and the ecostystem is still forming.  For anyone interested, this is opportunity to contribute to libraries and samples.
 
 This site will continue to grow and post examples, best practices, FAQs, and tutorials.  
 

@@ -94,16 +94,3 @@ inline fun <TState, reified TAction> reducerForActionType(
             else -> state
         }
     }
-
-val tmpReducer: Reducer<Int> = {state, action ->  }
-
-fun tmp(state: Int = 0, action: Any): Int {
-    return 1
-}
-
-data class TestAction(val name: String)
-fun main() {
-    tmp(action = TestAction("test"))
-}
-
-

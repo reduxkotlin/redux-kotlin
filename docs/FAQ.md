@@ -14,7 +14,7 @@ hide_title: true
   - [When should I use Redux?](faq/General.md#when-should-i-use-redux)
 - **Reducers**
   - [How do I share state between two reducers? Do I have to use combineReducers?](faq/Reducers.md#how-do-i-share-state-between-two-reducers-do-i-have-to-use-combinereducers)
-  - [Do I have to use the switch statement to handle actions?](faq/Reducers.md#do-i-have-to-use-the-switch-statement-to-handle-actions)
+  - [Do I have to use the when statement to handle actions?](faq/Reducers.md#do-i-have-to-use-the-when-statement-to-handle-actions)
 - **Organizing State**
   - [Do I have to put all my state into Redux? Should I ever use React's setState()?](faq/OrganizingState.md#do-i-have-to-put-all-my-state-into-redux-should-i-ever-use-reacts-setstate)
   - [Can I put functions, promises, or other non-serializable items in my store state?](faq/OrganizingState.md#can-i-put-functions-promises-or-other-non-serializable-items-in-my-store-state)
@@ -38,14 +38,5 @@ hide_title: true
   - [Why doesn't Redux support using classes for actions and reducers?](faq/DesignDecisions.md#why-doesnt-redux-support-using-classes-for-actions-and-reducers)
   - [Why does the middleware signature use currying?](faq/DesignDecisions.md#why-does-the-middleware-signature-use-currying)
   - [Why does applyMiddleware use a closure for dispatch?](faq/DesignDecisions.md#why-does-applymiddleware-use-a-closure-for-dispatch)
-  - [Why doesn't `combineReducers` include a third argument with the entire state when it calls each reducer?](faq/DesignDecisions.md#why-doesnt-combinereducers-include-a-third-argument-with-the-entire-state-when-it-calls-each-reducer)
-  - [Why doesn't mapDispatchToProps allow use of return values from `getState()` or `mapStateToProps()`?](faq/DesignDecisions.md#why-doesnt-mapdispatchtoprops-allow-use-of-return-values-from-getstate-or-mapstatetoprops)
-- **React Redux**
-  - [Why should I use React-Redux?](faq/ReactRedux.md#why-should-i-use-react-redux)
-  - [Why isn't my component re-rendering, or my mapStateToProps running?](faq/ReactRedux.md#why-isnt-my-component-re-rendering-or-my-mapstatetoprops-running)
-  - [Why is my component re-rendering too often?](faq/ReactRedux.md#why-is-my-component-re-rendering-too-often)
-  - [How can I speed up my mapStateToProps?](faq/ReactRedux.md#how-can-i-speed-up-my-mapstatetoprops)
-  - [Why don't I have this.props.dispatch available in my connected component?](faq/ReactRedux.md#why-dont-i-have-this-props-dispatch-available-in-my-connected-component)
-  - [Should I only connect my top component, or can I connect multiple components in my tree?](faq/ReactRedux.md#should-i-only-connect-my-top-component-or-can-i-connect-multiple-components-in-my-tree)
 - **Miscellaneous**
   - [Are there any larger, “real” Redux projects?](faq/Miscellaneous.md#are-there-any-larger-real-redux-projects)

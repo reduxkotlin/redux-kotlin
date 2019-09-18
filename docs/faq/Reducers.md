@@ -10,7 +10,7 @@ hide_title: true
 ## Table of Contents
 
 - [How do I share state between two reducers? Do I have to use combineReducers?](#how-do-i-share-state-between-two-reducers-do-i-have-to-use-combinereducers)
-- [Do I have to use the switch statement to handle actions?](#do-i-have-to-use-the-switch-statement-to-handle-actions)
+- [Do I have to use the switch statement to handle actions?](#do-i-have-to-use-the-when-statement-to-handle-actions)
 
 ## Reducers
 

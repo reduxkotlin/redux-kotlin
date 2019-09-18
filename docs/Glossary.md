@@ -7,7 +7,7 @@ hide_title: true
 
 # Glossary
 
-This is a glossary of the core terms in Redux, along with their type signatures. The typealiases are defined in org.reduxkotlin.Definitions.kt
+This is a glossary of the core terms in Redux, along with their type signatures. The typealiases are defined in [Definitions.kt](todo)
 
 ## State
 
@@ -92,14 +92,12 @@ See [`applyMiddleware(...middlewares)`](./api/applyMiddleware.md) for a detailed
 
 ## Store
 
-TODO - SHOULD THIS BE INTERFACE?
 ```kotlin
-data class Store<State>(
-    val getState: GetState<State>,
-    var dispatch: Dispatcher,
-    val subscribe: (StoreSubscriber) -> StoreSubscription,
+interface Store<State> {
+    val getState: GetState<State>
+    var dispatch: Dispatcher
+    val subscribe: (StoreSubscriber) -> StoreSubscription
     val replaceReducer: (Reducer<State>) -> Unit
-) {
     val state: State
         get() = getState()
 }

@@ -5,7 +5,7 @@ sidebar_label: createStore
 hide_title: true
 ---
 
-# `createStore(reducer, [preloadedState], [enhancer])`
+# `createStore(reducer, preloadedState, enhancer)`
 
 Creates a Redux [store](Store.md) that holds the complete state tree of your app.  
 There should only be a single store in your app.
@@ -26,14 +26,20 @@ There should only be a single store in your app.
 
 ```kotlin
 
-val todosReducer: Reducer<AppState> = {state, action -> 
-  when (action) {
-    is AddTodoAction -> state.copy(list = state.list.plus(action.todo))
-    else -> state
-  }
-}
+fun todosReducer(state: List<Todo>, action: Any) =
+    when (action) {
+        is AddTodo -> state.plus(Todo(action.text))
+        is ToggleTodo -> state.mapIndexed { index, todo ->
+            if (index == action.index) {
+                todo.copy(completed = !todo.completed)
+            } else {
+                todo
+            }
+        }
+        else -> state
+    }
 
-val store = createStore(todosReducer, AppState.INITIAL_STATE)
+val store = createStore(::todosReducer, AppState.INITIAL_STATE)
 
 
 fun main() {

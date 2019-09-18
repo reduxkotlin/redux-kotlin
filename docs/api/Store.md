@@ -52,7 +52,7 @@ The store's reducing function will be called with the current [`getState()`](#ge
 
 #### Arguments
 
-1. `action` (`Any`): A plain object describing the change that makes sense for your application. Actions are the only way to get data into the store, so any data, whether from the UI events, network callbacks, or other sources such as WebSockets needs to eventually be dispatched as actions.  Actions can be defined as classes or data classes.  How they are grouped and where they are defined is up to you and your team.  Javascript Redux uses a `type` string field to denote the type of action, but in Kotlin it is recommended to use seperate types for seperate actions.
+1. `action` (`Any`): A plain object describing the change that makes sense for your application. Actions are the only way to get data into the store, so any data, whether from the UI events, network callbacks, or other sources such as WebSockets needs to eventually be dispatched as actions.  Actions can be defined as classes or data classes.  How they are grouped and where they are defined is up to you and your team.  Javascript Redux requires a `type` string field to denote the type of action, but ReduxKotlin has no such requirement.  In Kotlin it is recommended to use separate classes for each action.
 
 #### Returns
 
@@ -95,7 +95,7 @@ You may call [`dispatch()`](#dispatchaction) from a change listener, with the fo
 
 3. The listener should not expect to see all state changes, as the state might have been updated multiple times during a nested [`dispatch()`](#dispatchaction) before the listener is called. It is, however, guaranteed that all subscribers registered before the [`dispatch()`](#dispatchaction) started will be called with the latest state by the time it exits.
 
-It is a low-level API. Most likely, instead of using it directly, you'll use React (or other) bindings. If you commonly use the callback as a hook to react to state changes, you might want to [write a custom `observeStore` utility](https://github.com/reduxjs/redux/issues/303#issuecomment-125184409). The `Store` is also an [`Observable`](https://github.com/zenparsing/es-observable), so you can `subscribe` to changes with libraries like [RxJS](https://github.com/ReactiveX/RxJS).
+It is a low-level API. Most likely, instead of using it directly, you may want create a base class or delegate that manages subscriptions.  One solution available now is [Presenter-middleware](todo), and it is likely other approaches will develop.
 
 To unsubscribe the change listener, invoke the function returned by `subscribe`.
 
