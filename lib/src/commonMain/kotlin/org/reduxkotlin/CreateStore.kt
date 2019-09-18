@@ -217,10 +217,11 @@ fun <State> createStore(
     // the initial state tree.
     dispatch(ActionTypes.INIT)
 
-    return Store(
-        dispatch = ::dispatch,
-        subscribe = ::subscribe,
-        getState = ::getState,
-        replaceReducer = ::replaceReducer
-    )
+    return object: Store<State> {
+        override val getState = ::getState
+        override var dispatch: Dispatcher = ::dispatch
+        override val subscribe = ::subscribe
+        override val replaceReducer = ::replaceReducer
+
+    }
 }
