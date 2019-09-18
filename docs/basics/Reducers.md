@@ -20,20 +20,16 @@ For our todo app, we want to store two different things:
 
 You'll often find that you need to store some data, as well as some UI state, in the state tree. This is fine, but try to keep the data separate from the UI state.
 
-```js
-{
-  visibilityFilter: 'SHOW_ALL',
-  todos: [
-    {
-      text: 'Consider using Redux',
-      completed: true
-    },
-    {
-      text: 'Keep all state in a single tree',
-      completed: false
-    }
-  ]
-}
+```kotlin
+data class AppState(
+    val visibilityFilter: VisibilityFilters = VisibilityFilters.SHOW_ALL,
+    val todos: List<Todo> = listOf(
+        Todo(text = "Consider using Redux",
+            completed = true),
+        Todo(text = "Keep all state in a single tree",
+            completed = false)
+    )
+)
 ```
 
 > ##### Note on Relationships
@@ -44,11 +40,11 @@ You'll often find that you need to store some data, as well as some UI state, in
 
 Now that we've decided what our state object looks like, we're ready to write a reducer for it. The reducer is a pure function that takes the previous state and an action, and returns the next state.
 
-```
-(previousState, action) => newState
+```kotlin
+typealias Reducer<State> = (state: State, action: Any) -> State
 ```
 
-It's called a reducer because it's the type of function you would pass to [`Array.prototype.reduce(reducer, ?initialValue)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce). It's very important that the reducer stays pure. Things you should **never** do inside a reducer:
+It's called a reducer because it's the type of function you would pass to [`Array.reduce(operation: (acc: S, T) -> S)`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/reduce.html). It's very important that the reducer stays pure. Things you should **never** do inside a reducer:
 
 - Mutate its arguments;
 - Perform side effects like API calls and routing transitions;
@@ -58,108 +54,52 @@ We'll explore how to perform side effects in the [advanced walkthrough](../advan
 
 With this out of the way, let's start writing our reducer by gradually teaching it to understand the [actions](Actions.md) we defined earlier.
 
-We'll start by specifying the initial state. Redux will call our reducer with an `undefined` state for the first time. This is our chance to return the initial state of our app:
+We'll start by specifying the initial state. Initial state can be defined in a few ways.  In the example above we supplied default values to the `AppState` constructor, so that may be used.  Another method is to use a `val` in the companion object of `AppState`.  Redux will call our reducer with an `ActionType.INIT` state for the first time. This is our chance to return the initial state of our app:
 
-```js
-import { VisibilityFilters } from './actions'
-
-const initialState = {
-  visibilityFilter: VisibilityFilters.SHOW_ALL,
-  todos: []
-}
-
-function todoApp(state, action) {
-  if (typeof state === 'undefined') {
-    return initialState
-  }
-
-  // For now, don't handle any actions
-  // and just return the state given to us.
-  return state
-}
-```
-
-One neat trick is to use the [ES6 default arguments syntax](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/default_parameters) to write this in a more compact way:
-
-```js
-function todoApp(state = initialState, action) {
-  // For now, don't handle any actions
-  // and just return the state given to us.
-  return state
-}
+> ##### Note of differences from JS Redux
+> JS Redux allows initializing the store without an preloaded state by omitting the `preloadedState` parameter from the `createStore` function.  ReduxKotlin requires a preloaded state to be passed to `createStore`.  This allows us to us a nonnullable type for State. 
+```kotlin
+val store = createStore(reducer, INITIAL_STATE)
 ```
 
 Now let's handle `SET_VISIBILITY_FILTER`. All it needs to do is to change `visibilityFilter` on the state. Easy:
 
-```js
-import {
-  SET_VISIBILITY_FILTER,
-  VisibilityFilters
-} from './actions'
+```kotlin
 
-...
-
-function todoApp(state = initialState, action) {
-  switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return Object.assign({}, state, {
-        visibilityFilter: action.filter
-      })
-    default:
-      return state
-  }
+val todoApp: Reducer<AppState> = {state, action -> 
+    when (action) {
+        is SetVisibilityFilter -> state.copy(visibilityFilter = action.visibilityFilter)
+        else -> state
+    }
 }
 ```
 
 Note that:
 
-1. **We don't mutate the `state`.** We create a copy with [`Object.assign()`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign). `Object.assign(state, { visibilityFilter: action.filter })` is also wrong: it will mutate the first argument. You **must** supply an empty object as the first parameter. You can also enable the [object spread operator proposal](../recipes/UsingObjectSpreadOperator.md) to write `{ ...state, ...newState }` instead.
+1. **We don't mutate the `state`.** We create a copy with the `copy` function on data classes.  New state objects can be constructed with the constructor of the State class as well, but the `copy` method is generally a convenient way to change just part of the state.
 
-2. **We return the previous `state` in the `default` case.** It's important to return the previous `state` for any unknown action.
+2. **We return the previous `state` in the `else` case.** It's important to return the previous `state` for any unknown action.
+//TODO - SealedReducers?
+3. **Note that the new state is returned from the function above.  In kotlin lambdas the last expression is the return value and the `return` keyword is not used.**
 
-> ##### Note on `Object.assign`
->
-> [`Object.assign()`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) is a part of ES6, and is not supported by older browsers. To support them, you will need to either use a polyfill, a [Babel plugin](https://www.npmjs.com/package/babel-plugin-transform-object-assign), or a helper from another library like [`_.assign()`](https://lodash.com/docs#assign).
-
-> ##### Note on `switch` and Boilerplate
->
-> The `switch` statement is _not_ the real boilerplate. The real boilerplate of Flux is conceptual: the need to emit an update, the need to register the Store with a Dispatcher, the need for the Store to be an object (and the complications that arise when you want a universal app). Redux solves these problems by using pure reducers instead of event emitters.
->
-> It's unfortunate that many still choose a framework based on whether it uses `switch` statements in the documentation. If you don't like `switch`, you can use a custom `createReducer` function that accepts a handler map, as shown in [“reducing boilerplate”](../recipes/ReducingBoilerplate.md#reducers).
+//TODO - alternate patters - Reducible interface
 
 ## Handling More Actions
 
-We have two more actions to handle! Just like we did with `SET_VISIBILITY_FILTER`, we'll import the `ADD_TODO` and `TOGGLE_TODO` actions and then extend our reducer to handle `ADD_TODO`.
+We have two more actions to handle! Just like we did with `SET_VISIBILITY_FILTER`, we'll extend our reducer to handle `ADD_TODO`.
 
-```js
-import {
-  ADD_TODO,
-  TOGGLE_TODO,
-  SET_VISIBILITY_FILTER,
-  VisibilityFilters
-} from './actions'
-
-...
-
-function todoApp(state = initialState, action) {
-  switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return Object.assign({}, state, {
-        visibilityFilter: action.filter
-      })
-    case ADD_TODO:
-      return Object.assign({}, state, {
-        todos: [
-          ...state.todos,
-          {
-            text: action.text,
-            completed: false
-          }
-        ]
-      })
-    default:
-      return state
-  }
+```kotlin
+val todoApp: Reducer<AppState> = {state, action -> 
+    when (action) {
+        is SetVisibilityFilter -> state.copy(visibilityFilter = action.visibilityFilter)
+        is AddTodo -> state.copy(todos = state.todos.plus(
+                        Todo(
+                            text = action.text,
+                            completed = false
+                            )
+                        ))
+        else -> state
+    }
 }
 ```
 
@@ -167,171 +107,140 @@ Just like before, we never write directly to `state` or its fields, and instead 
 
 Finally, the implementation of the `TOGGLE_TODO` handler shouldn't come as a complete surprise:
 
-```js
-case TOGGLE_TODO:
-  return Object.assign({}, state, {
-    todos: state.todos.map((todo, index) => {
-      if (index === action.index) {
-        return Object.assign({}, todo, {
-          completed: !todo.completed
-        })
-      }
-      return todo
-    })
-  })
+```kotlin
+//TODO check this code
+    is ToggleTodo -> state.copy(
+                        todos = state.todos.mapIndexed { todo, index -> 
+                            if (index == action.index) {
+                                todo.copy(completed = !todo.completed)
+                            } else {
+                                todo
+                            }
+                        }
+                    )
 ```
 
-Because we want to update a specific item in the array without resorting to mutations, we have to create a new array with the same items except the item at the index. If you find yourself often writing such operations, it's a good idea to use a helper like [immutability-helper](https://github.com/kolodny/immutability-helper), [updeep](https://github.com/substantial/updeep), or even a library like [Immutable](http://facebook.github.io/immutable-js/) that has native support for deep updates. Just remember to never assign to anything inside the `state` unless you clone it first.
+> ##### Note on Reducer naming
+> In JS Redux it is helpful to name reducer functions the same name as the state field they will handle due to JS features that allow the `combineReducers` function to assign reducers to fields.  For example:
+> ```js
+> const todoApp = combineReducers({
+>   visibilityFilter,
+>   todos
+> })
+> ```
+> This is not a feature in ReduxKotlin, due to it's statically-type nature.  It is recommended to use a more descriptive name, such as `TodoReducer` to clearly identify the function.
+
+
+Because we want to update a specific item in the array without resorting to mutations, we have to create a new array with the same items except the item at the index. Just remember to never assign to anything inside the `state` unless you clone it first.
 
 ## Splitting Reducers
 
 Here is our code so far. It is rather verbose:
-
-```js
-function todoApp(state = initialState, action) {
-  switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return Object.assign({}, state, {
-        visibilityFilter: action.filter
-      })
-    case ADD_TODO:
-      return Object.assign({}, state, {
-        todos: [
-          ...state.todos,
-          {
-            text: action.text,
-            completed: false
-          }
-        ]
-      })
-    case TOGGLE_TODO:
-      return Object.assign({}, state, {
-        todos: state.todos.map((todo, index) => {
-          if (index === action.index) {
-            return Object.assign({}, todo, {
-              completed: !todo.completed
-            })
-          }
-          return todo
-        })
-      })
-    default:
-      return state
-  }
+```kotlin
+val todoApp: Reducer<AppState> = {state, action -> 
+    when (action) {
+        is SetVisibilityFilter -> state.copy(visibilityFilter = action.visibilityFilter)
+        is AddTodo -> state.copy(todos = state.todos.plus(
+                        Todo(
+                            text = action.text,
+                            completed = false
+                            )
+                        ))
+        is ToggleTodo -> state.copy(
+                todos = state.todos.mapIndexed { todo, index -> 
+                    if (index == action.index) {
+                        todo.copy(completed = !todo.completed)
+                    } else {
+                        todo
+                    }
+                }
+            )
+        else -> state
+    }
 }
 ```
+One can see how this would quickly become a huge, bloated function.
 
 Is there a way to make it easier to comprehend? It seems like `todos` and `visibilityFilter` are updated completely independently. Sometimes state fields depend on one another and more consideration is required, but in our case we can easily split updating `todos` into a separate function:
 
-```js
-function todos(state = [], action) {
-  switch (action.type) {
-    case ADD_TODO:
-      return [
-        ...state,
-        {
-          text: action.text,
-          completed: false
-        }
-      ]
-    case TOGGLE_TODO:
-      return state.map((todo, index) => {
-        if (index === action.index) {
-          return Object.assign({}, todo, {
-            completed: !todo.completed
-          })
-        }
-        return todo
-      })
-    default:
-      return state
-  }
+```kotlin
+//TODO - use consistent val or fun for reducers?? or mix & match to drive home either approach works
+fun todosReducer(state: List<Todos>, action: Any): List<Todos> {
+    return when(action) {
+        is AddTodo -> state.plus(
+                        Todo(
+                            text = action.text,
+                            completed = false
+                            )
+                        )
+        is ToggleTodo -> state.mapIndexed { todo, index -> 
+                    if (index == action.index) {
+                        todo.copy(completed = !todo.completed)
+                    } else {
+                        todo
+                    }
+                }
+        else -> state
+    }
 }
 
-function todoApp(state = initialState, action) {
-  switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return Object.assign({}, state, {
-        visibilityFilter: action.filter
-      })
-    case ADD_TODO:
-      return Object.assign({}, state, {
-        todos: todos(state.todos, action)
-      })
-    case TOGGLE_TODO:
-      return Object.assign({}, state, {
-        todos: todos(state.todos, action)
-      })
-    default:
-      return state
-  }
+val todoApp: Reducer<AppState> = {state, action -> 
+    when (action) {
+        is SetVisibilityFilter -> state.copy(visibilityFilter = action.visibilityFilter)
+        is AddTodo -> state.copy(todos = todosReducer(state.todos, action))
+        is ToggleTodo -> state.copy(todos = todosReducer(state.todos, action))
+        else -> state
+    }
 }
 ```
 
-Note that `todos` also accepts `state`—but `state` is an array! Now `todoApp` gives `todos` just a slice of the state to manage, and `todos` knows how to update just that slice. **This is called _reducer composition_, and it's the fundamental pattern of building Redux apps.**
+Note that `todosReducer` also accepts `state`—but `state` is a List<Todo>! Now `todoReducer` gives `todos` just a slice of the state to manage, and `todosReducer` knows how to update just that slice. **This is called _reducer composition_, and it's the fundamental pattern of building Redux apps.**
 
-Let's explore reducer composition more. Can we also extract a reducer managing just `visibilityFilter`? We can.
-
-Below our imports, let's use [ES6 Object Destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) to declare `SHOW_ALL`:
-
-```js
-const { SHOW_ALL } = VisibilityFilters
-```
-
-Then:
-
-```js
-function visibilityFilter(state = SHOW_ALL, action) {
-  switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return action.filter
-    default:
-      return state
-  }
+```kotlin
+fun visibilityFilterReducer(state: VisibilityFilter, action: Any): VisibilityFilter {
+    return when (action) {
+        is SetVisibilityFilter -> action.visibilityFilter
+        else -> state
+    }
 }
 ```
 
 Now we can rewrite the main reducer as a function that calls the reducers managing parts of the state, and combines them into a single object. It also doesn't need to know the complete initial state any more. It's enough that the child reducers return their initial state when given `undefined` at first.
 
-```js
-function todos(state = [], action) {
-  switch (action.type) {
-    case ADD_TODO:
-      return [
-        ...state,
-        {
-          text: action.text,
-          completed: false
-        }
-      ]
-    case TOGGLE_TODO:
-      return state.map((todo, index) => {
-        if (index === action.index) {
-          return Object.assign({}, todo, {
-            completed: !todo.completed
-          })
-        }
-        return todo
-      })
-    default:
-      return state
-  }
+```kotlin
+fun todosReducer(state: List<Todos>, action: Any): List<Todos> {
+    return when(action) {
+        is AddTodo -> state.plus(
+                        Todo(
+                            text = action.text,
+                            completed = false
+                            )
+                        )
+        is ToggleTodo -> state.mapIndexed { todo, index -> 
+                    if (index == action.index) {
+                        todo.copy(completed = !todo.completed)
+                    } else {
+                        todo
+                    }
+                }
+        else -> state
+    }
 }
 
-function visibilityFilter(state = SHOW_ALL, action) {
-  switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return action.filter
-    default:
-      return state
-  }
+fun visibilityFilterReducer(state: VisibilityFilter, action: Any): VisibilityFilter {
+    return when (action) {
+        is SetVisibilityFilter -> action.visibilityFilter
+        else -> state
+    }
 }
 
-function todoApp(state = {}, action) {
-  return {
-    visibilityFilter: visibilityFilter(state.visibilityFilter, action),
-    todos: todos(state.todos, action)
-  }
+val todoApp: Reducer<AppState> = {state, action -> 
+    when (action) {
+        is SetVisibilityFilter -> state.copy(visibilityFilter = visibilityFilterReducer(state.visibilityFilter, action))
+        is AddTodo -> state.copy(todos = todosReducer(state.todos, action))
+        is ToggleTodo -> state.copy(todos = todosReducer(state.todos, action))
+        else -> state
+    }
 }
 ```
 
@@ -339,119 +248,13 @@ function todoApp(state = {}, action) {
 
 This is already looking good! When the app is larger, we can split the reducers into separate files and keep them completely independent and managing different data domains.
 
-Finally, Redux provides a utility called [`combineReducers()`](../api/combineReducers.md) that does the same boilerplate logic that the `todoApp` above currently does. With its help, we can rewrite `todoApp` like this:
+//TODO explain ReduxKotlin `combineReducers` and review its benefit - is it needed? - document here
 
-```js
-import { combineReducers } from 'redux'
-
-const todoApp = combineReducers({
-  visibilityFilter,
-  todos
-})
-
-export default todoApp
-```
-
-Note that this is equivalent to:
-
-```js
-export default function todoApp(state = {}, action) {
-  return {
-    visibilityFilter: visibilityFilter(state.visibilityFilter, action),
-    todos: todos(state.todos, action)
-  }
-}
-```
-
-You could also give them different keys, or call functions differently. These two ways to write a combined reducer are equivalent:
-
-```js
-const reducer = combineReducers({
-  a: doSomethingWithA,
-  b: processB,
-  c: c
-})
-```
-
-```js
-function reducer(state = {}, action) {
-  return {
-    a: doSomethingWithA(state.a, action),
-    b: processB(state.b, action),
-    c: c(state.c, action)
-  }
-}
-```
-
-All [`combineReducers()`](../api/combineReducers.md) does is generate a function that calls your reducers **with the slices of state selected according to their keys**, and combines their results into a single object again. [It's not magic.](https://github.com/reduxjs/redux/issues/428#issuecomment-129223274) And like other reducers, `combineReducers()` does not create a new object if all of the reducers provided to it do not change state.
-
-> ##### Note for ES6 Savvy Users
+> ##### Note on combining reducer boilerplate
+> Manually wiring together of the reducers does have bring some boilerplate with it.  One alternative patter for ReduxKotlin is using a [Reducible interface](TODO).  
+> How reducers are split is up to you and your team, and it is recommended being consistent how this is handled throughout a project.
+> In JS Redux `combineReducers` goes a long way to alleviate this boilerplate, however with statically typed Kotlin that function can not be implemented easily.  There is the possibility of using [generated code and annotations to help in this area](link to trello).
 >
-> Because `combineReducers` expects an object, we can put all top-level reducers into a separate file, `export` each reducer function, and use `import * as reducers` to get them as an object with their names as the keys:
->
-> ```js
-> import { combineReducers } from 'redux'
-> import * as reducers from './reducers'
->
-> const todoApp = combineReducers(reducers)
-> ```
->
-> Because `import *` is still new syntax, we no longer use it in the documentation to avoid [confusion](https://github.com/reduxjs/redux/issues/428#issuecomment-129223274), but you may encounter it in some community examples.
-
-## Source Code
-
-#### `reducers.js`
-
-```js
-import { combineReducers } from 'redux'
-import {
-  ADD_TODO,
-  TOGGLE_TODO,
-  SET_VISIBILITY_FILTER,
-  VisibilityFilters
-} from './actions'
-const { SHOW_ALL } = VisibilityFilters
-
-function visibilityFilter(state = SHOW_ALL, action) {
-  switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return action.filter
-    default:
-      return state
-  }
-}
-
-function todos(state = [], action) {
-  switch (action.type) {
-    case ADD_TODO:
-      return [
-        ...state,
-        {
-          text: action.text,
-          completed: false
-        }
-      ]
-    case TOGGLE_TODO:
-      return state.map((todo, index) => {
-        if (index === action.index) {
-          return Object.assign({}, todo, {
-            completed: !todo.completed
-          })
-        }
-        return todo
-      })
-    default:
-      return state
-  }
-}
-
-const todoApp = combineReducers({
-  visibilityFilter,
-  todos
-})
-
-export default todoApp
-```
 
 ## Next Steps
 

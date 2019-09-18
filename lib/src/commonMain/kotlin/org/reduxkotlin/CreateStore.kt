@@ -39,6 +39,7 @@ fun <State> createStore(
         )
     }
 
+    lateinit var tmp: String
     var currentReducer = reducer
     var currentState = preloadedState
     var currentListeners = mutableListOf<() -> Unit>()

@@ -49,15 +49,15 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>Community</h5>
+            <a href="https://kotlinlang.slack.com/messages/redux">
+              #redux slack
+            </a>
             <a
-              href="http://stackoverflow.com/questions/tagged/redux"
+              href="http://trello.com/reduxkotlinorg"
               target="_blank"
               rel="noreferrer noopener"
             >
-              Stack Overflow
-            </a>
-            <a href="https://discord.gg/0ZcbPKXt5bZ6au5t">
-              Discord
+              Trello board
             </a>
           </div>
           <div>

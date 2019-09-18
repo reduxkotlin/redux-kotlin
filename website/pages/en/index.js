@@ -76,7 +76,7 @@ class HomeSplash extends React.Component {
           <ProjectTitle />
           <PromoSection>
             <Button href={docUrl("introduction/getting-started", language)}>
-              Get Started with Kotlin
+              Get Started
             </Button>
           </PromoSection>
         </div>
@@ -113,7 +113,7 @@ const FeaturesTop = () => (
     {[
         {
           content: `ReduxKotlin is written with multiplatform as top priority.  Supports all platforms that Kotlin targets (JVM, Native, JS, WASM), enabling code sharing`,
-          image: imgUrl('noun_debugging_1978252.svg'),
+          image: imgUrl('multiplatform-screen-512.png'),
           imageAlign: 'top',
           title: "Multiplatform"
         },
@@ -129,12 +129,6 @@ const FeaturesTop = () => (
         image: imgUrl('cubes-solid.svg'),
         imageAlign: 'top',
         title: "Centralized"
-      },
-      {
-        content: "Redux **works with any UI layer**, and has **a large ecosystem of addons** to fit your needs.",
-        image: imgUrl('cogs-solid.svg'),
-        imageAlign: 'top',
-        title: "Flexible"
       },
     ]}
   </Block>
@@ -164,8 +158,8 @@ const DocsSurvey = () => (
   <Block layout="twoColumn" className="docsSurvey rowContainer">
     {[
       {
-        content: "We're planning a revamp of the Redux docs content.  Please help us make the docs better by **[filling out this survey](https://docs.google.com/forms/d/e/1FAIpQLSfzIkY3fXZ8PrQKScYMK0YoEgALfAK2qQ0mOj1_ibKv2qDTuQ/viewform)**, so we can determine what changes would help the most.  Thanks!",
-        title: "Help Us Improve the Redux Docs!"
+        content: "ReduxKotlin can be used today, but we are always looking for ways to improve dev experience and documentation.  Please **[fill out this survey.](https://docs.google.com/forms/d/e/1FAIpQLScEQ9zGndU48AUeGKR6PPE13IqhIFmTL570wDodQUEilhwMzw/viewform)**",
+        title: "Help Us Improve the ReduxKotlin!"
       },
     ]}
   </Block>
