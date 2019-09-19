@@ -1,5 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="CounterAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar"/>
+    <style name="CounterAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorAccent">#ADE6AE</item>
+    </style>
 
 </resources>

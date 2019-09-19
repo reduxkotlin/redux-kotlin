@@ -8,7 +8,8 @@ data class AddTodo(val text: String, val completed: Boolean = false)
 data class ToggleTodo(val index: Int)
 data class SetVisibilityFilter(val visibilityFilter: VisibilityFilter)
 
-data class Todo(val text: String, val completed: Boolean = false)
+data class Todo(val text: String,
+                val completed: Boolean = false)
 
 enum class VisibilityFilter {
     SHOW_ALL,

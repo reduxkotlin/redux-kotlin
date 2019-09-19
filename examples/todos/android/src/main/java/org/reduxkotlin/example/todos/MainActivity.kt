@@ -35,11 +35,17 @@ class MainActivity: AppCompatActivity() {
 
         recycler_view.layoutManager = LinearLayoutManager(this)
         recycler_view.adapter = adapter
+
+        render(store.state)
     }
 
     private fun render(state: AppState) {
         adapter.todos = state.visibleTodos
-        when(state.visibilityFilter) {
+        setFilterButtons(state.visibilityFilter)
+    }
+
+    private fun setFilterButtons(visibilityFilter: VisibilityFilter) {
+        when (visibilityFilter) {
             VisibilityFilter.SHOW_ALL -> {
                 btn_select_all.isSelected = true
                 btn_active.isSelected = false

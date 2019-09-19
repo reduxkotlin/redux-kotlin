@@ -1,6 +1,5 @@
 package org.reduxkotlin.example.todos
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 
 
 
+//TODO - animate changes - adding/removing/strikeout
 class TodoAdapter : RecyclerView.Adapter<TodoViewHolder>() {
     var todos: List<Todo> = listOf()
         set(value) {
