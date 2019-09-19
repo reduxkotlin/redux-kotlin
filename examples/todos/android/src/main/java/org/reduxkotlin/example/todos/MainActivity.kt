@@ -14,7 +14,7 @@ import org.reduxkotlin.examples.todos.*
  */
 
 
-val store = createStore(rootReducer, AppState())
+val store = createStore(::rootReducer, AppState())
 
 class MainActivity: AppCompatActivity() {
     private lateinit var storeSubscription: StoreSubscription

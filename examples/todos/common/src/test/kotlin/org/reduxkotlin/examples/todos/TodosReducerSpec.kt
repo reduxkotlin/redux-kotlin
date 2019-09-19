@@ -7,7 +7,7 @@ import org.spekframework.spek2.style.specification.describe
 
 object TodosReducerSpec : Spek({
     describe("todos reducer") {
-        it("should handle ADD_TODO") {
+        it("should handle AddToDo") {
             expect(
                 todosReducer(
                     listOf(), AddTodo(
@@ -80,7 +80,7 @@ object TodosReducerSpec : Spek({
             )
         }
 
-        it("should handle TOGGLE_TODO") {
+        it("should handle ToggleTodo") {
             expect(
                 todosReducer(
                     listOf(
