@@ -19,7 +19,16 @@ enum class VisibilityFilter {
 data class AppState(
     val todos: List<Todo> = listOf(),
     val visibilityFilter: VisibilityFilter = VisibilityFilter.SHOW_ALL
-)
+) {
+    val visibleTodos: List<Todo>
+        get() = getVisibleTodos(visibilityFilter)
+
+    private fun getVisibleTodos(visibilityFilter: VisibilityFilter) = when (visibilityFilter) {
+        VisibilityFilter.SHOW_ALL -> todos
+        VisibilityFilter.SHOW_ACTIVE -> todos.filter { !it.completed }
+        VisibilityFilter.SHOW_COMPLETED -> todos.filter { it.completed }
+    }
+}
 
 val todosReducer: Reducer<List<Todo>> = { state, action ->
     when (action) {

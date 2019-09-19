@@ -33,33 +33,37 @@
         app:layout_constraintTop_toBottomOf="@+id/et_todo" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_select_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@android:string/selectAll"
+        android:background="@drawable/btn_background"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/et_todo" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btn_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Active"
-        app:layout_constraintStart_toEndOf="@+id/button2"
+        android:background="@drawable/btn_background"
+        app:layout_constraintStart_toEndOf="@+id/btn_select_all"
         app:layout_constraintTop_toBottomOf="@+id/et_todo" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/btn_completed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Completed"
-        app:layout_constraintStart_toEndOf="@+id/button4"
-        app:layout_constraintTop_toTopOf="@+id/button2" />
+        android:background="@drawable/btn_background"
+        app:layout_constraintStart_toEndOf="@+id/btn_active"
+        app:layout_constraintTop_toTopOf="@+id/btn_active" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_completed" />
 </androidx.constraintlayout.widget.ConstraintLayout>
