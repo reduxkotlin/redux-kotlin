@@ -64,7 +64,7 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # run tests!
-      - run: ./gradlew lib:jvmTest
+      - run: ./gradlew jvmTest
 
 workflows:
   build_test:
@@ -74,6 +74,7 @@ workflows:
             branches:
               only:
                 - /^feature.*/
+                - /^task.*/
                 - /^bugfix.*/
 
   publish_release_artifacts:
