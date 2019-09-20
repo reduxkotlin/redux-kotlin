@@ -35,12 +35,11 @@ typealias StoreEnhancer<State> = (StoreCreator<State>) -> StoreCreator<State>
 typealias Middleware<State> = (store: Store<State>) -> (next: Dispatcher) -> (action: Any) -> Any
 
 
-data class Store<State>(
-    val getState: GetState<State>,
-    var dispatch: Dispatcher,
-    val subscribe: (StoreSubscriber) -> StoreSubscription,
+interface Store<State> {
+    val getState: GetState<State>
+    var dispatch: Dispatcher
+    val subscribe: (StoreSubscriber) -> StoreSubscription
     val replaceReducer: (Reducer<State>) -> Unit
-) {
     val state: State
         get() = getState()
 }

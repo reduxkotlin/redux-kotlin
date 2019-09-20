@@ -18,7 +18,7 @@ object Versions {
 
   const val androidx_test_runner: String = "1.2.0"
 
-  const val ch_tutteli_atrium: String = "0.8.0"
+  const val atrium: String = "0.8.0"
 
   const val aapt2: String = "3.5.0-5435860"
 
@@ -28,7 +28,7 @@ object Versions {
 
   const val de_fayard_buildsrcversions_gradle_plugin: String = "0.4.2"
 
-  const val io_mockk: String = "1.9.3"
+  const val mockk: String = "1.9.3"
 
   const val junit: String = "4.12"
 
@@ -36,8 +36,13 @@ object Versions {
 
   const val org_jetbrains_kotlin: String = "1.3.50"
 
-  const val org_spekframework_spek2: String = "2.1.0-alpha.0.11+d97ef33"
+  const val spek: String = "2.1.0-alpha.0.11+d97ef33"
        // available: "2.1.0-alpha.0.24+0fdeb6e"
+
+  const val constraint_layout = "1.1.3"
+
+  const val recycler_view = "1.0.0"
+
 
   /**
    *
