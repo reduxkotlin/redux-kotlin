@@ -10,4 +10,4 @@ hide_title: true
 Any feedback/bug reports/feature requests are welcome.  
 
  - bug reports - You can post on the [Github issues](https://github.com/reduxkotlin/redux-kotlin/issues)
- - feedback/contribute - #redux on kotlinlang slack
+ - feedback/contribute - [#redux on kotlinlang slack](https://kotlinlang.slack.com/messages/redux)

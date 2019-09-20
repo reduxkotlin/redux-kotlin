@@ -9,9 +9,8 @@ hide_title: true
 
 ReduxKotlin is a predictable state container for Kotlin apps that supports all platforms that Kotlin can target (JVM, native, JS, WASM).
 
-ReduxKotlin is a port of [Redux for Javascript](https://redux.js.org) that aims to become a standard implementation of Redux for Kotlin.  Much of the information on redux.js.org applies to ReduxKotlin, however, there is also a lot of Javascript specific information that may _not_ apply to ReduxKotlin.  This site documents how to get started and examples of using ReduxKotlin in projects.  There are suggestions and examples, but ultimately the core ReduxLibrary is not opinionated.  How you use it in your project is up to you.  This site will continue to be updated as Kotlin multiplatform matures.
+ReduxKotlin is a port of [Redux for Javascript](https://redux.js.org) that aims to become a standard implementation of Redux for Kotlin.  Much of the information on [redux.js.org](https://redux.js.org) applies to ReduxKotlin, however, there is also a lot of Javascript specific information that may _not_ apply to ReduxKotlin.  This site documents how to get started and examples of using ReduxKotlin in projects.  There are suggestions and examples, but ultimately the core ReduxLibrary is not opinionated.  How you use it in your project is up to you.  This site will continue to be updated as Kotlin multiplatform matures.
 
-It helps you write applications share code between platforms (Android, iOS, Web), behave consistently, and are easy to test.
 
 
 ## Installation
@@ -20,7 +19,7 @@ ReduxKotlin is available on Maven central.
 
 __For a multiplatform project:__
 
-It is published with Gradle meta-data, so only needs to be specified in your common sourceset:
+Artifacts are published with Gradle meta-data, so dependency only needs to be declared in your common sourceset:
 
 ```groovy
 kotlin {
@@ -102,7 +101,7 @@ store.dispatch(Decrement())
 
 Instead of mutating the state directly, you specify the mutations you want to happen with plain objects called _actions_. Then you write a special function called a _reducer_ to decide how every action transforms the entire application's state.
 
-In a typical Redux app, there is just a single store with a single root reducing function. As your app grows, you split the root reducer into smaller reducers independently operating on the different parts of the state tree.  Again Redux is unopinonated and how reducers and actions are organized is up to you.  Useful patterns will be documented here soon.TODO
+In a typical Redux app, there is just a single store with a single root reducing function. As your app grows, you split the root reducer into smaller reducers independently operating on the different parts of the state tree.  Redux is unopinonated - how reducers and actions are organized is up to you.  Useful patterns will be documented here soon.TODO
 
 This architecture might seem like an overkill for a counter app, but the beauty of this pattern is how well it scales to large and complex apps. It also enables very powerful developer tools, because it is possible to trace every mutation to the action that caused it. You can record user sessions and reproduce them just by replaying every action.
 

@@ -5,7 +5,6 @@
   - [Motivation](introduction/Motivation.md)
   - [Core Concepts](introduction/CoreConcepts.md)
   - [Three Principles](introduction/ThreePrinciples.md)
-  - [Prior Art](introduction/PriorArt.md)
   - [Learning Resources](introduction/LearningResources.md)
   - [Ecosystem](introduction/Ecosystem.md)
   - [Examples](introduction/Examples.md)
@@ -14,7 +13,6 @@
   - [Reducers](basics/Reducers.md)
   - [Store](basics/Store.md)
   - [Data Flow](basics/DataFlow.md)
-  - [Usage with React](basics/UsageWithReact.md)
   - [Example: Todo List](basics/ExampleTodoList.md)
 - [Advanced](advanced/README.md)
   - [Async Actions](advanced/AsyncActions.md)
@@ -63,3 +61,8 @@
   - [compose](api/compose.md)
 - [Change Log](../CHANGELOG.md)
 - [Feedback](Feedback.md)
+
+//TODO
+//TODO - alternate patters - Reducible interface
+//TODO - SealedReducers?
+//TODO - THREADING

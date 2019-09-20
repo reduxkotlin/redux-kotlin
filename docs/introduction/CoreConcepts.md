@@ -34,39 +34,33 @@ Finally, to tie state and actions together, we write a function called a reducer
 It would be hard to write such a function for a big app, so we write smaller functions managing parts of the state:
 
 ```kotlin
-TODO flesh this out!
+fun visibilityFilterReducer(state: VisibilityFilter, action: Any) =
+    when (action) {
+        is SetVisibilityFilter -> action.visibilityFilter
+        else -> state
+    }
 
-function visibilityFilter(state = 'SHOW_ALL', action) {
-  if (action.type === 'SET_VISIBILITY_FILTER') {
-    return action.filter
-  } else {
-    return state
-  }
-}
-
-val todosReducer: Reducer<Appstate> = {state, action -> 
-  when (action) {
-    AddTodo -> state.copy(todos = state.todos.plus(Todo(action.text, false)))
-    ToggleTodo -> state.copy((todo, index) =>
-        action.index === index
-          ? { text: todo.text, completed: !todo.completed }
-          : todo
-      )
-    default:
-      return state
-  }
-}
+fun todosReducer(state: List<Todo>, action: Any) =
+    when (action) {
+        is AddTodo -> state.plus(Todo(action.text))
+        is ToggleTodo -> state.mapIndexed { index, todo ->
+            if (index == action.index) {
+                todo.copy(completed = !todo.completed)
+            } else {
+                todo
+            }
+        }
+        else -> state
+    }
 ```
 
-And we write another reducer that manages the complete state of our app by calling those two reducers for the corresponding state keys:
+And we write another reducer that manages the complete state of our app by calling those two reducers for the corresponding state keys.  This is known as the root reducer:
 
-```js
-function todoApp(state = {}, action) {
-  return {
-    todos: todos(state.todos, action),
-    visibilityFilter: visibilityFilter(state.visibilityFilter, action)
-  }
-}
+```kotlin
+fun rootReducer(state: AppState, action: Any) = AppState(
+    todos = todosReducer(state.todos, action),
+    visibilityFilter = visibilityFilterReducer(state.visibilityFilter, action)
+)
 ```
 
 This is basically the whole idea of Redux. Note that we haven’t used any Redux APIs. It comes with a few utilities to facilitate this pattern, but the main idea is that you describe how your state is updated over time in response to action objects, and 90% of the code you write is just plain Kotlin, with no use of Redux itself, its APIs, or any magic.

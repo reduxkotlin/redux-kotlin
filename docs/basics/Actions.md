@@ -26,12 +26,7 @@ Actions are plain objects.
 > ##### Note on Javascript Redux
 >
 > In Javascript Redux, Actions must have a `type` property that indicates the type of action being performed.
-> However with ReduxKotlin we can leverage the type system and the field is not needed.
-
-
-> ##### Note on Boilerplate
->
-> You don't have to define action type constants in a separate file, or even to define them at all. For a small project, it might be easier to just use string literals for action types. However, there are some benefits to explicitly declaring constants in larger codebases. Read [Reducing Boilerplate](../recipes/ReducingBoilerplate.md) for more practical tips on keeping your codebase clean.
+> ReduxKotlin leverages the type system and the `type` field is not needed.
 
 We'll add one more action type to describe a user ticking off a todo as completed. We refer to a particular todo by `index` because we store them in an array. In a real app, it is wiser to generate a unique ID every time something new is created.
 
@@ -49,12 +44,12 @@ data class SetVisibilityFilterAction(val filter: VisibilityFilter)
 
 > ##### Note on Action Creators
 > In the Javascript world there are ["Action Creators"](https://redux.js.org/basics/actions#action-creators).  There are just functions that create actions.
-> Generally this pattern is not needed with ReduxKotlin due ease of use and conciseness of Kotlin's constructors.  
+> Generally this pattern is not needed with ReduxKotlin due ease of use and conciseness of Kotlin's constructors, however if you find them helpful, go for it!  
 
 
 ## Source Code
 
-### `actions.js`
+### `Actions.kt`
 
 ```kotlin
 /*
@@ -65,7 +60,7 @@ data class ToggleTodoAction(val index: Int)
 data class SetVisibilityFilterAction(val filter: VisibilityFilter)
 
 /*
- * other constants
+ * other declarations
  */
 
 enum class VisibilityFilters {
@@ -73,11 +68,6 @@ enum class VisibilityFilters {
   SHOW_COMPLETED,
   SHOW_ACTIVE
 }
-
-/*
- * action creators
- */
-
 ```
 
 ## Next Steps

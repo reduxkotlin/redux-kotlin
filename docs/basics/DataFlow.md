@@ -58,13 +58,13 @@ Note that a reducer is a pure function. It only _computes_ the next state. It sh
 
 How you structure the root reducer is completely up to you. 
 
-//TODO - reference `combinReducers`
+//TODO - reference `combinReducers` & registering reducers
 
 4. **The Redux store saves the complete state tree returned by the root reducer.**
 
 This new tree is now the next state of your app! Every listener registered with [`store.subscribe(listener)`](../api/Store.md#subscribelistener) will now be invoked; listeners may call [`store.getState()` or `store.state`](../api/Store.md#getState) to get the current state.
 
-Now, the UI can be updated to reflect the new state. If you use bindings like [React Redux](https://github.com/gaearon/react-redux), this is the point at which `component.setState(newState)` is called.
+Now, the UI can be updated to reflect the new state. 
 
 ## Next Steps
 

@@ -116,6 +116,10 @@
       "introduction/README": {
         "title": "introduction/README"
       },
+      "introduction/three-principles": {
+        "title": "Three Principles",
+        "sidebar_label": "Three Principles"
+      },
       "README": {
         "title": "README"
       },

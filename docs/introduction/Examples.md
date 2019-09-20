@@ -26,6 +26,21 @@ or:
 
 Open the root project in Android Studio/Intellij.  Select and run the configuration for the Android example/counter example.
 
+## Todos
+
+Run the [Todos](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/todos) example:
+
+
+
+```sh
+git clone https://github.com/reduxkotlin/redux-kotlin.git
+
+./gradlew examples:todos:installDebug
+
+```
+or:
+
+Open the root project in Android Studio/Intellij.  Select and run the configuration for the Android example/counter example.
 
 ## Name Game
 
