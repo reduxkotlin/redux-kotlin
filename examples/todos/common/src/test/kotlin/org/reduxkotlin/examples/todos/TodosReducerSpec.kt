@@ -17,7 +17,8 @@ object TodosReducerSpec : Spek({
                 listOf(
                     Todo(
                         text = "Run the tests",
-                        completed = false
+                        completed = false,
+                        id = 0
                     )
                 )
             )
@@ -27,7 +28,8 @@ object TodosReducerSpec : Spek({
                     listOf(
                         Todo(
                             text = "Run the tests",
-                            completed = false
+                            completed = false,
+                            id = 0
                         )
                     ),
                     AddTodo(text = "Use Redux")
@@ -36,11 +38,13 @@ object TodosReducerSpec : Spek({
                 listOf(
                     Todo(
                         text = "Run the tests",
-                        completed = false
+                        completed = false,
+                        id = 0
                     ),
                     Todo(
                         text = "Use Redux",
-                        completed = false
+                        completed = false,
+                        id = 1
                     )
                 )
             )
@@ -50,11 +54,13 @@ object TodosReducerSpec : Spek({
                     listOf(
                         Todo(
                             text = "Run the tests",
-                            completed = false
+                            completed = false,
+                            id = 0
                         ),
                         Todo(
                             text = "Use Redux",
-                            completed = false
+                            completed = false,
+                            id = 1
                         )
                     ),
                     AddTodo(text = "Fix the tests")
@@ -63,15 +69,18 @@ object TodosReducerSpec : Spek({
                 listOf(
                     Todo(
                         text = "Run the tests",
-                        completed = false
+                        completed = false,
+                        id = 0
                     ),
                     Todo(
                         text = "Use Redux",
-                        completed = false
+                        completed = false,
+                        id = 1
                     ),
                     Todo(
                         text = "Fix the tests",
-                        completed = false
+                        completed = false,
+                        id = 2
                     )
                 )
             )
@@ -83,11 +92,13 @@ object TodosReducerSpec : Spek({
                     listOf(
                         Todo(
                             text = "Run the tests",
-                            completed = false
+                            completed = false,
+                            id = 0
                         ),
                         Todo(
                             text = "Use Redux",
-                            completed = false
+                            completed = false,
+                            id = 1
                         )
                     ), ToggleTodo(index = 0)
                 )
@@ -95,11 +106,13 @@ object TodosReducerSpec : Spek({
                 listOf(
                     Todo(
                         text = "Run the tests",
-                        completed = true
+                        completed = true,
+                        id = 0
                     ),
                     Todo(
                         text = "Use Redux",
-                        completed = false
+                        completed = false,
+                        id = 1
                     )
                 )
             )

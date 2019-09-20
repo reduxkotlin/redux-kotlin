@@ -39,7 +39,7 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun render(state: AppState) {
-        adapter.todos = state.visibleTodos
+        adapter.submitList(state.visibleTodos)
         setFilterButtons(state.visibilityFilter)
     }
 

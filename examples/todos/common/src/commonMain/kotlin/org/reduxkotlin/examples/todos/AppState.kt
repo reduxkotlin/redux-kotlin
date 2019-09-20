@@ -24,7 +24,8 @@ data class AppState(
  */
 data class Todo(
     val text: String,
-    val completed: Boolean = false
+    val completed: Boolean = false,
+    val id: Int
 )
 
 enum class VisibilityFilter {
