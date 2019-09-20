@@ -58,7 +58,7 @@ kotlin {
                 implementation kotlin("test-junit")
                 implementation "org.spekframework.spek2:spek-dsl-jvm:$Versions.spek"
                 implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll:$Versions.atrium"
-                implementation "io.mockk:mockk:$Versions.mockk"
+                implementation "io.mockk:mockk:1.9.3"
 
                 runtimeOnly "org.spekframework.spek2:spek-runner-junit5:$Versions.spek"
                 runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect'
