@@ -8,11 +8,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/CounterAppTheme">
+        android:theme="@style/TodoAppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/CounterAppTheme">
+            android:theme="@style/TodoAppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -15,12 +15,12 @@ object Libs {
   /**
    * https://developer.android.com/reference/android/support/constraint/ConstraintLayout
    */
-  const val constraintLayout = "com.android.support.constraint:constraint-layout:" + Versions.constraint_layout
+  const val constraintLayout = "androidx.constraintlayout:constraintlayout:" + Versions.constraint_layout
 
   /**
    * https://developer.android.com/guide/topics/ui/layout/recyclerview
    */
-  const val recyclerView = "com.android.support:recyclerview-v7:" + Versions.reyclerview
+  const val recyclerView = "androidx.recyclerview:recyclerview:" + Versions.recycler_view
 
   /**
    * https://developer.android.com/testing
@@ -36,13 +36,13 @@ object Libs {
    * https://github.com/robstoll/atrium
    */
   const val atrium_cc_en_gb_robstoll_common: String =
-      "ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:" + Versions.ch_tutteli_atrium
+      "ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:" + Versions.atrium
 
   /**
    * https://github.com/robstoll/atrium
    */
   const val atrium_cc_en_gb_robstoll: String = "ch.tutteli.atrium:atrium-cc-en_GB-robstoll:" +
-      Versions.ch_tutteli_atrium
+      Versions.atrium
 
   /**
    * https://developer.android.com/studio
@@ -67,12 +67,12 @@ object Libs {
   /**
    * http://mockk.io
    */
-  const val mockk_common: String = "io.mockk:mockk-common:" + Versions.io_mockk
+  const val mockk_common: String = "io.mockk:mockk-common:" + Versions.mockk
 
   /**
    * http://mockk.io
    */
-  const val mockk: String = "io.mockk:mockk:" + Versions.io_mockk
+  const val mockk: String = "io.mockk:mockk:" + Versions.mockk
 
   /**
    * http://junit.org
@@ -173,11 +173,11 @@ object Libs {
       Versions.org_jetbrains_kotlin
 
   const val spek_dsl_jvm: String = "org.spekframework.spek2:spek-dsl-jvm:" +
-      Versions.org_spekframework_spek2
+      Versions.spek
 
   const val spek_dsl_metadata: String = "org.spekframework.spek2:spek-dsl-metadata:" +
-      Versions.org_spekframework_spek2
+      Versions.spek
 
   const val spek_runner_junit5: String = "org.spekframework.spek2:spek-runner-junit5:" +
-      Versions.org_spekframework_spek2
+      Versions.spek
 }
