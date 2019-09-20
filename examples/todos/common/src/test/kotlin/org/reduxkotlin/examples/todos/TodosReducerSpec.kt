@@ -10,9 +10,8 @@ object TodosReducerSpec : Spek({
         it("should handle AddToDo") {
             expect(
                 todosReducer(
-                    listOf(), AddTodo(
-                        text = "Run the tests"
-                    )
+                    emptyList(),
+                    AddTodo(text = "Run the tests")
                 )
             ).toBe(
                 listOf(
@@ -31,9 +30,7 @@ object TodosReducerSpec : Spek({
                             completed = false
                         )
                     ),
-                    AddTodo(
-                        text = "Use Redux"
-                    )
+                    AddTodo(text = "Use Redux")
                 )
             ).toBe(
                 listOf(

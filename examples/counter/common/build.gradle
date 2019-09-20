@@ -40,9 +40,9 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-                implementation "org.spekframework.spek2:spek-dsl-metadata:$project.versions.spek"
-                implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:$project.versions.atrium"
-                implementation "io.mockk:mockk-common:1.9.3"
+                implementation "org.spekframework.spek2:spek-dsl-metadata:$Versions.spek"
+                implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:$Versions.atrium"
+                implementation "io.mockk:mockk-common:$Versions.mockk"
             }
         }
 
@@ -56,11 +56,11 @@ kotlin {
             dependencies {
                 implementation kotlin("test")
                 implementation kotlin("test-junit")
-                implementation "org.spekframework.spek2:spek-dsl-jvm:$project.versions.spek"
-                implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll:$project.versions.atrium"
-                implementation "io.mockk:mockk:1.9.3"
+                implementation "org.spekframework.spek2:spek-dsl-jvm:$Versions.spek"
+                implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll:$Versions.atrium"
+                implementation "io.mockk:mockk:$Versions.mockk"
 
-                runtimeOnly "org.spekframework.spek2:spek-runner-junit5:$project.versions.spek"
+                runtimeOnly "org.spekframework.spek2:spek-runner-junit5:$Versions.spek"
                 runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect'
             }
         }

@@ -19,17 +19,16 @@ data class AppState(
 }
 
 /**
- * A model of data in out state.  Where these types of models are located is up to you and your team
+ * A model used in the app state. Where these types of models are located is up to you and your team
  * It will likely make sense to place separate file in a real project.
  */
-data class Todo(val text: String,
-                val completed: Boolean = false)
+data class Todo(
+    val text: String,
+    val completed: Boolean = false
+)
 
 enum class VisibilityFilter {
     SHOW_ALL,
     SHOW_COMPLETED,
     SHOW_ACTIVE
 }
-
-
-

@@ -27,6 +27,7 @@ android {
         getByName("debug") {
             // MPP libraries don't currently get this resolution automatically
             matchingFallbacks = listOf("release")
+            isDebuggable = true
         }
     }
     packagingOptions {

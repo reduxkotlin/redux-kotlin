@@ -33,7 +33,6 @@ class MainActivity: AppCompatActivity() {
         btn_active.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ACTIVE)) }
         btn_completed.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_COMPLETED)) }
 
-        recycler_view.layoutManager = LinearLayoutManager(this)
         recycler_view.adapter = adapter
 
         render(store.state)
@@ -44,7 +43,7 @@ class MainActivity: AppCompatActivity() {
         setFilterButtons(state.visibilityFilter)
     }
 
-    private fun setFilterButtons(visibilityFilter: VisibilityFilter) {
+    private fun setFilterButtons(visibilityFilter: VisibilityFilter) =
         when (visibilityFilter) {
             VisibilityFilter.SHOW_ALL -> {
                 btn_select_all.isSelected = true
@@ -62,5 +61,4 @@ class MainActivity: AppCompatActivity() {
                 btn_active.isSelected = false
             }
         }
-    }
 }
