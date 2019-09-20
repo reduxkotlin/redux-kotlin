@@ -15,7 +15,7 @@ object Libs {
   /**
    * https://developer.android.com/reference/android/support/constraint/ConstraintLayout
    */
-  const val constraintLayout = "com.android.support.constraint:constraint-layout:" + Versions.constraint_layout
+  const val constraintLayout = "androidx.constraintlayout:constraintlayout:" + Versions.constraint_layout
 
   /**
    * https://developer.android.com/guide/topics/ui/layout/recyclerview

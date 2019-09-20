@@ -39,7 +39,7 @@ object Versions {
   const val spek: String = "2.1.0-alpha.0.11+d97ef33"
        // available: "2.1.0-alpha.0.24+0fdeb6e"
 
-  const val constraint_layout = "1.1.2"
+  const val constraint_layout = "1.1.3"
 
   const val recycler_view = "1.0.0"
 
