@@ -2,7 +2,6 @@ package org.reduxkotlin.example.todos
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.reduxkotlin.StoreSubscription
 import org.reduxkotlin.createStore
@@ -24,16 +23,16 @@ class MainActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         storeSubscription = store.subscribe { render(store.state) }
-        btn_add_todo.setOnClickListener {
-            val todoText = et_todo.text.toString()
-            et_todo.text.clear()
+        btnAddTodo.setOnClickListener {
+            val todoText = etTodo.text.toString()
+            etTodo.text.clear()
             store.dispatch(AddTodo(todoText))
         }
-        btn_select_all.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ALL)) }
-        btn_active.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ACTIVE)) }
-        btn_completed.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_COMPLETED)) }
+        btnSelectAll.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ALL)) }
+        btnActive.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ACTIVE)) }
+        btnCompleted.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_COMPLETED)) }
 
-        recycler_view.adapter = adapter
+        recyclerView.adapter = adapter
 
         render(store.state)
     }
@@ -46,19 +45,19 @@ class MainActivity: AppCompatActivity() {
     private fun setFilterButtons(visibilityFilter: VisibilityFilter) =
         when (visibilityFilter) {
             VisibilityFilter.SHOW_ALL -> {
-                btn_select_all.isSelected = true
-                btn_active.isSelected = false
-                btn_completed.isSelected = false
+                btnSelectAll.isSelected = true
+                btnActive.isSelected = false
+                btnCompleted.isSelected = false
             }
             VisibilityFilter.SHOW_ACTIVE -> {
-                btn_active.isSelected = true
-                btn_select_all.isSelected = false
-                btn_completed.isSelected = false
+                btnActive.isSelected = true
+                btnSelectAll.isSelected = false
+                btnCompleted.isSelected = false
             }
             VisibilityFilter.SHOW_COMPLETED -> {
-                btn_completed.isSelected = true
-                btn_select_all.isSelected = false
-                btn_active.isSelected = false
+                btnCompleted.isSelected = true
+                btnSelectAll.isSelected = false
+                btnActive.isSelected = false
             }
         }
 }

@@ -26,13 +26,13 @@ class TodoAdapter : ListAdapter<Todo, TodoViewHolder>(DiffCallback()) {
 class TodoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bind(todo: Todo) {
         if (todo.completed) {
-            itemView.tv_todo.paintFlags = itemView.tv_todo.paintFlags or STRIKE_THRU_TEXT_FLAG
+            itemView.tvTodo.paintFlags = itemView.tvTodo.paintFlags or STRIKE_THRU_TEXT_FLAG
         } else {
-            itemView.tv_todo.paintFlags =
-                itemView.tv_todo.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
+            itemView.tvTodo.paintFlags =
+                itemView.tvTodo.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
         }
 
-        itemView.tv_todo.text = "• ${todo.text}"
+        itemView.tvTodo.text = "• ${todo.text}"
         itemView.setOnClickListener { store.dispatch(ToggleTodo(adapterPosition))}
     }
 }
