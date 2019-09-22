@@ -17,7 +17,7 @@ State can be any type of object, however data classes are well suited due to the
 
 ## Action
 
-An _action_ is an object that represents an intention to change the state. Actions are the only way to get data into the store. Any data, whether from UI events, network callbacks, system events, or other sources such as WebSockets needs to eventually be dispatched as actions.
+An _action_ is an object that represents an intention to change the state. Actions are the only way to get data into the store. Any data, whether from UI events, network callbacks, system events, or other sources such as WebSockets needs to eventually be dispatched as an action.
 
 ReduxKotlin differs a bit from JS Redux in that since we have a statically typed language, we can use the type as indication of the action to be performed. Typically this is done with a `when` statement:
 
