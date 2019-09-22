@@ -23,7 +23,9 @@ ReduxKotlin differs a bit from JS Redux in that since we have a statically typed
 
 ```kotlin
 	when (action) {
-	   is MyAction -> //handle MyAction
+	   is MyAction -> // handle MyAction
+	   ...
+    }
 ```
 
 In JS redux, a `type` field is used to indicate the type of action performed.  This approach can be used with ReduxKotlin, however type safety and IDE benefits will be lost.
