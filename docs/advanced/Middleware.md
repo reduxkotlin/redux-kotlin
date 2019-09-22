@@ -7,7 +7,10 @@ hide_title: true
 
 # Middleware
 
-Middleware are functions that can have react to actions and have side effects.  They can also dispatch other actions.  You've seen middleware in action in the [Async Actions](../advanced/AsyncActions.md) example.  The best feature of middleware is that it's composable in a chain. You can use multiple independent third-party middleware in a single project.
+Middleware are functions that can have react to actions and have side effects. They can also
+dispatch other actions. You've seen middleware in action in the 
+[Async Actions](../advanced/AsyncActions.md) example. The best feature of middleware is that it's
+composable in a chain. You can use multiple independent third-party middleware in a single project.
 
 Middleware are any functions that meet this type alias:
 
@@ -15,9 +18,12 @@ Middleware are any functions that meet this type alias:
 ```kotlin
 typealias Middleware<State> = (store: Store<State>) -> (next: Dispatcher) -> (action: Any) -> Any
 ```
-**It provides a third-party extension point between dispatching an action, and the moment it reaches the reducer.** People use Redux middleware for logging, crash reporting, talking to an asynchronous API, routing, and more.
+**It provides a third-party extension point between dispatching an action, and the moment it reaches 
+the reducer.** People use Redux middleware for logging, crash reporting, talking to an asynchronous 
+API, routing, and more.
 
-Redux.js.org has an [in-depth intro to middleware](https://redux.js.org/advanced/middleware) that you may find helpful.
+Redux.js.org has an [in-depth intro to middleware](https://redux.js.org/advanced/middleware) that 
+you may find helpful.
 
 Here are a few examples of how to declare middleware using ReduxKotlin:
 
@@ -53,12 +59,10 @@ val crashReporter = middleware<AppState> { store, next, action ->
     try {
         return next(action)
     } catch (e: Exception) {
-        //report to crashlytics, etc
+        // report to crashlytics, etc
         throw err     
     }
 }
-
-
 
 /**
  * From redux-kotlin-thunk.  This how thunks are executed.
@@ -79,8 +83,7 @@ fun createThunkMiddleware(extraArgument: Any? = null): ThunkMiddleware =
             }
         }
     }
-    
-    
+        
 val store = createStore(
     reducer,
     applyMiddleware(

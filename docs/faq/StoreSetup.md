@@ -16,9 +16,15 @@ hide_title: true
 
 ### Is it OK to have more than one middleware chain in my store enhancer? What is the difference between `next` and `dispatch` in a middleware function?
 
-Redux middleware act like a linked list. Each middleware function can either call `next(action)` to pass an action along to the next middleware in line, call `dispatch(action)` to restart the processing at the beginning of the list, or do nothing at all to stop the action from being processed further.
+Redux middleware act like a linked list. Each middleware function can either call `next(action)` to
+pass an action along to the next middleware in line, call `dispatch(action)` to restart the
+processing at the beginning of the list, or do nothing at all to stop the action from being
+processed further.
 
-This chain of middleware is defined by the arguments passed to the `applyMiddleware` function used when creating a store. Defining multiple chains will not work correctly, as they would have distinctly different `dispatch` references and the different chains would effectively be disconnected.
+This chain of middleware is defined by the arguments passed to the `applyMiddleware` function used
+when creating a store. Defining multiple chains will not work correctly, as they would have
+distinctly different `dispatch` references and the different chains would effectively be
+disconnected.
 
 #### Further information
 
@@ -35,11 +41,20 @@ This chain of middleware is defined by the arguments passed to the `applyMiddlew
 
 ### How do I subscribe to only a portion of the state? Can I get the dispatched action as part of the subscription?
 
-Redux provides a single `store.subscribe` method for notifying listeners that the store has updated. Listener callbacks do not receive the current state as an argument—it is simply an indication that _something_ has changed. The subscriber logic can then call `getState()` to get the current state value.
+Redux provides a single `store.subscribe` method for notifying listeners that the store has updated.
+Listener callbacks do not receive the current state as an argument—it is simply an indication that
+_something_ has changed. The subscriber logic can then call `getState()` to get the current state
+value.
 
-This API is intended as a low-level primitive with no dependencies or complications, and can be used to build higher-level subscription logic. UI bindings such as [Presenter-middleware](TODO) can create a subscription for each connected component. It is also possible to write functions that can intelligently compare the old state vs the new state, and execute additional logic if certain pieces have changed.
+This API is intended as a low-level primitive with no dependencies or complications, and can be used
+to build higher-level subscription logic. UI bindings such as
+[Presenter-middleware](TODO) can create a subscription for each connected component. It is also
+possible to write functions that can intelligently compare the old state vs the new state, and
+execute additional logic if certain pieces have changed.
 
-The new state is not passed to the listeners in order to simplify implementing store enhancers such as the Redux DevTools. In addition, subscribers are intended to react to the state value itself, not the action. Middleware can be used if the action is important and needs to be handled specifically.
+The new state is not passed to the listeners in order to simplify implementing store enhancers such
+as the Redux DevTools. In addition, subscribers are intended to react to the state value itself, not
+the action. Middleware can be used if the action is important and needs to be handled specifically.
 
 #### Further information
 

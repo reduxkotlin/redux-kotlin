@@ -14,7 +14,10 @@ You might want to use it to apply several [store enhancers](../Glossary.md#store
 
 #### Arguments
 
-1. (_arguments_): The functions to compose. Each function is expected to accept a single parameter. Its return value will be provided as an argument to the function standing to the left, and so on. The exception is the right-most argument which can accept multiple parameters, as it will provide the signature for the resulting composed function.
+1. (_arguments_): The functions to compose. Each function is expected to accept a single parameter.
+   Its return value will be provided as an argument to the function standing to the left, and so on.
+   The exception is the right-most argument which can accept multiple parameters, as it will provide
+   the signature for the resulting composed function.
 
 #### Returns
 
@@ -22,7 +25,9 @@ You might want to use it to apply several [store enhancers](../Glossary.md#store
 
 #### Example
 
-This example demonstrates how to use `compose` to enhance a [store](Store.md) with [`applyMiddleware`](applyMiddleware.md) and a few developer tools from the [redux-devtools](https://github.com/reduxjs/redux-devtools) package.
+This example demonstrates how to use `compose` to enhance a [store](Store.md) with 
+[`applyMiddleware`](applyMiddleware.md) and a few developer tools from the 
+[redux-devtools](https://github.com/reduxjs/redux-devtools) package.
 
 ```kotlin
 val store = createStore(
@@ -36,4 +41,5 @@ val store = createStore(
 
 #### Tips
 
-- All `compose` does is let you write deeply nested function transformations without the rightward drift of the code. Don't give it too much credit!
+- All `compose` does is let you write deeply nested function transformations without the rightward
+  drift of the code. Don't give it too much credit!

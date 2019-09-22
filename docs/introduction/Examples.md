@@ -24,13 +24,12 @@ git clone https://github.com/reduxkotlin/redux-kotlin.git
 ```
 or:
 
-Open the root project in Android Studio/Intellij.  Select and run the configuration for the Android example/counter example.
+Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
+example/counter example.
 
 ## Todos
 
 Run the [Todos](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/todos) example:
-
-
 
 ```sh
 git clone https://github.com/reduxkotlin/redux-kotlin.git
@@ -40,15 +39,17 @@ git clone https://github.com/reduxkotlin/redux-kotlin.git
 ```
 or:
 
-Open the root project in Android Studio/Intellij.  Select and run the configuration for the Android example/counter example.
+Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
+example/counter example.
 
 ## Name Game
 
-This is a multiplatform app for Android and iOS.  It is a quiz on dog/cat breeds.  This is a more complete example of how to use Redux in a real application.  Async actions such as network requests and delays are demonstrated.  Also used is the [presenter-middleware](https://github.com/reduxkotlin/presenter-middleware) as a presentation layer.
+This is a multiplatform app for Android and iOS. It is a quiz on dog/cat breeds. This is a more
+complete example of how to use Redux in a real application. Async actions such as network requests
+and delays are demonstrated. Also used is the
+[presenter-middleware](https://github.com/reduxkotlin/presenter-middleware) as a presentation layer.
 
 Run the [Counter](https://github.com/reduxkotlin/NameGameSampleApp) example:
-
-
 
 ```sh
 git clone https://github.com/reduxkotlin/NameGameSampleApp.git
@@ -58,7 +59,8 @@ git clone https://github.com/reduxkotlin/NameGameSampleApp.git
 ```
 or:
 
-Open the root project in Android Studio/Intellij.  Select and run the configuration for the Android example/counter example.
+Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
+example/counter example.
 
 iOS:
 
@@ -67,10 +69,12 @@ Open the iOS/NameGame in XCode.
 
 ## ReadingList 
 
-This is a multiplatform app for Android and iOS.  It is a quiz on dog/cat breeds.  This is a more complete example of how to use Redux in a real application.  Async actions such as network requests and delays are demonstrated.  Also used is the [presenter-middleware](https://github.com/reduxkotlin/presenter-middleware) as a presentation layer.
+This is a multiplatform app for Android and iOS. It is a quiz on dog/cat breeds. This is a more
+complete example of how to use Redux in a real application. Async actions such as network requests
+and delays are demonstrated. Also used is the
+[presenter-middleware](https://github.com/reduxkotlin/presenter-middleware) as a presentation layer.
 
 Run the [Counter](https://github.com/reduxkotlin/ReadingListSampleApp) example:
-
 
 
 ```sh
@@ -81,7 +85,8 @@ git clone https://github.com/reduxkotlin/ReadingListSampleApp.git
 ```
 or:
 
-Open the root project in Android Studio/Intellij.  Select and run the configuration for the Android example/counter example.
+Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
+example/counter example.
 
 iOS:
 
@@ -90,7 +95,8 @@ Open the iOS/ReadingList in XCode.
 
 ## MovieSwiftUI
 
-Fork of an 100% SwiftUI app that uses shared Kotlin code for networking, preferences, reducers, actions, and more.
+Fork of an 100% SwiftUI app that uses shared Kotlin code for networking, preferences, reducers,
+actions, and more.
 
 Run the [MovieSwiftUI-Kotlin](https://github.com/reduxkotlin/MovieSwiftUI-Kotlin) example:
 
