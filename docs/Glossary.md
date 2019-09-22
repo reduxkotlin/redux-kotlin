@@ -13,7 +13,7 @@ This is a glossary of the core terms in Redux, along with their type signatures.
 
 _State_ (also called the _state tree_) is a broad term, but in the Redux API it usually refers to the single state value that is managed by the store and returned by [`getState()`](api/Store.md#getState) or the property syntax [`state`](api/Store.md#getState). It represents the entire state of a Redux application.
 
-State can be any type of object, however data classes are well suited due to their `copy()` method for creating the new state.  The contents and structure of the State are largly up to requirements of the app and the opinion of the implementer.  In general, avoiding deeply nested structure makes creating the new state easier.  Also this is the state of your App, not neccessarily the state of your UI. Still, you should do your best to keep the state serializable. Don't put anything inside it that you can't easily turn into JSON.
+State can be any type of object, however data classes are well suited due to their `copy()` method for creating the new state.  The contents and structure of the State are largely up to requirements of the app and the opinion of the implementer.  In general, avoiding deeply nested structure makes creating the new state easier.  Also this is the state of your App, not neccessarily the state of your UI. Still, you should do your best to keep the state serializable. Don't put anything inside it that you can't easily turn into JSON.
 
 ## Action
 
