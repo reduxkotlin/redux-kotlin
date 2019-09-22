@@ -66,7 +66,7 @@ The base dispatch function _always_ synchronously sends an action to the store's
 
 ## Action Creator
 
-Action Creators are used in JS Redux, but not as desirable in Kotlin.  They are simply a function that creates an Action or Async Action.  In Kotlin, since we are typically using Data classes this is not necessary.  Data class constructors provide a nice syntax for creating actions.  Using the Action Creator pattern in Kotlin works as well, and is really up to you as to how and where actions are created.
+Action Creators are used in JS Redux, but are not as desirable in Kotlin.  They are simply a function that creates an Action or Async Action.  In Kotlin, since we are typically using Data classes this is not necessary.  Data class constructors provide a nice syntax for creating actions.  Using the Action Creator pattern in Kotlin works as well, and is really up to you as to how and where actions are created.
 
 Calling an action creator only produces an action, but does not dispatch it. You need to call the store's [`dispatch`](api/Store.md#dispatchaction) function to actually cause the mutation. Sometimes we say _bound action creators_ to mean functions that call an action creator and immediately dispatch its result to a specific store instance.
 
