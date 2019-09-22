@@ -22,7 +22,7 @@ An _action_ is an object that represents an intention to change the state. Actio
 ReduxKotlin differs a bit from JS Redux in that since we have a statically typed language, we can use the type as indication of the action to be performed. Typically this is done with a `when` statement:
 
 ```kotlin
-	when(action) {
+	when (action) {
 	   is MyAction -> //handle MyAction
 ```
 
