@@ -111,10 +111,14 @@ Instead of mutating the state directly, you specify the mutations you want to ha
 objects called _actions_. Then you write a special function called a _reducer_ to decide how every
 action transforms the entire application's state.
 
+<<<<<<< Updated upstream
 In a typical Redux app, there is just a single store with a single root reducing function. As your
 app grows, you split the root reducer into smaller reducers independently operating on the different
 parts of the state tree. Redux is unopinonated - how reducers and actions are organized is up to
 you. Useful patterns will be documented here soon.TODO
+=======
+In a typical Redux app, there is just a single store with a single root reducing function. As your app grows, you split the root reducer into smaller reducers independently operating on the different parts of the state tree.  Redux is unopinonated - how reducers and actions are organized is up to you. 
+>>>>>>> Stashed changes
 
 This architecture might seem like an overkill for a counter app, but the beauty of this pattern is
 how well it scales to large and complex apps. It also enables very powerful developer tools, because
@@ -127,8 +131,9 @@ The ReduxKotlin Github contains several example projects demonstrating various a
 
 - [**Counter**](/introduction/examples#counter): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/counter)
 - [**Todos**](/introduction/examples#todos): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/todos)
-- [**Name Game**](/introduction/examples#real-world): [Source](https://github.com/reduxkotlin/NameGameSampleApp)
-- [**Reading List**](/introduction/examples#real-world): [Source](https://github.com/reduxkotlin/ReadingListSampleApp)
+- [**Name Game**](/introduction/examples#namegame): [Source](https://github.com/reduxkotlin/NameGameSampleApp)
+- [**Reading List**](/introduction/examples#readinglist): [Source](https://github.com/reduxkotlin/ReadingListSampleApp)
+- [**MovieSwiftUI-Kotlin**](/introduction/examples#movieswiftui-kotlin): [Source](https://github.com/reduxkotlin/MovieSwiftUI-kotlin)
 
 ## Help and Discussion
 

@@ -30,9 +30,9 @@
       "faq/organizing-state",
       "faq/store-setup",
       "faq/actions",
+      "faq/multiplatform",
       "faq/immutable-data",
       "faq/code-structure",
-      "faq/performance",
       "faq/design-decisions",
       "faq/miscellaneous"
     ],

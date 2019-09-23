@@ -7,6 +7,7 @@ hide_title: true
 
 # Motivation
 
+<<<<<<< Updated upstream
 Redux for mobile is relatively new architecture, basically starting in 2016. It was borrowed from
 the web where it has a huge adoption. There have been _many_ libraries published for Android & iOS,
 but the ecosystem has not grown like it has for the web.
@@ -17,4 +18,11 @@ sharing code between Android, iOS, web.
 Redux as a pattern for sharing code between platforms looks promising, especially in the future with
 Jetpack Compose and SwiftUI. For an example of shared code in a SwiftUI app look at the
 (MovieSwiftUI-Kotlin)[https://github.com/reduxkotlin/MovieSwiftUI-Kotlin] example.
+=======
+Redux for mobile is relatively new architecture, starting in 2016.  It was borrowed from the web where it has a huge adoption.  There have been _many_ libraries published for Android & iOS, but the ecosystem has not grown like it has for the web.  
+
+ReduxKotlin.org aims to create a standard Redux for Kotlin apps that can be used for Android or sharing code between Android, iOS, & web.  
+
+Redux as a pattern for sharing code between platforms looks promising, especially in the future with Jetpack Compose and SwiftUI.  For an example of shared code in a SwiftUI app look at the [MovieSwiftUI-Kotlin](https://github.com/reduxkotlin/MovieSwiftUI-Kotlin) example.  This site will be a source of samples, FAQs, and best practices as they evolve.
+>>>>>>> Stashed changes
 

@@ -43,7 +43,7 @@ const siteConfig = {
   favicon: "img/favicon/favicon.ico",
 
   /* Colors for website */
-  colors: {
+  /*colors: {
     primaryColor: "#764ABC",
     secondaryColor: "#40216F",
     accentColor1: "#717171",
@@ -53,7 +53,18 @@ const siteConfig = {
     accentColor5: "#CBDDEA",
     accentColor6: "#2F5773"
   },
+  */
 
+  colors: {
+   primaryColor: "#137AF9",
+    secondaryColor: "#497BBC",
+    accentColor1: "#717171",
+    accentColor2: "#F7880D",
+    accentColor3: "#FFA4CCFC",
+    accentColor4: "F7880D",
+    accentColor5: "#CBDDEA",
+    accentColor6: "#F7880D"
+},
   /* Custom fonts for website */
   /*
   fonts: {

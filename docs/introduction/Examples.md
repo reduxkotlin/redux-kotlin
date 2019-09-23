@@ -42,7 +42,7 @@ or:
 Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
 example/counter example.
 
-## Name Game
+## NameGame
 
 This is a multiplatform app for Android and iOS. It is a quiz on dog/cat breeds. This is a more
 complete example of how to use Redux in a real application. Async actions such as network requests
@@ -93,7 +93,7 @@ iOS:
 Open the iOS/ReadingList in XCode.
 
 
-## MovieSwiftUI
+## MovieSwiftUI-Kotlin
 
 Fork of an 100% SwiftUI app that uses shared Kotlin code for networking, preferences, reducers,
 actions, and more.

@@ -49,7 +49,7 @@ const SplashContainer = props => (
 const ProjectTitle = () => (
   <React.Fragment>
     <div style={{display : "flex", justifyContent : "center", alignItems : "center"}}>
-      <img src={"img/redux.svg"} alt="Redux logo" width={100} height={100}/>
+      <img src={"img/reduxkotlin.svg"} alt="Redux logo" width={100} height={100}/>
       <h1 className="projectTitle">{siteConfig.title}</h1>
     </div>
 
@@ -157,6 +157,10 @@ const OtherLibraries = () => (
 const DocsSurvey = () => (
   <Block layout="twoColumn" className="docsSurvey rowContainer">
     {[
+      {
+        content: "ReduxKotlin has the same API as Javascript Redux.  If you are coming from Javascript, or interact with Javascript developers using Redux, you will feel right at home.",
+        title: "Port of JS Redux"
+      },
       {
         content: "ReduxKotlin can be used today, but we are always looking for ways to improve dev experience and documentation.  Please **[fill out this survey.](https://docs.google.com/forms/d/e/1FAIpQLScEQ9zGndU48AUeGKR6PPE13IqhIFmTL570wDodQUEilhwMzw/viewform)**",
         title: "Help Us Improve the ReduxKotlin!"
