@@ -2,6 +2,7 @@ package org.reduxkotlin.examples.todos
 
 import ch.tutteli.atrium.api.cc.en_GB.toBe
 import ch.tutteli.atrium.verbs.expect
+import io.mockk.impl.log.Logger
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 

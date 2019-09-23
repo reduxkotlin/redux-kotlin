@@ -1,0 +1,54 @@
+{
+  "docs": {
+    "Introduction": [
+      "introduction/getting-started",
+      "introduction/motivation",
+      "introduction/core-concepts",
+      "introduction/three-principles",
+      "introduction/learning-resources",
+      "introduction/ecosystem",
+      "introduction/examples"
+    ],
+    "Basic Tutorial": [
+      "basics/basic-tutorial",
+      "basics/actions",
+      "basics/reducers",
+      "basics/store",
+      "basics/data-flow",
+      "basics/example"
+    ],
+    "Advanced Tutorial": [
+      "advanced/advanced-tutorial",
+      "advanced/async-actions",
+      "advanced/middleware",
+      "advanced/next-steps"
+    ],
+    "FAQ": [
+      "faq",
+      "faq/general",
+      "faq/reducers",
+      "faq/organizing-state",
+      "faq/store-setup",
+      "faq/actions",
+      "faq/multiplatform",
+      "faq/immutable-data",
+      "faq/code-structure",
+      "faq/design-decisions",
+      "faq/miscellaneous"
+    ],
+    "Other": [
+      "glossary",
+      "troubleshooting",
+      "feedback"
+    ],
+    "API Reference": [
+      "api/api-reference",
+      "api/createstore",
+      "api/store",
+      "api/combinereducers",
+      "api/applymiddleware",
+      "api/bindactioncreators",
+      "api/compose"
+    ]
+  }
+}

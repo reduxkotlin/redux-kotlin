@@ -87,3 +87,13 @@ fastlane/test_output
 
 
 # End of https://www.gitignore.io/api/swift,xcode
+
+# From redux
+dist
+es
+coverage
+
+website/translated_docs
+website/build/
+website/node_modules
+website/i18n/*
