@@ -80,7 +80,7 @@ const siteConfig = {
   */
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
-  copyright: 'Copyright (c) 2015-present Dan Abramov and the Redux documentation authors.',
+  copyright: 'Thank you to Dan Abramov and the Redux.js.org documentation authors from which this was forked.',
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.

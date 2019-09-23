@@ -12,6 +12,7 @@
     "@babel/preset-react": "^7.0.0"
   },
   "dependencies": {
-    "docusaurus": "^1.7.1"
+    "docusaurus": "^1.7.1",
+    "now": "^16.2.0"
   }
 }
