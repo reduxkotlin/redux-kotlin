@@ -123,7 +123,7 @@ and reproduce them just by replaying every action.
 
 ## Examples
 
-The ReduxKotlin github contains several example projects demonstrating various aspects of how to use ReduxKotlin.
+The ReduxKotlin Github contains several example projects demonstrating various aspects of how to use ReduxKotlin.
 
 - [**Counter**](/introduction/examples#counter): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/counter)
 - [**Todos**](/introduction/examples#todos): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/todos)
