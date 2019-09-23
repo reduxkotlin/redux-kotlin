@@ -133,7 +133,7 @@ The ReduxKotlin Github contains several example projects demonstrating various a
 ## Help and Discussion
 
 The **[#redux channel](https://kotlinlang.slack.com/messages/C8A8G5F9Q)** of the 
-**[KotlinLang Slack](http://kotlinlang.slack.com)** is our is our channel for ReduxKotlin questions 
+**[KotlinLang Slack](http://kotlinlang.slack.com)** is our channel for ReduxKotlin questions 
 and collaborating. Invites are [here.](https://slack.kotlinlang.org) 
 
 ## Should You Use Redux?
