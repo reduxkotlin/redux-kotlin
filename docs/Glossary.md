@@ -67,9 +67,17 @@ non-functional languages, like Kotlin, have a built-in API for reducing. In Kotl
 In Redux, the accumulated value is the state object, and the values being accumulated are actions. 
 Reducers calculate a new state given the previous state and an action. They must be _pure functions_
 —functions that return the exact same output for given inputs. They should also be free of 
-side-effects. This is what enables exciting features like hot reloading and time travel.
+side-effects. This is what enables exciting features like [hot reloading and time travel](https://github.com/reduxjs/redux-devtools).
+These are possible with ReduxKotlin, but not yet documented and may required additional dev work.
 
 Reducers are the most important concept in Redux.
+
+> ### Note about threading
+> Reducers should always be ran on the same thread.  This is to avoid any
+> race conditions with actions being processed.  Which thread is used is up
+> to you and your team.  Main thread has traditionally been used without any problems,
+> however there may be some situations where doing reducing fuctions on a background thread
+> would benefit performance.
 
 _Do not put API calls into reducers._
 

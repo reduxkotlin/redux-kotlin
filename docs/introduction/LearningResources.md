@@ -12,13 +12,10 @@ for use in real-world applications. Here are a few recommended outside resources
 
 As ReduxKotlin.org is new, and Kotlin Multiplatform as well, there are not a lot of resources directly on the subject.  Most articles on Redux for mobile will apply, even if the article references a different redux library.  Keep in mind if you are targeting multiple platforms, then some articles may no be applicable.
 
-<<<<<<< Updated upstream
 This page includes our recommendations for some of the best external resources available to learn
 Redux. For an additional extensive list of tutorials, articles, and other resources on React, Redux,
 Javascript, and related topics, see the
 [React/Redux Links list](https://github.com/markerikson/react-redux-links).
-=======
->>>>>>> Stashed changes
 
 ## Introductions
 - **ReduxKotlin.org: Redux for All Kotlin Platforms**  
