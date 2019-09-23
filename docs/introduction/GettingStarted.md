@@ -100,11 +100,11 @@ store.subscribe { logger.debug(store.state)}
 // The only way to mutate the internal state is to dispatch an action.
 // The actions can be serialized, logged or stored.
 store.dispatch(Increment())
-// 1
+// Current State: 1
 store.dispatch(Increment())
-// 2
+// Current State: 2
 store.dispatch(Decrement())
-// 1
+// Current State: 1
 ```
 
 Instead of mutating the state directly, you specify the mutations you want to happen with plain
