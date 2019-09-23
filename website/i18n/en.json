@@ -73,6 +73,10 @@
         "title": "General",
         "sidebar_label": "General"
       },
+      "faq/multiplatform": {
+        "title": "Multiplatform",
+        "sidebar_label": "Multiplatform"
+      },
       "faq/reducers": {
         "title": "Reducers",
         "sidebar_label": "Reducers"
