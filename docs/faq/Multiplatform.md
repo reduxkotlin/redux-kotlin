@@ -16,7 +16,7 @@ hide_title: true
 
 ## Multiplatform
 
-### What is "Multiplatform" Kotlin
+### What is "Multiplatform" Kotlin?
 
 Multiplatform Kotlin is the ability to compile Kotlin code to different targets. Available targets
 are JVM, Native (iOS, WIN, Linux), Javascript, & Webassembly. This allows writing business logic,

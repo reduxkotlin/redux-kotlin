@@ -95,7 +95,7 @@ val store = createStore(reducer, 0)
 // You can use subscribe() to update the UI in response to state changes.
 // Normally you'd use an additional layer or view binding library rather than subscribe() directly.
 
-store.subscribe { logger.debug(store.state)}
+val unsubscribe = store.subscribe { logger.debug(store.state)}
 
 // The only way to mutate the internal state is to dispatch an action.
 // The actions can be serialized, logged or stored.
@@ -105,6 +105,11 @@ store.dispatch(Increment())
 // Current State: 2
 store.dispatch(Decrement())
 // Current State: 1
+
+//Removes the reference to the subscription functions.
+//Must be called when subscription is no longer needed to avoid a 
+//memory leak.
+unsubscribe()
 ```
 
 Instead of mutating the state directly, you specify the mutations you want to happen with plain
@@ -123,7 +128,7 @@ and reproduce them just by replaying every action.
 
 ## Examples
 
-The ReduxKotlin Github contains several example projects demonstrating various aspects of how to use ReduxKotlin.
+The ReduxKotlin Github organization contains several example projects demonstrating various aspects of how to use ReduxKotlin.
 
 - [**Counter**](/introduction/examples#counter): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/counter)
 - [**Todos**](/introduction/examples#todos): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/todos)

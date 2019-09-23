@@ -72,7 +72,7 @@ These are possible with ReduxKotlin, but not yet documented and may required add
 
 Reducers are the most important concept in Redux.
 
-> ### Note about threading
+> #### Note about threading
 > Reducers should always be ran on the same thread.  This is to avoid any
 > race conditions with actions being processed.  Which thread is used is up
 > to you and your team.  Main thread has traditionally been used without any problems,

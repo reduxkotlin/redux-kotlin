@@ -24,19 +24,12 @@ hide_title: true
   - [Can or should I create multiple stores? Can I import my store directly, and use it in components myself?](faq/StoreSetup.md#can-or-should-i-create-multiple-stores-can-i-import-my-store-directly-and-use-it-in-components-myself)
   - [Is it OK to have more than one middleware chain in my store enhancer? What is the difference between next and dispatch in a middleware function?](faq/StoreSetup.md#is-it-ok-to-have-more-than-one-middleware-chain-in-my-store-enhancer-what-is-the-difference-between-next-and-dispatch-in-a-middleware-function)
   - [How do I subscribe to only a portion of the state? Can I get the dispatched action as part of the subscription?](faq/StoreSetup.md#how-do-i-subscribe-to-only-a-portion-of-the-state-can-i-get-the-dispatched-action-as-part-of-the-subscription)
-- **Actions**
-  - [Why should type be a string, or at least serializable? Why should my action types be constants?](faq/Actions.md#why-should-type-be-a-string-or-at-least-serializable-why-should-my-action-types-be-constants)
-  - [Is there always a one-to-one mapping between reducers and actions?](faq/Actions.md#is-there-always-a-one-to-one-mapping-between-reducers-and-actions)
-  - [How can I represent “side effects” such as AJAX calls? Why do we need things like “action creators”, “thunks”, and “middleware” to do async behavior?](faq/Actions.md#how-can-i-represent-side-effects-such-as-ajax-calls-why-do-we-need-things-like-action-creators-thunks-and-middleware-to-do-async-behavior)
-  - [What async middleware should I use? How do you decide between thunks, sagas, observables, or something else?](faq/Actions.md#what-async-middleware-should-i-use-how-do-you-decide-between-thunks-sagas-observables-or-something-else)
-  - [Should I dispatch multiple actions in a row from one action creator?](faq/Actions.md#should-i-dispatch-multiple-actions-in-a-row-from-one-action-creator)
-- **Immutable Data**
-  - [What are the benefits of immutability?](faq/ImmutableData.md#what-are-the-benefits-of-immutability)
-  - [Why is immutability required by Redux?](faq/ImmutableData.md#why-is-immutability-required-by-redux)
-- **Design Decisions**
-  - [Why doesn't Redux pass the state and action to subscribers?](faq/DesignDecisions.md#why-doesnt-redux-pass-the-state-and-action-to-subscribers)
-  - [Why doesn't Redux support using classes for actions and reducers?](faq/DesignDecisions.md#why-doesnt-redux-support-using-classes-for-actions-and-reducers)
-  - [Why does the middleware signature use currying?](faq/DesignDecisions.md#why-does-the-middleware-signature-use-currying)
-  - [Why does applyMiddleware use a closure for dispatch?](faq/DesignDecisions.md#why-does-applymiddleware-use-a-closure-for-dispatch)
-- **Miscellaneous**
-  - [Are there any larger, “real” Redux projects?](faq/Miscellaneous.md#are-there-any-larger-real-redux-projects)
+- **Multiplatform**
+  - [What is "Multiplatform" Kotlin?](faq/Multiplatform.md#what-is-multiplatform-kotlin) 
+  - [Can I use existing JS Redux code?](faq/Multiplatform.md#can-i-use-existing-js-redux-code)
+  - [Can I use React with ReduxKotlin?](faq/Multiplatform.md#can-i-use-react-with-reduxkotlin)
+  - [Does compiling to Native for iOS include a VM?  Is there a lot of overhead?](faq/Multiplatform.md#does-compiling-to-native-for-ios-include-a-vm-is-there-a-lot-of-overhead)
+  - [How do I structure a multiplatform kotlin project?](faq/Multiplatform.md#how-do-i-structure-a-multiplatform-kotlin-project)
+  - [How is this related to the kotlin-redux wrapper?](faq/Multiplatform.md#how-is-this-related-to-the-kotlin-redux-wrapper)
+  - [Are coroutines usable on Native/iOS?](faq/Multiplatform.md#are-coroutines-usable-on-native-ios)
+
