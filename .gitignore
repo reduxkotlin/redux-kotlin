@@ -89,9 +89,7 @@ fastlane/test_output
 # End of https://www.gitignore.io/api/swift,xcode
 
 # From redux
-node_modules
 dist
-lib
 es
 coverage
 
