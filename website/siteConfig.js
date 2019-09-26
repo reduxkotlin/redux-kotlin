@@ -7,16 +7,18 @@
 
 // See https://docusaurus.io/docs/site-config for all the possible
 // site configuration options.
+const path = require('path');
 
 const siteConfig = {
+  customDocsPath: path.basename(__dirname) + '/docs',
   title: "ReduxKotlin", // Title for your website.
   tagline: "A Predictable State Container for Kotlin Apps",
   url: "https://reduxkotlin.org", // Your website URL
   baseUrl: "/", // Base URL for your project */
   docsUrl : "", // don't prefix docs URLs with /docs/
   algolia: {
-    apiKey: '518c6e3c629811d8daa1d21dc8bcfa37',
-    indexName: 'redux',
+    apiKey: '8b9ae9fa68ea0ecf1df26cd985fb1c63',
+    indexName: 'reduxkotlin',
     algoliaOptions: {}
   },
 
@@ -43,18 +45,6 @@ const siteConfig = {
   favicon: "img/favicon/favicon.ico",
 
   /* Colors for website */
-  /*colors: {
-    primaryColor: "#764ABC",
-    secondaryColor: "#40216F",
-    accentColor1: "#717171",
-    accentColor2: "#F3EAFF",
-    accentColor3: "#D2B9F3",
-    accentColor4: "#ECF4F9",
-    accentColor5: "#CBDDEA",
-    accentColor6: "#2F5773"
-  },
-  */
-
   colors: {
    primaryColor: "#137AF9",
     secondaryColor: "#497BBC",

@@ -65,10 +65,6 @@
         "title": "FAQ Index",
         "sidebar_label": "FAQ Index"
       },
-      "faq/actions": {
-        "title": "Actions",
-        "sidebar_label": "Actions"
-      },
       "faq/general": {
         "title": "General",
         "sidebar_label": "General"
