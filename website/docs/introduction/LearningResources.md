@@ -19,7 +19,7 @@ Javascript, and related topics, see the
 
 ## Introductions
 - **ReduxKotlin.org: Redux for All Kotlin Platforms**  
-  [Video TBA](https://www.droidcon.com)  
+  [Video on Droidcon.com](https://www.droidcon.com/media-detail?video=362742403)  
   [Slides available here](https://www.slideshare.net/PatrickJackson14/reduxkotlinorg-droidcon-nyc-2019?from_m_app=android)  
   Talk by Patrick Jackson at Droidcon NYC overviewing ReduxKotlin.org and showing an approach to MPP Kotlin apps using redux.
    
@@ -28,7 +28,7 @@ Javascript, and related topics, see the
   In this lightning talk, Christina covers how the engineers at Highlight built a Redux-like framework in Kotlin to simplify state management and reduce bugs in challenging UI components, all without having to reinvent their Android app or sacrifice hard won expertise.
   
 - **Redux for Android**  
-   [Video TBA](https://www.droidcon.com)  
+   [Video on Droidcon.com](https://www.droidcon.com/media-detail?video=362739048)  
    In this session, Elliott Chenger talks about Redux and how Redux can help simplify your architecture and your life. Are you worried that you won't be able to use any of the nice lifecycle-aware libraries Google created? Redux still works with Android Architecture components, and Elliott will explain how you can utilize Live Data and View Models in addition to other popular libraries and technologies.
     
 - **Redux + (RxKotlin | RxSwift) == Awesome Native Mobile Apps — Introduction — Part 1**  
