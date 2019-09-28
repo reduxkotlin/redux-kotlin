@@ -3,8 +3,13 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2.1
-jobs:
-  publish_release:
+
+#
+# EXECUTORS AND COMMANDS
+#
+
+executors:
+  redux_executor:
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: ~/repo
@@ -13,6 +18,9 @@ jobs:
       JVM_OPTS: -Xmx3200m
       TERM: dumb
 
+jobs:
+  publish_release:
+    executor: redux_executor
     steps:
       - checkout
       # Download and cache dependencies
@@ -36,16 +44,7 @@ jobs:
 
 
   build:
-    docker:
-      - image: circleci/openjdk:8-jdk
-
-    working_directory: ~/repo
-
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
-
+    executor: redux_executor
     steps:
       - checkout
 
@@ -66,6 +65,17 @@ jobs:
       # run tests!
       - run: ./gradlew jvmTest
 
+  deploy_website_to_prod:
+    docker:
+      - image: circleci/node
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: |
+          nvm use
+          npm install now -g
+          now --token $ZEIT_NOW_TOKEN --prod
+
 workflows:
   build_test:
     jobs:
@@ -84,4 +94,10 @@ workflows:
             branches:
                 only:
                   - release
-
+  deploy_website:
+    jobs:
+      - deploy_website_to_prod:
+          filters:
+            branches:
+              only:
+                - master
