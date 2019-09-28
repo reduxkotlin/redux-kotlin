@@ -72,7 +72,6 @@ jobs:
     steps:
       - checkout
       - run: |
-          nvm use
           npm install now -g
           now --token $ZEIT_NOW_TOKEN --prod
 
