@@ -12,7 +12,7 @@ const path = require('path');
 const siteConfig = {
   customDocsPath: path.basename(__dirname) + '/docs',
   title: "ReduxKotlin", // Title for your website.
-  tagline: "A Predictable State Container for Kotlin Apps",
+  tagline: "Redux in Kotlin supporting multiplatform - Android, iOS, Web, Native",
   url: "https://reduxkotlin.org", // Your website URL
   baseUrl: "/", // Base URL for your project */
   docsUrl : "", // don't prefix docs URLs with /docs/
