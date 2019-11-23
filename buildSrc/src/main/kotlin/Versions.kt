@@ -34,7 +34,7 @@ object Versions {
 
   const val dokka_gradle_plugin: String = "0.9.17" // available: "0.9.18"
 
-  const val org_jetbrains_kotlin: String = "1.3.50"
+  const val org_jetbrains_kotlin: String = "1.3.60"
 
   const val spek: String = "2.1.0-alpha.0.11+d97ef33"
        // available: "2.1.0-alpha.0.24+0fdeb6e"
