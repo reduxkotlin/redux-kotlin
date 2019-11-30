@@ -75,7 +75,7 @@ task javadocsJar(type: Jar, dependsOn: dokka) {
 }
 
 signing {
-    required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+    required { isReleaseBuild() /*&& gradle.taskGraph.hasTask("uploadArchives") */ }
     sign(publishing.publications)
 }
 

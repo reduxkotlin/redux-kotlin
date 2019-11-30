@@ -1,6 +1,4 @@
 buildscript {
-    apply from: "$rootDir/gradle/dependencies.gradle"
-
     repositories {
         google()
         maven { url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies' }
@@ -10,17 +8,15 @@ buildscript {
     }
 
     dependencies {
-        classpath deps.plugins.kotlin
-        classpath deps.plugins.dokka
-        classpath deps.plugins.android
+        classpath Plugins.kotlin
+        classpath Plugins.dokka
+        classpath Plugins.android
     }
 }
 
 plugins {
     id("de.fayard.buildSrcVersions") version "0.4.2"
 }
-
-apply from: "$rootDir/gradle/dependencies.gradle"
 
 allprojects {
     repositories {

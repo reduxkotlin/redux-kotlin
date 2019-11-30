@@ -7,7 +7,7 @@ apply plugin: 'kotlin-multiplatform'
 archivesBaseName = 'redux-kotlin'
 
 group 'org.reduxkotlin'
-version '0.2.7'
+version '0.2.9'
 
 kotlin {
     jvm()
@@ -20,7 +20,6 @@ kotlin {
             }
         }
     }
-
 
     iosArm64("ios")
     iosX64("iosSim")
@@ -44,9 +43,9 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-                implementation "org.spekframework.spek2:spek-dsl-metadata:$project.versions.spek"
-                implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:$project.versions.atrium"
-                implementation "io.mockk:mockk-common:1.9.3"
+                implementation Libs.spek_dsl_metadata
+                implementation Libs.atrium_cc_en_gb_robstoll_common
+                implementation Libs.mockk_common
             }
         }
 
@@ -60,12 +59,12 @@ kotlin {
             dependencies {
                 implementation kotlin("test")
                 implementation kotlin("test-junit")
-                implementation "org.spekframework.spek2:spek-dsl-jvm:$project.versions.spek"
-                implementation "ch.tutteli.atrium:atrium-cc-en_GB-robstoll:$project.versions.atrium"
-                implementation "io.mockk:mockk:1.9.3"
+                implementation Libs.spek_dsl_jvm
+                implementation Libs.atrium_cc_en_gb_robstoll
+                implementation Libs.mockk
 
-                runtimeOnly "org.spekframework.spek2:spek-runner-junit5:$project.versions.spek"
-                runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect'
+                runtimeOnly Libs.spek_runner_junit5
+                runtimeOnly Libs.kotlin_reflect
             }
         }
         jsMain {
