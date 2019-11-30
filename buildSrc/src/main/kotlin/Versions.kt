@@ -34,7 +34,7 @@ object Versions {
 
   const val dokka_gradle_plugin: String = "0.9.17" // available: "0.9.18"
 
-  const val org_jetbrains_kotlin: String = "1.3.60"
+  const val org_jetbrains_kotlin: String = "1.3.61"
 
   const val spek: String = "2.1.0-alpha.0.11+d97ef33"
        // available: "2.1.0-alpha.0.24+0fdeb6e"
@@ -52,12 +52,6 @@ object Versions {
   const val gradleLatestVersion: String = "5.6.1"
 
   const val gradleCurrentVersion: String = "5.6.1"
-}
-
-object Plugins {
-    const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.org_jetbrains_kotlin}"
-    const val dokka  = "org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka_gradle_plugin}"
-    const val android = "com.android.tools.build:gradle:${Versions.com_android_tools_build_gradle}"
 }
 
 /**
