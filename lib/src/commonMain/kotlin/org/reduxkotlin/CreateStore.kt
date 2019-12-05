@@ -105,7 +105,7 @@ fun <State> createStore(
              |If you would like to be notified after the store has been updated, 
              |subscribe from a component and invoke store.getState() in the 
              |callback to access the latest state. See 
-             |https://www.reduxkotlin.org/api/store#subscribelistener-storesubstriber
+             |https://www.reduxkotlin.org/api/store#subscribelistener-storesubscriber
              |for more details.""".trimMargin()
         }
 
@@ -122,7 +122,7 @@ fun <State> createStore(
             check(!isDispatching) {
                 """You may not unsubscribe from a store listener while the reducer
                  |is executing. See 
-                 |https://www.reduxkotlin.org/api/store#subscribelistener-storesubstriber
+                 |https://www.reduxkotlin.org/api/store#subscribelistener-storesubscriber
                  |for more details.""".trimMargin()
             }
 
