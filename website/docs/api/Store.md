@@ -26,10 +26,10 @@ To create it, pass your root [reducing function](../Glossary.md#reducer) to
 
 ### Store Methods
 
-- [`getState()`](#getstate)
-- [`dispatch(action)`](#dispatchaction)
-- [`subscribe(listener)`](#subscribelistener)
-- [`replaceReducer(nextReducer)`](#replacereducernextreducer)
+- [`getState()`](#getstate-_or_-state-property)
+- [`dispatch(action)`](#dispatchaction-any-any)
+- [`subscribe(listener)`](#subscribelistener-storesubscriber)
+- [`replaceReducer(nextReducer)`](#replacereducernextreducer-reducer-state-unit)
 
 ## Store Methods
 
@@ -116,7 +116,7 @@ store.dispatch(AddTodo("Read about the middleware"))
 
 <hr>
 
-### subscribe(listener: StoreSubstriber)
+### subscribe(listener: StoreSubscriber)
 
 Adds a change listener. It will be called any time an action is dispatched, and some part of the
 state tree may potentially have changed. You may then call [`getState()`](#getState) to read the 
