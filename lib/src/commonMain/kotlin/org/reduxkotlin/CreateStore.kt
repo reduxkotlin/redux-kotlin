@@ -1,5 +1,6 @@
 package org.reduxkotlin
 
+import org.reduxkotlin.utils.getThreadName
 import org.reduxkotlin.utils.isPlainObject
 
 /**
@@ -44,6 +45,8 @@ fun <State> createStore(
     var currentListeners = mutableListOf<() -> Unit>()
     var nextListeners = currentListeners
     var isDispatching = false
+    val storeThreadName = getThreadName()
+    fun ensureSameThread() = getThreadName() == storeThreadName
 
     /**
      * This makes a shallow copy of currentListeners so we can use
@@ -64,6 +67,12 @@ fun <State> createStore(
      * @returns {S} The current state tree of your application.
      */
     fun getState(): State {
+        check(ensureSameThread()) {
+            """You may not call store.getState() from another thread than the store
+                |was created on.  This store was created on: '$storeThreadName' and current
+                |thread is '${getThreadName()}'
+            """.trimMargin()
+        }
         check(!isDispatching) {
             """|You may not call store.getState() while the reducer is executing.
              |The reducer has already received the state as an argument.

@@ -37,9 +37,11 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun incrementIfOdd() {
-        if (store.state % 2 != 0) {
-            store.dispatch(Increment())
-        }
+        Thread {
+            if (store.state % 2 != 0) {
+                store.dispatch(Increment())
+            }
+        }.start()
     }
 
     private fun incrementAsync() {
