@@ -11,8 +11,8 @@ Redux in multi-threaded environments brings additional concerns that are not pre
 for Javascript.  Javascript is single threaded, so Redux.js did not have to address the issue.
 Android, iOS, and native do have threading, and as such attention must be paid to which threads interact with the store.
 
-As of ReduxKotlin 0.3.0 there is `same thread enforcement` for the [getState](https://www.reduxkotlin.org/api/store#getstate-_or_-state-property), [dispatch](https://www.reduxkotlin.org/api/store#dispatchaction-any-any), [replaceReducer](https://www.reduxkotlin.org/api/store#replacereducernextreducer-reducer-state-unit),
-and [subscribe](https://www.reduxkotlin.org/api/store#subscribelistener-storesubscriber) functions on the store.  This means these methods must be called from the same thread where
+As of ReduxKotlin 0.3.0 there is `same thread enforcement` for the [getState](../api/store#getstate-_or_-state-property), [dispatch](../api/store#dispatchaction-any-any), [replaceReducer](../api/store#replacereducernextreducer-reducer-state-unit),
+and [subscribe](../api/store#subscribelistener-storesubscriber) functions on the store.  This means these methods must be called from the same thread where
 the store was created.  An `IllegalStateException` will be thrown if one of these are called from a 
 different thread.
 
