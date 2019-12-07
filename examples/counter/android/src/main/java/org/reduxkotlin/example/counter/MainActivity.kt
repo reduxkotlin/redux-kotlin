@@ -5,7 +5,6 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.reduxkotlin.StoreSubscription
-import org.reduxkotlin.combineReducers
 import org.reduxkotlin.createStore
 import org.reduxkotlin.examples.counter.Decrement
 import org.reduxkotlin.examples.counter.Increment
@@ -37,11 +36,9 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun incrementIfOdd() {
-        Thread {
-            if (store.state % 2 != 0) {
-                store.dispatch(Increment())
-            }
-        }.start()
+        if (store.state % 2 != 0) {
+            store.dispatch(Increment())
+        }
     }
 
     private fun incrementAsync() {
