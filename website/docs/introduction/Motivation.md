@@ -16,5 +16,5 @@ sharing code between Android, iOS, web.
 
 Redux as a pattern for sharing code between platforms looks promising, especially in the future with
 Jetpack Compose and SwiftUI. For an example of shared code in a SwiftUI app look at the
-(MovieSwiftUI-Kotlin)[https://github.com/reduxkotlin/MovieSwiftUI-Kotlin] example.
+[MovieSwiftUI-Kotlin](https://github.com/reduxkotlin/MovieSwiftUI-Kotlin) example.
 
