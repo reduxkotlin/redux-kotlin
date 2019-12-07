@@ -49,7 +49,7 @@ complete example of how to use Redux in a real application. Async actions such a
 and delays are demonstrated. Also used is the
 [presenter-middleware](https://github.com/reduxkotlin/presenter-middleware) as a presentation layer.
 
-Run the [Counter](https://github.com/reduxkotlin/NameGameSampleApp) example:
+Run the [NameGame](https://github.com/reduxkotlin/NameGameSampleApp) example:
 
 ```sh
 git clone https://github.com/reduxkotlin/NameGameSampleApp.git
@@ -74,7 +74,7 @@ complete example of how to use Redux in a real application. Async actions such a
 and delays are demonstrated. Also used is the
 [presenter-middleware](https://github.com/reduxkotlin/presenter-middleware) as a presentation layer.
 
-Run the [Counter](https://github.com/reduxkotlin/ReadingListSampleApp) example:
+Run the [ReadingList](https://github.com/reduxkotlin/ReadingListSampleApp) example:
 
 
 ```sh
