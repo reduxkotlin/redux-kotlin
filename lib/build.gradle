@@ -87,6 +87,24 @@ kotlin {
                 implementation kotlin("stdlib-js")
             }
         }
+        winMain {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        wasmMain {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linArm32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linMips32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linMipsel32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        lin64Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
 
         iosSimMain.dependsOn iosMain
         iosSimTest.dependsOn iosTest
