@@ -48,9 +48,10 @@ fun <State> createStore(
     val storeThreadName = getThreadName()
     fun isSameThread() = getThreadName() == storeThreadName
     fun checkSameThread() = check(isSameThread()) {
-        """You may not call store.getState() from another thread than the store
-                |was created on.  This store was created on: '$storeThreadName' and current
-                |thread is '${getThreadName()}'
+        """You may not call the store from a thread other than the thread on which it was created.
+            |This includes: getState(), dispatch(), subscribe(), and replaceReducer()
+            |This store was created on: '$storeThreadName' and current
+            |thread is '${getThreadName()}'
             """.trimMargin()
     }
 
@@ -230,7 +231,7 @@ fun <State> createStore(
     // the initial state tree.
     dispatch(ActionTypes.INIT)
 
-    return object: Store<State> {
+    return object : Store<State> {
         override val getState = ::getState
         override var dispatch: Dispatcher = ::dispatch
         override val subscribe = ::subscribe
