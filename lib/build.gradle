@@ -7,7 +7,7 @@ apply plugin: 'kotlin-multiplatform'
 archivesBaseName = 'redux-kotlin'
 
 group 'org.reduxkotlin'
-version '0.2.9'
+version '0.3.0'
 
 kotlin {
     jvm()
@@ -86,6 +86,24 @@ kotlin {
                 implementation kotlin("test-js")
                 implementation kotlin("stdlib-js")
             }
+        }
+        winMain {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        wasmMain {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linArm32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linMips32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linMipsel32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        lin64Main {
+            kotlin.srcDir('src/fallbackMain')
         }
 
         iosSimMain.dependsOn iosMain

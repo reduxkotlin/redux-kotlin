@@ -14,8 +14,8 @@ implement features and solve problems in your application.
 
 ReduxKotlin ecosystem is currently very small.  This list will be updated as needed.  
 
-For inspiration or examples, the JS ecosystem is quite rich and (can be explored
-here)[https://redux.js.org/introduction/ecosystem].
+For inspiration or examples, the JS ecosystem is quite rich and [can be explored
+here](https://redux.js.org/introduction/ecosystem).
 
 **[Presenter-middleware](https://github.com/reduxkotlin/presenter-middleware)**  
 A middleware for writing concise UI binding code and no-fuss lifecycle/subscription management.

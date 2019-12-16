@@ -12,7 +12,8 @@ The only way to change the state inside it is to dispatch an [action](../Glossar
 
 A store is just a plain object that contains your current state and a 4 functions.
 To create it, pass your root [reducing function](../Glossary.md#reducer) to 
-[`createStore`](createStore.md).
+[`createStore`](createStore.md).  The store has [same thread enforcement](../introduction/threading), meaning 
+its methods must be called from the same thread where the store was created.
 
 > ##### A Note for Flux Users
 >

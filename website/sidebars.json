@@ -5,6 +5,7 @@
       "introduction/motivation",
       "introduction/core-concepts",
       "introduction/three-principles",
+      "introduction/threading",
       "introduction/learning-resources",
       "introduction/ecosystem",
       "introduction/examples"

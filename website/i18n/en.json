@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "A Predictable State Container for Kotlin Apps",
+    "tagline": "Redux in Kotlin supporting multiplatform - Android, iOS, Web, Native",
     "docs": {
       "advanced/async-actions": {
         "title": "Async Actions",
@@ -115,6 +115,10 @@
       },
       "introduction/README": {
         "title": "introduction/README"
+      },
+      "introduction/threading": {
+        "title": "Redux on Multi-threaded Platforms",
+        "sidebar_label": "Threading"
       },
       "introduction/three-principles": {
         "title": "Three Principles",
