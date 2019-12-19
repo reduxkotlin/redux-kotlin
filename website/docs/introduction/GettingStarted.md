@@ -33,7 +33,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin:0.3.0"
+                implementation "org.reduxkotlin:redux-kotlin:0.3.1"
             }
         }
     }
@@ -47,7 +47,7 @@ __For single platform project (i.e. just Android):__
 
 ```groovy
 dependencies {
-    implementation "org.reduxkotlin:redux-kotlin:0.3.0"
+    implementation "org.reduxkotlin:redux-kotlin:0.3.1"
 }
 ```
 
