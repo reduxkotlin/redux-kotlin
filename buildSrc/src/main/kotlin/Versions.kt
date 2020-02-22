@@ -43,6 +43,7 @@ object Versions {
 
   const val recycler_view = "1.0.0"
 
+  const val coroutines = "1.3.3"
 
   /**
    *
