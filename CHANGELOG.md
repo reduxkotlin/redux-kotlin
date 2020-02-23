@@ -1,5 +1,8 @@
 ## Unreleased
 
+## [0.3.2] - 2020-02-22
+ - issue #34 - incorrect same thread enforcement behavior fixed
+
 ## [0.3.1] - 2019-12-16
 
 ### Changed
