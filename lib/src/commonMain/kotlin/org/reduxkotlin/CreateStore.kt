@@ -2,6 +2,7 @@ package org.reduxkotlin
 
 import org.reduxkotlin.utils.getThreadName
 import org.reduxkotlin.utils.isPlainObject
+import org.reduxkotlin.utils.stripCoroutineName
 
 /**
  * Creates a Redux store that holds the state tree.
@@ -45,8 +46,8 @@ fun <State> createStore(
     var currentListeners = mutableListOf<() -> Unit>()
     var nextListeners = currentListeners
     var isDispatching = false
-    val storeThreadName = getThreadName()
-    fun isSameThread() = getThreadName() == storeThreadName
+    val storeThreadName = stripCoroutineName(getThreadName())
+    fun isSameThread() = stripCoroutineName(getThreadName()) == storeThreadName
     fun checkSameThread() = check(isSameThread()) {
         """You may not call the store from a thread other than the thread on which it was created.
             |This includes: getState(), dispatch(), subscribe(), and replaceReducer()

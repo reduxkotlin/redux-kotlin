@@ -7,7 +7,7 @@ apply plugin: 'kotlin-multiplatform'
 archivesBaseName = 'redux-kotlin'
 
 group 'org.reduxkotlin'
-version '0.3.1'
+version '0.3.2'
 
 kotlin {
     jvm()
@@ -59,6 +59,8 @@ kotlin {
             dependencies {
                 implementation kotlin("test")
                 implementation kotlin("test-junit")
+                implementation Libs.kotlin_coroutines_test
+                implementation Libs.kotlin_coroutines_jvm
                 implementation Libs.spek_dsl_jvm
                 implementation Libs.atrium_cc_en_gb_robstoll
                 implementation Libs.mockk
