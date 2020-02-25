@@ -118,7 +118,7 @@ __\#redux__ slack channel in [kotlinlang](https://kotlinlang.slack.com)
 
 Trello boards - https://trello.com/reduxkotlinorg
 
-Or create an issue on github.
+Or create an issue on [github](https://github.com/reduxkotlin/redux-kotlin/issues).
 
 [badge-android]: http://img.shields.io/badge/platform-android-brightgreen.svg?style=flat
 [badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat	
