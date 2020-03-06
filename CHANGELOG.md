@@ -1,4 +1,5 @@
 ## Unreleased
+ - kotlin 1.3.70
 
 ## [0.3.2] - 2020-02-22
  - issue #34 - incorrect same thread enforcement behavior fixed
