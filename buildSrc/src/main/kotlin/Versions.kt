@@ -18,11 +18,11 @@ object Versions {
 
   const val androidx_test_runner: String = "1.2.0"
 
-  const val atrium: String = "0.8.0"
+  const val atrium: String = "0.9.2"
 
   const val aapt2: String = "3.5.0-5435860"
 
-  const val com_android_tools_build_gradle: String = "3.5.0"
+  const val com_android_tools_build_gradle: String = "3.6.0"
 
   const val lint_gradle: String = "26.5.0"
 
@@ -34,7 +34,7 @@ object Versions {
 
   const val dokka_gradle_plugin: String = "0.9.17" // available: "0.9.18"
 
-  const val org_jetbrains_kotlin: String = "1.3.61"
+  const val org_jetbrains_kotlin: String = "1.3.70"
 
   const val spek: String = "2.1.0-alpha.0.11+d97ef33"
        // available: "2.1.0-alpha.0.24+0fdeb6e"
