@@ -74,7 +74,7 @@ jobs:
       - run: |
           sudo npm install now -g
           cd website
-          now --token $ZEIT_NOW_TOKEN --prod
+          now --token $ZEIT_NOW_TOKEN --prod --confirm
 
 workflows:
   build_test:
