@@ -13,13 +13,12 @@ import kotlin.IllegalStateException
 import kotlin.system.measureTimeMillis
 import kotlin.test.*
 
-
-object ThreadUtilSpec : Spek({
+object CreateSameThreadEnforcedStoreSpec : Spek({
     val mainThreadSurrogate = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     Dispatchers.setMain(mainThreadSurrogate)
 
     describe("createStore") {
-        val store = createStore(
+        val store = createSameThreadEnforcedStore(
             todos, TestState(
                 listOf(
                     Todo(
@@ -47,7 +46,7 @@ object ThreadUtilSpec : Spek({
 
             runBlocking {
                 CoroutineScope(Dispatchers.Main).async {
-                    val store = createStore(
+                    val store = createSameThreadEnforcedStore(
                         testReducer,
                         TestState(),
                         applyMiddleware(middleware.middleware)
@@ -82,7 +81,7 @@ object ThreadUtilSpec : Spek({
             lateinit var store: Store<TestCounterState>
             runBlocking {
                 withContext(counterContext) {
-                    store = createStore(counterReducer, TestCounterState())
+                    store = createSameThreadEnforcedStore(counterReducer, TestCounterState())
                 }
             }
             runBlocking {

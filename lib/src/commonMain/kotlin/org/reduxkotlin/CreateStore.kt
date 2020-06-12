@@ -1,11 +1,12 @@
 package org.reduxkotlin
 
-import org.reduxkotlin.utils.getThreadName
 import org.reduxkotlin.utils.isPlainObject
-import org.reduxkotlin.utils.stripCoroutineName
 
 /**
- * Creates a Redux store that holds the state tree.
+ * Creates a NON-THREADSAFE Redux store that holds the state tree.
+ * If your application needs thread-safety access to store consider [createThreadSafeStore]
+ * see: TODO link to docs
+ *
  * The only way to change the data in the store is to call `dispatch()` on it.
  *
  * There should only be a single store in your app. To specify how different
@@ -46,15 +47,6 @@ fun <State> createStore(
     var currentListeners = mutableListOf<() -> Unit>()
     var nextListeners = currentListeners
     var isDispatching = false
-    val storeThreadName = stripCoroutineName(getThreadName())
-    fun isSameThread() = stripCoroutineName(getThreadName()) == storeThreadName
-    fun checkSameThread() = check(isSameThread()) {
-        """You may not call the store from a thread other than the thread on which it was created.
-            |This includes: getState(), dispatch(), subscribe(), and replaceReducer()
-            |This store was created on: '$storeThreadName' and current
-            |thread is '${getThreadName()}'
-            """.trimMargin()
-    }
 
     /**
      * This makes a shallow copy of currentListeners so we can use
@@ -75,7 +67,6 @@ fun <State> createStore(
      * @returns {S} The current state tree of your application.
      */
     fun getState(): State {
-        checkSameThread()
         check(!isDispatching) {
             """|You may not call store.getState() while the reducer is executing.
              |The reducer has already received the state as an argument.
@@ -112,7 +103,6 @@ fun <State> createStore(
      * @returns {StoreSubscription} A fun  to remove this change listener.
      */
     fun subscribe(listener: StoreSubscriber): StoreSubscription {
-        checkSameThread()
         check(!isDispatching) {
             """|You may not call store.subscribe() while the reducer is executing.
              |If you would like to be notified after the store has been updated, 
@@ -172,7 +162,6 @@ fun <State> createStore(
      * return something else (for example, a Promise you can await).
      */
     fun dispatch(action: Any): Any {
-        checkSameThread()
         require(isPlainObject(action)) {
             """Actions must be plain objects. Use custom middleware for async 
             |actions.""".trimMargin()
@@ -207,7 +196,6 @@ fun <State> createStore(
      * @returns {void}
      */
     fun replaceReducer(nextReducer: Reducer<State>) {
-        checkSameThread()
         currentReducer = nextReducer
 
         // This action has a similar effect to ActionTypes.INIT.

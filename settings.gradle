@@ -10,6 +10,7 @@ pluginManagement {
 
 include(
     ':lib',
+    ':lib-threadsafe',
     ':examples:counter:common',
     ':examples:counter:android',
     ':examples:todos:common',
