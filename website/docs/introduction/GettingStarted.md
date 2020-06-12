@@ -33,7 +33,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin:0.4.0"
+                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.0"
             }
         }
     }
@@ -47,9 +47,12 @@ __For single platform project (i.e. just Android):__
 
 ```groovy
 dependencies {
-    implementation "org.reduxkotlin:redux-kotlin:0.4.0"
+    implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.0"
 }
 ```
+
+NOTE: If threadsafety is not a concern (i.e. a JS only project) "org.reduxkotlin:redux-kotlin:0.5.0" may be used.
+[**More info on threading available here.**](/introduction/threading)
 
 ## Basic Example
 
@@ -116,8 +119,8 @@ action transforms the entire application's state.
 
 In a typical Redux app, there is just a single store with a single root reducing function. As your
 app grows, you split the root reducer into smaller reducers independently operating on the different
-parts of the state tree. Redux is unopinonated - how reducers and actions are organized is up to
-you. Useful patterns will be documented here soon.TODO
+parts of the state tree. Redux is unopinionated - how reducers and actions are organized is up to
+you. Useful patterns will be documented here soon.
 
 This architecture might seem like an overkill for a counter app, but the beauty of this pattern is
 how well it scales to large and complex apps. It also enables very powerful developer tools, because

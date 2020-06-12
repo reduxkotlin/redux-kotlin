@@ -44,7 +44,7 @@ kotlin {
   sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin:0.4.0"
+                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.0"
             }
         }
  }
@@ -52,8 +52,11 @@ kotlin {
 
 For JVM only:
 ```
-  implementation "org.reduxkotlin:redux-kotlin-jvm:0.4.0"
+  implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.0"
 ```
+
+*Non threadsafe store is available.  Typical usage will be with the threadsafe store. [More info read here](https://www.reduxkotlin.org/introduction/getting-started)
+
 
 Usage is very similar to JS Redux and those docs will be useful https://redux.js.org/.  These docs are not an intro to Redux, and just documentation on Kotlin specific bits.  For more info on Redux in general, check out https://redux.js.org/.
 
