@@ -5,7 +5,9 @@ import org.reduxkotlin.utils.isPlainObject
 /**
  * Creates a NON-THREADSAFE Redux store that holds the state tree.
  * If your application needs thread-safety access to store consider [createThreadSafeStore]
- * see: TODO link to docs
+ * see:
+ *  https://reduxkotlin.org/api/createThreadSafeStore
+ *  https://www.reduxkotlin.org/introduction/threading
  *
  * The only way to change the data in the store is to call `dispatch()` on it.
  *
