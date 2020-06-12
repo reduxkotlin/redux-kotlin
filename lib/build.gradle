@@ -7,7 +7,7 @@ apply plugin: 'kotlin-multiplatform'
 archivesBaseName = 'redux-kotlin'
 
 group 'org.reduxkotlin'
-version '0.5.0'
+version '0.5.1'
 
 kotlin {
     jvm()

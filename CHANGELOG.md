@@ -1,6 +1,8 @@
 ## Unreleased
 
 ## [0.5.0] - 2020-06-11
+ - update lib dependency to api import, so core lib is included in redux-kotlin-threadsafe
+## [0.5.0] - 2020-06-11
  - kotlin 1.3.72
  - createThreadSafeStore fun added for thread synchronized access
  - createEnsureSameThreadStore to provide existing same-thread-enforcement

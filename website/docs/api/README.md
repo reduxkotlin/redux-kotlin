@@ -74,6 +74,7 @@ data class Store<State>(
 ### Top-Level Functions
 
 - [createStore(reducer: Reducer, preloadedState: State, enhancer: StoreEnhancer)](createStore.md)
+- [createThreadSafeStore(reducer: Reducer, preloadedState: State, enhancer: StoreEnhancer)](createThreadSafeStore.md)
 - [applyMiddleware(...middlewares)](applyMiddleware.md)
 - [compose(...functions)](compose.md)
 

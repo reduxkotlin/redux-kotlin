@@ -1,11 +1,11 @@
 ---
-id: createThreadSafeStore
+id: createthreadsafestore
 title: createThreadSafeStore
 sidebar_label: createThreadSafeStore
 hide_title: true
 ---
 
-# `createThreadSafeStore(reducer, preloadedState, enhancer)
+# `createThreadSafeStore(reducer, preloadedState, enhancer)`
 
 Creates a Redux [store](Store.md) that is may be accessed from any thread.
 

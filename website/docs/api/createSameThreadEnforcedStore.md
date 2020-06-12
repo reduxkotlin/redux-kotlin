@@ -1,11 +1,11 @@
 ---
-id: createSameThreadEnforcedstore
+id: createsamethreadenforcedstore
 title: createSameThreadEnforcedStore
 sidebar_label: createSameThreadEnforcedStore
 hide_title: true
 ---
 
-# `createSameThreadEnforcedStore(reducer, preloadedState, enhancer)
+# `createSameThreadEnforcedStore(reducer, preloadedState, enhancer)`
 
 Creates a Redux [store](Store.md) that can only be accessed from the same thread.  
 Any call to the store's functions called from a thread other than thread from which  

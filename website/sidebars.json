@@ -45,6 +45,8 @@
     "API Reference": [
       "api/api-reference",
       "api/createstore",
+      "api/createthreadsafestore",
+      "api/createsamethreadenforcedstore",
       "api/store",
       "api/combinereducers",
       "api/applymiddleware",
