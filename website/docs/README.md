@@ -25,6 +25,8 @@
 - [Glossary](Glossary.md)
 - [API Reference](api/README.md)
   - [createStore](api/createStore.md)
+  - [createThreadSafeStore](api/createThreadSafeStore.md)
+  - [createSameThreadEnforcedStore](api/createSameThreadEnforcedStore.md)
   - [Store](api/Store.md)
   - [applyMiddleware](api/applyMiddleware.md)
   - [compose](api/compose.md)
