@@ -19,17 +19,20 @@ state.  Or 2 actions dispatched concurrently could cause an invalid state.
 
 **So you there are 3 options:**
 
-    1) Synchronize access to the store  - [createThreadSafeStore()](../api/createThreadSafeStore.md)
-    2) Only access the store from the same thread - [createSameThreadEnforcedStore()](../api/createSameThreadEnforcedStore.md)
-    3) Live in the wild west and access store anytime, any thread and live with consequences - NOT RECOMMENDED - [createStore()](../api/createStore.md)
+1) Synchronize access to the store  - [createThreadSafeStore()](../api/createThreadSafeStore.md)
+2) Only access the store from the same thread - [createSameThreadEnforcedStore()](../api/createSameThreadEnforcedStore.md)
+3) Live in the wild west and access store anytime, any thread
+    and live with consequences - NOT_RECOMMENDED - [createStore()](../api/createStore.md)
 
 ReduxKotlin allows all these, but most cases will fall into #1.
+
+## ThreadSafe
 
 Starting with ReduxKotlin 0.5.0 there is a threadsafe store which uses synchronization (AtomicFu library)
 to allow safe access to all the functions on the store.  This is the recommended usage for 90% of use cases.
 
 ```kotlin
-    val store = createThreadSafeStore(...)
+    val store = createThreadSafeStore(reducer, state)
 ```
 
 Who is the other 10%? If you are only targeting Javascript thread safety is not an issue, so
@@ -55,9 +58,13 @@ have do not have the enforcement in place yet.
 
 To use `same thread enforcement`:
 ```kotlin
-    val store = createSameThreadEnforcedStore(...)
+    val store = createSameThreadEnforcedStore(reducer, state)
 ```
 
+## Wild west - no enforcement
+
+`createStore()` may be used if the project is only a single threaded application (i.e. JS only), or you
+just want control access within your codebase(NOT_RECOMMENDED).
 
 ***IF*** you are using vanilla `createStore()`, then you may use an different artifact,  
 and avoid pulling in AtomicFu dependency:
@@ -67,7 +74,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin:0.5.0"
+                implementation "org.reduxkotlin:redux-kotlin:0.5.1"
             }
         }
     }

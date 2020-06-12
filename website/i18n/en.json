@@ -29,9 +29,17 @@
         "title": "compose",
         "sidebar_label": "compose"
       },
+      "api/createsamethreadenforcedstore": {
+        "title": "createSameThreadEnforcedStore",
+        "sidebar_label": "createSameThreadEnforcedStore"
+      },
       "api/createstore": {
         "title": "createStore",
         "sidebar_label": "createStore"
+      },
+      "api/createthreadsafestore": {
+        "title": "createThreadSafeStore",
+        "sidebar_label": "createThreadSafeStore"
       },
       "api/api-reference": {
         "title": "API Reference",
