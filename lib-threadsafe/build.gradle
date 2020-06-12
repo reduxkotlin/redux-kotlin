@@ -26,8 +26,9 @@ kotlin {
     iosX64("iosSim")
     macosX64("macos")
     mingwX64("win")
-    wasm32("wasm")
-    linuxArm32Hfp("linArm32")
+    //below are currently not supported by atomicfu
+    //wasm32("wasm")
+    //linuxArm32Hfp("linArm32")
     linuxMips32("linMips32")
     linuxMipsel32("linMipsel32")
     linuxX64("lin64")
