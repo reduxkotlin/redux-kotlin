@@ -45,6 +45,8 @@ object Versions {
 
   const val coroutines = "1.3.7"
 
+  const val atomicFu = "0.14.2"
+
   /**
    *
    * See issue 19: How to update Gradle itself?

@@ -181,6 +181,9 @@ object Libs {
   const val spek_runner_junit5: String = "org.spekframework.spek2:spek-runner-junit5:" +
       Versions.spek
 
+  const val kotlin_coroutines: String = "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:" +
+          Versions.coroutines
+
   const val kotlin_coroutines_jvm: String = "org.jetbrains.kotlinx:kotlinx-coroutines-core:" +
           Versions.coroutines
 
