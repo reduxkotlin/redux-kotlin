@@ -8,7 +8,7 @@ apply plugin: 'kotlinx-atomicfu'
 archivesBaseName = 'redux-kotlin-threadsafe'
 
 group 'org.reduxkotlin'
-version '0.4.0'
+version '0.5.0'
 
 kotlin {
     jvm()
@@ -53,7 +53,6 @@ kotlin {
         }
 
         jvmMain {
-            kotlin.srcDir('src/jvmMain/kotlin')
             dependencies {
                 implementation kotlin("stdlib")
             }
@@ -74,7 +73,6 @@ kotlin {
             }
         }
         jsMain {
-            kotlin.srcDir('src/jsMain/kotlin')
             dependencies {
                 implementation kotlin("stdlib-js")
             }
