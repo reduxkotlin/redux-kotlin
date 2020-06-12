@@ -10,6 +10,13 @@ hide_title: true
 Creates a Redux [store](Store.md) that holds the complete state tree of your app.  
 There should only be a single store in your app.
 
+If using `createStore` directly, it will not be threadsafe.
+
+It is ***STRONGLY*** recommended that [`createThreadSafeStore()`](./createThreadSafeStore.md) is used unless there is
+ good reason to do otherwise.
+
+The rest of this doc applies to all `createStore` functions.
+
 #### Arguments
 
 1. `reducer` _(Reducer)_: A [reducing function](../Glossary.md#reducer) that returns the next 
