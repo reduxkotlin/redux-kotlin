@@ -99,7 +99,7 @@ Using a function:
                }
 ```
 
-Using the convinence helper function `middleware`:
+Using the convenience helper function `middleware`:
 ```
    val loggingMiddleware = middleware { store, next, action -> 
           //log here
@@ -109,7 +109,7 @@ Using the convinence helper function `middleware`:
 
 __Create a store__
 ```
-  val store = createStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
+  val store = createThreadSafeStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
 ```
 
 You then will have access to dispatch and subscribe functions from the `store`.

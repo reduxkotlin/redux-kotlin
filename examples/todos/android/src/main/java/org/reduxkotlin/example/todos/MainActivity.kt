@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.reduxkotlin.StoreSubscription
-import org.reduxkotlin.createStore
+import org.reduxkotlin.createThreadSafeStore
 import org.reduxkotlin.examples.todos.*
 
 /**
@@ -13,7 +13,7 @@ import org.reduxkotlin.examples.todos.*
  */
 
 
-val store = createStore(::rootReducer, AppState())
+val store = createThreadSafeStore(::rootReducer, AppState())
 
 class MainActivity: AppCompatActivity() {
     private lateinit var storeSubscription: StoreSubscription

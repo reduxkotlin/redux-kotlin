@@ -84,7 +84,7 @@ fun createThunkMiddleware(extraArgument: Any? = null): ThunkMiddleware =
         }
     }
         
-val store = createStore(
+val store = createThreadSafeStore(
     reducer,
     applyMiddleware(
         createThunkMiddleware(),

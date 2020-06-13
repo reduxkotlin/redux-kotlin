@@ -5,7 +5,7 @@ import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.reduxkotlin.StoreSubscription
-import org.reduxkotlin.createStore
+import org.reduxkotlin.createThreadSafeStore
 import org.reduxkotlin.examples.counter.Decrement
 import org.reduxkotlin.examples.counter.Increment
 import org.reduxkotlin.examples.counter.reducer
@@ -16,7 +16,7 @@ import org.reduxkotlin.examples.counter.reducer
  */
 
 
-val store = createStore(reducer, 0)
+val store = createThreadSafeStore(reducer, 0)
 
 class MainActivity: AppCompatActivity() {
     lateinit var storeSubscription: StoreSubscription

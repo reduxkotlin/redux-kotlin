@@ -84,6 +84,8 @@ fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -
  *
  *   val rootReducer = combineReducers(loginReducer, feedReducer)
  *   val store = createStore(rootReducer, AppState())
+ *      **or**
+ *   val store = createThreadSafeStore(rootReducer, AppState())
  */
 inline fun <TState, reified TAction> reducerForActionType(
     crossinline reducer: ReducerForActionType<TState, TAction>

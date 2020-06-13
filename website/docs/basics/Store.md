@@ -23,10 +23,10 @@ split your data handling logic, you'll use [reducer composition](Reducers.md#spl
 instead of many stores.
 
 It's easy to create a store if you have a reducer. In the [previous section](Reducers.md), we 
-combined several reducers into one. We will now pass it to [`createStore()`](../api/createStore.md).
+combined several reducers into one. We will now pass it to [`createThreadSafeStore()`](../api/createStore.md).
 
 ```kotlin
-val store = createStore(todoAppReducer, INITIAL_STATE)
+val store = createThreadSafeStore(todoAppReducer, INITIAL_STATE)
 ```
 
 > ##### Note on required initial state

@@ -46,7 +46,7 @@ maybe not calling it at all. The last middleware in the chain will receive the r
  ```kotlin
 typealias StoreEnhancer<State> = (StoreCreator<State>) -> StoreCreator<State>
  ```
-but the easiest way to apply it is to pass it to [`createStore()`](./createStore.md) as the last 
+but the easiest way to apply it is to pass it to [`createThreadSafeStore()`](./createStore.md) as the last 
 `enhancer` argument.
 
 #### Example: Custom Logger Middleware
@@ -67,7 +67,7 @@ fun loggerMiddleware2(store: Store<AppState>) = { next: Dispatcher ->
 }
 
 
-val store = createStore(todos, AppState.INITIAL_STATE, applyMiddleware(::logger))
+val store = createThreadSafeStore(todos, AppState.INITIAL_STATE, applyMiddleware(::logger))
 
 store.dispatch(AddTodoAction(text = "Understand middleware"))
 // (These lines will be logged by the middleware:)

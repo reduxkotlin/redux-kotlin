@@ -81,7 +81,7 @@ fun rootReducer(state: AppState, action: Any) = AppState(
     visibilityFilter = visibilityFilterReducer(state.visibilityFilter, action)
 )
 
-val store = createStore(::rootReducer, AppState.INITIAL_STATE)
+val store = createThreadSafeStore(::rootReducer, AppState.INITIAL_STATE)
 ```
 
 That's it! Now you know what Redux is all about.
