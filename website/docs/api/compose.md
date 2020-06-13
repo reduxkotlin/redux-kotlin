@@ -30,7 +30,7 @@ This example demonstrates how to use `compose` to enhance a [store](Store.md) wi
 [redux-devtools](https://github.com/reduxjs/redux-devtools) package.
 
 ```kotlin
-val store = createStore(
+val store = createThreadSafeStore(
   reducer,
   compose(
         presenterEnhancer(uiContext),

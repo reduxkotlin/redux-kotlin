@@ -91,7 +91,7 @@ class Decrement
 
 // Create a Redux store holding the state of your app.
 // 0 is the initial state
-val store = createStore(reducer, 0)
+val store = createThreadSafeStore(reducer, 0)
 
 // You can use subscribe() to update the UI in response to state changes.
 // Normally you'd use an additional layer or view binding library rather than subscribe() directly.

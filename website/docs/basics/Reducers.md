@@ -96,7 +96,7 @@ method is to use a `val` in the companion object of `AppState`.
 > parameter from the `createStore` function. ReduxKotlin requires a preloaded state to be passed to
 > `createStore`. This allows us to use a nonnullable type for State.
 ```kotlin
-val store = createStore(reducer, INITIAL_STATE)
+val store = createThreadSafeStore(reducer, INITIAL_STATE)
 ```
 
 Now let's handle `SET_VISIBILITY_FILTER`. All it needs to do is to change `visibilityFilter` on the

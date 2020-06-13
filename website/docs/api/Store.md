@@ -105,7 +105,7 @@ perform side effects, or chain them to execute in a sequence, see the examples f
 #### Example
 
 ```kotlin
-val store = createStore(todos, AppState(list = listOf("Use Redux")))
+val store = createThreadSafeStore(todos, AppState(list = listOf("Use Redux")))
 
 data class AddTodo(
     val text: String

@@ -40,5 +40,5 @@ dependencies {
     implementation(Libs.appcompat)
 
     implementation(project(":examples:counter:common"))
-    implementation(project(":lib"))
+    implementation(project(":lib-threadsafe"))
 }
