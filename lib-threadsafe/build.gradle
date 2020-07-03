@@ -123,5 +123,3 @@ jvmTest {
         includeEngines 'spek2'
     }
 }
-
-publishSnapshot.finalizedBy publish

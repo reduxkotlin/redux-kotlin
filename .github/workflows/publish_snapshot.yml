@@ -44,4 +44,4 @@ jobs:
         GPG_SECRET: ${{ secrets.GPG_SECRET }}
         GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
         SNAPSHOT: 'TRUE'
-      run: ./gradlew publishSnapShot
+      run: ./gradlew publish
