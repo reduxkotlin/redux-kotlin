@@ -43,4 +43,5 @@ jobs:
         SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
         GPG_SECRET: ${{ secrets.GPG_SECRET }}
         GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
+        SNAPSHOT: 'TRUE'
       run: ./gradlew publishSnapShot

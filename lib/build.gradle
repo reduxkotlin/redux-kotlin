@@ -131,11 +131,6 @@ afterEvaluate {
     //tasks.create('uploadArchives').dependsOn('publishKotlinMultiplatformPublicationToMavenRepository')
 }
 
-
-task publishSnapshot {
-    version = version + '-SNAPSHOT'
-}
-
 apply from: rootProject.file('gradle/publish.gradle')
 
 jvmTest {

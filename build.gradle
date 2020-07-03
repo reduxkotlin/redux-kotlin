@@ -30,6 +30,9 @@ allprojects {
 
     group = GROUP
     version = VERSION_NAME
+    if (hasProperty("SNAPSHOT") || System.getenv("SNAPSHOT") != null) {
+        version = version + "-SNAPSHOT"
+    }
 }
 
 task clean(type: Delete) {
