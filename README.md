@@ -1,6 +1,5 @@
 # Redux-Kotlin
 
-[![CircleCI](https://circleci.com/gh/reduxkotlin/redux-kotlin.svg?style=svg)](https://circleci.com/gh/reduxkotlin/redux-kotlin)
 ![CI](https://github.com/reduxkotlin/redux-kotlin/workflows/CI/badge.svg)
 
 ![badge][badge-android]
