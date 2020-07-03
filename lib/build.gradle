@@ -6,9 +6,6 @@ apply plugin: 'kotlin-multiplatform'
 
 archivesBaseName = 'redux-kotlin'
 
-group 'org.reduxkotlin'
-version '0.5.1'
-
 kotlin {
     jvm()
     js() {
@@ -134,17 +131,17 @@ afterEvaluate {
     //tasks.create('uploadArchives').dependsOn('publishKotlinMultiplatformPublicationToMavenRepository')
 }
 
-apply from: rootProject.file('gradle/publish.gradle')
 
-publishing {
-    publications.all {
-        // Rewrite all artifacts from using the project name to just 'runtime'.
-        artifactId = artifactId.replace(project.name, 'redux-kotlin')
-    }
+task publishSnapshot {
+    version = version + '-SNAPSHOT'
 }
+
+apply from: rootProject.file('gradle/publish.gradle')
 
 jvmTest {
     useJUnitPlatform {
         includeEngines 'spek2'
     }
 }
+
+publishSnapshot.finalizedBy publish

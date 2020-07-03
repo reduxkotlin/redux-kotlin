@@ -7,9 +7,6 @@ apply plugin: 'kotlinx-atomicfu'
 
 archivesBaseName = 'redux-kotlin-threadsafe'
 
-group 'org.reduxkotlin'
-version '0.5.1'
-
 kotlin {
     jvm()
     js() {
@@ -29,8 +26,8 @@ kotlin {
     //below are currently not supported by atomicfu
     //wasm32("wasm")
     //linuxArm32Hfp("linArm32")
-    linuxMips32("linMips32")
-    linuxMipsel32("linMipsel32")
+    //linuxMips32("linMips32")
+    //linuxMipsel32("linMipsel32")
     linuxX64("lin64")
 
     sourceSets {
@@ -119,17 +116,16 @@ afterEvaluate {
     //tasks.create('uploadArchives').dependsOn('publishKotlinMultiplatformPublicationToMavenRepository')
 }
 
-apply from: rootProject.file('gradle/publish.gradle')
-
-publishing {
-    publications.all {
-        // Rewrite all artifacts from using the project name to just 'runtime'.
-        artifactId = artifactId.replace(project.name, 'redux-kotlin-threadsafe')
-    }
+task publishSnapshot {
+    version = version + '-SNAPSHOT'
 }
+
+apply from: rootProject.file('gradle/publish.gradle')
 
 jvmTest {
     useJUnitPlatform {
         includeEngines 'spek2'
     }
 }
+
+publishSnapshot.finalizedBy publish
