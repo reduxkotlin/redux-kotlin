@@ -73,7 +73,10 @@ fun <State> createStore(
             """|You may not call store.getState() while the reducer is executing.
              |The reducer has already received the state as an argument.
              |Pass it down from the top reducer instead of reading it from the 
-             |store.""".trimMargin()
+             |store.
+             |You may be accessing getState while dispatching from another
+             |thread.  Try createThreadSafeStore().
+             |https://reduxkotlin.org/introduction/threading""".trimMargin()
         }
 
         return currentState
@@ -111,7 +114,10 @@ fun <State> createStore(
              |subscribe from a component and invoke store.getState() in the 
              |callback to access the latest state. See 
              |https://www.reduxkotlin.org/api/store#subscribelistener-storesubscriber
-             |for more details.""".trimMargin()
+             |for more details.
+             |You may be seeing this due accessing the store from multiplethreads.
+             |Try createThreadSafeStore()
+             |https://reduxkotlin.org/introduction/threading""".trimMargin()
         }
 
         var isSubscribed = true
@@ -169,9 +175,17 @@ fun <State> createStore(
             |actions.""".trimMargin()
         }
 
+        /*
         check(!isDispatching) {
-            "Reducers may not dispatch actions."
+            """You may not dispatch while state is being reduced.
+            |2 conditions can cause this error:
+            |    1) Dispatching from a reducer
+            |    2) Dispatching from multiple threads
+            |If #2 switch to createThreadSafeStore().
+            |https://reduxkotlin.org/introduction/threading""".trimMargin()
         }
+
+         */
 
         try {
             isDispatching = true

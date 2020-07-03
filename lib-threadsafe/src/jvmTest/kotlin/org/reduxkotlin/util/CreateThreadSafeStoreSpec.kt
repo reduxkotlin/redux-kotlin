@@ -1,14 +1,14 @@
 package org.reduxkotlin.util
 
 import kotlinx.coroutines.*
-import org.reduxkotlin.*
+import org.reduxkotlin.createThreadSafeStore
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.system.measureTimeMillis
-import kotlin.test.*
+import kotlin.test.assertEquals
 
-object CreateThreadSafeStoreSpec : Spek({
-    describe("createThreadSafeStore") {
+object MultiThreadedSpec : Spek({
+    describe("createStore") {
         it("multithreaded increments massively") {
             suspend fun massiveRun(action: suspend () -> Unit) {
                 val n = 100  // number of coroutines to launch
@@ -26,19 +26,15 @@ object CreateThreadSafeStoreSpec : Spek({
                 println("Completed ${n * k} actions in $time ms")
             }
 
-            val counterContext = newFixedThreadPoolContext(5, "CounterContext")
-
             //NOTE: changing this to createStore() breaks the tests
             val store = createThreadSafeStore(counterReducer, TestCounterState())
             runBlocking {
-                withContext(counterContext) {
+                withContext(Dispatchers.Default) {
                     massiveRun {
                         store.dispatch(Increment())
                     }
                 }
-                withContext(counterContext) {
-                    assertEquals(100000, store.state.counter)
-                }
+                assertEquals(100000, store.state.counter)
             }
         }
     }
