@@ -33,7 +33,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.1"
+                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.2"
             }
         }
     }
@@ -47,11 +47,11 @@ __For single platform project (i.e. just Android):__
 
 ```groovy
 dependencies {
-    implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.1"
+    implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.2"
 }
 ```
 
-NOTE: If threadsafety is not a concern (i.e. a JS only project) "org.reduxkotlin:redux-kotlin:0.5.1" may be used.
+NOTE: If threadsafety is not a concern (i.e. a JS only project) "org.reduxkotlin:redux-kotlin:0.5.2" may be used.
 [**More info on threading available here.**](/introduction/threading)
 
 ## Basic Example
