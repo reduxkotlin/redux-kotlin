@@ -11,7 +11,7 @@
 ![badge][badge-mac]
 ![badge][badge-wasm]
 
-A redux standard for Kotlin that supports multiplatform projects
+A redux standard for Kotlin that supports multiplatform projects.
 
 ## Misson Statement
 
@@ -44,7 +44,7 @@ kotlin {
   sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.1"
+                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.2"
             }
         }
  }
@@ -52,7 +52,7 @@ kotlin {
 
 For JVM only:
 ```
-  implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.1"
+  implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.2"
 ```
 
 *Non threadsafe store is available.  Typical usage will be with the threadsafe store. [More info read here](https://www.reduxkotlin.org/introduction/getting-started)
