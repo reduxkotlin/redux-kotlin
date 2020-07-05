@@ -40,5 +40,5 @@ dependencies {
     implementation(Libs.appcompat)
 
     implementation(project(":examples:counter:common"))
-    implementation(project(":lib-threadsafe"))
+    implementation(project(":redux-kotlin-threadsafe"))
 }

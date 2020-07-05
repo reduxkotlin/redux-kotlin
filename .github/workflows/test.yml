@@ -1,0 +1,28 @@
+name: Test
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Test
+        run: ./gradlew jvmTest
+
+      - name: Archive redux-kotlin Test Reports
+        uses: actions/upload-artifact@v1
+        with:
+          name: redux-kotlin_test_reports
+          path: redux-kotlin/build/reports/tests
+
+      - name: Archive redux-kotlin-threadsafe Test Reports
+        uses: actions/upload-artifact@v1
+        with:
+          name: redux-kotlin-threadsafe_test_reports
+          path: redux-kotlin-threadsafe/build/reports/tests
