@@ -133,6 +133,13 @@ afterEvaluate {
 
 apply from: rootProject.file('gradle/publish.gradle')
 
+publishing {
+    publications.all {
+        // Rewrite all artifacts from using the project name to just 'runtime'.
+        artifactId = artifactId.replace(project.name, 'redux-kotlin')
+    }
+}
+
 jvmTest {
     useJUnitPlatform {
         includeEngines 'spek2'
