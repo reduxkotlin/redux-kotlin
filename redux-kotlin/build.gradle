@@ -3,9 +3,8 @@ repositories {
 }
 apply plugin: 'java'
 apply plugin: 'kotlin-multiplatform'
-apply plugin: 'kotlinx-atomicfu'
 
-archivesBaseName = 'redux-kotlin-threadsafe'
+archivesBaseName = 'redux-kotlin'
 
 kotlin {
     jvm()
@@ -23,11 +22,10 @@ kotlin {
     iosX64("iosSim")
     macosX64("macos")
     mingwX64("win")
-    //below are currently not supported by atomicfu
-    //wasm32("wasm")
-    //linuxArm32Hfp("linArm32")
-    //linuxMips32("linMips32")
-    //linuxMipsel32("linMipsel32")
+    wasm32("wasm")
+    linuxArm32Hfp("linArm32")
+    linuxMips32("linMips32")
+    linuxMipsel32("linMipsel32")
     linuxX64("lin64")
 
     sourceSets {
@@ -35,7 +33,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation kotlin("stdlib-common")
-                api project(":lib")
             }
         }
         commonTest {
@@ -46,11 +43,11 @@ kotlin {
                 implementation Libs.spek_dsl_metadata
                 implementation Libs.atrium_cc_en_gb_robstoll_common
                 implementation Libs.mockk_common
-                implementation Libs.kotlin_coroutines
             }
         }
 
         jvmMain {
+            kotlin.srcDir('src/jvmMain/kotlin')
             dependencies {
                 implementation kotlin("stdlib")
             }
@@ -67,10 +64,10 @@ kotlin {
 
                 runtimeOnly Libs.spek_runner_junit5
                 runtimeOnly Libs.kotlin_reflect
-
             }
         }
         jsMain {
+            kotlin.srcDir('src/jsMain/kotlin')
             dependencies {
                 implementation kotlin("stdlib-js")
             }
@@ -88,6 +85,24 @@ kotlin {
                 implementation kotlin("test-js")
                 implementation kotlin("stdlib-js")
             }
+        }
+        winMain {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        wasmMain {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linArm32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linMips32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        linMipsel32Main {
+            kotlin.srcDir('src/fallbackMain')
+        }
+        lin64Main {
+            kotlin.srcDir('src/fallbackMain')
         }
 
         iosSimMain.dependsOn iosMain
@@ -117,6 +132,12 @@ afterEvaluate {
 }
 
 apply from: rootProject.file('gradle/publish.gradle')
+
+publishing {
+    publications.all {
+        artifactId = artifactId.replace(project.name, 'redux-kotlin')
+    }
+}
 
 jvmTest {
     useJUnitPlatform {

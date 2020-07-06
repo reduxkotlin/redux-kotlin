@@ -9,8 +9,8 @@ pluginManagement {
 }
 
 include(
-    ':lib',
-    ':lib-threadsafe',
+    ':redux-kotlin',
+    ':redux-kotlin-threadsafe',
     ':examples:counter:common',
     ':examples:counter:android',
     ':examples:todos:common',

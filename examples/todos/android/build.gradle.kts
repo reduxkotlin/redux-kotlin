@@ -43,5 +43,5 @@ dependencies {
     implementation(Libs.recyclerView)
 
     implementation(project(":examples:todos:common"))
-    implementation(project(":lib-threadsafe"))
+    implementation(project(":redux-kotlin-threadsafe"))
 }

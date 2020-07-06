@@ -1,4 +1,4 @@
-name: CI
+name: Publish snapshot
 
 on:
   push:
@@ -7,37 +7,18 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Test
-        run: ./gradlew jvmTest
-
-      - name: Archive lib Test Reports
-        uses: actions/upload-artifact@v1
-        with:
-          name: lib_test_reports
-          path: lib/build/reports/tests
-
-      - name: Archive lib-threadsafe Test Reports
-        uses: actions/upload-artifact@v1
-        with:
-          name: lib_test_reports
-          path: lib/build/reports/tests
-
   publish-snapshot:
-    needs: test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Publish Snapshot
+    - name: Publish macOS artifacts Snapshot
+      id: publish-macos
+      if: matrix.os == 'macos-latest'
       env:
         SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
         SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
@@ -45,3 +26,39 @@ jobs:
         GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
         SNAPSHOT: 'TRUE'
       run: ./gradlew publish
+
+    - name: Publish windows artifacts Snapshot
+      id: publish-win
+      if: matrix.os == 'windows-latest'
+      env:
+        SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+        SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+        GPG_SECRET: ${{ secrets.GPG_SECRET }}
+        GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
+        SNAPSHOT: 'TRUE'
+      run: ./gradlew publish
+
+    - name: Publish linux artifacts Snapshot
+      id: publish-linux
+      if: matrix.os == 'ubuntu-latest'
+      env:
+        SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+        SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+        GPG_SECRET: ${{ secrets.GPG_SECRET }}
+        GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
+        SNAPSHOT: 'TRUE'
+      run: ./gradlew publish
+
+    - name: Archive lib publications dir
+      uses: actions/upload-artifact@v1
+      with:
+        name: publications-${{ matrix.os }}
+        path: redux-kotlin/build/publications
+
+    - name: Archive lib-threadsafe publications dir
+      if: steps.publish-win.outputs.exit_code == 0 || steps.publish-macos.outputs.exit_code == 0 || steps.publish-linux.outputs.exit_code == 0
+      uses: actions/upload-artifact@v1
+      with:
+        name: publications-threadsafe-${{ matrix.os }}
+        path: redux-kotlin-threadsafe/build/publications
+

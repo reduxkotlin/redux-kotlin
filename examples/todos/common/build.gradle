@@ -32,7 +32,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation kotlin("stdlib-common")
-                implementation project(":lib-threadsafe")
+                implementation project(":redux-kotlin-threadsafe")
             }
         }
         commonTest {
