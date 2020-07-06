@@ -1,4 +1,4 @@
-# Redux-Kotlin
+# [Redux-Kotlin](https://reduxkotlin.org)
 
 ![CI](https://github.com/reduxkotlin/redux-kotlin/workflows/CI/badge.svg)
 
@@ -12,6 +12,8 @@
 ![badge][badge-wasm]
 
 A redux standard for Kotlin that supports multiplatform projects.
+
+Full documentation at http://reduxkotlin.org.
 
 ## Misson Statement
 
