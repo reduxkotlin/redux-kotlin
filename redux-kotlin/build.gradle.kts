@@ -11,9 +11,6 @@ repositories {
 kotlin {
   jvm()
   js(BOTH) {
-//    nodejs()
-//    browser()
-
     listOf(compilations["main"], compilations["test"]).forEach {
       with(it.kotlinOptions) {
         moduleKind = "umd"
