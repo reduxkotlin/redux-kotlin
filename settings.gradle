@@ -18,5 +18,3 @@ include(
 )
 
 rootProject.name = 'Redux-Kotlin'
-
-enableFeaturePreview('GRADLE_METADATA')
