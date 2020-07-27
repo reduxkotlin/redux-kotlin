@@ -13,6 +13,15 @@ kotlin {
   js(BOTH) {
 //    nodejs()
 //    browser()
+
+    listOf(compilations["main"], compilations["test"]).forEach {
+      with(it.kotlinOptions) {
+        moduleKind = "umd"
+        sourceMap = true
+        sourceMapEmbedSources = "always"
+        metaInfo = true
+      }
+    }
   }
 
   iosArm64("ios")
