@@ -7,7 +7,7 @@ apply plugin: 'kotlin-multiplatform'
 
 kotlin {
     jvm()
-    js() {
+    js {
         [compileKotlinJs, compileTestKotlinJs].each { configuration ->
             configuration.kotlinOptions {
                 moduleKind = 'umd'

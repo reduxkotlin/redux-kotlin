@@ -22,6 +22,7 @@ plugins {
 
 allprojects {
     repositories {
+        maven { url "https://kotlin.bintray.com/kotlinx" }
         google()
         jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }

@@ -32,7 +32,6 @@ kotlin {
 
         commonMain {
             dependencies {
-//                api kotlin("stdlib-common")
             }
         }
         commonTest {
@@ -49,7 +48,6 @@ kotlin {
         jvmMain {
             kotlin.srcDir('src/jvmMain/kotlin')
             dependencies {
-//                api kotlin("stdlib")
             }
         }
         jvmTest {
@@ -69,7 +67,6 @@ kotlin {
         jsMain {
             kotlin.srcDir('src/jsMain/kotlin')
             dependencies {
-                api kotlin("stdlib-js")
             }
             compileKotlinJs {
                 kotlinOptions.metaInfo = true
@@ -83,7 +80,6 @@ kotlin {
         jsTest {
             dependencies {
                 implementation kotlin("test-js")
-                implementation kotlin("stdlib-js")
             }
         }
         winMain {
