@@ -1,5 +1,6 @@
 package org.reduxkotlin
 
+import ch.tutteli.atrium.api.cc.en_GB.toThrow
 import ch.tutteli.atrium.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -22,7 +23,7 @@ object ApplyMiddlewareSpec : Spek({
             expect {
                 val storeEnhancer: StoreEnhancer<TestState> = applyMiddleware(::dispatchingMiddleware)
                 createStore(todos, TestState(), storeEnhancer)
-            }.toThrow<Exception>().asAssert({})
+            }.toThrow<Exception> {}
         }
 
         /*
