@@ -1,7 +1,6 @@
 package org.reduxkotlin
 
 import ch.tutteli.atrium.api.cc.en_GB.toThrow
-import ch.tutteli.atrium.domain.creating.AnyAssertions
 import ch.tutteli.atrium.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -11,7 +10,7 @@ object ApplyMiddlewareSpec : Spek({
     describe("applyMiddleware") {
         it("warns when dispatching during middleware setup") {
             fun dispatchingMiddleware(store: Store<TestState>): (next: Dispatcher) -> (action: Any) -> Any {
-                store.dispatch(AddTodo("1", "Dont dispatch in middleware setup"));
+                store.dispatch(AddTodo("1", "Dont dispatch in middleware setup"))
                 return { next ->
                     { action ->
                         {

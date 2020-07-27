@@ -34,7 +34,7 @@ object Versions {
 
   const val dokka_gradle_plugin: String = "0.9.17" // available: "0.9.18"
 
-  const val org_jetbrains_kotlin: String = "1.3.72"
+  const val org_jetbrains_kotlin: String = "1.4.0-rc"
 
   const val spek: String = "2.1.0-alpha.0.11+d97ef33"
        // available: "2.1.0-alpha.0.24+0fdeb6e"
@@ -43,9 +43,9 @@ object Versions {
 
   const val recycler_view = "1.0.0"
 
-  const val coroutines = "1.3.7"
+  const val coroutines = "1.3.8-1.4.0-rc"
 
-  const val atomicFu = "0.14.2"
+  const val atomicFu = "0.14.3-1.4.0-rc"
 
   /**
    *
