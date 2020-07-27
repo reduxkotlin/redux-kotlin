@@ -33,7 +33,6 @@ kotlin {
 
   sourceSets {
     commonTest {
-      kotlin.srcDir("src/test/kotlin")
       dependencies {
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
