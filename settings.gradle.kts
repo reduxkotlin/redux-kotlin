@@ -9,12 +9,12 @@ pluginManagement {
 }
 
 include(
-    ':redux-kotlin',
-    ':redux-kotlin-threadsafe',
-    ':examples:counter:common',
-    ':examples:counter:android',
-    ':examples:todos:common',
-    ':examples:todos:android'
+    ":redux-kotlin",
+    ":redux-kotlin-threadsafe",
+    ":examples:counter:common",
+    ":examples:counter:android",
+    ":examples:todos:common",
+    ":examples:todos:android"
 )
 
-rootProject.name = 'Redux-Kotlin'
+rootProject.name = "Redux-Kotlin"

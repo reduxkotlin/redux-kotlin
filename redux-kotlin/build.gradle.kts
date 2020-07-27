@@ -1,16 +1,19 @@
 plugins {
   java
   kotlin("multiplatform")
-  `maven-publish`
 }
 
 repositories {
   maven("https://dl.bintray.com/spekframework/spek-dev")
 }
 
+
 kotlin {
   jvm()
   js(BOTH) {
+    browser()
+    nodejs()
+
     listOf(compilations["main"], compilations["test"]).forEach {
       with(it.kotlinOptions) {
         moduleKind = "umd"

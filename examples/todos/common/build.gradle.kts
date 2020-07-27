@@ -11,6 +11,7 @@ kotlin {
     jvm()
     js(IR) {
         binaries.executable()
+        browser()
 
         listOf(compilations["main"], compilations["test"]).forEach {
             with(it.kotlinOptions) {

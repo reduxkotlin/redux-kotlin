@@ -10,6 +10,7 @@ repositories {
 kotlin {
   jvm()
   js(IR) {
+    browser()
     binaries.executable()
 
     listOf(compilations["main"], compilations["test"]).forEach {

@@ -10,6 +10,8 @@ repositories {
 kotlin {
   jvm()
   js(BOTH) {
+    browser()
+    nodejs()
 
     listOf(compilations["main"], compilations["test"]).forEach {
       with(it.kotlinOptions) {
