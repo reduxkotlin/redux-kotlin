@@ -23,15 +23,8 @@ kotlin {
     }
   }
 
-  iosArm64("ios")
-  iosX64("iosSim")
-  macosX64("macos")
-  mingwX64("win")
-  wasm32("wasm")
-  linuxArm32Hfp("linArm32")
-  linuxMips32("linMips32")
-  linuxMipsel32("linMipsel32")
-  linuxX64("lin64")
+  iosArm64()
+  iosX64()
 
   sourceSets {
     commonMain {
@@ -44,20 +37,20 @@ kotlin {
       dependencies {
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
-        implementation("org.spekframework.spek2:spek-dsl-metadata:${Versions.spek}")
-        implementation("ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:${Versions.atrium}")
-        implementation("io.mockk:mockk-common:${Versions.mockk}")
+        implementation("org.spekframework.spek2:spek-dsl-metadata:${Versions.org_spekframework_spek2}")
+        implementation("ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:${Versions.org_spekframework_spek2}")
+        implementation("io.mockk:mockk-common:${Versions.io_mockk}")
       }
     }
     val jvmTest by getting {
       dependencies {
         implementation(kotlin("test"))
         implementation(kotlin("test-junit"))
-        implementation("org.spekframework.spek2:spek-dsl-jvm:${Versions.spek}")
-        implementation("ch.tutteli.atrium:atrium-cc-en_GB-robstoll:${Versions.atrium}")
-        implementation("io.mockk:mockk:${Versions.mockk}")
+        implementation("org.spekframework.spek2:spek-dsl-jvm:${Versions.org_spekframework_spek2}")
+        implementation("ch.tutteli.atrium:atrium-cc-en_GB-robstoll:${Versions.ch_tutteli_atrium}")
+        implementation("io.mockk:mockk:${Versions.ch_tutteli_atrium}")
 
-        runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
+        runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.org_spekframework_spek2}")
         runtimeOnly("org.jetbrains.kotlin:kotlin-reflect")
       }
     }
@@ -67,11 +60,6 @@ kotlin {
         implementation(kotlin("stdlib-js"))
       }
     }
-
-    val iosMain by getting
-    val iosTest by getting
-    val iosSimMain by getting { dependsOn(iosMain) }
-    val iosSimTest by getting { dependsOn(iosTest) }
   }
 }
 
