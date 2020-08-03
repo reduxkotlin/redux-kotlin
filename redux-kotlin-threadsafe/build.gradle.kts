@@ -30,7 +30,7 @@ kotlin {
     linuxX64()
     macosX64()
     mingwX64()
-    mingwX86()
+//    mingwX86()
     tvosArm64()
     tvosX64()
     watchosArm32()
