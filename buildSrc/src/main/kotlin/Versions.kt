@@ -18,8 +18,6 @@ object Versions {
 
   const val recyclerview: String = "1.0.0" // available: "1.1.0"
 
-  const val ch_tutteli_atrium: String = "0.9.2" // available: "0.12.0"
-
   const val aapt2: String = "3.6.0-6040484" // available: "4.0.1-6197926"
 
   const val com_android_tools_build_gradle: String = "3.6.0" // available: "4.0.1"
@@ -43,9 +41,6 @@ object Versions {
   const val kotlinx_coroutines_core: String = "1.3.8-1.4.0-rc"
 
   const val kotlinx_coroutines_test: String = "1.3.8-1.4.0-rc"
-
-  const val org_spekframework_spek2: String = "2.1.0-alpha.0.11+d97ef33"
-       // available: "2.1.0-alpha.0.24+0fdeb6e"
 
   /**
    *

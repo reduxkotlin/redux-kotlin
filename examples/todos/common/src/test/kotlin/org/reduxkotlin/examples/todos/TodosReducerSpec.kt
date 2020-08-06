@@ -1,72 +1,53 @@
 package org.reduxkotlin.examples.todos
 
-import ch.tutteli.atrium.api.cc.en_GB.toBe
-import ch.tutteli.atrium.verbs.expect
-import io.mockk.impl.log.Logger
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-object TodosReducerSpec : Spek({
-    describe("todos reducer") {
-        it("should handle AddToDo") {
-            expect(
-                todosReducer(
-                    emptyList(),
-                    AddTodo(text = "Run the tests")
+class TodosReducerSpec {
+
+    @Test
+    fun shouldHandleAddToDo() {
+        assertEquals(
+            todosReducer(
+                emptyList(),
+                AddTodo(text = "Run the tests")
+            ),
+            listOf(
+                Todo(
+                    text = "Run the tests",
+                    completed = false,
+                    id = 0
                 )
-            ).toBe(
+            )
+        )
+
+        assertEquals(
+            todosReducer(
                 listOf(
                     Todo(
                         text = "Run the tests",
                         completed = false,
                         id = 0
                     )
+                ),
+                AddTodo(text = "Use Redux")
+            ),
+            listOf(
+                Todo(
+                    text = "Run the tests",
+                    completed = false,
+                    id = 0
+                ),
+                Todo(
+                    text = "Use Redux",
+                    completed = false,
+                    id = 1
                 )
             )
+        )
 
-            expect(
-                todosReducer(
-                    listOf(
-                        Todo(
-                            text = "Run the tests",
-                            completed = false,
-                            id = 0
-                        )
-                    ),
-                    AddTodo(text = "Use Redux")
-                )
-            ).toBe(
-                listOf(
-                    Todo(
-                        text = "Run the tests",
-                        completed = false,
-                        id = 0
-                    ),
-                    Todo(
-                        text = "Use Redux",
-                        completed = false,
-                        id = 1
-                    )
-                )
-            )
-
-            expect(
-                todosReducer(
-                    listOf(
-                        Todo(
-                            text = "Run the tests",
-                            completed = false,
-                            id = 0
-                        ),
-                        Todo(
-                            text = "Use Redux",
-                            completed = false,
-                            id = 1
-                        )
-                    ),
-                    AddTodo(text = "Fix the tests")
-                )
-            ).toBe(
+        assertEquals(
+            todosReducer(
                 listOf(
                     Todo(
                         text = "Run the tests",
@@ -77,46 +58,59 @@ object TodosReducerSpec : Spek({
                         text = "Use Redux",
                         completed = false,
                         id = 1
-                    ),
-                    Todo(
-                        text = "Fix the tests",
-                        completed = false,
-                        id = 2
                     )
+                ),
+                AddTodo(text = "Fix the tests")
+            ),
+            listOf(
+                Todo(
+                    text = "Run the tests",
+                    completed = false,
+                    id = 0
+                ),
+                Todo(
+                    text = "Use Redux",
+                    completed = false,
+                    id = 1
+                ),
+                Todo(
+                    text = "Fix the tests",
+                    completed = false,
+                    id = 2
                 )
             )
-        }
-
-        it("should handle ToggleTodo") {
-            expect(
-                todosReducer(
-                    listOf(
-                        Todo(
-                            text = "Run the tests",
-                            completed = false,
-                            id = 0
-                        ),
-                        Todo(
-                            text = "Use Redux",
-                            completed = false,
-                            id = 1
-                        )
-                    ), ToggleTodo(index = 0)
-                )
-            ).toBe(
-                listOf(
-                    Todo(
-                        text = "Run the tests",
-                        completed = true,
-                        id = 0
-                    ),
-                    Todo(
-                        text = "Use Redux",
-                        completed = false,
-                        id = 1
-                    )
-                )
-            )
-        }
+        )
     }
-})
+
+    @Test
+    fun shouldHandleToggleTodo() {
+        assertEquals(
+            todosReducer(
+                listOf(
+                    Todo(
+                        text = "Run the tests",
+                        completed = false,
+                        id = 0
+                    ),
+                    Todo(
+                        text = "Use Redux",
+                        completed = false,
+                        id = 1
+                    )
+                ), ToggleTodo(index = 0)
+            ),
+            listOf(
+                Todo(
+                    text = "Run the tests",
+                    completed = true,
+                    id = 0
+                ),
+                Todo(
+                    text = "Use Redux",
+                    completed = false,
+                    id = 1
+                )
+            )
+        )
+    }
+}

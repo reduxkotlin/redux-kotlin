@@ -26,7 +26,6 @@ allprojects {
     jcenter()
     maven("https://kotlin.bintray.com/kotlinx")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
-    maven("https://dl.bintray.com/spekframework/spek-dev")
     mavenCentral()
   }
 

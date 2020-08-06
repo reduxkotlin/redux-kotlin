@@ -24,18 +24,6 @@ object Libs {
   const val recyclerview: String = "androidx.recyclerview:recyclerview:" + Versions.recyclerview
 
   /**
-   * https://github.com/robstoll/atrium
-   */
-  const val atrium_cc_en_gb_robstoll_common: String =
-      "ch.tutteli.atrium:atrium-cc-en_GB-robstoll-common:" + Versions.ch_tutteli_atrium
-
-  /**
-   * https://github.com/robstoll/atrium
-   */
-  const val atrium_cc_en_gb_robstoll: String = "ch.tutteli.atrium:atrium-cc-en_GB-robstoll:" +
-      Versions.ch_tutteli_atrium
-
-  /**
    * https://developer.android.com/studio
    */
   const val aapt2: String = "com.android.tools.build:aapt2:" + Versions.aapt2
@@ -192,13 +180,4 @@ object Libs {
    */
   const val kotlinx_coroutines_test: String = "org.jetbrains.kotlinx:kotlinx-coroutines-test:" +
       Versions.kotlinx_coroutines_test
-
-  const val spek_dsl_jvm: String = "org.spekframework.spek2:spek-dsl-jvm:" +
-      Versions.org_spekframework_spek2
-
-  const val spek_dsl_metadata: String = "org.spekframework.spek2:spek-dsl-metadata:" +
-      Versions.org_spekframework_spek2
-
-  const val spek_runner_junit5: String = "org.spekframework.spek2:spek-runner-junit5:" +
-      Versions.org_spekframework_spek2
 }

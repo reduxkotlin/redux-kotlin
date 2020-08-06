@@ -3,11 +3,6 @@ plugins {
     kotlin("multiplatform")
 }
 
-repositories {
-    maven("https://dl.bintray.com/spekframework/spek-dev")
-}
-
-
 kotlin {
     androidNativeArm32()
     androidNativeArm64()
@@ -48,8 +43,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation(Libs.spek_dsl_metadata)
-                implementation(Libs.atrium_cc_en_gb_robstoll_common)
                 implementation(Libs.mockk_common)
             }
         }
@@ -58,21 +51,16 @@ kotlin {
             kotlin.srcDir("src/fallbackMain")
         }
         val ios: (org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet.() -> Unit) = {
-            kotlin.srcDir("src/iosMain")
+            kotlin.srcDir("src/iosMain/kotlin")
         }
+
         val androidNativeArm32Main by getting(fallback)
         val androidNativeArm64Main by getting(fallback)
         val iosArm32Main by getting(ios)
         val iosArm32Test by getting(ios)
         val iosArm64Main by getting(ios)
         val iosArm64Test by getting(ios)
-        val tvosArm64Main by getting(ios)
-        val tvosX64Main by getting(ios)
-        val watchosArm32Main by getting(ios)
-        val watchosArm64Main by getting(ios)
-        val watchosX86Main by getting(ios)
-        val iosX64Main by getting { dependsOn(iosArm32Main) }
-        val iosX64Test by getting { dependsOn(iosArm32Test) }
+        val iosX64Main by getting(ios)
         val linuxArm32HfpMain by getting(fallback)
         val linuxArm64Main by getting(fallback)
         val linuxMips32Main by getting(fallback)
@@ -89,28 +77,24 @@ kotlin {
                 implementation(kotlin("test-junit"))
                 implementation(Libs.kotlinx_coroutines_test)
                 implementation(Libs.kotlinx_coroutines_core_jvm)
-                implementation(Libs.spek_dsl_jvm)
-                implementation(Libs.atrium_cc_en_gb_robstoll)
                 implementation(Libs.mockk)
-
-                runtimeOnly(Libs.spek_runner_junit5)
                 runtimeOnly(Libs.kotlin_reflect)
             }
         }
+
         val mingwX64Main by getting(fallback)
         val mingwX86Main by getting(fallback)
+        val tvosArm64Main by getting(ios)
+        val tvosX64Main by getting(ios)
         val wasm32Main by getting(fallback)
+        val watchosArm32Main by getting(ios)
+        val watchosArm64Main by getting(ios)
+        val watchosX86Main by getting(ios)
     }
 }
 
 afterEvaluate {
     tasks {
-        val jvmTest by getting(Test::class) {
-            useJUnitPlatform {
-                includeEngines("spek2")
-            }
-        }
-
         // Alias the task names we use elsewhere to the new task names.
         create("installMP").dependsOn("publishKotlinMultiplatformPublicationToMavenLocal")
         create("installLocally") {

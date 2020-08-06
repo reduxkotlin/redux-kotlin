@@ -3,9 +3,6 @@ plugins {
     kotlin("multiplatform")
     id("kotlinx-atomicfu")
 }
-repositories {
-    maven("https://dl.bintray.com/spekframework/spek-dev")
-}
 
 kotlin {
 //    androidNativeArm32()
@@ -54,8 +51,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation(Libs.spek_dsl_metadata)
-                implementation(Libs.atrium_cc_en_gb_robstoll_common)
                 implementation(Libs.mockk_common)
                 implementation(Libs.kotlinx_coroutines_core)
             }
@@ -66,13 +61,9 @@ kotlin {
                 implementation(kotlin("test-junit"))
                 implementation(Libs.kotlinx_coroutines_test)
                 implementation(Libs.kotlinx_coroutines_core_jvm)
-                implementation(Libs.spek_dsl_jvm)
-                implementation(Libs.atrium_cc_en_gb_robstoll)
                 implementation(Libs.mockk)
 
-                runtimeOnly(Libs.spek_runner_junit5)
                 runtimeOnly(Libs.kotlin_reflect)
-
             }
         }
         val jsTest by getting {
@@ -84,15 +75,8 @@ kotlin {
     }
 }
 
-
 afterEvaluate {
     tasks {
-        val jvmTest by getting(Test::class) {
-            useJUnitPlatform {
-                includeEngines("spek2")
-            }
-        }
-
         // Alias the task names we use elsewhere to the new task names.
         create("installMP").dependsOn("publishKotlinMultiplatformPublicationToMavenLocal")
         create("installLocally") {
