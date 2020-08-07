@@ -1,4 +1,4 @@
-name: Test
+name: PR
 
 on:
   pull_request:
@@ -7,7 +7,16 @@ on:
       - '*.md'
 
 jobs:
+  ktlint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Ktlint
+        uses: "vroy/gha-kotlin-linter@v1"
   test:
+    needs: ktlint
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
