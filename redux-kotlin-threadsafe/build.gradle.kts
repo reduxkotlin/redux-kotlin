@@ -1,3 +1,4 @@
+
 plugins {
     java
     kotlin("multiplatform")
@@ -34,12 +35,12 @@ kotlin {
     watchosArm64()
     watchosX86()
 
-    //below are currently not supported by atomicfu
-    //wasm32("wasm")
-    //linuxArm32Hfp("linArm32")
-    //linuxMips32("linMips32")
-    //linuxMipsel32("linMipsel32")
-    //linuxArm64()
+//    below are currently not supported by atomicfu
+//    wasm32("wasm")
+//    linuxArm32Hfp("linArm32")
+//    linuxMips32("linMips32")
+//    linuxMipsel32("linMipsel32")
+//    linuxArm64()
 
     sourceSets {
         commonMain {
@@ -93,7 +94,7 @@ afterEvaluate {
             dependsOn("publishMetadataPublicationToTestRepository")
         }
         // NOTE: We do not alias uploadArchives because CI runs it on Linux and we only want to run it on Mac OS.
-        //tasks.create("uploadArchives").dependsOn("publishKotlinMultiplatformPublicationToMavenRepository")
+        // tasks.create("uploadArchives").dependsOn("publishKotlinMultiplatformPublicationToMavenRepository")
     }
 }
 

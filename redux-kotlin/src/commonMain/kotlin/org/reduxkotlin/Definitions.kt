@@ -1,6 +1,5 @@
 package org.reduxkotlin
 
-
 /**
  * See also https://github.com/reactjs/redux/blob/master/docs/Glossary.md#reducer
  */
@@ -34,7 +33,6 @@ typealias StoreEnhancer<State> = (StoreCreator<State>) -> StoreCreator<State>
  */
 typealias Middleware<State> = (store: Store<State>) -> (next: Dispatcher) -> (action: Any) -> Any
 
-
 interface Store<State> {
     val getState: GetState<State>
     var dispatch: Dispatcher
@@ -57,7 +55,6 @@ fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -
             }
         }
     }
-
 
 /**
  * Convenience function for creating a [ReducerForActionType]

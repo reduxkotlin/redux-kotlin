@@ -1,13 +1,14 @@
 package org.reduxkotlin
 
-import kotlin.test.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class CreateStoreSpec {
     @Test
     fun passesTheInitialState() {
         val store = createStore(
-            todos, TestState(
+            todos,
+            TestState(
                 listOf(
                     Todo(
                         id = "1",
@@ -51,7 +52,7 @@ class CreateStoreSpec {
             )
         )
 
-        //TODO are ids autoincrement?
+        // TODO are ids autoincrement?
         store.dispatch(AddTodo("2", "World"))
         assertEquals(
             store.getState(),
@@ -73,7 +74,8 @@ class CreateStoreSpec {
     @Test
     fun appliesTheReducerToTheInitialState() {
         val store = createStore(
-            todos, TestState(
+            todos,
+            TestState(
                 listOf(
                     Todo(
                         id = "1",

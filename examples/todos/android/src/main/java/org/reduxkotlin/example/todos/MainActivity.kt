@@ -5,17 +5,20 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.reduxkotlin.StoreSubscription
 import org.reduxkotlin.createThreadSafeStore
-import org.reduxkotlin.examples.todos.*
+import org.reduxkotlin.examples.todos.AddTodo
+import org.reduxkotlin.examples.todos.AppState
+import org.reduxkotlin.examples.todos.SetVisibilityFilter
+import org.reduxkotlin.examples.todos.VisibilityFilter
+import org.reduxkotlin.examples.todos.rootReducer
 
 /**
  * This is a sample of basic redux behavior.
  * This is NOT best practice for structuring a multiplatform App.
  */
 
-
 val store = createThreadSafeStore(::rootReducer, AppState())
 
-class MainActivity: AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var storeSubscription: StoreSubscription
     private var adapter = TodoAdapter()
 

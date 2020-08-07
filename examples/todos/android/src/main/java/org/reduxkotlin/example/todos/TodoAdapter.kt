@@ -1,15 +1,15 @@
 package org.reduxkotlin.example.todos
 
+import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_todo.view.*
 import org.reduxkotlin.examples.todos.Todo
 import org.reduxkotlin.examples.todos.ToggleTodo
-import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 
 class TodoAdapter : ListAdapter<Todo, TodoViewHolder>(DiffCallback()) {
 
@@ -33,7 +33,7 @@ class TodoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         itemView.tvTodo.text = "• ${todo.text}"
-        itemView.setOnClickListener { store.dispatch(ToggleTodo(adapterPosition))}
+        itemView.setOnClickListener { store.dispatch(ToggleTodo(adapterPosition)) }
     }
 }
 
