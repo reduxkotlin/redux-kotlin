@@ -34,7 +34,6 @@ android {
     }
 }
 
-
 dependencies {
     implementation(Libs.kotlin_stdlib_jdk8)
     implementation(Libs.appcompat)
