@@ -17,4 +17,5 @@ include(
     ":examples:todos:android"
 )
 
+enableFeaturePreview("GRADLE_METADATA")
 rootProject.name = "Redux-Kotlin"
