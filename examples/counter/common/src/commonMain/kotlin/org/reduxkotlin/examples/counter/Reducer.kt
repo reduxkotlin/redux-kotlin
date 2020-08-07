@@ -2,7 +2,6 @@ package org.reduxkotlin.examples.counter
 
 import org.reduxkotlin.Reducer
 
-
 class Increment
 class Decrement
 

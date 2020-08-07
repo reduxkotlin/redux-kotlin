@@ -1,7 +1,7 @@
 package org.reduxkotlin
 
+import kotlin.test.Test
 import kotlin.test.assertFails
-import kotlin.test.*
 
 class ApplyMiddlewareSpec {
     @Test
@@ -49,7 +49,6 @@ class ApplyMiddlewareSpec {
     })
 
      */
-
 }
 
 /************** Test Reducer & actions - tobe moved into example app *********/
@@ -63,14 +62,15 @@ data class TestState(val todos: List<Todo> = listOf())
 val todos = { state: TestState, action: Any ->
     when (action) {
         is AddTodo -> state.copy(todos = state.todos.plus(Todo(action.id, action.text, false)))
-        is ToggleTodo -> state.copy(todos = state.todos.map {
-            if (it.id == action.id) {
-                it.copy(completed = !it.completed)
-            } else {
-                it
+        is ToggleTodo -> state.copy(
+            todos = state.todos.map {
+                if (it.id == action.id) {
+                    it.copy(completed = !it.completed)
+                } else {
+                    it
+                }
             }
-        })
+        )
         else -> state
     }
 }
-

@@ -1,6 +1,5 @@
 package org.reduxkotlin.examples.todos
 
-
 /**
  * Entire state tree for the app.
  */

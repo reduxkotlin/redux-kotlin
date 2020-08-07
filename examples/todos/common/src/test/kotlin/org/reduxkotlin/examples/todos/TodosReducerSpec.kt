@@ -97,7 +97,8 @@ class TodosReducerSpec {
                         completed = false,
                         id = 1
                     )
-                ), ToggleTodo(index = 0)
+                ),
+                ToggleTodo(index = 0)
             ),
             listOf(
                 Todo(

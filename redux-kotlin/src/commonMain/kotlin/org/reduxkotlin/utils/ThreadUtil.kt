@@ -14,5 +14,5 @@ expect fun getThreadName(): String
 fun stripCoroutineName(threadName: String): String {
     val lastIndex = threadName.lastIndexOf('@')
     return if (lastIndex < 0) threadName
-        else threadName.substring(0, lastIndex)
+    else threadName.substring(0, lastIndex)
 }

@@ -3,7 +3,7 @@ package org.reduxkotlin.examples.counter
 import kotlin.test.Test
 import kotlin.test.expect
 
-class CounterTest {
+class ReducerTest {
 
     @Test
     fun shouldHandleINCREMENTAction() {

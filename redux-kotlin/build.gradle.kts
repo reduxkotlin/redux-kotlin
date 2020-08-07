@@ -111,7 +111,7 @@ afterEvaluate {
             dependsOn("publishMetadataPublicationToTestRepository")
         }
         // NOTE: We do not alias uploadArchives because CI runs it on Linux and we only want to run it on Mac OS.
-        //tasks.create("uploadArchives").dependsOn("publishKotlinMultiplatformPublicationToMavenRepository")
+        // tasks.create("uploadArchives").dependsOn("publishKotlinMultiplatformPublicationToMavenRepository")
     }
 }
 

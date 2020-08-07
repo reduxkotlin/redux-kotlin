@@ -10,4 +10,3 @@ object ActionTypes {
      */
     object REPLACE
 }
-
