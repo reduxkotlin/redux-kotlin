@@ -15,10 +15,9 @@ import org.reduxkotlin.examples.counter.reducer
  * This is NOT best practice for structuring a multiplatform App.
  */
 
-
 val store = createThreadSafeStore(reducer, 0)
 
-class MainActivity: AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     lateinit var storeSubscription: StoreSubscription
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +41,11 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun incrementAsync() {
-        Handler().postDelayed({
-            store.dispatch(Increment())
-        }, 1000)
+        Handler().postDelayed(
+            {
+                store.dispatch(Increment())
+            },
+            1000
+        )
     }
 }

@@ -24,7 +24,8 @@ fun <State> applyMiddleware(vararg middlewares: Middleware<State>): StoreEnhance
             val dispatch: Dispatcher = {
                 throw Exception(
                     """Dispatching while constructing your middleware is not allowed.
-                    Other middleware would not be applied to this dispatch.""")
+                    Other middleware would not be applied to this dispatch."""
+                )
             }
             store.dispatch = dispatch
             val chain = middlewares.map { middleware -> middleware(store) }

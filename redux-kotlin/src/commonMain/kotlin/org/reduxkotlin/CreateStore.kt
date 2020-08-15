@@ -241,6 +241,5 @@ fun <State> createStore(
         override var dispatch: Dispatcher = ::dispatch
         override val subscribe = ::subscribe
         override val replaceReducer = ::replaceReducer
-
     }
 }
