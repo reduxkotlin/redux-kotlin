@@ -3,6 +3,7 @@
 ![CI](https://github.com/reduxkotlin/redux-kotlin/workflows/CI/badge.svg)
 
 ![badge][badge-android]
+![badge][badge-ios]
 ![badge][badge-native]
 ![badge][badge-js]
 ![badge][badge-jvm]
@@ -27,7 +28,7 @@ Provide a standard redux implementation for Kotlin.  In doing so will foster a e
 
 Redux in Kotlin, and in mobile in particular, may differ a bit from javascript.  Many have found the basic pattern useful on Android & iOS leading to tens of opensource redux libraries in Kotlin, Java, and Swift, yet an ecosystem has yet to emerge.  A port of javascript redux is a good starting point for creating a standard and will aid in cross-pollination of middleware, store enhancers, & dev tools from the javascript world.  
 
-Redux has proven helpful for state managment in mobile. A multiplatform Kotlin implementation & ecosystem will increase developer productivity and code reuse across platforms.
+Redux has proven helpful for state management in mobile. A multiplatform Kotlin implementation & ecosystem will increase developer productivity and code reuse across platforms.
 
 [Droidcon NYC Slides](https://www.slideshare.net/PatrickJackson14/reduxkotlinorg-droidcon-nyc-2019)
 Video TBA
@@ -46,7 +47,7 @@ kotlin {
   sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.2"
+                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.5"
             }
         }
  }
@@ -54,7 +55,7 @@ kotlin {
 
 For JVM only:
 ```
-  implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.2"
+  implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.5"
 ```
 
 *Non threadsafe store is available.  Typical usage will be with the threadsafe store. [More info read here](https://www.reduxkotlin.org/introduction/getting-started)
