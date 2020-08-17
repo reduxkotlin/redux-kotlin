@@ -46,7 +46,7 @@ kotlin {
   sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.2"
+                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.5"
             }
         }
  }
@@ -54,7 +54,7 @@ kotlin {
 
 For JVM only:
 ```
-  implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.2"
+  implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.5"
 ```
 
 *Non threadsafe store is available.  Typical usage will be with the threadsafe store. [More info read here](https://www.reduxkotlin.org/introduction/getting-started)

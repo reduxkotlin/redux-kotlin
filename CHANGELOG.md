@@ -1,5 +1,11 @@
 ## Unreleased
 
+## [0.5.5] - 2020-08-16
+ - update to Kotlin 1.4.0
+ - added platforms (androidNativeArm32, androidNativeArm64, iosArm32, linuxArm64, linuxX64,
+  mingwX86, tvosArm64, tvosX64, watchosArm32, watchosArm64, watchosX86)
+ - remove spek & atrium deps and use plain kotlin tests & assertions. Tests run for all platforms now.
+ 
 ## [0.5.2] - 2020-07-03
  - publish all available platforms to maven
  - add CI/CD through github actions
