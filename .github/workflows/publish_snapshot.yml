@@ -16,9 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Publish macOS artifacts Snapshot
-      id: publish-macos
-      if: matrix.os == 'macos-latest'
+    - name: Publish Snapshot
       env:
         SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
         SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
@@ -27,36 +25,14 @@ jobs:
         SNAPSHOT: 'TRUE'
       run: ./gradlew publish
 
-    - name: Publish windows artifacts Snapshot
-      id: publish-win
-      if: matrix.os == 'windows-latest'
-      env:
-        SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-        SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
-        GPG_SECRET: ${{ secrets.GPG_SECRET }}
-        GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
-        SNAPSHOT: 'TRUE'
-      run: ./gradlew publish
-
-    - name: Publish linux artifacts Snapshot
-      id: publish-linux
-      if: matrix.os == 'ubuntu-latest'
-      env:
-        SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-        SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
-        GPG_SECRET: ${{ secrets.GPG_SECRET }}
-        GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
-        SNAPSHOT: 'TRUE'
-      run: ./gradlew publish
-
-    - name: Archive lib publications dir
+    - name: Archive redux-kotlin publications dir
       uses: actions/upload-artifact@v1
       with:
         name: publications-${{ matrix.os }}
         path: redux-kotlin/build/publications
 
-    - name: Archive lib-threadsafe publications dir
-      if: steps.publish-win.outputs.exit_code == 0 || steps.publish-macos.outputs.exit_code == 0 || steps.publish-linux.outputs.exit_code == 0
+    - name: Archive redux-kotlin-threadsafe publications dir
+      if: steps.publish.outputsexit_code == 0
       uses: actions/upload-artifact@v1
       with:
         name: publications-threadsafe-${{ matrix.os }}
