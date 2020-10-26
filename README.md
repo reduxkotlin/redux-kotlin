@@ -1,6 +1,6 @@
 # [Redux-Kotlin](https://reduxkotlin.org)
 
-![CI](https://github.com/reduxkotlin/redux-kotlin/workflows/CI/badge.svg)
+![CI](https://github.com/reduxkotlin/redux-kotlin/workflows/PR/badge.svg)
 
 ![badge][badge-android]
 ![badge][badge-ios]
