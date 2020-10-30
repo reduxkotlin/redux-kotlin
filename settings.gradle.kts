@@ -14,6 +14,7 @@ include(
     ":examples:counter:common",
     ":examples:counter:android",
     ":examples:todos:common",
+    ":examples:todos:js",
     ":examples:todos:android"
 )
 

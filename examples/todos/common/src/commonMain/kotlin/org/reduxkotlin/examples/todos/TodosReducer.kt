@@ -1,5 +1,8 @@
 package org.reduxkotlin.examples.todos
 
+import kotlin.js.JsExport
+
+@JsExport
 fun todosReducer(state: List<Todo>, action: Any) =
     when (action) {
         is AddTodo -> state + Todo(action.text, id = state.size)
