@@ -1,0 +1,23 @@
+{
+  "name": "kotlin-react-redux",
+  "version": "1.0.0",
+  "main": "js/index.js",
+  "author": "Ilya Goncharov <ilya.goncharov@jetbrains.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "../../../gradlew :examples:todos:js:build && yarn run webpack",
+    "start": "../../../gradlew :examples:todos:js:build && yarn run webpack-dev-server"
+  },
+  "dependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "html-webpack-plugin": "^4.5.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
