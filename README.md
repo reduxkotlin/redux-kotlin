@@ -112,10 +112,27 @@ Using the convenience helper function `middleware`:
 
 __Create a store__
 ```
-  val store = createThreadSafeStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
+  val store = createStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
 ```
 
 You then will have access to dispatch and subscribe functions from the `store`.
+
+__Create a synchronized store__
+```
+  val store = createThreadSafeStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
+```
+
+Access to `store` methods like `dispatch` and `getState` will be synchronized. Note: if using a thread safe store with enhancers or middleware that require access to store methods, see usage below.  
+
+__Create a synchronized store using an enhancer__
+```
+ val store = createStore(reducer, AppState(user, listOf(), compose(
+    applyMiddleware(createThunkMiddleware(), loggingMiddleware),
+    createSynchronizedStoreEnhancer() // needs to be placed after enhancers that requires synchronized store methods
+ ))
+```
+
+Access to `store` methods like `dispatch` and `getState` will be synchronized, and enhancers (eg. `applyMiddleware`) that are placed above `createSynchronizedStoreEnhancer` in the enhancer composition chain will receive the synchronized store. 
 
 ## Communication
 Want to give feedback, contribute, or ask questions?
