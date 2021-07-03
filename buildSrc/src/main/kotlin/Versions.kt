@@ -30,26 +30,26 @@ object Versions {
 
     const val dokka_gradle_plugin: String = "0.9.17" // available: "0.11.0-dev-59"
 
-    const val org_jetbrains_kotlin: String = "1.4.0"
+    const val org_jetbrains_kotlin: String = "1.5.20"
 
-    const val atomicfu_gradle_plugin: String = "0.14.3-1.4.0-rc"
+    const val atomicfu_gradle_plugin: String = "0.16.1"
 
-    const val atomicfu: String = "0.14.3-1.4.0-rc"
+    const val atomicfu: String = "0.16.1"
 
-    const val kotlinx_coroutines_core_jvm: String = "1.3.8-1.4.0-rc"
+    const val kotlinx_coroutines_core_jvm: String = "1.5.0"
 
-    const val kotlinx_coroutines_core: String = "1.3.8-1.4.0-rc"
+    const val kotlinx_coroutines_core: String = "1.5.0"
 
-    const val kotlinx_coroutines_test: String = "1.3.8-1.4.0-rc"
+    const val kotlinx_coroutines_test: String = "1.5.0"
 
     /**
      *
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.5.1"
+    const val gradleLatestVersion: String = "6.8.3"
 
-    const val gradleCurrentVersion: String = "6.5"
+    const val gradleCurrentVersion: String = "6.8.3"
 }
 
 /**
