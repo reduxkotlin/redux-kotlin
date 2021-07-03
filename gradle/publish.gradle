@@ -76,10 +76,10 @@ task javadocsJar(type: Jar, dependsOn: dokka) {
 
 signing {
     required { isReleaseBuild() /*&& gradle.taskGraph.hasTask("uploadArchives") */ }
-//    def signingKey = findProperty("GPG_SECRET") ?: System.getenv('GPG_SECRET') ?: ""
-//    def signingPassword = findProperty("GPG_SIGNING_PASSWORD") ?: System.getenv('GPG_SIGNING_PASSWORD') ?: ""
-//    useInMemoryPgpKeys(signingKey, signingPassword)
-//    sign(publishing.publications)
+    def signingKey = findProperty("GPG_SECRET") ?: System.getenv('GPG_SECRET') ?: ""
+    def signingPassword = findProperty("GPG_SIGNING_PASSWORD") ?: System.getenv('GPG_SIGNING_PASSWORD') ?: ""
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications)
 }
 
 publishing {
@@ -114,13 +114,6 @@ publishing {
                     }
                 }
             }
-        }
-    }
-
-    afterEvaluate {
-        publications.getByName('kotlinMultiplatform') {
-            // Source jars are only created for platforms, not the common artifact.
-            artifact emptySourcesJar
         }
     }
 
