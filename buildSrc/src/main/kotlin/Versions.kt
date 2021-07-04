@@ -30,7 +30,7 @@ object Versions {
 
     const val dokka_gradle_plugin: String = "0.9.17" // available: "0.11.0-dev-59"
 
-    const val org_jetbrains_kotlin: String = "1.5.20"
+    const val org_jetbrains_kotlin: String = "1.5.0"
 
     const val atomicfu_gradle_plugin: String = "0.16.1"
 
