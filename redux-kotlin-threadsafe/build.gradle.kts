@@ -8,7 +8,7 @@ plugins {
 kotlin {
 //    androidNativeArm32()
 //    androidNativeArm64()
-//    iosArm32()
+    iosArm32()
     iosArm64()
     iosX64()
     js(BOTH) {
@@ -84,14 +84,12 @@ afterEvaluate {
             dependsOn("publishKotlinMultiplatformPublicationToTestRepository")
             dependsOn("publishJvmPublicationToTestRepository")
             dependsOn("publishJsPublicationToTestRepository")
-            dependsOn("publishMetadataPublicationToTestRepository")
         }
         create("installIosLocally") {
             dependsOn("publishKotlinMultiplatformPublicationToTestRepository")
             dependsOn("publishIosArm32PublicationToTestRepository")
             dependsOn("publishIosArm64PublicationToTestRepository")
             dependsOn("publishIosX64PublicationToTestRepository")
-            dependsOn("publishMetadataPublicationToTestRepository")
         }
         // NOTE: We do not alias uploadArchives because CI runs it on Linux and we only want to run it on Mac OS.
         // tasks.create("uploadArchives").dependsOn("publishKotlinMultiplatformPublicationToMavenRepository")
