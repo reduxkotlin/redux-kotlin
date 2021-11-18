@@ -20,7 +20,7 @@ data class AppState(
 This object is like a “model” except all fields are vals. This is so that different parts of the
 code can’t change the state arbitrarily, causing hard-to-reproduce bugs.
 
-To change something in the state, you need to dispatch an action. An action is a plain data Kotlin
+To change something in the state, you need to dispatch an action. An action is a plain Kotlin data
 class (notice how we don’t introduce any magic?) that describes what happened. Here are a few
 example actions:
 
