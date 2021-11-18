@@ -7,7 +7,7 @@ hide_title: true
 
 # Redux on Multi-threaded Platforms
 
-TLDR; use [createThreadSafeStore()](../api/createThreadSafeStore.md), unless your Javascript only
+TLDR; use [createThreadSafeStore()](../api/createThreadSafeStore.md), unless your app is Javascript only.
 
 Redux in multi-threaded environments brings additional concerns that are not present in redux
 for Javascript.  Javascript is single threaded, so Redux.js did not have to address the issue.
