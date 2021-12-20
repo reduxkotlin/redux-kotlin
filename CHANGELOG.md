@@ -3,7 +3,7 @@
 - Gradle 7.3.2
 - Coroutines 1.5.2
 - Added refreshVersions plugin
-- New kotlin-redux-compose module
+- New redux-kotlin-compose module
 
 ## [0.5.5] - 2020-08-16
  - update to Kotlin 1.4.0
