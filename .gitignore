@@ -1,27 +1,13 @@
 *.iml
 .gradle
-/local.properties
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea
-/iOS/NameGame/.idea/
+local.properties
+.idea
+iOS/NameGame/.idea/
 .DS_Store
-/build
-/common/build
+build
 /captures
 .externalNativeBuild
 node_modules/
-
-# Created by https://www.gitignore.io/api/swift,xcode
-
-### Swift ###
-# Xcode
-#
-# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
-
-## Build generated
-build/
 DerivedData/
 
 

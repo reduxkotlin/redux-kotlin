@@ -1,20 +1,19 @@
-pluginManagement {
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "kotlin-multiplatform") {
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
-            }
-        }
-    }
+plugins {
+    id("de.fayard.refreshVersions") version "0.23.0"
+////                            # available:"0.30.0"
+    id("com.gradle.enterprise") version "3.8"
 }
+
+refreshVersions { extraArtifactVersionKeyRules(file("versions.rules")) }
+
+rootProject.name = "Redux-Kotlin"
 
 include(
     ":redux-kotlin",
     ":redux-kotlin-threadsafe",
-    ":examples:counter:common",
-    ":examples:counter:android",
-    ":examples:todos:common",
-    ":examples:todos:android"
+    ":redux-kotlin-compose",
+//    ":examples:counter:common",
+//    ":examples:counter:android",
+//    ":examples:todos:common",
+//    ":examples:todos:android",
 )
-
-rootProject.name = "Redux-Kotlin"

@@ -1,19 +1,13 @@
 plugins {
     kotlin("multiplatform")
-    id("plugin.atomicfu")
+    id("org.jetbrains.compose")
     id("plugin.publishing")
 }
 
 kotlin {
-//    androidNativeArm32()
-//    androidNativeArm64()
-//    iosArm32()
-    iosArm64()
-    iosX64()
-    js(BOTH) {
+    js(IR) {
         browser()
-        nodejs()
-
+        
         listOf(compilations["main"], compilations["test"]).forEach {
             with(it.kotlinOptions) {
                 moduleKind = "umd"
@@ -24,26 +18,11 @@ kotlin {
         }
     }
     jvm()
-    linuxX64()
-    macosX64()
-    mingwX64()
-//    mingwX86()
-    tvosArm64()
-    tvosX64()
-    watchosArm32()
-    watchosArm64()
-    watchosX86()
-
-//    below are currently not supported by atomicfu
-//    wasm32("wasm")
-//    linuxArm32Hfp("linArm32")
-//    linuxMips32("linMips32")
-//    linuxMipsel32("linMipsel32")
-//    linuxArm64()
-
+    
     sourceSets {
         commonMain {
             dependencies {
+                api(compose.runtime)
                 api(project(":redux-kotlin"))
             }
         }
@@ -52,23 +31,22 @@ kotlin {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
                 implementation("io.mockk:mockk-common:_")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+            }
+        }
+        
+        val jsTest by getting {
+            dependencies {
+                implementation(kotlin("test-js"))
             }
         }
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:_")
                 implementation("io.mockk:mockk:_")
-    
                 runtimeOnly(kotlin("reflect"))
-            }
-        }
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-                implementation(kotlin("stdlib-js"))
             }
         }
     }
@@ -84,14 +62,5 @@ afterEvaluate {
             dependsOn("publishJsPublicationToTestRepository")
             dependsOn("publishMetadataPublicationToTestRepository")
         }
-        create("installIosLocally") {
-            dependsOn("publishKotlinMultiplatformPublicationToTestRepository")
-            dependsOn("publishIosArm32PublicationToTestRepository")
-            dependsOn("publishIosArm64PublicationToTestRepository")
-            dependsOn("publishIosX64PublicationToTestRepository")
-            dependsOn("publishMetadataPublicationToTestRepository")
-        }
-        // NOTE: We do not alias uploadArchives because CI runs it on Linux and we only want to run it on Mac OS.
-        // tasks.create("uploadArchives").dependsOn("publishKotlinMultiplatformPublicationToMavenRepository")
     }
 }

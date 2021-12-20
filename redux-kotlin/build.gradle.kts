@@ -1,6 +1,6 @@
 plugins {
-    java
     kotlin("multiplatform")
+    id("plugin.publishing")
 }
 
 kotlin {
@@ -43,7 +43,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
-                implementation(Libs.mockk_common)
+                implementation("io.mockk:mockk-common:_")
             }
         }
 
@@ -75,10 +75,10 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
-                implementation(Libs.kotlinx_coroutines_test)
-                implementation(Libs.kotlinx_coroutines_core_jvm)
-                implementation(Libs.mockk)
-                runtimeOnly(Libs.kotlin_reflect)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:_")
+                implementation("io.mockk:mockk:_")
+                runtimeOnly(kotlin("reflect"))
             }
         }
 
@@ -114,5 +114,3 @@ afterEvaluate {
         // tasks.create("uploadArchives").dependsOn("publishKotlinMultiplatformPublicationToMavenRepository")
     }
 }
-
-apply(from = rootProject.file("gradle/publish.gradle"))
