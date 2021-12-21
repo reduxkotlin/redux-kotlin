@@ -32,7 +32,7 @@ signing {
   val signingKey: String? = propOrEnv("GPG_SECRET")
   val signingPassword: String? = propOrEnv("GPG_SIGNING_PASSWORD")
   if (signingKey != null && signingPassword != null) {
-    useInMemoryPgpKeys("$signingKey", "$signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
     sign(publishing.publications)
   }
 }
