@@ -1,0 +1,5 @@
+org.jetbrains.kotlinx:atomicfu*
+                      ^^^^^^^^
+
+org.jetbrains.kotlinx:atomicfu
+                      ^^^^^^^^

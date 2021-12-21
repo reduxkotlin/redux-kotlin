@@ -9,6 +9,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import org.reduxkotlin.Dispatcher
 import org.reduxkotlin.Store
 
 @PublishedApi
@@ -28,7 +29,7 @@ inline fun <T : Any> withStore(store: Store<T>, crossinline content: @Composable
 }
 
 @Composable
-fun rememberDispatcher() = getStore<Any>().dispatch
+fun rememberDispatcher(): Dispatcher = getStore<Any>().dispatch
 
 @Composable
 inline fun <reified TState, TSlice> selectState(

@@ -1,0 +1,8 @@
+root = true
+
+[*.{kt,kts}]
+disabled_rules = no-wildcard-imports
+indent_size = 2
+indent_style = space
+continuation_indent_size = 4
+ij_continuation_indent_size = 4
