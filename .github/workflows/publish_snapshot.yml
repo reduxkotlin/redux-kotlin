@@ -38,3 +38,10 @@ jobs:
         name: publications-threadsafe-${{ matrix.os }}
         path: redux-kotlin-threadsafe/build/publications
 
+    - name: Archive redux-kotlin-compose publications dir
+      if: steps.publish.outputsexit_code == 0
+      uses: actions/upload-artifact@v1
+      with:
+        name: publications-compose-${{ matrix.os }}
+        path: redux-kotlin-compose/build/publications
+
