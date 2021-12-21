@@ -19,48 +19,48 @@ import org.reduxkotlin.examples.todos.rootReducer
 val store = createThreadSafeStore(::rootReducer, AppState())
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var storeSubscription: StoreSubscription
-    private var adapter = TodoAdapter()
+  private lateinit var storeSubscription: StoreSubscription
+  private var adapter = TodoAdapter()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        storeSubscription = store.subscribe { render(store.state) }
-        btnAddTodo.setOnClickListener {
-            val todoText = etTodo.text.toString()
-            etTodo.text.clear()
-            store.dispatch(AddTodo(todoText))
-        }
-        btnSelectAll.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ALL)) }
-        btnActive.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ACTIVE)) }
-        btnCompleted.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_COMPLETED)) }
-
-        recyclerView.adapter = adapter
-
-        render(store.state)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    storeSubscription = store.subscribe { render(store.state) }
+    btnAddTodo.setOnClickListener {
+      val todoText = etTodo.text.toString()
+      etTodo.text.clear()
+      store.dispatch(AddTodo(todoText))
     }
+    btnSelectAll.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ALL)) }
+    btnActive.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_ACTIVE)) }
+    btnCompleted.setOnClickListener { store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_COMPLETED)) }
 
-    private fun render(state: AppState) {
-        adapter.submitList(state.visibleTodos)
-        setFilterButtons(state.visibilityFilter)
+    recyclerView.adapter = adapter
+
+    render(store.state)
+  }
+
+  private fun render(state: AppState) {
+    adapter.submitList(state.visibleTodos)
+    setFilterButtons(state.visibilityFilter)
+  }
+
+  private fun setFilterButtons(visibilityFilter: VisibilityFilter) =
+    when (visibilityFilter) {
+      VisibilityFilter.SHOW_ALL -> {
+        btnSelectAll.isSelected = true
+        btnActive.isSelected = false
+        btnCompleted.isSelected = false
+      }
+      VisibilityFilter.SHOW_ACTIVE -> {
+        btnActive.isSelected = true
+        btnSelectAll.isSelected = false
+        btnCompleted.isSelected = false
+      }
+      VisibilityFilter.SHOW_COMPLETED -> {
+        btnCompleted.isSelected = true
+        btnSelectAll.isSelected = false
+        btnActive.isSelected = false
+      }
     }
-
-    private fun setFilterButtons(visibilityFilter: VisibilityFilter) =
-        when (visibilityFilter) {
-            VisibilityFilter.SHOW_ALL -> {
-                btnSelectAll.isSelected = true
-                btnActive.isSelected = false
-                btnCompleted.isSelected = false
-            }
-            VisibilityFilter.SHOW_ACTIVE -> {
-                btnActive.isSelected = true
-                btnSelectAll.isSelected = false
-                btnCompleted.isSelected = false
-            }
-            VisibilityFilter.SHOW_COMPLETED -> {
-                btnCompleted.isSelected = true
-                btnSelectAll.isSelected = false
-                btnActive.isSelected = false
-            }
-        }
 }

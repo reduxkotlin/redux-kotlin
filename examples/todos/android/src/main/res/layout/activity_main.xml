@@ -8,69 +8,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/etTodo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textShortMessage"
-        app:layout_constraintEnd_toStartOf="@+id/btnAddTodo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Read docs" />
+  <EditText
+      android:id="@+id/etTodo"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:ems="10"
+      android:inputType="textShortMessage"
+      app:layout_constraintEnd_toStartOf="@+id/btnAddTodo"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="Read docs"/>
 
-    <Button
-        android:id="@+id/btnAddTodo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Todo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+  <Button
+      android:id="@+id/btnAddTodo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Add Todo"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show:"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etTodo" />
+  <TextView
+      android:id="@+id/textView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Show:"
+      android:layout_marginEnd="8dp"
+      app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/etTodo"/>
 
-    <Button
-        android:id="@+id/btnSelectAll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@android:string/selectAll"
-        android:background="@drawable/btn_background"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/etTodo" />
+  <Button
+      android:id="@+id/btnSelectAll"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:text="@android:string/selectAll"
+      android:background="@drawable/btn_background"
+      app:layout_constraintStart_toEndOf="@+id/textView"
+      app:layout_constraintTop_toBottomOf="@+id/etTodo"/>
 
-    <Button
-        android:id="@+id/btnActive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Active"
-        android:background="@drawable/btn_background"
-        app:layout_constraintStart_toEndOf="@+id/btnSelectAll"
-        app:layout_constraintTop_toBottomOf="@+id/etTodo" />
+  <Button
+      android:id="@+id/btnActive"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Active"
+      android:background="@drawable/btn_background"
+      app:layout_constraintStart_toEndOf="@+id/btnSelectAll"
+      app:layout_constraintTop_toBottomOf="@+id/etTodo"/>
 
-    <Button
-        android:id="@+id/btnCompleted"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Completed"
-        android:background="@drawable/btn_background"
-        app:layout_constraintStart_toEndOf="@+id/btnActive"
-        app:layout_constraintTop_toTopOf="@+id/btnActive" />
+  <Button
+      android:id="@+id/btnCompleted"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Completed"
+      android:background="@drawable/btn_background"
+      app:layout_constraintStart_toEndOf="@+id/btnActive"
+      app:layout_constraintTop_toTopOf="@+id/btnActive"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCompleted" />
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recyclerView"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/btnCompleted"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
