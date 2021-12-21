@@ -8,7 +8,6 @@ package org.reduxkotlin
  *
  * This enhancer should be placed after all other enhancers that involve access to store methods in
  * the composition chain, as this will result in those enhancers receiving the synchronized store object.
- 
  * @returns {StoreEnhancer} A store enhancer that synchronizes the store.
  */
 fun <State> createSynchronizedStoreEnhancer(): StoreEnhancer<State> {

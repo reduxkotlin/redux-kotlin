@@ -1,3 +1,5 @@
+import de.fayard.refreshVersions.core.versionFor
+
 plugins {
   id("com.diffplug.spotless")
 }
@@ -20,9 +22,9 @@ spotless {
     "disabled_rules" to "no-wildcard-imports"
   )
   kotlin {
-    ktlint().userData(ktlintSettings)
+    ktlint(versionFor("version.ktlint")).userData(ktlintSettings)
   }
   kotlinGradle {
-    ktlint().userData(ktlintSettings)
+    ktlint(versionFor("version.ktlint")).userData(ktlintSettings)
   }
 }
