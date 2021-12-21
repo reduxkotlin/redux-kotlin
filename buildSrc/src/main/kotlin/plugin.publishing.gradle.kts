@@ -39,8 +39,7 @@ tasks {
     archiveClassifier.set("javadoc")
     from(dokkaHtml)
   }
-  
-  
+
   publishing {
     publications.withType<MavenPublication> {
       artifact(javadocJar)
@@ -68,7 +67,7 @@ tasks {
         }
       }
     }
-    
+
     repositories {
       maven(if (isReleaseBuild) releaseRepositoryUrl else snapshotRepositoryUrl) {
         credentials {

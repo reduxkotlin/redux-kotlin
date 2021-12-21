@@ -17,9 +17,9 @@ typealias StoreSubscription = () -> Unit
 typealias Dispatcher = (Any) -> Any
 // Enhancer is type Any? to avoid a circular dependency of types.
 typealias StoreCreator<State> = (
-    reducer: Reducer<State>,
-    initialState: State,
-    enhancer: Any?
+  reducer: Reducer<State>,
+  initialState: State,
+  enhancer: Any?
 ) -> Store<State>
 
 /**
@@ -34,12 +34,12 @@ typealias StoreEnhancer<State> = (StoreCreator<State>) -> StoreCreator<State>
 typealias Middleware<State> = (store: Store<State>) -> (next: Dispatcher) -> (action: Any) -> Any
 
 interface Store<State> {
-    val getState: GetState<State>
-    var dispatch: Dispatcher
-    val subscribe: (StoreSubscriber) -> StoreSubscription
-    val replaceReducer: (Reducer<State>) -> Unit
-    val state: State
-        get() = getState()
+  val getState: GetState<State>
+  var dispatch: Dispatcher
+  val subscribe: (StoreSubscriber) -> StoreSubscription
+  val replaceReducer: (Reducer<State>) -> Unit
+  val state: State
+    get() = getState()
 }
 
 /**
@@ -48,13 +48,13 @@ interface Store<State> {
  *    val myMiddleware = middleware { store, next, action -> doStuff() }
  */
 fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -> Any): Middleware<State> =
-    { store ->
-        { next ->
-            { action: Any ->
-                dispatch(store, next, action)
-            }
-        }
+  { store ->
+    { next ->
+      { action: Any ->
+        dispatch(store, next, action)
+      }
     }
+  }
 
 /**
  * Convenience function for creating a [ReducerForActionType]
@@ -85,11 +85,11 @@ fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -
  *   val store = createThreadSafeStore(rootReducer, AppState())
  */
 inline fun <TState, reified TAction> reducerForActionType(
-    crossinline reducer: ReducerForActionType<TState, TAction>
+  crossinline reducer: ReducerForActionType<TState, TAction>
 ): Reducer<TState> =
-    { state, action ->
-        when (action) {
-            is TAction -> reducer(state, action)
-            else -> state
-        }
+  { state, action ->
+    when (action) {
+      is TAction -> reducer(state, action)
+      else -> state
     }
+  }

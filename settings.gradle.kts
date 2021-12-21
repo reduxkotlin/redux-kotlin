@@ -17,10 +17,11 @@ include(
   ":examples:todos:android",
 )
 
-fun ProjectDescriptor.prefixName(prefix: String) {
-  name = "$prefix-$name"
+fun includePrefixed(prefix: String, vararg projectPaths: String) {
+  projectPaths.forEach {
+    include(it)
+    project(it).apply { name = "$prefix-$name" }
+  }
 }
-project(":examples:counter:common").prefixName("counter")
-project(":examples:counter:android").prefixName("counter")
-project(":examples:todos:common").prefixName("todos")
-project(":examples:todos:android").prefixName("todos")
+includePrefixed("counter", ":examples:counter:common", ":examples:counter:android")
+includePrefixed("todos", ":examples:todos:common", ":examples:todos:android")
