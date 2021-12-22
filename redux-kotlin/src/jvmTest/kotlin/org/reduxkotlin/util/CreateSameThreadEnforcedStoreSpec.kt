@@ -1,13 +1,5 @@
 package org.reduxkotlin.util
 
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
-import kotlin.system.measureTimeMillis
-import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -29,6 +21,14 @@ import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.createSameThreadEnforcedStore
 import org.reduxkotlin.middleware
 import org.reduxkotlin.todos
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import kotlin.system.measureTimeMillis
+import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class CreateSameThreadEnforcedStoreSpec {
   lateinit var store: Store<TestState>

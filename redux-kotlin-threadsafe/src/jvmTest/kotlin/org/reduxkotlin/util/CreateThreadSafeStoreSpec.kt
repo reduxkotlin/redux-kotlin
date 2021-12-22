@@ -1,9 +1,5 @@
 package org.reduxkotlin.util
 
-import java.util.Timer
-import kotlin.concurrent.timerTask
-import kotlin.system.measureTimeMillis
-import kotlin.test.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -18,6 +14,10 @@ import org.reduxkotlin.compose
 import org.reduxkotlin.createStore
 import org.reduxkotlin.createSynchronizedStoreEnhancer
 import org.reduxkotlin.createThreadSafeStore
+import java.util.Timer
+import kotlin.concurrent.timerTask
+import kotlin.system.measureTimeMillis
+import kotlin.test.assertEquals
 
 class MultiThreadedClass {
   private suspend fun massiveRun(numCoroutines: Int, numRepeats: Int, action: suspend () -> Unit) {

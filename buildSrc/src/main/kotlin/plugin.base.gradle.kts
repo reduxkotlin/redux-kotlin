@@ -22,9 +22,11 @@ spotless {
     "disabled_rules" to "no-wildcard-imports"
   )
   kotlin {
+    target("**/*.kt")
     ktlint(versionFor("version.ktlint")).userData(ktlintSettings)
   }
   kotlinGradle {
+    target("**/*.kts")
     ktlint(versionFor("version.ktlint")).userData(ktlintSettings)
   }
 }
