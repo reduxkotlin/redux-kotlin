@@ -144,16 +144,11 @@ Trello boards - https://trello.com/reduxkotlinorg
 Or create an issue on [github](https://github.com/reduxkotlin/redux-kotlin/issues).
 
 [badge-android]: http://img.shields.io/badge/platform-android-brightgreen.svg?style=flat
-[badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat	
+[badge-ios]: http://img.shields.io/badge/platform-ios-brightgreen.svg?style=flat
 [badge-native]: http://img.shields.io/badge/platform-native-lightgrey.svg?style=flat
 [badge-js]: http://img.shields.io/badge/platform-js-yellow.svg?style=flat
-[badge-js]: http://img.shields.io/badge/platform-js-yellow.svg?style=flat
 [badge-jvm]: http://img.shields.io/badge/platform-jvm-orange.svg?style=flat
-[badge-jvm]: http://img.shields.io/badge/platform-jvm-orange.svg?style=flat
-[badge-linux]: http://img.shields.io/badge/platform-linux-important.svg?style=flat
 [badge-linux]: http://img.shields.io/badge/platform-linux-important.svg?style=flat 
 [badge-windows]: http://img.shields.io/badge/platform-windows-informational.svg?style=flat
-[badge-windows]: http://img.shields.io/badge/platform-windows-informational.svg?style=flat
-[badge-mac]: http://img.shields.io/badge/platform-macos-lightgrey.svg?style=flat
 [badge-mac]: http://img.shields.io/badge/platform-macos-lightgrey.svg?style=flat
 [badge-wasm]: https://img.shields.io/badge/platform-wasm-darkblue.svg?style=flat
