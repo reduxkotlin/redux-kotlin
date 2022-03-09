@@ -8,6 +8,7 @@ kotlin {
     androidNativeArm64()
     iosArm32()
     iosArm64()
+    iosSimulatorArm64()
     iosX64()
     js(BOTH) {
         browser()
