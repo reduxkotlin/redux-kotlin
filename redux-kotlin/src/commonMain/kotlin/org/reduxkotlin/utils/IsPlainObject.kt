@@ -1,3 +1,3 @@
 package org.reduxkotlin.utils
 
-fun isPlainObject(obj: Any) = obj !is Function<*>
+public fun isPlainObject(obj: Any): Boolean = obj !is Function<*>

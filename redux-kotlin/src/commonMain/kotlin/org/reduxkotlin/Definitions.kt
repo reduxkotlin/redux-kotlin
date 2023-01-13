@@ -3,43 +3,43 @@ package org.reduxkotlin
 /**
  * See also https://github.com/reactjs/redux/blob/master/docs/Glossary.md#reducer
  */
-typealias Reducer<State> = (state: State, action: Any) -> State
+public typealias Reducer<State> = (state: State, action: Any) -> State
 
 /**
  * Reducer for a particular subclass of actions.  Useful for Sealed classes &
  * exhaustive when statements.  See [reducerForActionType].
  */
-typealias ReducerForActionType<TState, TAction> = (state: TState, action: TAction) -> TState
+public typealias ReducerForActionType<TState, TAction> = (state: TState, action: TAction) -> TState
 
-typealias GetState<State> = () -> State
-typealias StoreSubscriber = () -> Unit
-typealias StoreSubscription = () -> Unit
-typealias Dispatcher = (Any) -> Any
+public typealias GetState<State> = () -> State
+public typealias StoreSubscriber = () -> Unit
+public typealias StoreSubscription = () -> Unit
+public typealias Dispatcher = (Any) -> Any
+
 // Enhancer is type Any? to avoid a circular dependency of types.
-typealias StoreCreator<State> = (
-    reducer: Reducer<State>,
-    initialState: State,
-    enhancer: Any?
+public typealias StoreCreator<State> = (
+  reducer: Reducer<State>,
+  initialState: State,
+  enhancer: Any?
 ) -> Store<State>
 
 /**
  * Take a store creator and return a new enhanced one
  * see https://github.com/reactjs/redux/blob/master/docs/Glossary.md#store-enhancer
  */
-typealias StoreEnhancer<State> = (StoreCreator<State>) -> StoreCreator<State>
+public typealias StoreEnhancer<State> = (StoreCreator<State>) -> StoreCreator<State>
 
 /**
  *  https://github.com/reactjs/redux/blob/master/docs/Glossary.md#middleware
  */
-typealias Middleware<State> = (store: Store<State>) -> (next: Dispatcher) -> (action: Any) -> Any
+public typealias Middleware<State> = (store: Store<State>) -> (next: Dispatcher) -> (action: Any) -> Any
 
-interface Store<State> {
-    val getState: GetState<State>
-    var dispatch: Dispatcher
-    val subscribe: (StoreSubscriber) -> StoreSubscription
-    val replaceReducer: (Reducer<State>) -> Unit
-    val state: State
-        get() = getState()
+public interface Store<State> {
+  public val getState: GetState<State>
+  public var dispatch: Dispatcher
+  public val subscribe: (StoreSubscriber) -> StoreSubscription
+  public val replaceReducer: (Reducer<State>) -> Unit
+  public val state: State get() = getState()
 }
 
 /**
@@ -47,14 +47,14 @@ interface Store<State> {
  * usage:
  *    val myMiddleware = middleware { store, next, action -> doStuff() }
  */
-fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -> Any): Middleware<State> =
-    { store ->
-        { next ->
-            { action: Any ->
-                dispatch(store, next, action)
-            }
-        }
+public fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -> Any): Middleware<State> =
+  { store ->
+    { next ->
+      { action: Any ->
+        dispatch(store, next, action)
+      }
     }
+  }
 
 /**
  * Convenience function for creating a [ReducerForActionType]
@@ -84,12 +84,11 @@ fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -
  *      **or**
  *   val store = createThreadSafeStore(rootReducer, AppState())
  */
-inline fun <TState, reified TAction> reducerForActionType(
-    crossinline reducer: ReducerForActionType<TState, TAction>
-): Reducer<TState> =
-    { state, action ->
-        when (action) {
-            is TAction -> reducer(state, action)
-            else -> state
-        }
-    }
+public inline fun <TState, reified TAction> reducerForActionType(
+  crossinline reducer: ReducerForActionType<TState, TAction>
+): Reducer<TState> = { state, action ->
+  when (action) {
+    is TAction -> reducer(state, action)
+    else -> state
+  }
+}

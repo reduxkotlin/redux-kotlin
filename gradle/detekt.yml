@@ -1,0 +1,51 @@
+config:
+  warningsAsErrors: true
+
+complexity:
+  active: true
+
+comments:
+  active: true
+  CommentOverPrivateFunction:
+    active: false
+  CommentOverPrivateProperty:
+    active: false
+  DeprecatedBlockTag:
+    active: true
+  OutdatedDocumentation:
+    active: false
+    allowParamOnConstructorProperties: false
+#  UndocumentedPublicClass:
+#    active: true
+#  UndocumentedPublicFunction:
+#    active: true
+#  UndocumentedPublicProperty:
+#    active: true
+
+naming:
+  InvalidPackageDeclaration:
+    active: false
+  MatchingDeclarationName:
+    active: false
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][_a-zA-Z0-9]*'
+
+style:
+  ForbiddenComment:
+    active: false
+  WildcardImport:
+    active: false
+  UnnecessaryAbstractClass:
+    active: false
+  MaxLineLength:
+    active: false
+  MagicNumber:
+    active: false
+
+formatting:
+  Filename:
+    active: false
+  NoWildcardImports:
+    active: false
+  Indentation:
+    indentSize: 2

@@ -1,0 +1,5 @@
+root = true
+
+[*.{kt,kts}]
+indent_size = 2
+ignored_rules = no-wildstar-imports

@@ -17,9 +17,9 @@ class Decrement
  * such as a 'type' string field, or delegating the reduction to a method on the action objects.
  */
 val reducer: Reducer<Int> = { state, action ->
-    when (action) {
-        is Increment -> state + 1
-        is Decrement -> state - 1
-        else -> state
-    }
+  when (action) {
+    is Increment -> state + 1
+    is Decrement -> state - 1
+    else -> state
+  }
 }
