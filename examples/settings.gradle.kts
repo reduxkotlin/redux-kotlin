@@ -16,11 +16,13 @@ refreshVersions {
   extraArtifactVersionKeyRules(rootDir.resolve("gradle/versions.rules"))
 }
 
-includeBuild("build-conventions/")
+includeBuild("../build-conventions/")
+// TODO(COMPOSITE) Uncomment once KMP properly supports composite builds
+// includeBuild("../")
 
 include(
-  ":redux-kotlin",
-  ":redux-kotlin-threadsafe",
+  ":counter:common",
+  ":counter:android",
+  ":todos:common",
+  ":todos:android"
 )
-
-rootProject.name = "Redux-Kotlin"

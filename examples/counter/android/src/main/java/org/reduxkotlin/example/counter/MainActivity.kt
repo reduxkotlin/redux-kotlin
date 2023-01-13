@@ -3,12 +3,12 @@ package org.reduxkotlin.example.counter
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import org.reduxkotlin.StoreSubscription
-import org.reduxkotlin.createThreadSafeStore
+import org.reduxkotlin.example.counter.databinding.ActivityMainBinding
 import org.reduxkotlin.examples.counter.Decrement
 import org.reduxkotlin.examples.counter.Increment
 import org.reduxkotlin.examples.counter.reducer
+import org.reduxkotlin.threadsafe.createThreadSafeStore
 
 /**
  * This is a sample of basic redux behavior.
@@ -18,20 +18,22 @@ import org.reduxkotlin.examples.counter.reducer
 val store = createThreadSafeStore(reducer, 0)
 
 class MainActivity : AppCompatActivity() {
-  lateinit var storeSubscription: StoreSubscription
+  private lateinit var storeSubscription: StoreSubscription
+  private lateinit var binding: ActivityMainBinding
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
     storeSubscription = store.subscribe { render(store.state) }
-    btn_increment.setOnClickListener { store.dispatch(Increment()) }
-    btn_decrement.setOnClickListener { store.dispatch(Decrement()) }
-    btn_async.setOnClickListener { incrementAsync() }
-    btn_increment_if_odd.setOnClickListener { incrementIfOdd() }
+    binding.btnIncrement.setOnClickListener { store.dispatch(Increment()) }
+    binding.btnDecrement.setOnClickListener { store.dispatch(Decrement()) }
+    binding.btnAsync.setOnClickListener { incrementAsync() }
+    binding.btnIncrementIfOdd.setOnClickListener { incrementIfOdd() }
   }
 
   private fun render(state: Int) {
-    txt_label.text = "Clicked: $state times"
+    binding.txtLabel.text = "Clicked: $state times"
   }
 
   private fun incrementIfOdd() {
@@ -41,7 +43,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun incrementAsync() {
-    Handler().postDelayed(
+    Handler(mainLooper).postDelayed(
       {
         store.dispatch(Increment())
       },
