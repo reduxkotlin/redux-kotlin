@@ -1,14 +1,10 @@
 *.iml
-.gradle
+.gradle/
+lint.xml
 /local.properties
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea
+.idea/
 /iOS/NameGame/.idea/
 .DS_Store
-/build
-/common/build
 /captures
 .externalNativeBuild
 node_modules/
@@ -23,7 +19,6 @@ node_modules/
 ## Build generated
 build/
 DerivedData/
-
 
 ## Various settings
 *.pbxuser
@@ -89,11 +84,11 @@ fastlane/test_output
 # End of https://www.gitignore.io/api/swift,xcode
 
 # From redux
-dist
+dist/
 es
-coverage
+coverage/
 
-website/translated_docs
+website/translated_docs/
 website/build/
-website/node_modules
+website/node_modules/
 website/i18n/*

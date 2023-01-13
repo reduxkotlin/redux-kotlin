@@ -13,42 +13,42 @@ import org.reduxkotlin.utils.stripCoroutineName
  *
  * see [createStore] for details on store params/behavior
  */
-fun <State> createSameThreadEnforcedStore(
-    reducer: Reducer<State>,
-    preloadedState: State,
-    enhancer: StoreEnhancer<State>? = null
+public fun <State> createSameThreadEnforcedStore(
+  reducer: Reducer<State>,
+  preloadedState: State,
+  enhancer: StoreEnhancer<State>? = null
 ): Store<State> {
+  val store = createStore(reducer, preloadedState, enhancer)
+  val storeThreadName = stripCoroutineName(getThreadName())
+  fun isSameThread() = stripCoroutineName(getThreadName()) == storeThreadName
+  fun checkSameThread() = check(isSameThread()) {
+    """
+      |You may not call the store from a thread other than the thread on which it was created.
+      |This includes: getState(), dispatch(), subscribe(), and replaceReducer()
+      |This store was created on: '$storeThreadName' and current
+      |thread is '${getThreadName()}'
+    """.trimMargin()
+  }
 
-    val store = createStore(reducer, preloadedState, enhancer)
-    val storeThreadName = stripCoroutineName(getThreadName())
-    fun isSameThread() = stripCoroutineName(getThreadName()) == storeThreadName
-    fun checkSameThread() = check(isSameThread()) {
-        """You may not call the store from a thread other than the thread on which it was created.
-            |This includes: getState(), dispatch(), subscribe(), and replaceReducer()
-            |This store was created on: '$storeThreadName' and current
-            |thread is '${getThreadName()}'
-            """.trimMargin()
+  return object : Store<State> {
+    override val getState = {
+      checkSameThread()
+      store.getState()
     }
 
-    return object : Store<State> {
-        override val getState = {
-            checkSameThread()
-            store.getState()
-        }
-
-        override var dispatch: Dispatcher = { action ->
-            checkSameThread()
-            store.dispatch(action)
-        }
-
-        override val subscribe = { storeSubscriber: StoreSubscriber ->
-            checkSameThread()
-            store.subscribe(storeSubscriber)
-        }
-
-        override val replaceReducer = { reducer: Reducer<State> ->
-            checkSameThread()
-            store.replaceReducer(reducer)
-        }
+    override var dispatch: Dispatcher = { action ->
+      checkSameThread()
+      store.dispatch(action)
     }
+
+    override val subscribe = { storeSubscriber: StoreSubscriber ->
+      checkSameThread()
+      store.subscribe(storeSubscriber)
+    }
+
+    override val replaceReducer = { reducer: Reducer<State> ->
+      checkSameThread()
+      store.replaceReducer(reducer)
+    }
+  }
 }
