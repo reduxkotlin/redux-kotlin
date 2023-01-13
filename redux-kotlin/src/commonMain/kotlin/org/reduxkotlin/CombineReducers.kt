@@ -1,5 +1,8 @@
 package org.reduxkotlin
 
+/**
+ * Combines multiple reducers into single reducer chain
+ */
 public fun <State> combineReducers(vararg reducers: Reducer<State>): Reducer<State> = { state, action ->
   reducers.fold(state) { s, reducer -> reducer(s, action) }
 }

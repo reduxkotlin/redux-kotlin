@@ -1,4 +1,6 @@
-package org.reduxkotlin
+package org.reduxkotlin.threadsafe
+
+import org.reduxkotlin.StoreEnhancer
 
 /**
  * Creates a store enhancer that wraps a Redux store in a synchronization object,
@@ -11,7 +13,7 @@ package org.reduxkotlin
 
  * @returns {StoreEnhancer} A store enhancer that synchronizes the store.
  */
-fun <State> createSynchronizedStoreEnhancer(): StoreEnhancer<State> {
+public fun <State> createSynchronizedStoreEnhancer(): StoreEnhancer<State> {
   return { storeCreator ->
     { reducer, initialState, en: Any? ->
       val store = storeCreator(reducer, initialState, en)

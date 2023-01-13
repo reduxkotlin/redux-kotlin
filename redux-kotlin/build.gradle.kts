@@ -1,8 +1,7 @@
 import util.jvmCommonTest
 
 plugins {
-  kotlin("multiplatform")
-  id("convention.library-mpp")
+  id("convention.library-mpp-all")
 }
 
 android {
@@ -11,12 +10,6 @@ android {
 
 kotlin {
   sourceSets {
-    commonTest {
-      dependencies {
-        implementation(kotlin("test-common"))
-        implementation(kotlin("test-annotations-common"))
-      }
-    }
     jvmCommonTest {
       dependencies {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")

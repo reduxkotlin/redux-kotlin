@@ -1,7 +1,7 @@
 import util.jvmCommonTest
 
 plugins {
-  id("convention.mpp")
+  id("convention.mpp-loved")
   id("convention.library-android")
   id("convention.control")
 }

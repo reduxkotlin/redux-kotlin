@@ -10,6 +10,7 @@
 
 - Major gradle infra rework
 - Enabled `explicitPublicApi()`
+- BREAKING: `redux-kotlin-threadsafe` APIs moved to a new package: `org.reduxkotlin.threadsafe`
 
 ### Removed
 
