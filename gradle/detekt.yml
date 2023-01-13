@@ -8,19 +8,26 @@ comments:
   active: true
   CommentOverPrivateFunction:
     active: false
+    excludes: [ "**/*Test.kt" ]
   CommentOverPrivateProperty:
     active: false
+    excludes: [ "**/*Test.kt" ]
   DeprecatedBlockTag:
     active: true
+    excludes: [ "**/*Test.kt" ]
   OutdatedDocumentation:
-    active: false
+    active: true
+    excludes: [ "**/*Test.kt" ]
     allowParamOnConstructorProperties: false
-#  UndocumentedPublicClass:
-#    active: true
-#  UndocumentedPublicFunction:
-#    active: true
-#  UndocumentedPublicProperty:
-#    active: true
+  UndocumentedPublicClass:
+    active: true
+    excludes: [ "**/*Test.kt" ]
+  UndocumentedPublicFunction:
+    active: true
+    excludes: [ "**/*Test.kt" ]
+  UndocumentedPublicProperty:
+    active: true
+    excludes: [ "**/*Test.kt" ]
 
 naming:
   InvalidPackageDeclaration:
@@ -49,3 +56,5 @@ formatting:
     active: false
   Indentation:
     indentSize: 2
+  FinalNewline:
+    active: true

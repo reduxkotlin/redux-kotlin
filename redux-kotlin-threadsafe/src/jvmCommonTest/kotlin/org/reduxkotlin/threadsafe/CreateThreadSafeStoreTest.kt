@@ -1,25 +1,14 @@
-package org.reduxkotlin.util
+package org.reduxkotlin.threadsafe
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.junit.Test
-import org.reduxkotlin.Dispatcher
-import org.reduxkotlin.GetState
-import org.reduxkotlin.Middleware
-import org.reduxkotlin.applyMiddleware
-import org.reduxkotlin.compose
-import org.reduxkotlin.createStore
-import org.reduxkotlin.createSynchronizedStoreEnhancer
-import org.reduxkotlin.createThreadSafeStore
-import java.util.Timer
+import org.reduxkotlin.*
+import java.util.*
 import kotlin.concurrent.timerTask
 import kotlin.system.measureTimeMillis
 import kotlin.test.assertEquals
 
-class MultiThreadedClass {
+class CreateThreadSafeStoreTest {
   private suspend fun massiveRun(numCoroutines: Int, numRepeats: Int, action: suspend () -> Unit) {
     val time = measureTimeMillis {
       coroutineScope {
@@ -87,24 +76,24 @@ val counterReducer = { state: TestState, action: Any ->
 
 // Enhancer mimics the behavior of `createThunkMiddleware` provided by the redux-kotlin-thunk library
 typealias TestThunk<State> = (dispatch: Dispatcher, getState: GetState<State>, extraArg: Any?) -> Any
-fun <State> createTestThunkMiddleware(): Middleware<State> =
-  { store ->
-    { next: Dispatcher ->
-      { action: Any ->
-        if (action is Function<*>) {
-          @Suppress("UNCHECKED_CAST")
-          val thunk = try {
-            (action as TestThunk<*>)
-          } catch (e: ClassCastException) {
-            throw IllegalArgumentException("Require type TestThunk", e)
-          }
-          thunk(store.dispatch, store.getState, null)
-        } else {
-          next(action)
+
+fun <State> createTestThunkMiddleware(): Middleware<State> = { store ->
+  { next: Dispatcher ->
+    { action: Any ->
+      if (action is Function<*>) {
+        @Suppress("UNCHECKED_CAST")
+        val thunk = try {
+          (action as TestThunk<*>)
+        } catch (e: ClassCastException) {
+          throw IllegalArgumentException("Require type TestThunk", e)
         }
+        thunk(store.dispatch, store.getState, null)
+      } else {
+        next(action)
       }
     }
   }
+}
 
 fun incrementThunk(): TestThunk<TestState> = { dispatch, getState, _ ->
   Timer().schedule(

@@ -34,11 +34,34 @@ public typealias StoreEnhancer<State> = (StoreCreator<State>) -> StoreCreator<St
  */
 public typealias Middleware<State> = (store: Store<State>) -> (next: Dispatcher) -> (action: Any) -> Any
 
+/**
+ * Main redux storage container for a given [State]
+ */
 public interface Store<State> {
+  /**
+   * Current store state getter
+   */
   public val getState: GetState<State>
+
+  /**
+   * Dispatcher that can be used to update the store state
+   */
   public var dispatch: Dispatcher
+
+  /**
+   * Subscribes to state's updates.
+   * Subscription returns [StoreSubscription] that can be invoked to unsubscribe from further updates.
+   */
   public val subscribe: (StoreSubscriber) -> StoreSubscription
+
+  /**
+   * Replace store's reducer with a new implementation
+   */
   public val replaceReducer: (Reducer<State>) -> Unit
+
+  /**
+   * Current store state
+   */
   public val state: State get() = getState()
 }
 

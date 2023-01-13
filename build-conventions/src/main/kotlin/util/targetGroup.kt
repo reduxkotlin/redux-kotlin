@@ -15,8 +15,8 @@ fun <T : KotlinTarget> KotlinMultiplatformExtension.targetGroup(
 ): Pair<KotlinSourceSet, KotlinSourceSet> {
   val mainName = "${name}Main"
   val testName = "${name}Test"
-  val main = sourceSets.create(mainName) { dependsOn(mainSourceSetTarget) }
-  val test = sourceSets.create(testName) { dependsOn(testSourceSetTarget) }
+  val main = sourceSets.maybeCreate(mainName).apply { dependsOn(mainSourceSetTarget) }
+  val test = sourceSets.maybeCreate(testName).apply { dependsOn(testSourceSetTarget) }
   targets.forEach { target ->
     target.compilations["main"].defaultSourceSet { dependsOn(main) }
     target.compilations["test"].defaultSourceSet { dependsOn(test) }

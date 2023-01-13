@@ -1,7 +1,8 @@
-package org.reduxkotlin
+package org.reduxkotlin.threadsafe
 
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
+import org.reduxkotlin.*
 
 /**
  * Threadsafe wrapper for ReduxKotlin store that synchronizes access to each function using
@@ -10,7 +11,7 @@ import kotlinx.atomicfu.locks.synchronized
  * This does have a performance impact for JVM/Native.
  * TODO more info at [https://ReduxKotlin.org]
  */
-class SynchronizedStore<TState>(private val store: Store<TState>) : Store<TState>, SynchronizedObject() {
+public class SynchronizedStore<TState>(private val store: Store<TState>) : Store<TState>, SynchronizedObject() {
 
   override var dispatch: Dispatcher = { action ->
     synchronized(this) { store.dispatch(action) }

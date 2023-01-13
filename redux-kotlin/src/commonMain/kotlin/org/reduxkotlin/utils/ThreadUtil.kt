@@ -1,6 +1,6 @@
 package org.reduxkotlin.utils
 
-public const val UNKNOWN_THREAD_NAME: String = "UNKNOWN_THREAD_NAME"
+internal const val UNKNOWN_THREAD_NAME: String = "UNKNOWN_THREAD_NAME"
 
 /**
  * Returns the name of the current thread.

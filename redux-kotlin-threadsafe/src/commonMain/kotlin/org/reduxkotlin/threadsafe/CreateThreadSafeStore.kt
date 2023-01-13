@@ -1,4 +1,9 @@
-package org.reduxkotlin
+package org.reduxkotlin.threadsafe
+
+import org.reduxkotlin.Reducer
+import org.reduxkotlin.Store
+import org.reduxkotlin.StoreEnhancer
+import org.reduxkotlin.createStore
 
 /**
  * Creates a SYNCHRONIZED, THREADSAFE Redux store that holds the state tree.
@@ -23,7 +28,7 @@ package org.reduxkotlin
  * @returns {Store} A Redux store that lets you read the state, dispatch actions
  * and subscribe to changes.
  */
-fun <State> createThreadSafeStore(
+public fun <State> createThreadSafeStore(
   reducer: Reducer<State>,
   preloadedState: State,
   enhancer: StoreEnhancer<State>? = null
