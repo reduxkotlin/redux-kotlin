@@ -8,26 +8,24 @@ comments:
   active: true
   CommentOverPrivateFunction:
     active: false
-    excludes: [ "**/*Test.kt" ]
   CommentOverPrivateProperty:
     active: false
-    excludes: [ "**/*Test.kt" ]
   DeprecatedBlockTag:
     active: true
-    excludes: [ "**/*Test.kt" ]
+    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
   OutdatedDocumentation:
     active: true
-    excludes: [ "**/*Test.kt" ]
+    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
     allowParamOnConstructorProperties: false
   UndocumentedPublicClass:
     active: true
-    excludes: [ "**/*Test.kt" ]
+    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
   UndocumentedPublicFunction:
     active: true
-    excludes: [ "**/*Test.kt" ]
+    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
   UndocumentedPublicProperty:
     active: true
-    excludes: [ "**/*Test.kt" ]
+    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
 
 naming:
   InvalidPackageDeclaration:

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_todo.view.*
+import org.reduxkotlin.example.todos.databinding.ItemTodoBinding
 import org.reduxkotlin.examples.todos.Todo
 import org.reduxkotlin.examples.todos.ToggleTodo
 
@@ -25,14 +25,15 @@ class TodoAdapter : ListAdapter<Todo, TodoViewHolder>(DiffCallback()) {
 
 class TodoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
   fun bind(todo: Todo) {
+    val binding = ItemTodoBinding.bind(itemView)
     if (todo.completed) {
-      itemView.tvTodo.paintFlags = itemView.tvTodo.paintFlags or STRIKE_THRU_TEXT_FLAG
+      binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or STRIKE_THRU_TEXT_FLAG
     } else {
-      itemView.tvTodo.paintFlags =
-        itemView.tvTodo.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
+      binding.tvTodo.paintFlags =
+        binding.tvTodo.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
     }
 
-    itemView.tvTodo.text = "• ${todo.text}"
+    binding.tvTodo.text = "• ${todo.text}"
     itemView.setOnClickListener { store.dispatch(ToggleTodo(adapterPosition)) }
   }
 }
