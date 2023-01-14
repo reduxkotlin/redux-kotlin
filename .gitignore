@@ -5,6 +5,7 @@ lint.xml
 .idea/
 /iOS/NameGame/.idea/
 .DS_Store
+*.hprof
 /captures
 .externalNativeBuild
 node_modules/

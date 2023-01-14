@@ -17,7 +17,7 @@ refreshVersions {
 }
 
 includeBuild("../build-conventions/")
-// TODO(COMPOSITE) Uncomment once KMP properly supports composite builds
+// TODO(KT-52172) Uncomment once KMP properly supports composite builds
 // includeBuild("../")
 
 include(

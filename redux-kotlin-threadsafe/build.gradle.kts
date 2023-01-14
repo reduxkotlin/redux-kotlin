@@ -3,6 +3,7 @@ import util.jvmCommonTest
 plugins {
   id("convention.library-mpp-loved")
   id("convention.atomicfu")
+  id("convention.publishing-mpp")
 }
 
 android {
