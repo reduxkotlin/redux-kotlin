@@ -13,16 +13,44 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Ktlint
-        uses: "vroy/gha-kotlin-linter@v1"
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 11
+
+      - name: Detekt
+        run: ./gradlew detektAll
+
+      - name: Make artifact location URIs relative
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          ls '${{ github.workspace }}/build/reports/detekt/'
+          cp '${{ github.workspace }}/build/reports/detekt/detekt.sarif' '${{ github.workspace }}/detekt.sarif.json'
+          echo "$(
+            jq --arg github_workspace ${{ github.workspace }} \
+              '. | ( .runs[].results[].locations[].physicalLocation.artifactLocation.uri |= if test($github_workspace) then .[($github_workspace | length | . + 1):] else . end )' \
+              '${{ github.workspace }}/detekt.sarif.json'
+          )" > '${{ github.workspace }}/detekt.sarif.json'
+
+      - uses: github/codeql-action/upload-sarif@v2
+        if: ${{ always() }}
+        with:
+          sarif_file: ${{ github.workspace }}/detekt.sarif.json
+          checkout_path: ${{ github.workspace }}
   test:
     needs: ktlint
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 11
 
       - name: Test
         run: ./gradlew allTest

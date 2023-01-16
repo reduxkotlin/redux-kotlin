@@ -7,34 +7,97 @@ on:
     branches: [ master ]
 
 jobs:
+  resolve-version:
+    uses: ./.github/workflows/resolve-version.yml
+    needs: [ check ]
+    with:
+      desired-version: ${{ github.event.release.tag_name || github.event.inputs.version }}
+
   publish-snapshot:
-    runs-on: ${{ matrix.os }}
+    needs:
+      - resolve-version
+    runs-on: ${{ matrix.os.runner }}
+    defaults:
+      run:
+        shell: ${{ matrix.os.shell }}
+    env:
+      VERSION: ${{ needs.resolve-version.outputs.version }}
+      GH_USERNAME: ${{ github.actor }}
+      GH_PASSWORD: ${{ github.token }}
+      ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SECRET }}
+      ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.GPG_SIGNING_KEY_ID }}
+      ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
+      ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+      ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        repository:
+          - name: Github Packages
+            tasks: publishAllPublicationsToGitHubRepository
+            enabled: ${{ github.event.inputs.skipGitHub != 'y' }}
+          - name: Maven Central
+            # `closeSonatypeStagingRepository` Requires to manually release a new version on https://s01.oss.sonatype.org/#stagingRepositories
+            # If you're brave, you could change it to `closeAndReleaseSonatypeStagingRepository` to fully automate the release
+            tasks: publishToSonatype closeAndReleaseSonatypeStagingRepository
+            enabled: ${{ github.event.inputs.skipMavenCentral != 'y' }}
+        os:
+          - runner: macos-latest
+            shell: bash
+          - runner: windows-latest
+            shell: msys2 {0}
+          - runner: ubuntu-latest
+            shell: bash
 
     steps:
-    - uses: actions/checkout@v2
+      steps:
+        - uses: msys2/setup-msys2@v2
+          if: ${{ matrix.repository.enabled == true && runner.os == 'Windows' }}
+          with:
+            release: false
+            msystem: MINGW64
+            update: true
+            path-type: inherit
+            install: >-
+              mingw-w64-x86_64-curl
+              curl
 
-    - name: Publish Snapshot
-      env:
-        SONATYPE_NEXUS_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-        SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
-        GPG_SECRET: ${{ secrets.GPG_SECRET }}
-        GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
-        SNAPSHOT: 'TRUE'
-      run: ./gradlew publish
+        - uses: actions/checkout@v3
+          if: ${{ matrix.repository.enabled == true }}
 
-    - name: Archive redux-kotlin publications dir
-      uses: actions/upload-artifact@v1
-      with:
-        name: publications-${{ matrix.os }}
-        path: redux-kotlin/build/publications
+        - uses: actions/setup-java@v3
+          if: ${{ matrix.repository.enabled == true }}
+          with:
+            distribution: 'adopt'
+            java-version: 11
 
-    - name: Archive redux-kotlin-threadsafe publications dir
-      if: steps.publish.outputsexit_code == 0
-      uses: actions/upload-artifact@v1
-      with:
-        name: publications-threadsafe-${{ matrix.os }}
-        path: redux-kotlin-threadsafe/build/publications
+        - name: Restore Gradle cache
+          if: ${{ matrix.repository.enabled == true }}
+          id: cache-gradle
+          uses: actions/cache@v3
+          with:
+            path: |
+              ~/.gradle/caches
+              ~/.gradle/wrapper
+              ~/.gradle/yarn
+              ~/.gradle/nodejs
+              ~/.konan
+            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            restore-keys: ${{ runner.os }}-gradle-
+
+        - name: Gradle Publish to ${{ matrix.repository.name }}
+          if: ${{ matrix.repository.enabled == true }}
+          run: ./gradlew ${{ matrix.repository.tasks }} -Pversion=${VERSION//v} --scan
+
+        - name: Archive redux-kotlin publications dir
+          uses: actions/upload-artifact@v1
+          with:
+            name: publications-${{ matrix.os }}
+            path: redux-kotlin/build/publications
+
+        - name: Archive redux-kotlin-threadsafe publications dir
+          if: steps.publish.outputsexit_code == 0
+          uses: actions/upload-artifact@v1
+          with:
+            name: publications-threadsafe-${{ matrix.os }}
+            path: redux-kotlin-threadsafe/build/publications
 

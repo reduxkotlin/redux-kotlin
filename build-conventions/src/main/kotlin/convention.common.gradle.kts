@@ -34,12 +34,6 @@ idea {
   }
 }
 
-tasks {
-  withType<Test> {
-//    useJUnitPlatform()
-  }
-}
-
 afterEvaluate {
   tasks {
     if (findByName("compile") == null) {
