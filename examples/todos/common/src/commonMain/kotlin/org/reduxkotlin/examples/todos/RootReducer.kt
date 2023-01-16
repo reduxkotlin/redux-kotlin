@@ -5,6 +5,6 @@ package org.reduxkotlin.examples.todos
  * Notice that sub-states are delegated to other reducers.
  */
 fun rootReducer(state: AppState, action: Any) = AppState(
-  todos = todosReducer(state.todos, action),
-  visibilityFilter = visibilityFilterReducer(state.visibilityFilter, action)
+    todos = todosReducer(state.todos, action),
+    visibilityFilter = visibilityFilterReducer(state.visibilityFilter, action)
 )

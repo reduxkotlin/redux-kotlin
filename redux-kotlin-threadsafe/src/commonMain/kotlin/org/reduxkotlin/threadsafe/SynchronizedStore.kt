@@ -13,19 +13,19 @@ import org.reduxkotlin.*
  */
 public class SynchronizedStore<TState>(private val store: Store<TState>) : Store<TState>, SynchronizedObject() {
 
-  override var dispatch: Dispatcher = { action ->
-    synchronized(this) { store.dispatch(action) }
-  }
+    override var dispatch: Dispatcher = { action ->
+        synchronized(this) { store.dispatch(action) }
+    }
 
-  override val getState: GetState<TState> = {
-    synchronized(this) { store.getState() }
-  }
+    override val getState: GetState<TState> = {
+        synchronized(this) { store.getState() }
+    }
 
-  override val replaceReducer: (Reducer<TState>) -> Unit = { reducer ->
-    synchronized(this) { store.replaceReducer(reducer) }
-  }
+    override val replaceReducer: (Reducer<TState>) -> Unit = { reducer ->
+        synchronized(this) { store.replaceReducer(reducer) }
+    }
 
-  override val subscribe: (StoreSubscriber) -> StoreSubscription = { storeSubscriber ->
-    synchronized(this) { store.subscribe(storeSubscriber) }
-  }
+    override val subscribe: (StoreSubscriber) -> StoreSubscription = { storeSubscriber ->
+        synchronized(this) { store.subscribe(storeSubscriber) }
+    }
 }

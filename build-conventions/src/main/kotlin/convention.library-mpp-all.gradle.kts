@@ -1,4 +1,4 @@
 plugins {
-  id("convention.mpp-all")
-  id("convention.library-mpp-loved")
+    id("convention.mpp-all")
+    id("convention.library-mpp-loved")
 }

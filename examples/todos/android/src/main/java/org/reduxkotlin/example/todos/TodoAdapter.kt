@@ -13,37 +13,37 @@ import org.reduxkotlin.examples.todos.ToggleTodo
 
 class TodoAdapter : ListAdapter<Todo, TodoViewHolder>(DiffCallback()) {
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
-    val view = LayoutInflater.from(parent.context).inflate(R.layout.item_todo, parent, false)
-    return TodoViewHolder(view)
-  }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_todo, parent, false)
+        return TodoViewHolder(view)
+    }
 
-  override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
-    holder.bind(getItem(position))
-  }
+    override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
 }
 
 class TodoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-  fun bind(todo: Todo) {
-    val binding = ItemTodoBinding.bind(itemView)
-    if (todo.completed) {
-      binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or STRIKE_THRU_TEXT_FLAG
-    } else {
-      binding.tvTodo.paintFlags =
-        binding.tvTodo.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
-    }
+    fun bind(todo: Todo) {
+        val binding = ItemTodoBinding.bind(itemView)
+        if (todo.completed) {
+            binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or STRIKE_THRU_TEXT_FLAG
+        } else {
+            binding.tvTodo.paintFlags =
+                binding.tvTodo.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
+        }
 
-    binding.tvTodo.text = "• ${todo.text}"
-    itemView.setOnClickListener { store.dispatch(ToggleTodo(adapterPosition)) }
-  }
+        binding.tvTodo.text = "• ${todo.text}"
+        itemView.setOnClickListener { store.dispatch(ToggleTodo(adapterPosition)) }
+    }
 }
 
 class DiffCallback : DiffUtil.ItemCallback<Todo>() {
-  override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
-    return oldItem.id == newItem.id
-  }
+    override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-  override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
-    return oldItem == newItem
-  }
+    override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+        return oldItem == newItem
+    }
 }

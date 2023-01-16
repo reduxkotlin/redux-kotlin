@@ -53,6 +53,6 @@ formatting:
   NoWildcardImports:
     active: false
   Indentation:
-    indentSize: 2
+    indentSize: 4
   FinalNewline:
     active: true
