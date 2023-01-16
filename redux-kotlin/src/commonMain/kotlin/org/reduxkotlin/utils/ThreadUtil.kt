@@ -12,10 +12,10 @@ public expect fun getThreadName(): String
  * This strips the suffix so we can compare threads.
  */
 public fun stripCoroutineName(threadName: String): String {
-  val lastIndex = threadName.lastIndexOf('@')
-  return if (lastIndex < 0) {
-    threadName
-  } else {
-    threadName.substring(0, lastIndex)
-  }
+    val lastIndex = threadName.lastIndexOf('@')
+    return if (lastIndex < 0) {
+        threadName
+    } else {
+        threadName.substring(0, lastIndex)
+    }
 }

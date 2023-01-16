@@ -10,16 +10,16 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.konan.target.HostManager
 
 val NamedDomainObjectContainer<KotlinSourceSet>.jsMain: NamedDomainObjectProvider<KotlinSourceSet>
-  get() = named<KotlinSourceSet>("jsMain")
+    get() = named<KotlinSourceSet>("jsMain")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.jsTest: NamedDomainObjectProvider<KotlinSourceSet>
-  get() = named<KotlinSourceSet>("jsTest")
+    get() = named<KotlinSourceSet>("jsTest")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.jvmMain: NamedDomainObjectProvider<KotlinSourceSet>
-  get() = named<KotlinSourceSet>("jvmMain")
+    get() = named<KotlinSourceSet>("jvmMain")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.jvmTest: NamedDomainObjectProvider<KotlinSourceSet>
-  get() = named<KotlinSourceSet>("jvmTest")
+    get() = named<KotlinSourceSet>("jvmTest")
 
 infix fun <T> Property<T>.by(value: T) = set(value)
 infix fun <T> Property<T>.by(value: Provider<T>) = set(value)
@@ -28,8 +28,8 @@ val CI = System.getenv("CI") != null
 val SANDBOX = System.getenv("SANDBOX") != null
 
 val Project.isMainHost: Boolean
-  get() = HostManager.simpleOsName().equals("${properties["project.mainOS"]}", true)
+    get() = HostManager.simpleOsName().equals("${properties["project.mainOS"]}", true)
 
 fun printlnCI(text: Any?) {
-  if (CI) println("[CI]: $text")
+    if (CI) println("[CI]: $text")
 }

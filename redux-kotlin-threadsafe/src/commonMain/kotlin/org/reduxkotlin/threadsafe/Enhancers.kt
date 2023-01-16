@@ -14,11 +14,11 @@ import org.reduxkotlin.StoreEnhancer
  * @returns {StoreEnhancer} A store enhancer that synchronizes the store.
  */
 public fun <State> createSynchronizedStoreEnhancer(): StoreEnhancer<State> {
-  return { storeCreator ->
-    { reducer, initialState, en: Any? ->
-      val store = storeCreator(reducer, initialState, en)
-      val synchronizedStore = SynchronizedStore(store)
-      synchronizedStore
+    return { storeCreator ->
+        { reducer, initialState, en: Any? ->
+            val store = storeCreator(reducer, initialState, en)
+            val synchronizedStore = SynchronizedStore(store)
+            synchronizedStore
+        }
     }
-  }
 }

@@ -18,36 +18,36 @@ import org.reduxkotlin.threadsafe.createThreadSafeStore
 val store = createThreadSafeStore(reducer, 0)
 
 class MainActivity : AppCompatActivity() {
-  private lateinit var storeSubscription: StoreSubscription
-  private lateinit var binding: ActivityMainBinding
+    private lateinit var storeSubscription: StoreSubscription
+    private lateinit var binding: ActivityMainBinding
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    binding = ActivityMainBinding.inflate(layoutInflater)
-    setContentView(binding.root)
-    storeSubscription = store.subscribe { render(store.state) }
-    binding.btnIncrement.setOnClickListener { store.dispatch(Increment()) }
-    binding.btnDecrement.setOnClickListener { store.dispatch(Decrement()) }
-    binding.btnAsync.setOnClickListener { incrementAsync() }
-    binding.btnIncrementIfOdd.setOnClickListener { incrementIfOdd() }
-  }
-
-  private fun render(state: Int) {
-    binding.txtLabel.text = "Clicked: $state times"
-  }
-
-  private fun incrementIfOdd() {
-    if (store.state % 2 != 0) {
-      store.dispatch(Increment())
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        storeSubscription = store.subscribe { render(store.state) }
+        binding.btnIncrement.setOnClickListener { store.dispatch(Increment()) }
+        binding.btnDecrement.setOnClickListener { store.dispatch(Decrement()) }
+        binding.btnAsync.setOnClickListener { incrementAsync() }
+        binding.btnIncrementIfOdd.setOnClickListener { incrementIfOdd() }
     }
-  }
 
-  private fun incrementAsync() {
-    Handler(mainLooper).postDelayed(
-      {
-        store.dispatch(Increment())
-      },
-      1000
-    )
-  }
+    private fun render(state: Int) {
+        binding.txtLabel.text = "Clicked: $state times"
+    }
+
+    private fun incrementIfOdd() {
+        if (store.state % 2 != 0) {
+            store.dispatch(Increment())
+        }
+    }
+
+    private fun incrementAsync() {
+        Handler(mainLooper).postDelayed(
+            {
+                store.dispatch(Increment())
+            },
+            1000
+        )
+    }
 }

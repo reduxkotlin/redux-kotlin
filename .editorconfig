@@ -1,6 +1,6 @@
 root = true
 
 [*.{kt,kts}]
-indent_size = 2
+indent_size = 4
 ignored_rules = no-wildstar-imports
 insert_final_newline = true

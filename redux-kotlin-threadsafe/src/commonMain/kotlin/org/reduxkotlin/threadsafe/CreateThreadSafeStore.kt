@@ -29,7 +29,7 @@ import org.reduxkotlin.createStore
  * and subscribe to changes.
  */
 public fun <State> createThreadSafeStore(
-  reducer: Reducer<State>,
-  preloadedState: State,
-  enhancer: StoreEnhancer<State>? = null
+    reducer: Reducer<State>,
+    preloadedState: State,
+    enhancer: StoreEnhancer<State>? = null
 ): Store<State> = SynchronizedStore(createStore(reducer, preloadedState, enhancer))
