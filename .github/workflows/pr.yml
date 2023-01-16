@@ -1,0 +1,13 @@
+name: PR
+
+on:
+  pull_request:
+    branches:
+      - master
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=true"
+
+jobs:
+  check:
+    uses: ./.github/workflows/check.yml
