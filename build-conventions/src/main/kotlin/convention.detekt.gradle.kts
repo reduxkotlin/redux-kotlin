@@ -21,7 +21,6 @@ tasks {
             config.from(project.detekt.config)
             buildUponDefaultConfig = project.detekt.buildUponDefaultConfig
             setSource(files(projectDir))
-            exclude("**/klip-kotlin-plugin-native/src")
         }
     }
     afterEvaluate {
