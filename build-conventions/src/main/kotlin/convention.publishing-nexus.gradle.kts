@@ -1,5 +1,6 @@
 plugins {
     id("convention.common")
+    id("org.jetbrains.dokka")
     id("io.github.gradle-nexus.publish-plugin")
 }
 
