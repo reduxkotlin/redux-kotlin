@@ -2,8 +2,9 @@ name: Release
 
 on:
   push:
-    paths-ignore: 
-      - website/**
+    paths-ignore:
+      - 'website/**'
+      - '**/*.md'
     branches:
       - master
   workflow_dispatch:
@@ -28,6 +29,10 @@ on:
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.daemon=true"
+
+concurrency:
+  cancel-in-progress: false
+  group: release-${{ github.workflow }}-${{ github.head_ref || github.ref }}
 
 jobs:
   check:
@@ -69,7 +74,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Gradle Assemble Dokka
-        run: ./gradlew dokkaHtml -Pversion=${VERSION//v} --scan
+        run: ./gradlew dokkaHtmlMultiModule -Pversion=${VERSION//v} --scan
 
       - uses: actions/upload-artifact@v3
         with:
@@ -169,7 +174,7 @@ jobs:
         run: |
           REPO_NAME=${{ github.repository }}
           REPO_NAME=${REPO_NAME#${{ github.repository_owner }}/}
-          cp -avr build/dokka/html/ public;
+          cp -avr build/dokka/htmlMultiModule/ public;
           find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec gzip -f -k {} \;
           echo "/${REPO_NAME} /${REPO_NAME}/${REPO_NAME}/index.html 301" > public/_redirects;
           echo "/${REPO_NAME}/index.html /${REPO_NAME}/${REPO_NAME}/index.html 301" >> public/_redirects;

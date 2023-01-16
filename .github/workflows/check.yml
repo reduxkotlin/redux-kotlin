@@ -6,7 +6,7 @@ on:
 
 concurrency:
   cancel-in-progress: true
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  group: check-${{ github.workflow }}-${{ github.head_ref || github.ref }}
 
 env:
   GRADLE_OPTS: "-Dorg.gradle.daemon=true"

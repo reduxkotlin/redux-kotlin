@@ -1,7 +1,6 @@
 # [Redux-Kotlin](https://reduxkotlin.org)
 
-![CI](https://github.com/reduxkotlin/redux-kotlin/workflows/PR/badge.svg)
-
+[![Release](https://github.com/reduxkotlin/redux-kotlin/actions/workflows/release.yml/badge.svg)](https://github.com/reduxkotlin/redux-kotlin/actions/workflows/release.yml)
 ![badge][badge-android]
 ![badge][badge-ios]
 ![badge][badge-native]
@@ -10,6 +9,10 @@
 ![badge][badge-linux]
 ![badge][badge-windows]
 ![badge][badge-mac]
+[![Slack chat](https://img.shields.io/badge/kotlinlang-%23redux-green?logo=slack&style=flat-square)](https://kotlinlang.slack.com/archives/C8A8G5F9Q)
+[![Dokka docs](https://img.shields.io/badge/docs-dokka-orange?style=flat-square&logo=kotlin)](http://reduxkotlin.github.io/redux-kotlin)
+[![Version maven-central](https://img.shields.io/maven-central/v/org.reduxkotlin/redux-kotlin?logo=apache-maven&style=flat-square)](https://mvnrepository.com/artifact/org.reduxkotlin/redux-kotlin/latest)
+[![Version maven-snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Foss.sonatype.org%2Fcontent%2Frepositories%2Fsnapshots%2Forg%2Freduxkotlin%2Fredux-kotlin%2Fmaven-metadata.xml&logo=apache-maven&label=maven-snapshot&style=flat-square)](https://oss.sonatype.org/content/repositories/snapshots/org/reduxkotlin/redux-kotlin/)
 
 A redux standard for Kotlin that supports multiplatform projects.
 

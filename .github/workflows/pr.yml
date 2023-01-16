@@ -8,6 +8,10 @@ on:
 env:
   GRADLE_OPTS: "-Dorg.gradle.daemon=true"
 
+concurrency:
+  cancel-in-progress: true
+  group: pr-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+
 jobs:
   check:
     uses: ./.github/workflows/check.yml

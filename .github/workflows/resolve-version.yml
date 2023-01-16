@@ -15,7 +15,7 @@ on:
 
 concurrency:
   cancel-in-progress: true
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  group: version-${{ github.workflow }}-${{ github.head_ref || github.ref }}
 
 jobs:
   resolve:
