@@ -1,9 +1,6 @@
 package org.reduxkotlin.threadsafe
 
-import org.reduxkotlin.Reducer
-import org.reduxkotlin.Store
-import org.reduxkotlin.StoreEnhancer
-import org.reduxkotlin.createStore
+import org.reduxkotlin.*
 
 /**
  * Creates a SYNCHRONIZED, THREADSAFE Redux store that holds the state tree.
@@ -33,3 +30,12 @@ public fun <State> createThreadSafeStore(
     preloadedState: State,
     enhancer: StoreEnhancer<State>? = null
 ): Store<State> = SynchronizedStore(createStore(reducer, preloadedState, enhancer))
+
+/**
+ * Creates a thread-safe [TypedStore]. For further details see the matching [createThreadSafeStore].
+ */
+public inline fun <State, reified Action : Any> createTypedThreadSafeStore(
+    crossinline reducer: TypedReducer<State, Action>,
+    preloadedState: State,
+    noinline enhancer: StoreEnhancer<State>? = null
+): TypedStore<State, Action> = SynchronizedStore(createTypedStore(reducer, preloadedState, enhancer))

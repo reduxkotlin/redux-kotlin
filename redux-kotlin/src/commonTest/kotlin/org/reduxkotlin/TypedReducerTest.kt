@@ -4,11 +4,13 @@ import test.TodoApp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class CreateStoreTest {
+class TypedReducerTest {
+    private val reducer: TypedReducer<TodoApp.TodoState, TodoApp.TodoAction> = TodoApp.todoReducer
+
     @Test
     fun passesTheInitialState() {
-        val store = createStore(
-            TodoApp.todoReducer,
+        val store = createTypedStore(
+            reducer,
             TodoApp.TodoState(
                 listOf(
                     TodoApp.Todo(
@@ -34,10 +36,7 @@ class CreateStoreTest {
 
     @Test
     fun appliesTheReducerToThePreviousState() {
-        val store = createStore(TodoApp.todoReducer, TodoApp.TodoState())
-        assertEquals(store.getState(), TodoApp.TodoState())
-
-        store.dispatch(Any())
+        val store = createTypedStore(reducer, TodoApp.TodoState())
         assertEquals(store.getState(), TodoApp.TodoState())
 
         store.dispatch(TodoApp.AddTodo("1", "Hello"))
@@ -74,8 +73,8 @@ class CreateStoreTest {
 
     @Test
     fun appliesTheReducerToTheInitialState() {
-        val store = createStore(
-            TodoApp.todoReducer,
+        val store = createTypedStore(
+            reducer,
             TodoApp.TodoState(
                 listOf(
                     TodoApp.Todo(
@@ -85,19 +84,6 @@ class CreateStoreTest {
                 )
             )
         )
-        assertEquals(
-            store.getState(),
-            TodoApp.TodoState(
-                listOf(
-                    TodoApp.Todo(
-                        id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
-        )
-
-        store.dispatch(Any())
         assertEquals(
             store.getState(),
             TodoApp.TodoState(
