@@ -179,17 +179,17 @@ public fun <State> createStore(
             """.trimMargin()
         }
 
-    /*
-    check(!isDispatching) {
-        """You may not dispatch while state is being reduced.
-        |2 conditions can cause this error:
-        |    1) Dispatching from a reducer
-        |    2) Dispatching from multiple threads
-        |If #2 switch to createThreadSafeStore().
-        |https://reduxkotlin.org/introduction/threading""".trimMargin()
-    }
+        /*
+        check(!isDispatching) {
+            """You may not dispatch while state is being reduced.
+            |2 conditions can cause this error:
+            |    1) Dispatching from a reducer
+            |    2) Dispatching from multiple threads
+            |If #2 switch to createThreadSafeStore().
+            |https://reduxkotlin.org/introduction/threading""".trimMargin()
+        }
 
-     */
+         */
 
         try {
             isDispatching = true
@@ -244,5 +244,28 @@ public fun <State> createStore(
         override var dispatch: Dispatcher = ::dispatch
         override val subscribe = ::subscribe
         override val replaceReducer = ::replaceReducer
+    }
+}
+
+/**
+ * Creates a [TypedStore]. For further details see the matching [createStore].
+ */
+public inline fun <State, reified Action : Any> createTypedStore(
+    crossinline reducer: TypedReducer<State, Action>,
+    preloadedState: State,
+    noinline enhancer: StoreEnhancer<State>? = null
+): TypedStore<State, Action> {
+    val store = createStore(
+        reducer = typedReducer(reducer),
+        preloadedState,
+        enhancer,
+    )
+    return object : TypedStore<State, Action> {
+        override val getState: GetState<State> = store.getState
+        override var dispatch: TypedDispatcher<Action> = store.dispatch
+        override val subscribe: (StoreSubscriber) -> StoreSubscription = store.subscribe
+        override val replaceReducer: (TypedReducer<State, Action>) -> Unit = {
+            store.replaceReducer(typedReducer(it))
+        }
     }
 }

@@ -12,20 +12,25 @@ comments:
     active: false
   DeprecatedBlockTag:
     active: true
-    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
+    excludes: [ "**/src/*Test/**", "**/examples/**", "**/build-conventions/**" ]
+    ignoreAnnotated: [ kotlin.Deprecated ]
   OutdatedDocumentation:
     active: true
-    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
+    excludes: [ "**/src/*Test/**", "**/examples/**", "**/build-conventions/**" ]
+    ignoreAnnotated: [ kotlin.Deprecated ]
     allowParamOnConstructorProperties: false
   UndocumentedPublicClass:
     active: true
-    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
+    excludes: [ "**/src/*Test/**", "**/examples/**", "**/build-conventions/**" ]
+    ignoreAnnotated: [ kotlin.Deprecated ]
   UndocumentedPublicFunction:
     active: true
-    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
+    excludes: [ "**/src/*Test/**", "**/examples/**", "**/build-conventions/**" ]
+    ignoreAnnotated: [ kotlin.Deprecated ]
   UndocumentedPublicProperty:
     active: true
-    excludes: [ "**/*Test.kt", "**/examples/**", "**/build-conventions/**" ]
+    ignoreAnnotated: [ kotlin.Deprecated ]
+    excludes: [ "**/src/*Test/**", "**/examples/**", "**/build-conventions/**" ]
 
 naming:
   InvalidPackageDeclaration:

@@ -52,3 +52,26 @@ public fun <State> createSameThreadEnforcedStore(
         }
     }
 }
+
+/**
+ * Creates a [TypedStore]. For further details see the matching [createSameThreadEnforcedStore].
+ */
+public inline fun <State, reified Action : Any> createTypedSameThreadEnforcedStore(
+    crossinline reducer: TypedReducer<State, Action>,
+    preloadedState: State,
+    noinline enhancer: StoreEnhancer<State>? = null
+): TypedStore<State, Action> {
+    val store = createSameThreadEnforcedStore(
+        reducer = typedReducer(reducer),
+        preloadedState,
+        enhancer,
+    )
+    return object : TypedStore<State, Action> {
+        override val getState: GetState<State> = store.getState
+        override var dispatch: TypedDispatcher<Action> = store.dispatch
+        override val subscribe: (StoreSubscriber) -> StoreSubscription = store.subscribe
+        override val replaceReducer: (TypedReducer<State, Action>) -> Unit = {
+            store.replaceReducer(typedReducer(it))
+        }
+    }
+}

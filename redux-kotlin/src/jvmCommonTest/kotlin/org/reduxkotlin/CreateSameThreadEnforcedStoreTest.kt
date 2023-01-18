@@ -1,17 +1,54 @@
-package org.reduxkotlin.util
+package org.reduxkotlin
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.setMain
 import org.junit.Test
-import org.reduxkotlin.*
+import test.TodoApp
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import kotlin.system.measureTimeMillis
 import kotlin.test.*
 
-class CreateSameThreadEnforcedStoreSpec {
-    lateinit var store: Store<TestState>
+class CreateSameThreadEnforcedStoreTest : AbstractCreateSameThreadEnforcedStoreTest<Any>(
+    Any(),
+    {
+        createSameThreadEnforcedStore(
+            TodoApp.todoReducer,
+            TodoApp.TodoState(
+                listOf(
+                    TodoApp.Todo(
+                        id = "1",
+                        text = "Hello"
+                    )
+                )
+            )
+        )
+    }
+)
+
+class CreateSameThreadEnforcedTypedStoreTest : AbstractCreateSameThreadEnforcedStoreTest<TodoApp.TodoAction>(
+    TodoApp.DoNothing,
+    {
+        createTypedSameThreadEnforcedStore(
+            TodoApp.typedTodoReducer,
+            TodoApp.TodoState(
+                listOf(
+                    TodoApp.Todo(
+                        id = "1",
+                        text = "Hello"
+                    )
+                )
+            )
+        )
+    }
+)
+
+abstract class AbstractCreateSameThreadEnforcedStoreTest<A>(
+    private val action: A,
+    private val storeProvider: () -> TypedStore<TodoApp.TodoState, A>
+) {
+    private lateinit var store: TypedStore<TodoApp.TodoState, A>
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeTest
@@ -19,17 +56,7 @@ class CreateSameThreadEnforcedStoreSpec {
         val mainThreadSurrogate = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
         Dispatchers.setMain(mainThreadSurrogate)
 
-        store = createSameThreadEnforcedStore(
-            todos,
-            TestState(
-                listOf(
-                    Todo(
-                        id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
-        )
+        store = storeProvider()
     }
 
     @Test
@@ -39,7 +66,7 @@ class CreateSameThreadEnforcedStoreSpec {
 
     @Test
     fun ensureSameThreadOnDispatch() {
-        ensureSameThread { store.dispatch(Any()) }
+        ensureSameThread { store.dispatch(action) }
     }
 
     @Test
@@ -60,7 +87,7 @@ class CreateSameThreadEnforcedStoreSpec {
             CoroutineScope(Dispatchers.Main).async {
                 val store = createSameThreadEnforcedStore(
                     testReducer,
-                    TestState(),
+                    TodoApp.TodoState(),
                     applyMiddleware(middleware.middleware)
                 )
 
@@ -132,7 +159,7 @@ private fun ensureSameThread(testFun: () -> Any) {
     assertNull(state)
 }
 
-val testReducer: Reducer<TestState> = { state, _ -> state }
+val testReducer: Reducer<TodoApp.TodoState> = { state, _ -> state }
 
 /**
  * Used as a test for when Thread.currentThread.name returns the
@@ -141,7 +168,7 @@ val testReducer: Reducer<TestState> = { state, _ -> state }
  */
 class TestMiddleware {
     var failed = false
-    val middleware = middleware<TestState> { store, next, action ->
+    val middleware = middleware<TodoApp.TodoState> { store, next, action ->
         CoroutineScope(Dispatchers.Main).launch {
             flow {
                 delay(1000) // simulate api call

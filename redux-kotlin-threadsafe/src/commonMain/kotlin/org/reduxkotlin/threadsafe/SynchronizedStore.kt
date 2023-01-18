@@ -11,17 +11,18 @@ import org.reduxkotlin.*
  * This does have a performance impact for JVM/Native.
  * TODO more info at [https://ReduxKotlin.org]
  */
-public class SynchronizedStore<TState>(private val store: Store<TState>) : Store<TState>, SynchronizedObject() {
+public class SynchronizedStore<State, Action>(private val store: TypedStore<State, Action>) : TypedStore<State, Action>,
+    SynchronizedObject() {
 
-    override var dispatch: Dispatcher = { action ->
+    override var dispatch: TypedDispatcher<Action> = { action ->
         synchronized(this) { store.dispatch(action) }
     }
 
-    override val getState: GetState<TState> = {
+    override val getState: GetState<State> = {
         synchronized(this) { store.getState() }
     }
 
-    override val replaceReducer: (Reducer<TState>) -> Unit = { reducer ->
+    override val replaceReducer: (TypedReducer<State, Action>) -> Unit = { reducer ->
         synchronized(this) { store.replaceReducer(reducer) }
     }
 
