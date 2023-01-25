@@ -54,6 +54,7 @@ public typealias Store<State> = TypedStore<State, Any>
  */
 public inline fun <State, reified Action : Any> Store<State>.asTyped(): TypedStore<State, Action> =
     object : TypedStore<State, Action> {
+        override val store: Store<State> = this@asTyped
         override val getState: GetState<State> = this@asTyped.getState
         override var dispatch: TypedDispatcher<Action> = this@asTyped.dispatch
         override val subscribe: (StoreSubscriber) -> StoreSubscription = this@asTyped.subscribe
@@ -66,6 +67,11 @@ public inline fun <State, reified Action : Any> Store<State>.asTyped(): TypedSto
  * Main redux storage container for a given [State] and typesafe actions
  */
 public interface TypedStore<State, Action> {
+    /**
+     * Reference to the underlying untyped store
+     */
+    public val store: Store<State>
+
     /**
      * Current store state getter
      */

@@ -13,12 +13,22 @@ import org.reduxkotlin.StoreEnhancer
 
  * @returns {StoreEnhancer} A store enhancer that synchronizes the store.
  */
-public fun <State> createSynchronizedStoreEnhancer(): StoreEnhancer<State> {
+public fun <State> createThreadSafeStoreEnhancer(): StoreEnhancer<State> {
     return { storeCreator ->
         { reducer, initialState, en: Any? ->
             val store = storeCreator(reducer, initialState, en)
-            val synchronizedStore = SynchronizedStore(store)
+            val synchronizedStore = ThreadSafeStore(store)
             synchronizedStore
         }
     }
 }
+
+@Deprecated(
+    "Renamed to createThreadSafeStoreEnhancer",
+    replaceWith = ReplaceWith(
+        expression = "createThreadSafeStoreEnhancer",
+        "org.reduxkotlin.threadsafe.createThreadSafeStoreEnhancer"
+    )
+)
+public fun <State> createSynchronizedStoreEnhancer(): StoreEnhancer<State> =
+    createThreadSafeStoreEnhancer()

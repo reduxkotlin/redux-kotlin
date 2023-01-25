@@ -188,7 +188,6 @@ public fun <State> createStore(
             |If #2 switch to createThreadSafeStore().
             |https://reduxkotlin.org/introduction/threading""".trimMargin()
         }
-
          */
 
         try {
@@ -240,6 +239,7 @@ public fun <State> createStore(
     dispatch(ActionTypes.INIT)
 
     return object : Store<State> {
+        override val store = this
         override val getState = ::getState
         override var dispatch: Dispatcher = ::dispatch
         override val subscribe = ::subscribe
@@ -254,18 +254,8 @@ public inline fun <State, reified Action : Any> createTypedStore(
     crossinline reducer: TypedReducer<State, Action>,
     preloadedState: State,
     noinline enhancer: StoreEnhancer<State>? = null
-): TypedStore<State, Action> {
-    val store = createStore(
-        reducer = typedReducer(reducer),
-        preloadedState,
-        enhancer,
-    )
-    return object : TypedStore<State, Action> {
-        override val getState: GetState<State> = store.getState
-        override var dispatch: TypedDispatcher<Action> = store.dispatch
-        override val subscribe: (StoreSubscriber) -> StoreSubscription = store.subscribe
-        override val replaceReducer: (TypedReducer<State, Action>) -> Unit = {
-            store.replaceReducer(typedReducer(it))
-        }
-    }
-}
+): TypedStore<State, Action> = createStore(
+    reducer = typedReducer(reducer),
+    preloadedState,
+    enhancer,
+).asTyped()
