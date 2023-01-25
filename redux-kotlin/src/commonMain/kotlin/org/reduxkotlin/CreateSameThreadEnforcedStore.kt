@@ -31,6 +31,7 @@ public fun <State> createSameThreadEnforcedStore(
     }
 
     return object : Store<State> {
+        override val store = this
         override val getState = {
             checkSameThread()
             store.getState()
@@ -60,18 +61,8 @@ public inline fun <State, reified Action : Any> createTypedSameThreadEnforcedSto
     crossinline reducer: TypedReducer<State, Action>,
     preloadedState: State,
     noinline enhancer: StoreEnhancer<State>? = null
-): TypedStore<State, Action> {
-    val store = createSameThreadEnforcedStore(
-        reducer = typedReducer(reducer),
-        preloadedState,
-        enhancer,
-    )
-    return object : TypedStore<State, Action> {
-        override val getState: GetState<State> = store.getState
-        override var dispatch: TypedDispatcher<Action> = store.dispatch
-        override val subscribe: (StoreSubscriber) -> StoreSubscription = store.subscribe
-        override val replaceReducer: (TypedReducer<State, Action>) -> Unit = {
-            store.replaceReducer(typedReducer(it))
-        }
-    }
-}
+): TypedStore<State, Action> = createSameThreadEnforcedStore(
+    reducer = typedReducer(reducer),
+    preloadedState,
+    enhancer,
+).asTyped()

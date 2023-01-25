@@ -9,7 +9,7 @@
 ![badge][badge-linux]
 ![badge][badge-windows]
 ![badge][badge-mac]
-[![Slack chat](https://img.shields.io/badge/kotlinlang-%23redux-green?logo=slack&style=flat-square)](https://kotlinlang.slack.com/archives/C8A8G5F9Q)
+[![Slack chat](https://img.shields.io/badge/kotlinlang-%23redux-green?logo=slack&style=flat-square)][slack]
 [![Dokka docs](https://img.shields.io/badge/docs-dokka-orange?style=flat-square&logo=kotlin)](http://reduxkotlin.github.io/redux-kotlin)
 [![Version maven-central](https://img.shields.io/maven-central/v/org.reduxkotlin/redux-kotlin?logo=apache-maven&style=flat-square)](https://mvnrepository.com/artifact/org.reduxkotlin/redux-kotlin/latest)
 [![Version maven-snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Foss.sonatype.org%2Fcontent%2Frepositories%2Fsnapshots%2Forg%2Freduxkotlin%2Fredux-kotlin%2Fmaven-metadata.xml&logo=apache-maven&label=maven-snapshot&style=flat-square)](https://oss.sonatype.org/content/repositories/snapshots/org/reduxkotlin/redux-kotlin/)
@@ -18,23 +18,29 @@ A redux standard for Kotlin that supports multiplatform projects.
 
 Full documentation at http://reduxkotlin.org.
 
-## Misson Statement
+## Mission Statement
 
-Provide a standard redux implementation for Kotlin. In doing so will foster a ecosystem of middleware, store
+Provide a standard redux implementation for Kotlin. In doing so will foster a ecosystem of
+middleware, store
 enhancers, & dev tools. These core values will guide descisions for the project:
 
 * core redux-kotlin will be a minimal implementation that other libraries can build upon
 * modular development (follow example of https://github.com/reduxjs)
 * support for all platforms supported by Kotlin multiplatform (JVM, iOS, Native, JS, WASM)
-* developed in open and enable discussion for all interested parties via open channels (slack, github, etc. TBD)
+* developed in open and enable discussion for all interested parties via open channels (slack,
+  github, etc. TBD)
 * not owned by a individual or company
 
-Redux in Kotlin, and in mobile in particular, may differ a bit from javascript. Many have found the basic pattern useful
-on Android & iOS leading to tens of opensource redux libraries in Kotlin, Java, and Swift, yet an ecosystem has yet to
-emerge. A port of javascript redux is a good starting point for creating a standard and will aid in cross-pollination of
+Redux in Kotlin, and in mobile in particular, may differ a bit from javascript. Many have found the
+basic pattern useful
+on Android & iOS leading to tens of opensource redux libraries in Kotlin, Java, and Swift, yet an
+ecosystem has yet to
+emerge. A port of javascript redux is a good starting point for creating a standard and will aid in
+cross-pollination of
 middleware, store enhancers, & dev tools from the javascript world.
 
-Redux has proven helpful for state management in mobile. A multiplatform Kotlin implementation & ecosystem will increase
+Redux has proven helpful for state management in mobile. A multiplatform Kotlin implementation &
+ecosystem will increase
 developer productivity and code reuse across platforms.
 
 [Droidcon NYC Slides](https://www.slideshare.net/PatrickJackson14/reduxkotlinorg-droidcon-nyc-2019)
@@ -44,8 +50,10 @@ Video TBA
 
 __How to add to project:__
 
-Artifacts are hosted on maven central. They are published with gradle metadata, so you may need to enable
-with `enableFeaturePreview("GRADLE_METADATA")` in your settings.gradle file. For multiplatform, add the following to
+Artifacts are hosted on maven central. They are published with gradle metadata, so you may need to
+enable
+with `enableFeaturePreview("GRADLE_METADATA")` in your settings.gradle file. For multiplatform, add
+the following to
 your shared module:
 
 ```kotlin
@@ -53,22 +61,24 @@ kotlin {
     sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation("org.reduxkotlin:redux-kotlin-threadsafe:0.5.5")
+                implementation("org.reduxkotlin:redux-kotlin-threadsafe:_")
             }
         }
     }
+}
 ```
 
 For JVM only:
 
 ```kotlin
-implementation("org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.5")
+implementation("org.reduxkotlin:redux-kotlin-threadsafe-jvm:_>")
 ```
 
 *Non threadsafe store is available. Typical usage will be with the threadsafe
 store. [More info read here](https://www.reduxkotlin.org/introduction/getting-started)
 
-Usage is very similar to JS Redux and those docs will be useful https://redux.js.org/. These docs are not an intro to
+Usage is very similar to JS Redux and those docs will be useful https://redux.js.org/. These docs
+are not an intro to
 Redux, and just documentation on Kotlin specific bits. For more info on Redux in general, check
 out https://redux.js.org/.
 
@@ -136,11 +146,13 @@ You then will have access to dispatch and subscribe functions from the `store`.
 __Create a synchronized store__
 
 ```kotlin
-val store = createThreadSafeStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
+val store =
+    createThreadSafeStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
 ```
 
-Access to `store` methods like `dispatch` and `getState` will be synchronized. Note: if using a thread safe store with
-enhancers or middleware that require access to store methods, see usage below.
+Access to `store` methods like `dispatch` and `getState` will be synchronized. Note: if using a
+thread safe store with enhancers or middleware that require access to store methods, see usage
+below.
 
 __Create a synchronized store using an enhancer__
 
@@ -155,19 +167,27 @@ val store = createStore(
 )
 ```
 
-Access to `store` methods like `dispatch` and `getState` will be synchronized, and enhancers (eg. `applyMiddleware`)
-that are placed above `createSynchronizedStoreEnhancer` in the enhancer composition chain will receive the synchronized
-store.
+Access to `store` methods like `dispatch` and `getState` will be synchronized, and enhancers (
+eg. `applyMiddleware`) that are placed above `createSynchronizedStoreEnhancer` in the enhancer
+composition chain will receive the synchronized store.
+
+## Extensions
+
+Here's a list of optional extensions available. Raise an issue to add yours!
+
+- [redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin-thunk)
+- [redux-kotlin-compose](https://github.com/reduxkotlin/redux-kotlin-compose)
+- [presenter-middleware](https://github.com/reduxkotlin/presenter-middleware)
 
 ## Communication
 
 Want to give feedback, contribute, or ask questions?
 
-__\#redux__ slack channel in [kotlinlang](https://kotlinlang.slack.com)
-
-Trello boards - https://trello.com/reduxkotlinorg
-
-Or create an issue on [github](https://github.com/reduxkotlin/redux-kotlin/issues).
+- Chat on [#redux][slack] slack channel
+- Use [Trello boards](https://trello.com/reduxkotlinorg)
+- Raise GitHub [issues](https://github.com/reduxkotlin/redux-kotlin/issues)
+- Ask questions on
+  GitHub [discussions](https://github.com/reduxkotlin/redux-kotlin/discussions/categories/q-a)
 
 [badge-android]: http://img.shields.io/badge/platform-android-brightgreen.svg?style=flat
 
@@ -184,3 +204,5 @@ Or create an issue on [github](https://github.com/reduxkotlin/redux-kotlin/issue
 [badge-windows]: http://img.shields.io/badge/platform-windows-informational.svg?style=flat
 
 [badge-mac]: http://img.shields.io/badge/platform-macos-lightgrey.svg?style=flat
+
+[slack]: https://kotlinlang.slack.com/archives/C8A8G5F9Q

@@ -1,18 +1,26 @@
 package org.reduxkotlin.threadsafe
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Test
 import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.compose
 import org.reduxkotlin.createStore
 import test.TestApp
-import java.util.*
+import java.util.Timer
 import kotlin.concurrent.timerTask
 import kotlin.system.measureTimeMillis
 import kotlin.test.assertEquals
 
 class CreateThreadSafeStoreTest {
-    private suspend fun massiveRun(numCoroutines: Int, numRepeats: Int, action: suspend () -> Unit) {
+    private suspend fun massiveRun(
+        numCoroutines: Int,
+        numRepeats: Int,
+        action: suspend () -> Unit
+    ) {
         val time = measureTimeMillis {
             coroutineScope {
                 repeat(numCoroutines) {
@@ -47,7 +55,7 @@ class CreateThreadSafeStoreTest {
             compose(
                 applyMiddleware(TestApp.createTestThunkMiddleware()),
                 // needs to be placed after enhancers that requires synchronized store methods
-                createSynchronizedStoreEnhancer()
+                createThreadSafeStoreEnhancer()
             )
         )
         runBlocking {
