@@ -11,7 +11,7 @@ on:
       version:
         value: ${{ jobs.resolve.outputs.version }}
       snapshot:
-        value: ${{ jobs.resolve.outputs.version }}
+        value: ${{ jobs.resolve.outputs.snapshot }}
 
 concurrency:
   cancel-in-progress: true
@@ -66,3 +66,4 @@ jobs:
           commit-message: '[ci skip] New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
           branch: ci/version/${{ env.SNAPSHOT_VERSION }}
           delete-branch: true
+          base: master

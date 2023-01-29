@@ -2,9 +2,8 @@ name: Release
 
 on:
   push:
-    paths-ignore:
-      - 'website/**'
-      - '**/*.md'
+    paths:
+      - '**/src/**'
     branches:
       - master
   workflow_dispatch:
@@ -101,6 +100,7 @@ jobs:
       ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
       ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
     strategy:
+      fail-fast: false
       matrix:
         repository:
           - name: Github Packages
