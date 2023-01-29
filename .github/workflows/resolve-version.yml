@@ -58,13 +58,6 @@ jobs:
           SNAPSHOT_VERSION="${main_version}${patch_version}-SNAPSHOT"
           echo "SNAPSHOT_VERSION=$SNAPSHOT_VERSION" >> $GITHUB_ENV
           sed -Ei "s|^(version=).*\$|\\1$SNAPSHOT_VERSION|" gradle.properties
-      - name: Commit and push SNAPSHOT
-        if: env.DIFF_VERSION == '1' && env.PROJECT_VERSION != env.SNAPSHOT_VERSION
-        uses: devops-infra/action-commit-push@v0.9.2
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          commit_message: '[ci skip] New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
-          target_branch: master
       - name: Create Pull Request for new SNAPSHOT
         if: env.DIFF_VERSION == '1' && env.PROJECT_VERSION != env.SNAPSHOT_VERSION
         uses: peter-evans/create-pull-request@v4
