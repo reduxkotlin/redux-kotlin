@@ -62,6 +62,6 @@ jobs:
         if: env.DIFF_VERSION == '1' && env.PROJECT_VERSION != env.SNAPSHOT_VERSION
         uses: devops-infra/action-commit-push@v0.9.2
         with:
-          github_token: ${{ secrets.GH_TOKEN || github.token }}
+          github_token: ${{ secrets.GH_TOKEN }}
           commit_message: '[ci skip] New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
           target_branch: master
