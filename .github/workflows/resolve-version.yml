@@ -65,3 +65,11 @@ jobs:
           github_token: ${{ secrets.GH_TOKEN }}
           commit_message: '[ci skip] New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
           target_branch: master
+      - name: Create Pull Request for new SNAPSHOT
+        if: env.DIFF_VERSION == '1' && env.PROJECT_VERSION != env.SNAPSHOT_VERSION
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: 'New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
+          commit-message: '[ci skip] New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
+          branch: ci/version/${{ env.SNAPSHOT_VERSION }}
+          delete-branch: true
