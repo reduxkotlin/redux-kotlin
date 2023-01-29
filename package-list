@@ -1,0 +1,8 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:redux-kotlin
+org.reduxkotlin
+org.reduxkotlin.utils
+module:redux-kotlin-threadsafe
+org.reduxkotlin.threadsafe

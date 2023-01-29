@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>createStore</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../index.html">
+<span>Redux-Kotlin</span>            </a>    </div>
+    <div>0.6.1
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redux-kotlin:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="redux-kotlin::org.reduxkotlin//createStore/#kotlin.Function2[TypeParam(bounds=[kotlin.Any?]),kotlin.Any,TypeParam(bounds=[kotlin.Any?])]#TypeParam(bounds=[kotlin.Any?])#kotlin.Function1[kotlin.Function3[kotlin.Function2[TypeParam(bounds=[kotlin.Any?]),kotlin.Any,TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?]),kotlin.Any?,org.reduxkotlin.TypedStore[TypeParam(bounds=[kotlin.Any?]),kotlin.Any]],kotlin.Function3[kotlin.Function2[TypeParam(bounds=[kotlin.Any?]),kotlin.Any,TypeParam(bounds=[kotlin.Any?])],TypeParam(bounds=[kotlin.Any?]),kotlin.Any?,org.reduxkotlin.TypedStore[TypeParam(bounds=[kotlin.Any?]),kotlin.Any]]]?/PointingToDeclaration//-1114039527">
+  <div class="breadcrumbs"><a href="../index.html">redux-kotlin</a><span class="delimiter">/</span><a href="index.html">org.reduxkotlin</a><span class="delimiter">/</span><span class="current">createStore</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>create</span><wbr><span><span>Store</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-store.html">State</a><span class="token operator">&gt; </span><a href="create-store.html"><span class="token function">createStore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">reducer<span class="token operator">: </span><a href="index.html#-2097601367%2FClasslikes%2F-1114039527">Reducer</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-store.html">State</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">preloadedState<span class="token operator">: </span><a href="create-store.html">State</a><span class="token punctuation">, </span></span><span class="parameter ">enhancer<span class="token operator">: </span><a href="index.html#299478032%2FClasslikes%2F-1114039527">StoreEnhancer</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-store.html">State</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html#-132106700%2FClasslikes%2F-1114039527">Store</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-store.html">State</a><span class="token operator">&gt;</span></div><p class="paragraph">Creates a NON-THREADSAFE Redux store that holds the state tree. If your application needs thread-safety access to store consider createThreadSafeStore see: https://reduxkotlin.org/api/createThreadSafeStore https://www.reduxkotlin.org/introduction/threading</p><p class="paragraph">The only way to change the data in the store is to call <code class="lang-kotlin">dispatch()</code> on it.</p><p class="paragraph">There should only be a single store in your app. To specify how different parts of the state tree respond to actions, you may combine several reducers into a single reducer function by using <code class="lang-kotlin">combineReducers</code>.</p><h4 class="">Parameters</h4><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":redux-kotlin:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><u></u></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">{Enhancer} <a href="create-store.html">enhancer</a> The store enhancer. You may optionally specify it to enhance the store with third-party capabilities such as middleware, time travel, persistence, etc. The only store enhancer that ships with Redux is <code class="lang-kotlin">applyMiddleware()</code>.</p></div></div></div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

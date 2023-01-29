@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ThreadSafeStore</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>Redux-Kotlin</span>            </a>    </div>
+    <div>0.6.1
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="redux-kotlin-threadsafe::org.reduxkotlin.threadsafe/ThreadSafeStore///PointingToDeclaration//-611417509">
+  <div class="breadcrumbs"><a href="../../index.html">redux-kotlin-threadsafe</a><span class="delimiter">/</span><a href="../index.html">org.reduxkotlin.threadsafe</a><span class="delimiter">/</span><span class="current">ThreadSafeStore</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Thread</span><wbr><span>Safe</span><wbr><span><span>Store</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ThreadSafeStore</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">State</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>store<span class="token operator">: </span><a href="../../../redux-kotlin/org.reduxkotlin/-store/index.html">Store</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">State</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <span data-unresolved-link="kotlinx.atomicfu.locks/SynchronizedObject///PointingToDeclaration/">SynchronizedObject</span>, <a href="../../../redux-kotlin/org.reduxkotlin/-typed-store/index.html">TypedStore</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">State</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span></div><p class="paragraph">Threadsafe wrapper for ReduxKotlin store that synchronizes access to each function using kotlinx.AtomicFu [https://github.com/Kotlin/kotlinx.atomicfu] Allows all store functions to be accessed from any thread. This does have a performance impact for JVM/Native. TODO more info at https://ReduxKotlin.org</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Extensions">Extensions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-1806374696%2FConstructors%2F-611417509" anchor-label="ThreadSafeStore" id="-1806374696%2FConstructors%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-thread-safe-store.html"><span>Thread</span><wbr><span>Safe</span><wbr><span><span>Store</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1806374696%2FConstructors%2F-611417509"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-thread-safe-store.html"><span class="token function">ThreadSafeStore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">store<span class="token operator">: </span><a href="../../../redux-kotlin/org.reduxkotlin/-store/index.html">Store</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">State</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-2041166679%2FProperties%2F-611417509" anchor-label="dispatch" id="-2041166679%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="dispatch.html"><span><span>dispatch</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2041166679%2FProperties%2F-611417509"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><a data-name="-2041166679%2FProperties%2F-611417509" anchor-label="dispatch" id="-2041166679%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="dispatch.html">dispatch</a><span class="token operator">: </span><a href="../../../redux-kotlin/org.reduxkotlin/-dispatcher/index.html">Dispatcher</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-625582744%2FProperties%2F-611417509" anchor-label="getState" id="-625582744%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-state.html"><span>get</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-625582744%2FProperties%2F-611417509"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><a data-name="-625582744%2FProperties%2F-611417509" anchor-label="getState" id="-625582744%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="get-state.html">getState</a><span class="token operator">: </span><a href="../../../redux-kotlin/org.reduxkotlin/-get-state/index.html">GetState</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">State</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-205552661%2FProperties%2F-611417509" anchor-label="replaceReducer" id="-205552661%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="replace-reducer.html"><span>replace</span><wbr><span><span>Reducer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-205552661%2FProperties%2F-611417509"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><a data-name="-205552661%2FProperties%2F-611417509" anchor-label="replaceReducer" id="-205552661%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="replace-reducer.html">replaceReducer</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../../redux-kotlin/org.reduxkotlin/-reducer/index.html">Reducer</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">State</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="74282624%2FProperties%2F-611417509" anchor-label="state" id="74282624%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="index.html#74282624%2FProperties%2F-611417509"><span><span>state</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="74282624%2FProperties%2F-611417509"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><a data-name="74282624%2FProperties%2F-611417509" anchor-label="state" id="74282624%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="index.html#74282624%2FProperties%2F-611417509">state</a><span class="token operator">: </span><a href="index.html">State</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-40414314%2FProperties%2F-611417509" anchor-label="store" id="-40414314%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="store.html"><span><span>store</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-40414314%2FProperties%2F-611417509"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><a data-name="-40414314%2FProperties%2F-611417509" anchor-label="store" id="-40414314%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="store.html">store</a><span class="token operator">: </span><a href="../../../redux-kotlin/org.reduxkotlin/-store/index.html">Store</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">State</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="841198157%2FProperties%2F-611417509" anchor-label="subscribe" id="841198157%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="subscribe.html"><span><span>subscribe</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="841198157%2FProperties%2F-611417509"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><a data-name="841198157%2FProperties%2F-611417509" anchor-label="subscribe" id="841198157%2FProperties%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="subscribe.html">subscribe</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="../../../redux-kotlin/org.reduxkotlin/-store-subscriber/index.html">StoreSubscriber</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="../../../redux-kotlin/org.reduxkotlin/-store-subscription/index.html">StoreSubscription</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="tabbedcontent">Extensions</h2>
+      <div class="table" data-togglable="Extensions"><a data-name="750509327%2FExtensions%2F-611417509" anchor-label="asThreadSafe" id="750509327%2FExtensions%2F-611417509" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"></a>
+        <div class="table-row" data-filterable-current=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain" data-filterable-set=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../as-thread-safe.html"><span>as</span><wbr><span>Thread</span><wbr><span><span>Safe</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="750509327%2FExtensions%2F-611417509"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redux-kotlin-threadsafe:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../as-thread-safe.html">State</a><span class="token operator">&gt; </span><a href="../../../redux-kotlin/org.reduxkotlin/-store/index.html">Store</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../as-thread-safe.html">State</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../as-thread-safe.html"><span class="token function">asThreadSafe</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ThreadSafeStore</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../as-thread-safe.html">State</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Converts a given <a href="../../../redux-kotlin/org.reduxkotlin/-store/index.html">Store</a> to a <a href="index.html">ThreadSafeStore</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
