@@ -60,7 +60,7 @@ jobs:
           sed -Ei "s|^(version=).*\$|\\1$SNAPSHOT_VERSION|" gradle.properties
       - name: Create Pull Request for new SNAPSHOT
         if: env.DIFF_VERSION == '1' && env.PROJECT_VERSION != env.SNAPSHOT_VERSION
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           title: 'New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
           commit-message: '[ci skip] New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
