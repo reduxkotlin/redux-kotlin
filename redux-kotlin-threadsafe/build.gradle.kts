@@ -1,5 +1,3 @@
-import util.jvmCommonTest
-
 plugins {
     id("convention.library-mpp-loved")
     id("convention.atomicfu")
@@ -15,12 +13,12 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":redux-kotlin"))
-                implementation("org.jetbrains.kotlinx:atomicfu:_")
+                implementation(libs.atomicfu)
             }
         }
         jvmCommonTest {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
     }
@@ -47,5 +45,3 @@ afterEvaluate {
         // tasks.create("uploadArchives").dependsOn("publishKotlinMultiplatformPublicationToMavenRepository")
     }
 }
-
-// apply(from = rootProject.file("gradle/publish.gradle"))

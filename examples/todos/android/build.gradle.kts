@@ -36,5 +36,5 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:_")
 
     implementation(project(":todos:common"))
-    implementation("org.reduxkotlin:redux-kotlin-threadsafe")
+    implementation("org.reduxkotlin:redux-kotlin-threadsafe:_")
 }

@@ -23,11 +23,10 @@ allprojects {
     configurations.all {
         resolutionStrategy {
             dependencySubstitution {
-                val reduxVersion = "+"
-                substitute(module("org.reduxkotlin:redux-kotlin"))
-                    .using(module("org.reduxkotlin:redux-kotlin:$reduxVersion"))
-                substitute(module("org.reduxkotlin:redux-kotlin-threadsafe"))
-                    .using(module("org.reduxkotlin:redux-kotlin-threadsafe:$reduxVersion"))
+                substitute(module("org.reduxkotlin:redux-kotlin:_"))
+                    .using(module("org.reduxkotlin:redux-kotlin:_"))
+                substitute(module("org.reduxkotlin:redux-kotlin-threadsafe:_"))
+                    .using(module("org.reduxkotlin:redux-kotlin-threadsafe:_"))
             }
         }
     }

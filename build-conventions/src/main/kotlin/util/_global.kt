@@ -1,11 +1,13 @@
 @file:Suppress("PackageDirectoryMismatch")
 
+import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.the
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.konan.target.HostManager
 
@@ -33,3 +35,5 @@ val Project.isMainHost: Boolean
 fun printlnCI(text: Any?) {
     if (CI) println("[CI]: $text")
 }
+
+internal inline val Project.libs get() = the<LibrariesForLibs>()

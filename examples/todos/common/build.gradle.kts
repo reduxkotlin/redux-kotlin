@@ -17,7 +17,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("org.reduxkotlin:redux-kotlin")
+                implementation("org.reduxkotlin:redux-kotlin:_")
             }
         }
         commonTest {

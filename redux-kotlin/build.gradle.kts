@@ -13,7 +13,7 @@ kotlin {
     sourceSets {
         jvmCommonTest {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
     }
