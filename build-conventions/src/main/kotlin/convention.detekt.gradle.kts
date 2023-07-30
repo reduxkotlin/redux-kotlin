@@ -11,7 +11,7 @@ dependencies {
 detekt {
     config.from(rootDir.resolve("gradle/detekt.yml"))
     buildUponDefaultConfig = true
-    source = files("src/", "*.kts")
+    source.from("src/", "*.kts")
 }
 
 tasks {

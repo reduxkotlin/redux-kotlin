@@ -49,17 +49,14 @@ fun control(targets: NamedDomainObjectCollection<KotlinTarget>) {
     val mainEnabled = !CI || isMainHost
     linuxHostTargets.onlyBuildIf {
         val enabled = mainEnabled || HostManager.hostIsLinux
-        printlnCI("[${it.name}] ${!CI} || $SANDBOX || ${HostManager.hostIsLinux} = $enabled")
         enabled
     }
     osxHostTargets.onlyBuildIf {
         val enabled = mainEnabled || HostManager.hostIsMac
-        printlnCI("[${it.name}] ${!CI} || $SANDBOX || ${HostManager.hostIsMac} = $enabled")
         enabled
     }
     windowsHostTargets.onlyBuildIf {
         val enabled = mainEnabled || HostManager.hostIsMingw
-        printlnCI("[${it.name}] ${!CI} || $SANDBOX || ${HostManager.hostIsMingw} = $enabled")
         enabled
     }
     mainHostTargets.onlyBuildIf {

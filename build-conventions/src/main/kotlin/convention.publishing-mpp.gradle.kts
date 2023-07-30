@@ -43,27 +43,22 @@ kotlin {
 
     linuxHostTargets.onlyPublishIf {
         val enabled = !CI || SANDBOX || HostManager.hostIsLinux
-        printlnCI("[${it.name}] ${!CI} || $SANDBOX || ${HostManager.hostIsLinux} = $enabled")
         enabled
     }
     osxHostTargets.onlyPublishIf {
         val enabled = !CI || SANDBOX || HostManager.hostIsMac
-        printlnCI("[${it.name}] ${!CI} || $SANDBOX || ${HostManager.hostIsMac} = $enabled")
         enabled
     }
     windowsHostTargets.onlyPublishIf {
         val enabled = !CI || SANDBOX || HostManager.hostIsMingw
-        printlnCI("[${it.name}] ${!CI} || $SANDBOX || ${HostManager.hostIsMingw} = $enabled")
         enabled
     }
     mainHostTargets.onlyPublishIf {
         val enabled = !CI || SANDBOX || isMainHost
-        printlnCI("[${it.name}] ${!CI} || $SANDBOX || $isMainHost = $enabled")
         enabled
     }
     mpp.onlyPublishIf {
         val enabled = !CI || SANDBOX || isMainHost
-        println("[${it.name}] ${!CI} || $SANDBOX || $isMainHost = $enabled")
         enabled
     }
 }

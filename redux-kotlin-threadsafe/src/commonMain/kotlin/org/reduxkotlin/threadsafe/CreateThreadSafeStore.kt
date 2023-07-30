@@ -1,13 +1,6 @@
 package org.reduxkotlin.threadsafe
 
-import org.reduxkotlin.Reducer
-import org.reduxkotlin.Store
-import org.reduxkotlin.StoreEnhancer
-import org.reduxkotlin.TypedReducer
-import org.reduxkotlin.TypedStore
-import org.reduxkotlin.asTyped
-import org.reduxkotlin.createStore
-import org.reduxkotlin.typedReducer
+import org.reduxkotlin.*
 
 /**
  * Creates a SYNCHRONIZED, THREADSAFE Redux store that holds the state tree.
@@ -51,5 +44,6 @@ public inline fun <State, reified Action : Any> createTypedThreadSafeStore(
 /**
  * Converts a given [Store] to a [ThreadSafeStore].
  */
+@Suppress("NOTHING_TO_INLINE")
 public inline fun <State> Store<State>.asThreadSafe(): ThreadSafeStore<State> =
     ThreadSafeStore(store)

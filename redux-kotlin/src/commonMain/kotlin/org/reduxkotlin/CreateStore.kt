@@ -229,9 +229,10 @@ public fun <State> createStore(
      * @returns {observable} A minimal observable of state changes.
      * For more information, see the observable proposal:
      * https://github.com/tc39/proposal-observable
-     *//* TODO: consider kotlinx.coroutines.flow?
-
-   */
+     */
+    /*
+     * TODO: consider kotlinx.coroutines.flow?
+     */
 
     // When a store is created, an "INIT" action is dispatched so that every
     // reducer returns their initial state. This effectively populates

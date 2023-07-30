@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated dependencies
+- Migrated to gradle version catalog
+- Switched the project to [hierarchical structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html
+
+### Removed
+
+- Support for deprecated kotlin targets (iosArm32, watchosX86, wasm32, mingwX86, linuxArm32Hfp, linuxMips32 &
+  linuxMipsel32)
+
 ---
 
 ## [0.6.0]
@@ -18,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All missing ios, watchos, tvos and macos simulator targets added
 - Added `androidNativeX64` and `androidNativeX86` targets
 - Added proper android release and debug variants instead of piggybacking on jvm artefact
-- New and improved `typedReducer` and `createTypedStore` builders for those needing a simple action-typed store. 
+- New and improved `typedReducer` and `createTypedStore` builders for those needing a simple action-typed store.
   Recommended to use with sealed interface hierarchies.
 
 ### Changed
@@ -100,5 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 [Unreleased]: https://github.com/reduxkotlin/redux-kotlin/compare/v0.6.0...HEAD
+
 [0.6.0]: https://github.com/reduxkotlin/redux-kotlin/compare/v0.5.5...0.6.0
+
 [0.5.5]: https://github.com/reduxkotlin/redux-kotlin/releases/tag/v0.5.5

@@ -9,6 +9,7 @@ lint.xml
 /captures
 .externalNativeBuild
 node_modules/
+versions.properties
 
 # Created by https://www.gitignore.io/api/swift,xcode
 

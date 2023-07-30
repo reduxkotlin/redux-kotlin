@@ -1,11 +1,11 @@
 [versions]
-detekt = "1.22.0"
-kotlinx-coroutines = "1.6.4"
+detekt = "1.23.1"
+kotlinx-coroutines = "1.7.2"
 kotlin = "1.9.0"
 android = "8.0.2"
 git-hooks = "0.0.2"
 nexus = "1.1.0"
-atomicfu = "0.19.0"
+atomicfu = "0.21.0"
 dokka = "1.7.20"
 
 [libraries]
@@ -18,18 +18,5 @@ plugin-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", ver
 plugin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
-dokka-analysis = "org.jetbrains.dokka:dokka-analysis:1.7.20"
-dokka-base = "org.jetbrains.dokka:dokka-base:1.7.20"
-gfm-template-processing-plugin = "org.jetbrains.dokka:gfm-template-processing-plugin:1.7.20"
-all-modules-page-plugin = "org.jetbrains.dokka:all-modules-page-plugin:1.7.20"
-jekyll-template-processing-plugin = "org.jetbrains.dokka:jekyll-template-processing-plugin:1.7.20"
-kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
-org-jacoco-ant = "org.jacoco:org.jacoco.ant:0.8.7"
-kotlin-test-js = { module = "org.jetbrains.kotlin:kotlin-test-js" }
-kotlin-scripting-compiler-embeddable = { group = "org.jetbrains.kotlin", name = "kotlin-scripting-compiler-embeddable", version.ref = "kotlin" }
-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.19.0"
-
-[plugins]
-org-gradle-kotlin-kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version = "2.4.1" }
+atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
