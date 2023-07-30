@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated dependencies
-- Migrated to gradle version catalog
+- Migrated to gradle version catalog!
 - Switched the project to [hierarchical structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html
 
 ### Removed

@@ -4,12 +4,11 @@ plugins {
 }
 
 kotlin {
-    iosArm32()
     iosArm64()
     iosX64()
     js(IR) {
         useCommonJs()
-        browser()
+        browser { testTask(Action { useKarma() }) }
         binaries.executable()
     }
     jvm()
@@ -17,7 +16,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("org.reduxkotlin:redux-kotlin:_")
+                implementation("org.reduxkotlin:redux-kotlin")
             }
         }
         commonTest {

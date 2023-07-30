@@ -7,7 +7,7 @@ kotlin {
     jvm()
     js(IR) {
         useCommonJs()
-        browser()
+        browser { testTask(Action { useKarma() }) }
         binaries.executable()
     }
 
@@ -17,7 +17,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("org.reduxkotlin:redux-kotlin:_")
+                implementation("org.reduxkotlin:redux-kotlin")
             }
         }
         commonTest {

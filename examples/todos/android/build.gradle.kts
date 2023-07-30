@@ -19,22 +19,26 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
         viewBinding = true
     }
-    packagingOptions {
+    packaging {
         resources.excludes.add("META-INF/*.kotlin_module")
     }
 }
 
+kotlin {
+    jvmToolchain(11)
+}
+
 dependencies {
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.constraintlayout:constraintlayout:_")
-    implementation("androidx.recyclerview:recyclerview:_")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
 
     implementation(project(":todos:common"))
-    implementation("org.reduxkotlin:redux-kotlin-threadsafe:_")
+    implementation("org.reduxkotlin:redux-kotlin-threadsafe")
 }

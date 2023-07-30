@@ -11,14 +11,8 @@ plugins {
     id("com.gradle.enterprise") version "3.12.2"
 }
 
-refreshVersions {
-    versionsPropertiesFile = rootDir.resolve("gradle/versions.properties")
-    extraArtifactVersionKeyRules(rootDir.resolve("gradle/versions.rules"))
-}
-
 includeBuild("../build-conventions/")
-// TODO(KT-52172) Uncomment once KMP properly supports composite builds
-// includeBuild("../")
+includeBuild("../")
 
 include(
     ":counter:common",
