@@ -27,7 +27,7 @@ jobs:
       version: ${{ steps.resolve.outputs.version }}
       snapshot: ${{ steps.resolve.outputs.snapshot }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Resolve
         id: resolve
         run: |
