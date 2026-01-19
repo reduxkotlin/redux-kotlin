@@ -16,20 +16,12 @@ kotlin {
         androidNativeX64(),
         androidNativeX86(),
     )
-    targetGroup(
-        name = "mingw",
-        mainSourceSetTarget = nativeMain,
-        testSourceSetTarget = nativeTest,
-        mingwX86(),
-    )
+    // mingwX86() removed - deprecated in Kotlin 2.x
     targetGroup(
         name = "linux",
         mainSourceSetTarget = nativeMain,
         testSourceSetTarget = nativeTest,
-        linuxArm32Hfp(),
         linuxArm64(),
-        linuxMips32(),
-        linuxMipsel32(),
     )
     targetGroup(
         name = "watchos",
