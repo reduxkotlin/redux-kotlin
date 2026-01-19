@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'adopt'
-          java-version: 11
+          java-version: 17
 
       - name: Restore Gradle cache
         id: cache-gradle
@@ -95,7 +95,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'adopt'
-          java-version: 11
+          java-version: 17
 
       - name: Restore Gradle cache
         id: cache-gradle
