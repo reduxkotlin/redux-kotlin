@@ -38,9 +38,9 @@ afterEvaluate {
         }
         create("installIosLocally") {
             dependsOn("publishKotlinMultiplatformPublicationToTestRepository")
-            dependsOn("publishIosArm32PublicationToTestRepository")
             dependsOn("publishIosArm64PublicationToTestRepository")
             dependsOn("publishIosX64PublicationToTestRepository")
+            dependsOn("publishIosSimulatorArm64PublicationToTestRepository")
             dependsOn("publishMetadataPublicationToTestRepository")
         }
         // NOTE: We do not alias uploadArchives because CI runs it on Linux and we only want to run it on Mac OS.
