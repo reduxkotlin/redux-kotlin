@@ -26,12 +26,12 @@ dependencies {
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {
-            languageVersion = "1.4" // 1.9 since gradle 8
+            languageVersion = "1.9"
         }
     }
 }
 
-gradleEnterprise {
+develocity {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"

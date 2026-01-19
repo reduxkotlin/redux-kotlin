@@ -2,7 +2,7 @@ plugins {
     id("convention.common")
 }
 
-gradleEnterprise {
+develocity {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
