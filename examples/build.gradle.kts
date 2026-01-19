@@ -2,13 +2,6 @@ plugins {
     id("convention.common")
 }
 
-develocity {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-    }
-}
-
 // TODO(KT-52172) Remove once KMP properly supports composite builds
 allprojects {
     if (findProperty("project.localRepo") == "true") {

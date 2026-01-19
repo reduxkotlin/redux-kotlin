@@ -11,6 +11,13 @@ plugins {
     id("com.gradle.develocity") version "3.17.6"
 }
 
+develocity {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
+
 refreshVersions {
     versionsPropertiesFile = rootDir.resolve("gradle/versions.properties")
     extraArtifactVersionKeyRules(rootDir.resolve("gradle/versions.rules"))
