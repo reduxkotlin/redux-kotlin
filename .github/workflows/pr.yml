@@ -13,5 +13,5 @@ concurrency:
   group: pr-${{ github.workflow }}-${{ github.head_ref || github.ref }}
 
 jobs:
-  check:
-    uses: ./.github/workflows/check.yml
+  ci:
+    uses: ./.github/workflows/ci.yml
