@@ -2,7 +2,6 @@ name: CI
 
 on:
   workflow_call:
-  pull_request:
 
 permissions:
   contents: read
