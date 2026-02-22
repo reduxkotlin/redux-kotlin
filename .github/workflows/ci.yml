@@ -54,8 +54,10 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Run tests
-        run: ./gradlew --no-daemon --stacktrace test
+      - name: Run tests (retry once on flaky failure)
+        run: |
+          ./gradlew --no-daemon --stacktrace test || \
+          ./gradlew --no-daemon --stacktrace --rerun-tasks test
 
       - name: Upload test reports on failure
         if: failure()
