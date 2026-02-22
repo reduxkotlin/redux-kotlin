@@ -52,9 +52,9 @@ jobs:
     env:
       VERSION: ${{ needs.resolve-version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 11
@@ -130,10 +130,10 @@ jobs:
             mingw-w64-x86_64-curl
             curl
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         if: ${{ matrix.repository.enabled == true }}
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         if: ${{ matrix.repository.enabled == true }}
         with:
           distribution: temurin
