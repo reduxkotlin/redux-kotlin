@@ -67,3 +67,34 @@ jobs:
           path: |
             **/build/reports/**
             **/build/test-results/**
+
+  gradle8-trial:
+    # Non-blocking trial lane to de-risk a future default wrapper migration to Gradle 8.
+    name: Gradle 8 Trial (non-blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: validate
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle 8 (trial)
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Run Gradle 8 trial build
+        run: gradle --no-daemon --stacktrace test
+
+      - name: Trial-lane interpretation
+        if: always()
+        run: |
+          echo "Gradle 8 Trial is informational and does not gate PR merges." >> "$GITHUB_STEP_SUMMARY"
+          echo "A failure here means 'not ready to flip default wrapper yet' and should be tracked separately." >> "$GITHUB_STEP_SUMMARY"

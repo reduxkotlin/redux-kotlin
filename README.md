@@ -18,6 +18,11 @@ A redux standard for Kotlin that supports multiplatform projects.
 
 Full documentation at http://reduxkotlin.org.
 
+## CI note: Gradle 8 trial lane
+
+Pull requests include a **Gradle 8 Trial (non-blocking)** lane for migration visibility.
+If that lane fails while required checks pass, treat it as a compatibility signal to fix before switching the default wrapper to Gradle 8.
+
 ## Mission Statement
 
 Provide a standard redux implementation for Kotlin. In doing so will foster a ecosystem of
