@@ -24,9 +24,9 @@ dependencies {
 }
 
 tasks {
-    withType<KotlinCompile> {
+    withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            languageVersion = "1.4" // 1.9 since gradle 8
+            languageVersion = "1.8" // Keep build-conventions compatible with current toolchain while Gradle 8 prep lands.
         }
     }
 }

@@ -34,19 +34,17 @@ idea {
     }
 }
 
-afterEvaluate {
-    tasks {
-        if (findByName("compile") == null) {
-            register("compile") {
-                dependsOn(withType(AbstractCompile::class))
-                group = "build"
-            }
+tasks {
+    if (findByName("compile") == null) {
+        register("compile") {
+            dependsOn(withType(AbstractCompile::class))
+            group = "build"
         }
-        if (findByName("allTests") == null) {
-            register("allTests") {
-                dependsOn(withType(AbstractTestTask::class))
-                group = "verification"
-            }
+    }
+    if (findByName("allTests") == null) {
+        register("allTests") {
+            dependsOn(withType(AbstractTestTask::class))
+            group = "verification"
         }
     }
 }
