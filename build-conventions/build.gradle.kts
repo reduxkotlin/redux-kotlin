@@ -15,13 +15,13 @@ repositories {
 }
 
 dependencies {
-    implementation("com.android.tools.build:gradle:_")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:_")
-    implementation("com.github.jakemarsden:git-hooks-gradle-plugin:_")
-    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:_")
-    implementation("io.github.gradle-nexus:publish-plugin:_")
-    implementation("org.jetbrains.dokka:dokka-gradle-plugin:_")
-    implementation("org.jetbrains.kotlinx:atomicfu-gradle-plugin:_")
+    implementation(libs.android.gradle.plugin)
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.git.hooks.gradle.plugin)
+    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${libs.versions.detekt.get()}")
+    implementation(libs.gradle.nexus.publish.plugin)
+    implementation(libs.dokka.gradle.plugin)
+    implementation(libs.kotlinx.atomicfu.gradle.plugin)
 }
 
 tasks {
