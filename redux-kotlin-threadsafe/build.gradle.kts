@@ -15,12 +15,12 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":redux-kotlin"))
-                implementation("org.jetbrains.kotlinx:atomicfu:_")
+                implementation(libs.kotlinx.atomicfu)
             }
         }
         jvmCommonTest {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
     }
