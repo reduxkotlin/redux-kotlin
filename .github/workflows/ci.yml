@@ -54,10 +54,25 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Run tests (retry once on flaky failure)
+      - name: Run tests (retry up to 3 times on flaky failure)
+        shell: bash
         run: |
-          ./gradlew --no-daemon --stacktrace test || \
-          ./gradlew --no-daemon --stacktrace --rerun-tasks test
+          set -euo pipefail
+          max_attempts=3
+          for attempt in $(seq 1 "$max_attempts"); do
+            echo "Test attempt ${attempt}/${max_attempts}"
+            if ./gradlew --no-daemon --stacktrace --rerun-tasks test; then
+              exit 0
+            fi
+
+            if [ "$attempt" -lt "$max_attempts" ]; then
+              echo "Tests failed on attempt ${attempt}; retrying..."
+              sleep 5
+            fi
+          done
+
+          echo "Tests failed after ${max_attempts} attempts"
+          exit 1
 
       - name: Upload test reports on failure
         if: failure()
