@@ -1,3 +1,4 @@
+import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -26,7 +27,9 @@ dependencies {
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {
-            languageVersion = "1.4" // 1.9 since gradle 8
+            val kotlinDslLanguage = if (GradleVersion.current() >= GradleVersion.version("8.0")) "1.9" else "1.4"
+            languageVersion = kotlinDslLanguage
+            apiVersion = kotlinDslLanguage
         }
     }
 }
