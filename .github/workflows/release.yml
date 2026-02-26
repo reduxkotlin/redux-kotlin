@@ -60,7 +60,7 @@ jobs:
           java-version: 11
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Gradle Assemble Dokka
         run: ./gradlew dokkaHtmlMultiModule -Pversion=${VERSION//v} --scan
@@ -131,7 +131,7 @@ jobs:
 
       - name: Set up Gradle
         if: ${{ matrix.repository.enabled == true }}
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Gradle Publish to ${{ matrix.repository.name }}
         if: ${{ matrix.repository.enabled == true }}

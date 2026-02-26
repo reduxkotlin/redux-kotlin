@@ -27,7 +27,7 @@ jobs:
           java-version: '17'
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Validate Gradle build
         run: ./gradlew --no-daemon --stacktrace detektAll
@@ -52,7 +52,7 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Run tests (retry once on flaky failure)
         run: |
@@ -86,7 +86,7 @@ jobs:
           java-version: '17'
 
       - name: Set up Gradle 8 (trial)
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: '8.10.2'
 
