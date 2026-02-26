@@ -38,8 +38,8 @@ afterEvaluate {
         }
         create("installIosLocally") {
             dependsOn("publishKotlinMultiplatformPublicationToTestRepository")
-            dependsOn("publishIosArm32PublicationToTestRepository")
             dependsOn("publishIosArm64PublicationToTestRepository")
+            dependsOn("publishIosSimulatorArm64PublicationToTestRepository")
             dependsOn("publishIosX64PublicationToTestRepository")
             dependsOn("publishMetadataPublicationToTestRepository")
         }
