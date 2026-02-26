@@ -32,28 +32,9 @@ kotlin {
         name = "ios",
         mainSourceSetTarget = appleMain,
         testSourceSetTarget = appleTest,
-        iosArm32(),
         iosArm64(),
         iosSimulatorArm64(),
         iosX64(),
-    )
-    targetGroup(
-        name = "tvos",
-        mainSourceSetTarget = appleMain,
-        testSourceSetTarget = appleTest,
-        tvosArm64(),
-        tvosX64(),
-        tvosSimulatorArm64(),
-    )
-    targetGroup(
-        name = "watchos",
-        mainSourceSetTarget = appleMain,
-        testSourceSetTarget = appleTest,
-        watchosArm32(),
-        watchosArm64(),
-        watchosX64(),
-        watchosX86(),
-        watchosSimulatorArm64()
     )
     targetGroup(
         name = "macos",

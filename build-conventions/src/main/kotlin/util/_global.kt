@@ -21,8 +21,8 @@ val NamedDomainObjectContainer<KotlinSourceSet>.jvmMain: NamedDomainObjectProvid
 val NamedDomainObjectContainer<KotlinSourceSet>.jvmTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named<KotlinSourceSet>("jvmTest")
 
-infix fun <T> Property<T>.by(value: T) = set(value)
-infix fun <T> Property<T>.by(value: Provider<T>) = set(value)
+infix fun <T : Any> Property<T>.by(value: T) = set(value)
+infix fun <T : Any> Property<T>.by(value: Provider<out T>) = set(value)
 
 val CI = System.getenv("CI") != null
 val SANDBOX = System.getenv("SANDBOX") != null

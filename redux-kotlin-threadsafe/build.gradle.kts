@@ -6,11 +6,22 @@ plugins {
     id("convention.publishing-mpp")
 }
 
-android {
-    namespace = "org.reduxkotlin.threadsafe"
+val hasAndroidSdk: Boolean = run {
+    val localProps = rootProject.file("local.properties")
+    val hasSdkInLocalProperties = localProps.exists() && localProps.readText().lineSequence().any {
+        it.trim().startsWith("sdk.dir=") && it.substringAfter("sdk.dir=").isNotBlank()
+    }
+    val hasSdkInEnv =
+        !System.getenv("ANDROID_HOME").isNullOrBlank() ||
+            !System.getenv("ANDROID_SDK_ROOT").isNullOrBlank()
+    hasSdkInLocalProperties || hasSdkInEnv
 }
 
 kotlin {
+    androidLibrary {
+        namespace = "org.reduxkotlin.threadsafe"
+    }
+
     sourceSets {
         commonMain {
             dependencies {
@@ -38,8 +49,8 @@ afterEvaluate {
         }
         create("installIosLocally") {
             dependsOn("publishKotlinMultiplatformPublicationToTestRepository")
-            dependsOn("publishIosArm32PublicationToTestRepository")
             dependsOn("publishIosArm64PublicationToTestRepository")
+            dependsOn("publishIosSimulatorArm64PublicationToTestRepository")
             dependsOn("publishIosX64PublicationToTestRepository")
             dependsOn("publishMetadataPublicationToTestRepository")
         }

@@ -30,11 +30,11 @@ fun control(targets: NamedDomainObjectCollection<KotlinTarget>) {
         all {
             if (this is KotlinNativeTarget) {
                 binaries.all {
-                    linkTask.onlyIf(enabled)
+                    linkTaskProvider.configure { onlyIf(enabled) }
                 }
             }
             compilations.all {
-                compileTaskProvider {
+                compileTaskProvider.configure {
                     onlyIf(enabled)
                 }
             }

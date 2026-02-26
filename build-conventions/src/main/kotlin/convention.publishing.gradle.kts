@@ -66,7 +66,7 @@ publishing {
             pom {
                 name by project.name
                 url by "https://github.com/$ghOwnerId/${rootProject.name}"
-                description by provider { project.description }
+                description.set(project.description ?: project.name)
 
                 licenses {
                     license {
@@ -86,9 +86,9 @@ publishing {
                 }
 
                 scm {
-                    connection by "scm:git:git@github.com:$ghOwnerId/${rootProject.name.toLowerCase()}.git"
-                    url by "https://github.com/$ghOwnerId/${rootProject.name.toLowerCase()}"
-                    tag by Git.headCommitHash
+                    connection by "scm:git:git@github.com:$ghOwnerId/${rootProject.name.lowercase()}.git"
+                    url by "https://github.com/$ghOwnerId/${rootProject.name.lowercase()}"
+                    tag.set(Git.headCommitHash ?: "HEAD")
                 }
             }
         }
