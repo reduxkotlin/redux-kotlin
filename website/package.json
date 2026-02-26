@@ -11,6 +11,6 @@
     "@babel/plugin-transform-class-properties": "7.28.6",
     "@babel/preset-react": "7.28.5",
     "docusaurus": "1.14.7",
-    "vercel": "21.0.0"
+    "vercel": "50.23.2"
   }
 }
