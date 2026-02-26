@@ -8,7 +8,7 @@ plugins {
 
 kotlin {
     explicitApi()
-    android {
+    androidTarget {
         if (!CI || SANDBOX || isMainHost) {
             publishLibraryVariants("release", "debug")
         }

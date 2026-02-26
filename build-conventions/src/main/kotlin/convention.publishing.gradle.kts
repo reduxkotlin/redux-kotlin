@@ -86,8 +86,8 @@ publishing {
                 }
 
                 scm {
-                    connection by "scm:git:git@github.com:$ghOwnerId/${rootProject.name.toLowerCase()}.git"
-                    url by "https://github.com/$ghOwnerId/${rootProject.name.toLowerCase()}"
+                    connection by "scm:git:git@github.com:$ghOwnerId/${rootProject.name.lowercase()}.git"
+                    url by "https://github.com/$ghOwnerId/${rootProject.name.lowercase()}"
                     tag by Git.headCommitHash
                 }
             }

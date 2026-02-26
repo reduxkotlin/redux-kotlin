@@ -11,8 +11,6 @@ val KonanTarget.buildHost: Family
         Family.WATCHOS -> Family.OSX
 
         Family.ANDROID,
-        Family.ZEPHYR,
-        Family.WASM,
         Family.LINUX -> Family.LINUX
 
         Family.MINGW -> Family.MINGW
