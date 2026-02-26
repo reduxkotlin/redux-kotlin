@@ -5,11 +5,11 @@ plugins {
     id("convention.publishing-mpp")
 }
 
-android {
-    namespace = "org.reduxkotlin"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "org.reduxkotlin"
+    }
+
     sourceSets {
         jvmCommonTest {
             dependencies {

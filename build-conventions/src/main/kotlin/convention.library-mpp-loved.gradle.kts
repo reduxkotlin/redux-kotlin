@@ -8,10 +8,9 @@ plugins {
 
 kotlin {
     explicitApi()
-    androidTarget {
-        if (!CI || SANDBOX || isMainHost) {
-            publishLibraryVariants("release", "debug")
-        }
+    androidLibrary {
+        compileSdk = 35
+        minSdk = 21
     }
 
     sourceSets {
