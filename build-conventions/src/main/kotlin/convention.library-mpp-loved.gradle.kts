@@ -1,4 +1,5 @@
 import util.jvmCommonTest
+import util.withName
 
 plugins {
     id("convention.mpp-loved")
@@ -25,7 +26,12 @@ kotlin {
             kotlin.srcDir(jvmCommonMain.kotlin)
             resources.srcDir(jvmCommonMain.resources)
         }
-        named("androidUnitTest") {
+        withName("androidUnitTest") {
+            val jvmCommonTest by getting
+            kotlin.srcDir(jvmCommonTest.kotlin)
+            resources.srcDir(jvmCommonTest.resources)
+        }
+        withName("androidHostTest") {
             val jvmCommonTest by getting
             kotlin.srcDir(jvmCommonTest.kotlin)
             resources.srcDir(jvmCommonTest.resources)
