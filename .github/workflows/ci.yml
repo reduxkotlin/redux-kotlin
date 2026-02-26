@@ -105,27 +105,56 @@ jobs:
         with:
           gradle-version: '8.10.2'
 
-      - name: Run Gradle 8 trial build (retry up to 2 times on flaky failure)
+      - name: Run Gradle 8 trial checks
         id: trial
         shell: bash
         run: |
-          set -euo pipefail
+          set -u -o pipefail
           mkdir -p .artifacts
-          max_attempts=2
+
+          overall_status=0
+
+          run_step() {
+            local name="$1"
+            shift
+
+            printf "\n=== %s ===\n" "$name" | tee -a .artifacts/gradle8-trial-summary.log
+            if "$@" 2>&1 | tee ".artifacts/${name}.log"; then
+              echo "✅ ${name} passed" | tee -a .artifacts/gradle8-trial-summary.log
+            else
+              echo "❌ ${name} failed" | tee -a .artifacts/gradle8-trial-summary.log
+              overall_status=1
+            fi
+          }
+
+          run_step "detektAll" gradle --no-daemon --stacktrace --warning-mode all detektAll
+
+          max_attempts=3
           for attempt in $(seq 1 "$max_attempts"); do
-            echo "Gradle 8 trial attempt ${attempt}/${max_attempts}" | tee -a .artifacts/gradle8-trial.log
-            if gradle --no-daemon --stacktrace --warning-mode all test 2>&1 | tee -a .artifacts/gradle8-trial.log; then
-              exit 0
+            echo "Test attempt ${attempt}/${max_attempts}" | tee -a .artifacts/test.log
+            if gradle --no-daemon --stacktrace --warning-mode all --rerun-tasks test 2>&1 | tee -a .artifacts/test.log; then
+              test_status=0
+              break
             fi
 
+            test_status=1
             if [ "$attempt" -lt "$max_attempts" ]; then
-              echo "Gradle 8 trial failed on attempt ${attempt}; retrying..." | tee -a .artifacts/gradle8-trial.log
+              echo "Tests failed on attempt ${attempt}; retrying..." | tee -a .artifacts/test.log
               sleep 5
             fi
           done
 
-          echo "Gradle 8 trial failed after ${max_attempts} attempts" | tee -a .artifacts/gradle8-trial.log
-          exit 1
+          if [ "${test_status:-1}" -ne 0 ]; then
+            echo "Tests failed after ${max_attempts} attempts" | tee -a .artifacts/test.log
+            echo "❌ test failed" | tee -a .artifacts/gradle8-trial-summary.log
+            overall_status=1
+          else
+            echo "✅ test passed" | tee -a .artifacts/gradle8-trial-summary.log
+          fi
+
+          run_step "help" gradle --no-daemon --stacktrace --warning-mode all help
+
+          exit "$overall_status"
 
       - name: Collect Gradle 8 diagnostics on failure
         if: failure()
@@ -141,8 +170,8 @@ jobs:
             grep '^distributionUrl=' gradle/wrapper/gradle-wrapper.properties || true
           } | tee .artifacts/gradle8-diagnostics.txt
 
-      - name: Upload Gradle 8 trial artifacts on failure
-        if: failure()
+      - name: Upload Gradle 8 trial artifacts
+        if: always()
         uses: actions/upload-artifact@v6
         with:
           name: gradle8-trial-artifacts
@@ -157,12 +186,13 @@ jobs:
         run: |
           {
             echo "## Gradle 8 Trial (non-blocking)"
+            echo "Checks: \`detektAll\`, \`test\` (retry up to 3x), and \`help\` config smoke."
             if [ "${{ steps.trial.outcome }}" = "success" ]; then
               echo "✅ Passed on Gradle 8.10.2 (informational lane)."
             else
               echo "⚠️ Failed on Gradle 8.10.2 (non-blocking)."
-              echo "Uploaded artifact: \`gradle8-trial-artifacts\` with logs and reports."
             fi
+            echo "Uploaded artifact: \`gradle8-trial-artifacts\` with logs and reports (always)."
             echo
             echo "This lane is informational and does not gate PR merges."
           } >> "$GITHUB_STEP_SUMMARY"
