@@ -15,7 +15,8 @@ import org.reduxkotlin.StoreEnhancer
  */
 public fun <State> createThreadSafeStoreEnhancer(): StoreEnhancer<State> {
     return { storeCreator ->
-        { reducer, initialState, en: Any? ->
+        {
+                reducer, initialState, en: Any? ->
             val store = storeCreator(reducer, initialState, en)
             val synchronizedStore = ThreadSafeStore(store)
             synchronizedStore
