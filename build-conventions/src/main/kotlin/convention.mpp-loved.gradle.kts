@@ -32,7 +32,6 @@ kotlin {
         name = "ios",
         mainSourceSetTarget = appleMain,
         testSourceSetTarget = appleTest,
-        iosArm32(),
         iosArm64(),
         iosSimulatorArm64(),
         iosX64(),
@@ -52,7 +51,6 @@ kotlin {
         watchosArm32(),
         watchosArm64(),
         watchosX64(),
-        watchosX86(),
         watchosSimulatorArm64()
     )
     targetGroup(
