@@ -6,11 +6,11 @@ plugins {
     id("convention.publishing-mpp")
 }
 
-android {
-    namespace = "org.reduxkotlin.threadsafe"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "org.reduxkotlin.threadsafe"
+    }
+
     sourceSets {
         commonMain {
             dependencies {
