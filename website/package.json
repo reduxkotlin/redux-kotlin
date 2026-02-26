@@ -16,8 +16,8 @@
   "resolutions": {
     "undici": "7.22.0",
     "tar": "7.5.9",
-    "docusaurus/**/minimatch": "3.1.5",
+    "docusaurus/**/minimatch": "10.2.4",
     "vercel/**/minimatch": "10.2.4",
-    "docusaurus/**/qs": "6.14.2"
+    "docusaurus/**/qs": "6.15.0"
   }
 }
