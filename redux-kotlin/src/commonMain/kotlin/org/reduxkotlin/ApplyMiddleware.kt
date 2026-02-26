@@ -18,7 +18,8 @@ package org.reduxkotlin
  */
 public fun <State> applyMiddleware(vararg middlewares: Middleware<State>): StoreEnhancer<State> {
     return { storeCreator ->
-        { reducer, initialState, en: Any? ->
+        {
+                reducer, initialState, en: Any? ->
             val store = storeCreator(reducer, initialState, en)
             val origDispatch = store.dispatch
             val dispatch: Dispatcher = {
