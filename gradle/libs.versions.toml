@@ -1,14 +1,14 @@
 [versions]
-android-gradle-plugin = "8.7.3"
+android-gradle-plugin = "9.0.1"
 androidx-appcompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
 androidx-recyclerview = "1.2.1"
-atomicfu = "0.27.0"
+atomicfu = "0.31.0"
 coroutines = "1.10.2"
 detekt = "1.23.8"
-dokka = "1.9.20"
+dokka = "2.1.0"
 git-hooks-gradle-plugin = "0.0.2"
-kotlin = "2.1.10"
+kotlin = "2.3.10"
 nexus-publish-plugin = "2.0.0"
 
 [libraries]
