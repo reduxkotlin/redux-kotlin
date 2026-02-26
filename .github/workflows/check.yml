@@ -26,7 +26,7 @@ jobs:
           java-version: 11
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Run detekt
         run: ./gradlew detektAll
@@ -88,7 +88,7 @@ jobs:
           java-version: 11
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Gradle Compile
         run: ./gradlew compile assemble --scan
