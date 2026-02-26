@@ -105,13 +105,27 @@ jobs:
         with:
           gradle-version: '8.10.2'
 
-      - name: Run Gradle 8 trial build
+      - name: Run Gradle 8 trial build (retry up to 2 times on flaky failure)
         id: trial
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           mkdir -p .artifacts
-          gradle --no-daemon --stacktrace --warning-mode all test 2>&1 | tee .artifacts/gradle8-trial.log
+          max_attempts=2
+          for attempt in $(seq 1 "$max_attempts"); do
+            echo "Gradle 8 trial attempt ${attempt}/${max_attempts}" | tee -a .artifacts/gradle8-trial.log
+            if gradle --no-daemon --stacktrace --warning-mode all test 2>&1 | tee -a .artifacts/gradle8-trial.log; then
+              exit 0
+            fi
+
+            if [ "$attempt" -lt "$max_attempts" ]; then
+              echo "Gradle 8 trial failed on attempt ${attempt}; retrying..." | tee -a .artifacts/gradle8-trial.log
+              sleep 5
+            fi
+          done
+
+          echo "Gradle 8 trial failed after ${max_attempts} attempts" | tee -a .artifacts/gradle8-trial.log
+          exit 1
 
       - name: Collect Gradle 8 diagnostics on failure
         if: failure()
