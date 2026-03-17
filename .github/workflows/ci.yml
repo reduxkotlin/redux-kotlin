@@ -153,11 +153,11 @@ jobs:
           fi
 
           run_step "help" gradle --no-daemon --stacktrace --warning-mode all help
-
-          exit "$overall_status"
+          echo "overall_status=$overall_status" >> "$GITHUB_OUTPUT"
+          exit 0
 
       - name: Collect Gradle 8 diagnostics on failure
-        if: failure()
+        if: steps.trial.outputs.overall_status != '0'
         shell: bash
         run: |
           {
@@ -187,7 +187,7 @@ jobs:
           {
             echo "## Gradle 8 Trial (non-blocking)"
             echo "Checks: \`detektAll\`, \`test\` (retry up to 3x), and \`help\` config smoke."
-            if [ "${{ steps.trial.outcome }}" = "success" ]; then
+            if [ "${{ steps.trial.outputs.overall_status }}" = "0" ]; then
               echo "✅ Passed on Gradle 8.10.2 (informational lane)."
             else
               echo "⚠️ Failed on Gradle 8.10.2 (non-blocking)."
