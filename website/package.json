@@ -15,7 +15,7 @@
   },
   "resolutions": {
     "undici": "7.24.4",
-    "tar": "7.5.11",
+    "tar": "7.5.12",
     "docusaurus/**/minimatch": "10.2.4",
     "vercel/**/minimatch": "10.2.4",
     "docusaurus/**/qs": "6.15.0"
