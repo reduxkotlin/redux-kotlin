@@ -2071,10 +2071,10 @@
     typescript "npm:typescript@5.9.3"
     undici "5.28.4"
 
-"@vercel/prepare-flags-definitions@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@vercel/prepare-flags-definitions/-/prepare-flags-definitions-0.2.0.tgz#67d819721f917c0a75fd40533335aa597e3022ec"
-  integrity sha512-2yvulNR7yyv/gbWLPPRvLYBq70X6sBuG5kMQWQMQrIJQZrcrTagy/OCj9gTnhNGod5JmYKXjVBV6GW6DZcNWlQ==
+"@vercel/prepare-flags-definitions@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@vercel/prepare-flags-definitions/-/prepare-flags-definitions-0.2.1.tgz#914a9e78d21ebf034a902033edb249cdf999d556"
+  integrity sha512-ouXTsqn7I9xZ1KKezgvn/w3tZeQHL/tc52j9GHiOYi6kT8xgdbT8s2x8C9BQr44iceX0hfhtZwk9q7NuI2Tqbw==
 
 "@vercel/python-analysis@0.10.1":
   version "0.10.1"
@@ -2089,10 +2089,10 @@
     smol-toml "1.5.2"
     zod "3.22.4"
 
-"@vercel/python@6.25.0":
-  version "6.25.0"
-  resolved "https://registry.yarnpkg.com/@vercel/python/-/python-6.25.0.tgz#3dcdca75d40a0e97aebb64f8d3ff583da8aaddd1"
-  integrity sha512-6XP04p//ZeMzW1C8dmFtNhZmVuWdIMk3p7jD/cdPgN+Wq7xXLpMSae5lDu/WS9qRI442SSMHwGDc2euUAHRULg==
+"@vercel/python@6.26.0":
+  version "6.26.0"
+  resolved "https://registry.yarnpkg.com/@vercel/python/-/python-6.26.0.tgz#bbb443cae55ffa374e1c6c3a6507377d57db64d3"
+  integrity sha512-/1Fu4B0wNnsimwVIV4+YPU8oKAXCzF6r5RE5dm+kN6X2UQ+PBMSOyr/d6zwkf7JIGWgBXKcyLsLnSg0Fal7r9g==
   dependencies:
     "@vercel/python-analysis" "0.10.1"
 
@@ -9486,9 +9486,9 @@ vendors@^1.0.0:
   integrity sha512-/juG65kTL4Cy2su4P8HjtkTxk6VmJDiOPBufWniqQ6wknac6jNiXS9vU+hO3wgusiyqWlzTbVHi0dyJqRONg3w==
 
 vercel@^50.23.2:
-  version "50.34.3"
-  resolved "https://registry.yarnpkg.com/vercel/-/vercel-50.34.3.tgz#94f0e777efad5909b5dc4d82a076a95f2e4d1dab"
-  integrity sha512-6lJMkjouKWAtYs0FzGHO8E/d/r05YpCUDOCYxQsJzSvLdUDnvEl2p2olvn97W7g3JZxJO5JK1/ce1VbkRzocPw==
+  version "50.35.0"
+  resolved "https://registry.yarnpkg.com/vercel/-/vercel-50.35.0.tgz#e886fbc59f9a7e58311b25e4846781bb883534c9"
+  integrity sha512-rG/1tx1Sv93aC3Mk9sC+fcbcXTWu+T9qtQRQtZQ5AmTRKa6QDpfc2bSfSneyebLNKUMq9k9QtaympR9gPHFgNA==
   dependencies:
     "@vercel/backends" "0.0.49"
     "@vercel/blob" "2.3.0"
@@ -9506,8 +9506,8 @@ vercel@^50.23.2:
     "@vercel/nestjs" "0.2.55"
     "@vercel/next" "4.16.2"
     "@vercel/node" "5.6.18"
-    "@vercel/prepare-flags-definitions" "0.2.0"
-    "@vercel/python" "6.25.0"
+    "@vercel/prepare-flags-definitions" "0.2.1"
+    "@vercel/python" "6.26.0"
     "@vercel/redwood" "2.4.11"
     "@vercel/remix-builder" "5.7.1"
     "@vercel/ruby" "2.3.2"
