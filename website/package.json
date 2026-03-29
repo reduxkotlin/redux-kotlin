@@ -14,7 +14,7 @@
     "vercel": "^50.23.2"
   },
   "resolutions": {
-    "undici": "7.24.5",
+    "undici": "7.24.6",
     "tar": "7.5.13",
     "docusaurus/**/minimatch": "10.2.4",
     "vercel/**/minimatch": "10.2.4",
