@@ -11,7 +11,7 @@
     "@babel/plugin-transform-class-properties": "7.28.6",
     "@babel/preset-react": "7.28.5",
     "docusaurus": "1.14.7",
-    "vercel": "^50.23.2"
+    "vercel": "^53.0.0"
   },
   "resolutions": {
     "undici": "7.24.6",
