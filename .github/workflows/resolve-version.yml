@@ -27,7 +27,7 @@ jobs:
       version: ${{ steps.resolve.outputs.version }}
       snapshot: ${{ steps.resolve.outputs.snapshot }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v3
       - name: Resolve
         id: resolve
         run: |
@@ -36,14 +36,14 @@ jobs:
           VERSION=${VERSION/v}
           echo "PROJECT_VERSION=${project_version}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "::set-output name=version::${VERSION}"
           if [[ "$VERSION" != "$project_version" ]]; then
             echo "DIFF_VERSION=1" >> $GITHUB_ENV
           fi
           if [[ "$VERSION" == *-SNAPSHOT ]]; then
-            echo "snapshot=true" >> "$GITHUB_OUTPUT"
+            echo "::set-output name=snapshot::true"
           else
-            echo "snapshot=false" >> "$GITHUB_OUTPUT"
+            echo "::set-output name=snapshot::false"
           fi
       - name: Report
         run: |
@@ -60,7 +60,7 @@ jobs:
           sed -Ei "s|^(version=).*\$|\\1$SNAPSHOT_VERSION|" gradle.properties
       - name: Create Pull Request for new SNAPSHOT
         if: env.DIFF_VERSION == '1' && env.PROJECT_VERSION != env.SNAPSHOT_VERSION
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@v5
         with:
           title: 'New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'
           commit-message: '[ci skip] New SNAPSHOT - ${{ env.SNAPSHOT_VERSION }}'

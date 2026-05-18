@@ -18,15 +18,25 @@ jobs:
     env:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: 'adopt'
+          java-version: 11
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
+      - name: Restore Gradle cache
+        id: cache-gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/yarn
+            ~/.gradle/nodejs
+            ~/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
       - name: Run detekt
         run: ./gradlew detektAll
@@ -43,7 +53,7 @@ jobs:
               '${{ github.workspace }}/detekt.sarif.json'
           )" > '${{ github.workspace }}/detekt.sarif.json'
 
-      - uses: github/codeql-action/upload-sarif@v4
+      - uses: github/codeql-action/upload-sarif@v2
         if: ${{ always() }}
         with:
           sarif_file: ${{ github.workspace }}/detekt.sarif.json
@@ -80,15 +90,25 @@ jobs:
             curl
             mingw-w64-x86_64-curl
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: 'adopt'
+          java-version: 11
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
+      - name: Restore Gradle cache
+        id: cache-gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/yarn
+            ~/.gradle/nodejs
+            ~/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
       - name: Gradle Compile
         run: ./gradlew compile assemble --scan
@@ -99,7 +119,7 @@ jobs:
       - name: Gradle Test Local Publishing
         run: ./gradlew publishToLocal --scan
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: reports-${{ runner.os }}

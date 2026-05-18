@@ -106,10 +106,8 @@ public interface TypedStore<State, Action> {
  */
 public fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -> Any): Middleware<State> =
     { store ->
-        {
-                next ->
-            {
-                    action: Any ->
+        { next ->
+            { action: Any ->
                 dispatch(store, next, action)
             }
         }

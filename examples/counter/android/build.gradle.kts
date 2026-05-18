@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
+    implementation("androidx.appcompat:appcompat:_")
     implementation(project(":counter:common"))
     implementation("org.reduxkotlin:redux-kotlin-threadsafe")
 }

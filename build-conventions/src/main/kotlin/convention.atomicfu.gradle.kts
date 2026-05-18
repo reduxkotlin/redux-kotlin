@@ -1,3 +1,3 @@
 plugins {
-    id("org.jetbrains.kotlinx.atomicfu")
+    id("kotlinx-atomicfu")
 }

@@ -1,4 +1,3 @@
-import org.gradle.api.publish.PublishingExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.Family
@@ -12,14 +11,16 @@ plugins {
 
 kotlin {
     fun NamedDomainObjectCollection<out Named>.onlyPublishIf(enabled: Spec<in Task>) {
-        extensions.findByType(PublishingExtension::class.java)?.let { publishingExtension ->
-            publishingExtension.publications.matching { it.name in this@onlyPublishIf.names }.all {
-                val targetPublication = this@all
-                tasks {
-                    withType<AbstractPublishToMaven>()
-                        .all { onlyIf { publication != targetPublication || enabled(this) } }
-                    withType<GenerateModuleMetadata>()
-                        .all { onlyIf { publication.orNull != targetPublication || enabled(this) } }
+        publishing {
+            publications {
+                matching { it.name in this@onlyPublishIf.names }.all {
+                    val targetPublication = this@all
+                    tasks {
+                        withType<AbstractPublishToMaven>()
+                            .all { onlyIf { publication != targetPublication || enabled(this) } }
+                        withType<GenerateModuleMetadata>()
+                            .all { onlyIf { publication.orNull != targetPublication || enabled(this) } }
+                    }
                 }
             }
         }

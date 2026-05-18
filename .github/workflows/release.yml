@@ -52,20 +52,30 @@ jobs:
     env:
       VERSION: ${{ needs.resolve-version.outputs.version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: 'adopt'
+          java-version: 11
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
+      - name: Restore Gradle cache
+        id: cache-gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/yarn
+            ~/.gradle/nodejs
+            ~/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
       - name: Gradle Assemble Dokka
         run: ./gradlew dokkaHtmlMultiModule -Pversion=${VERSION//v} --scan
 
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v3
         with:
           name: dokka
           path: |
@@ -120,18 +130,28 @@ jobs:
             mingw-w64-x86_64-curl
             curl
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v3
         if: ${{ matrix.repository.enabled == true }}
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v3
         if: ${{ matrix.repository.enabled == true }}
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: 'adopt'
+          java-version: 11
 
-      - name: Set up Gradle
+      - name: Restore Gradle cache
         if: ${{ matrix.repository.enabled == true }}
-        uses: gradle/actions/setup-gradle@v6
+        id: cache-gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/yarn
+            ~/.gradle/nodejs
+            ~/.konan
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
       - name: Gradle Publish to ${{ matrix.repository.name }}
         if: ${{ matrix.repository.enabled == true }}
@@ -146,7 +166,7 @@ jobs:
     env:
       VERSION: ${{ needs.resolve-version.outputs.version }}
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@v3
         with:
           name: dokka
 
@@ -159,7 +179,7 @@ jobs:
           echo "/${REPO_NAME} /${REPO_NAME}/${REPO_NAME}/index.html 301" > public/_redirects;
           echo "/${REPO_NAME}/index.html /${REPO_NAME}/${REPO_NAME}/index.html 301" >> public/_redirects;
 
-      - uses: crazy-max/ghaction-github-pages@v5
+      - uses: crazy-max/ghaction-github-pages@v3
         with:
           target_branch: gh-pages
           build_dir: public

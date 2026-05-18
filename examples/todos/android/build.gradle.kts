@@ -31,9 +31,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.recyclerview)
+    implementation("androidx.appcompat:appcompat:_")
+    implementation("androidx.constraintlayout:constraintlayout:_")
+    implementation("androidx.recyclerview:recyclerview:_")
 
     implementation(project(":todos:common"))
     implementation("org.reduxkotlin:redux-kotlin-threadsafe")

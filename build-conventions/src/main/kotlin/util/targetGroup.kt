@@ -52,7 +52,7 @@ fun NamedDomainObjectContainer<KotlinSourceSet>.jvmCommonMain(action: Action<Kot
 }
 
 fun NamedDomainObjectContainer<KotlinSourceSet>.jvmCommonTest(action: Action<KotlinSourceSet>) {
-    sharedSourceSets("jvmCommonTest", "androidUnitTest", "androidHostTest", action = action)
+    sharedSourceSets("jvmCommonTest", "androidUnitTest", action = action)
 }
 
 fun NamedDomainObjectContainer<KotlinSourceSet>.blockingMain(action: Action<KotlinSourceSet>) {
@@ -60,5 +60,5 @@ fun NamedDomainObjectContainer<KotlinSourceSet>.blockingMain(action: Action<Kotl
 }
 
 fun NamedDomainObjectContainer<KotlinSourceSet>.blockingTest(action: Action<KotlinSourceSet>) {
-    sharedSourceSets("blockingTest", "androidUnitTest", "androidHostTest", action = action)
+    sharedSourceSets("blockingTest", "androidUnitTest", action = action)
 }
