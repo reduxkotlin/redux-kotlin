@@ -4,10 +4,10 @@ plugins {
     if (System.getenv("CI") == null) id("convention.git-hooks")
 }
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        termsOfUseUrl.set("https://gradle.com/help/legal-terms-of-use")
+        termsOfUseAgree.set("yes")
     }
 }
 // Local/CI fallback: skip Develocity test distribution websocket check unless a server is configured.
