@@ -1,3 +1,4 @@
+import org.jetbrains.dokka.gradle.tasks.DokkaGeneratePublicationTask
 import org.jetbrains.kotlin.konan.target.HostManager
 import util.Git
 
@@ -8,11 +9,22 @@ plugins {
     signing
 }
 
+// The `androidMain` source set shares files with `jvmCommonMain` via `kotlin.srcDir`
+// (see `convention.library-mpp-loved`). Dokka V2's pre-generation validity check
+// rejects a single .kt file appearing in two source sets, so suppress the android
+// source set entirely — its docs would be duplicates of jvmCommonMain anyway.
+dokka {
+    dokkaSourceSets.matching { it.name.startsWith("android") }.configureEach {
+        suppress.set(true)
+    }
+}
+
 tasks {
+    val dokkaPublicationHtml = named<DokkaGeneratePublicationTask>("dokkaGeneratePublicationHtml")
     register<Jar>("javadocJar") {
-        dependsOn(dokkaHtml)
+        dependsOn(dokkaPublicationHtml)
         archiveClassifier.set("javadoc")
-        from(dokkaHtml.get().outputDirectory)
+        from(dokkaPublicationHtml.flatMap { it.outputDirectory })
     }
     withType<Jar> {
         manifest {
