@@ -37,6 +37,8 @@ tasks {
                 sarif.required.set(true)
             }
             include("**/*.kt", "**/*.kts")
+            // TODO(rss-reader phase 7): narrow `examples/rss-reader/` exclude to upstream
+            // subpackages only once Redux-Kotlin-authored code lives in `examples/rss-reader/`.
             exclude("**/build", "scripts/", "examples/rss-reader/")
         }
     }

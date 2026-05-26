@@ -75,9 +75,6 @@ rssreader-xml-serialization-core = { module = "io.github.pdvrieze.xmlutil:core",
 rssreader-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "rssreader-core-splashscreen" }
 
 [plugins]
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-rssreader-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
-rssreader-android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 rssreader-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 rssreader-compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "rssreader-compose" }
 rssreader-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
