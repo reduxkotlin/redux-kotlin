@@ -30,7 +30,7 @@ kotlin {
     }
 
     if (hasAndroidSdk) {
-        androidLibrary {
+        android {
             minSdk = 21
         }
     }

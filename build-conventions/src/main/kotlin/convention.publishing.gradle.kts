@@ -113,7 +113,7 @@ publishing {
                     password = System.getenv("GH_PASSWORD")
                 }
             }
-            maven("file://${rootProject.buildDir}/localMaven") {
+            maven(rootProject.layout.buildDirectory.dir("localMaven").map { it.asFile.toURI() }) {
                 name = "Local"
             }
         }

@@ -31,6 +31,11 @@ tasks {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
+    withType<JavaCompile>().configureEach {
+        // Match the Kotlin jvmTarget above so Gradle stops flagging
+        // "Inconsistent JVM Target Compatibility Between Java and Kotlin Tasks".
+        options.release.set(17)
+    }
 }
 
 develocity {
