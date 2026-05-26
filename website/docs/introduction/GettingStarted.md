@@ -21,37 +21,41 @@ continue to be updated as Kotlin multiplatform matures.
 
 ## Installation
 
-ReduxKotlin is available on Maven central.  
+ReduxKotlin is published to Maven Central.
+
+__Requirements__
+
+- Kotlin 1.9 or newer (artefacts are built with Kotlin 2.3)
+- Android `minSdk 21` or higher; library bytecode is JVM 17
+- Supported KMP targets: `jvm`, `js` (browser/node), `android`, `iosArm64`, `iosX64`,
+  `iosSimulatorArm64`, `macosArm64`, `macosX64`, `linuxArm64`, `linuxX64`, `mingwX64`
 
 __For a multiplatform project:__
 
-Artifacts are published with Gradle meta-data, so the dependency only needs to be declared in your
-common sourceset:
+The dependency only needs to be declared in your common sourceset — Gradle metadata picks up the
+platform-specific artefacts automatically (and has been on by default since Gradle 5.3):
 
 ```groovy
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.5.5"
+                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.6.0"
             }
         }
     }
 }
 ```
 
-Gradle meta-data is a preview feature, and will need to be turned on with 
-`enableFeaturePreview("GRADLE_METADATA")` in your gradle.settings file.
-
 __For single platform project (i.e. just Android):__
 
 ```groovy
 dependencies {
-    implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.5"
+    implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.6.0"
 }
 ```
 
-NOTE: If threadsafety is not a concern (i.e. a JS only project) "org.reduxkotlin:redux-kotlin:0.5.5" may be used.
+NOTE: If threadsafety is not a concern (i.e. a JS only project) `"org.reduxkotlin:redux-kotlin:0.6.0"` may be used.
 [**More info on threading available here.**](/introduction/threading)
 
 ## Basic Example

@@ -50,11 +50,18 @@ Video TBA
 
 __How to add to project:__
 
-Artifacts are hosted on maven central. They are published with gradle metadata, so you may need to
-enable
-with `enableFeaturePreview("GRADLE_METADATA")` in your settings.gradle file. For multiplatform, add
-the following to
-your shared module:
+Artifacts are hosted on Maven Central. Replace `<version>` with the latest release shown by the
+badge above (currently `0.6.0`).
+
+Requirements:
+
+- Kotlin 1.9 or newer (the published artefacts are built with Kotlin 2.3)
+- JVM/Android consumers: JDK 17+ on Android; library bytecode is JVM 17
+- Android: `minSdk 21` or higher
+- Supported KMP targets: `jvm`, `js` (browser/node), `android`, `iosArm64`, `iosX64`,
+  `iosSimulatorArm64`, `macosArm64`, `macosX64`, `linuxArm64`, `linuxX64`, `mingwX64`
+
+For multiplatform, add the following to your shared module:
 
 ```kotlin
 kotlin {
