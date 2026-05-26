@@ -2,12 +2,11 @@
 id: threading
 title: Redux on Multi-threaded Platforms
 sidebar_label: Threading
-hide_title: true
 ---
 
 # Redux on Multi-threaded Platforms
 
-TLDR; use [createThreadSafeStore()](../api/createThreadSafeStore.md), unless your app is Javascript only.
+TLDR; use [createThreadSafeStore()](../api/createthreadsafestore), unless your app is Javascript only.
 
 Redux in multi-threaded environments brings additional concerns that are not present in redux
 for Javascript.  Javascript is single threaded, so Redux.js did not have to address the issue.
@@ -19,10 +18,10 @@ state.  Or 2 actions dispatched concurrently could cause an invalid state.
 
 **So you there are 3 options:**
 
-1) Synchronize access to the store  - [createThreadSafeStore()](../api/createThreadSafeStore.md)
-2) Only access the store from the same thread - [createSameThreadEnforcedStore()](../api/createSameThreadEnforcedStore.md)
+1) Synchronize access to the store  - [createThreadSafeStore()](../api/createthreadsafestore)
+2) Only access the store from the same thread - [createSameThreadEnforcedStore()](../api/createsamethreadenforcedstore)
 3) Live in the wild west and access store anytime, any thread
-    and live with consequences - NOT_RECOMMENDED - [createStore()](../api/createStore.md)
+    and live with consequences - NOT_RECOMMENDED - [createStore()](../api/createstore)
 
 ReduxKotlin allows all these, but most cases will fall into #1.
 

@@ -2,19 +2,18 @@
 id: api-reference
 title: API Reference
 sidebar_label: API Reference
-hide_title: true
 ---
 
 # API Reference
 
 The Redux API surface is tiny. Redux defines a set of contracts for you to implement (such as 
-[reducers](../Glossary.md#reducer)) and provides a few helper functions to tie these contracts 
+[reducers](../glossary#reducer)) and provides a few helper functions to tie these contracts 
 together.
 
 This section documents the complete Redux API. Keep in mind that Redux is only concerned with
 managing the state. In a real app, you'll also want to bind the state to the UI. There are several
 approaches to binding state to the UI, and these docs will evolve as patterns emerge for
-multiplatform. One approach is the [Presenter-middleware](TODO)
+multiplatform. One approach is the [Presenter-middleware](#todo)
 
 
 ### Typealiases 
@@ -73,15 +72,15 @@ data class Store<State>(
 
 ### Top-Level Functions
 
-- [createStore(reducer: Reducer, preloadedState: State, enhancer: StoreEnhancer)](createStore.md)
-- [createThreadSafeStore(reducer: Reducer, preloadedState: State, enhancer: StoreEnhancer)](createThreadSafeStore.md)
-- [applyMiddleware(...middlewares)](applyMiddleware.md)
-- [compose(...functions)](compose.md)
+- [createStore(reducer: Reducer, preloadedState: State, enhancer: StoreEnhancer)](/api/createstore)
+- [createThreadSafeStore(reducer: Reducer, preloadedState: State, enhancer: StoreEnhancer)](/api/createthreadsafestore)
+- [applyMiddleware(...middlewares)](/api/applymiddleware)
+- [compose(...functions)](/api/compose)
 
 ### Store API
 
-- [Store](Store.md)
-  - [getState()](Store.md#getState) - also available as [state] property
-  - [dispatch(action)](Store.md#dispatchaction)
-  - [subscribe(listener)](Store.md#subscribelistener)
-  - [replaceReducer(nextReducer)](Store.md#replacereducernextreducer)
+- [Store](/api/store-api)
+  - [getState()](/api/store-api#getstate-or-state-property) - also available as [state] property
+  - [dispatch(action)](/api/store-api#dispatchaction-any-any)
+  - [subscribe(listener)](/api/store-api#subscribelistener-storesubscriber)
+  - [replaceReducer(nextReducer)](/api/store-api#replacereducernextreducer-reducerstate-unit)

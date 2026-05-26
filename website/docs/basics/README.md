@@ -2,7 +2,6 @@
 id: basic-tutorial
 title: "Basic Tutorial: Intro"
 sidebar_label: "Basic Tutorial: Intro"
-hide_title: true
 ---
 
 # Basics
@@ -13,7 +12,7 @@ you're new, it's easy too!
 
 In this guide, we'll walk through the process of creating a simple Todo app.
 
-- [Actions](Actions.md)
-- [Reducers](Reducers.md)
-- [Store](Store.md)
-- [Data Flow](DataFlow.md)
+- [Actions](/basics/actions)
+- [Reducers](/basics/reducers)
+- [Store](/basics/store)
+- [Data Flow](/basics/data-flow)

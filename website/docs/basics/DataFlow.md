@@ -2,7 +2,6 @@
 id: data-flow
 title: Data flow
 sidebar_label: Data flow
-hide_title: true
 ---
 
 # Data Flow
@@ -13,7 +12,7 @@ This means that all data in an application follows the same lifecycle pattern, m
 your app more predictable and easier to understand. It also encourages data normalization, so that
 you don't end up with multiple, independent copies of the same data that are unaware of one another.
 
-If you're still not convinced, read [Motivation](../introduction/Motivation.md) and 
+If you're still not convinced, read [Motivation](../introduction/motivation) and 
 [The Case for Flux](https://medium.com/@dan_abramov/the-case-for-flux-379b7d1982c6) for a compelling
 argument in favor of unidirectional data flow. Although 
 Redux is not exactly Flux, it shares the same key benefits.
@@ -21,9 +20,9 @@ There are also many talks on the benefits of UDF for Android & iOS development.
 
 The data lifecycle in any Redux app follows these 4 steps:
 
-1. **You call** [`store.dispatch(action)`](../api/Store.md#dispatchaction).
+1. **You call** [`store.dispatch(action)`](../api/store-api#dispatchaction-any-any).
 
-An [action](Actions.md) is a plain object describing _what happened_. For example:
+An [action](./actions) is a plain object describing _what happened_. For example:
 
 ```kotlin
 data class LikeArticle(val articleId: Int)
@@ -35,13 +34,13 @@ Think of an action as a very brief snippet of news. “Mary liked article 42.”
 docs.' was added to the list of todos.”
 
 You can call
-[`store.dispatch(action)`](../api/Store.md#dispatchaction) from anywhere in your app or even at
+[`store.dispatch(action)`](../api/store-api#dispatchaction-any-any) from anywhere in your app or even at
 scheduled intervals.
 //TODO note on threading & reducer -- also TODO note in reducer section on threading
 
 2. **The Redux store calls the reducer function you gave it.**
 
-The [store](Store.md) will pass two arguments to the [reducer](Reducers.md): the current state tree
+The [store](./store) will pass two arguments to the [reducer](./reducers): the current state tree
 and the action. For example, in the todo app, the root reducer might receive something like this:
 
 ```kotlin
@@ -69,13 +68,13 @@ an action is dispatched.
 3. **The root reducer may combine the output of multiple reducers into a single state tree.**
 
 How you structure the root reducer is completely up to you. 
-More info is in [reducers](basics/Reducers.md)
+More info is in [reducers](/basics/reducers)
 
 4. **The Redux store saves the complete state tree returned by the root reducer.**
 
 This new tree is now the next state of your app! Every listener registered with 
-[`store.subscribe(listener)`](../api/Store.md#subscribelistener) will now be invoked; listeners may 
-call [`store.getState()` or `store.state`](../api/Store.md#getState) to get the current state.
+[`store.subscribe(listener)`](../api/store-api#subscribelistener-storesubscriber) will now be invoked; listeners may 
+call [`store.getState()` or `store.state`](../api/store-api#getstate-or-state-property) to get the current state.
 
 Now, the UI can be updated to reflect the new state. 
 
@@ -86,6 +85,6 @@ Now, the UI can be updated to reflect the new state.
 > ##### Note for Advanced Users
 >
 > If you're already familiar with the basic concepts and have previously completed this tutorial, 
-> don't forget to check out [async flow](../advanced/AsyncFlow.md) in the 
-> [advanced tutorial](../advanced/README.md) to learn how middleware transforms 
-> [async actions](../advanced/AsyncActions.md) before they reach the reducer.
+> don't forget to check out [async flow](../advanced/async-flow) in the 
+> [advanced tutorial](../advanced/) to learn how middleware transforms 
+> [async actions](../advanced/async-actions) before they reach the reducer.

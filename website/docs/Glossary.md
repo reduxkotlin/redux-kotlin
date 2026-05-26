@@ -2,19 +2,18 @@
 id: glossary
 title: Glossary
 sidebar_label: Glossary
-hide_title: true
 ---
 
 # Glossary
 
 This is a glossary of the core terms in Redux, along with their type signatures. The typealiases are
-defined in [Definitions.kt](todo)
+defined in [Definitions.kt](#todo)
 
 ## State
 
 _State_ (also called the _state tree_) is a broad term, but in the Redux API it usually refers to 
 the single state value that is managed by the store and returned by 
-[`getState()`](api/Store.md#getState) or the property syntax [`state`](api/Store.md#getState). It 
+[`getState()`](/api/store-api#getstate-or-state-property) or the property syntax [`state`](/api/store-api#getstate-or-state-property). It 
 represents the entire state of a Redux application.
 
 State can be any type of object, however data classes are well suited due to their `copy()` method 
@@ -91,7 +90,7 @@ A _dispatching function_ (or simply _dispatch function_) is a function that acce
 [async action](#async-action); it then may or may not dispatch one or more actions to the store.
 
 We must distinguish between dispatching functions in general and the base 
-[`dispatch`](api/Store.md#dispatchaction) function provided by the store instance without any 
+[`dispatch`](/api/store-api#dispatchaction-any-any) function provided by the store instance without any 
 middleware.
 
 The base dispatch function _always_ synchronously sends an action to the store's reducer, along with
@@ -112,7 +111,7 @@ Creator pattern in Kotlin works as well, and is really up to you as to how and w
 created.
 
 Calling an action creator only produces an action, but does not dispatch it. You need to call the
-store's [`dispatch`](api/Store.md#dispatchaction) function to actually cause the mutation. Sometimes
+store's [`dispatch`](/api/store-api#dispatchaction-any-any) function to actually cause the mutation. Sometimes
 we say _bound action creators_ to mean functions that call an action creator and immediately 
 dispatch its result to a specific store instance.
 
@@ -123,7 +122,7 @@ like a routing transition, it should return an [async action](#async-action) ins
 
 An _async action_ is a value that is sent to a dispatching function, but is not yet ready for
 consumption by the reducer. It will be transformed by [middleware](#middleware) into an action (or a
-series of actions) before being sent to the base [`dispatch()`](api/Store.md#dispatchaction) 
+series of actions) before being sent to the base [`dispatch()`](/api/store-api#dispatchaction-any-any) 
 function. Async actions may have different types, depending on the middleware you use. They are 
 often asynchronous primitives, like a thunk, which are not passed to the reducer immediately, but 
 trigger action dispatches once an operation has completed.
@@ -147,7 +146,7 @@ A middleware is a higher-order function that composes a
 Middleware is composable using function composition. It is useful for logging actions, performing
 side effects like routing, or turning an asynchronous API call into a series of synchronous actions.
 
-See [`applyMiddleware(...middlewares)`](./api/applyMiddleware.md) for a detailed look at middleware.
+See [`applyMiddleware(...middlewares)`](/api/applymiddleware) for a detailed look at middleware.
 
 ## Store
 
@@ -165,14 +164,14 @@ interface Store<State> {
 A store is an object that holds the application's state tree.  
 There should only be a single store in a Redux app, as the composition happens on the reducer level.
 
-- [`dispatch(action)`](api/Store.md#dispatchaction) is the base dispatch function described above.
-- [`getState()`](api/Store.md#getState) returns the current state of the store.
-- [`subscribe(listener)`](api/Store.md#subscribelistener) registers a function to be called on state
+- [`dispatch(action)`](/api/store-api#dispatchaction-any-any) is the base dispatch function described above.
+- [`getState()`](/api/store-api#getstate-or-state-property) returns the current state of the store.
+- [`subscribe(listener)`](/api/store-api#subscribelistener-storesubscriber) registers a function to be called on state
   changes.
-- [`replaceReducer(nextReducer)`](api/Store.md#replacereducernextreducer) can be used to implement
+- [`replaceReducer(nextReducer)`](/api/store-api#replacereducernextreducer-reducerstate-unit) can be used to implement
   hot reloading and code splitting. Most likely you won't use it.
 
-See the complete [store API reference](api/Store.md#dispatchaction) for more details.
+See the complete [store API reference](/api/store-api#dispatchaction-any-any) for more details.
 
 ## Store creator
 
@@ -186,7 +185,7 @@ typealias StoreCreator<State> = (
 ```
 
 A store creator is a function that creates a Redux store. Like with dispatching function, we must
-distinguish the base store creator, [`createStore(reducer, preloadedState)`](api/createStore.md) 
+distinguish the base store creator, [`createStore(reducer, preloadedState)`](/api/createstore) 
 exported from the Redux package, from store creators that are returned from the store enhancers.
 
 ## Store enhancer
@@ -204,7 +203,7 @@ occasionally called “component enhancers”.
 
 Copies can be easily created and modified without mutating the original store. There is an example
 in
-[`compose`](api/compose.md) documentation demonstrating that.
+[`compose`](/api/compose) documentation demonstrating that.
 
 Most likely you'll never write a store enhancer. Amusingly, the
-[Redux middleware implementation](api/applyMiddleware.md) is itself a store enhancer.
+[Redux middleware implementation](/api/applymiddleware) is itself a store enhancer.

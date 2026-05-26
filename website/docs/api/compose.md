@@ -2,7 +2,6 @@
 id: compose
 title: compose
 sidebar_label: compose
-hide_title: true
 ---
 
 # `compose(vararg functions: (T) -> T): (T) -> T`
@@ -10,7 +9,7 @@ hide_title: true
 Composes functions from right to left.
 
 This is a functional programming utility, and is included in Redux as a convenience.  
-You might want to use it to apply several [store enhancers](../Glossary.md#store-enhancer) in a row.
+You might want to use it to apply several [store enhancers](../glossary#store-enhancer) in a row.
 
 #### Arguments
 
@@ -25,8 +24,8 @@ You might want to use it to apply several [store enhancers](../Glossary.md#store
 
 #### Example
 
-This example demonstrates how to use `compose` to enhance a [store](Store.md) with 
-[`applyMiddleware`](applyMiddleware.md) and a few developer tools from the 
+This example demonstrates how to use `compose` to enhance a [store](./store-api) with 
+[`applyMiddleware`](./applymiddleware) and a few developer tools from the 
 [redux-devtools](https://github.com/reduxjs/redux-devtools) package.
 
 ```kotlin

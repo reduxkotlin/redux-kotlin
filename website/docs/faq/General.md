@@ -2,7 +2,6 @@
 id: general
 title: General
 sidebar_label: General
-hide_title: true
 ---
 
 # Redux FAQ: General
@@ -53,7 +52,7 @@ understand the tradeoffs involved in each decision.
 
 **Documentation**
 
-- [Introduction: Motivation](../introduction/Motivation.md)
+- [Introduction: Motivation](../introduction/motivation)
 
 **Articles**
 - [Lessons learned implementing Redux on Android](https://hackernoon.com/lessons-learned-implementing-redux-on-android-cba1bed40c41)
