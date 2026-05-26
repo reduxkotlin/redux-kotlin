@@ -20,6 +20,7 @@ include(
     ":examples:todos:common",
     ":examples:todos:android",
     ":examples:rss-reader:shared",
+    ":examples:rss-reader:androidApp",
 )
 
 rootProject.name = "Redux-Kotlin"
