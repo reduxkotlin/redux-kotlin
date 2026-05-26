@@ -3,6 +3,7 @@ package com.github.jetbrains.rssreader.app
 import com.github.jetbrains.rssreader.core.RssReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.reduxkotlin.Dispatcher
 import org.reduxkotlin.GetState
@@ -19,7 +20,7 @@ typealias Thunk = (dispatch: Dispatcher, getState: GetState<FeedState>) -> Any
  * coroutine context) for testability; for the sample, a top-level Main-dispatched
  * scope mirrors the original [FeedStore].
  */
-private val thunkScope = CoroutineScope(Dispatchers.Main)
+private val thunkScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
 fun refresh(rssReader: RssReader, forceLoad: Boolean): Thunk = { dispatch, getState ->
     if (getState().progress) {
