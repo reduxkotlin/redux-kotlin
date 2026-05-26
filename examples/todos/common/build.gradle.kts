@@ -7,7 +7,7 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
-    js(IR) {
+    js {
         useCommonJs()
         browser()
         binaries.executable()
