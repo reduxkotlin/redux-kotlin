@@ -37,7 +37,7 @@ tasks {
                 sarif.required.set(true)
             }
             include("**/*.kt", "**/*.kts")
-            exclude("**/build", "scripts/")
+            exclude("**/build", "scripts/", "examples/rss-reader/")
         }
     }
 }
