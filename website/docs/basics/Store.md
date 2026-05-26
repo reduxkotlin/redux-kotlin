@@ -2,28 +2,27 @@
 id: store
 title: Store
 sidebar_label: Store
-hide_title: true
 ---
 
 # Store
 
-In the previous sections, we defined the [actions](Actions.md) that represent the facts about 
-“what happened” and the [reducers](Reducers.md) that update the state according to those actions.
+In the previous sections, we defined the [actions](./actions) that represent the facts about 
+“what happened” and the [reducers](./reducers) that update the state according to those actions.
 
 The **Store** is the object that brings them together. The store has the following responsibilities:
 
 - Holds application state;
-- Allows access to state via [`getState()` or `state`](../api/Store.md#getState);
-- Allows state to be updated via [`dispatch(action: Any): Any`](../api/Store.md#dispatchaction);
-- Registers listeners via [`subscribe(listener: StoreSubscriber): StoreSubscription`](../api/Store.md#subscribelistener);
-- Handles unregistering of listeners via the function returned by [`subscribe(listener: StoreSubscriber): StoreSubscription`](../api/Store.md#subscribelistener).
+- Allows access to state via [`getState()` or `state`](../api/store-api#getstate-or-state-property);
+- Allows state to be updated via [`dispatch(action: Any): Any`](../api/store-api#dispatchaction-any-any);
+- Registers listeners via [`subscribe(listener: StoreSubscriber): StoreSubscription`](../api/store-api#subscribelistener-storesubscriber);
+- Handles unregistering of listeners via the function returned by [`subscribe(listener: StoreSubscriber): StoreSubscription`](../api/store-api#subscribelistener-storesubscriber).
 
 It's important to note that you'll only have a single store in a Redux application. When you want to
-split your data handling logic, you'll use [reducer composition](Reducers.md#splitting-reducers) 
+split your data handling logic, you'll use [reducer composition](./reducers#splitting-reducers) 
 instead of many stores.
 
-It's easy to create a store if you have a reducer. In the [previous section](Reducers.md), we 
-combined several reducers into one. We will now pass it to [`createThreadSafeStore()`](../api/createStore.md).
+It's easy to create a store if you have a reducer. In the [previous section](./reducers), we 
+combined several reducers into one. We will now pass it to [`createThreadSafeStore()`](../api/createstore).
 
 ```kotlin
 val store = createThreadSafeStore(todoAppReducer, INITIAL_STATE)
@@ -67,10 +66,10 @@ You can see how this causes the state held by the store to change:
 We specified the behavior of our app before we even started writing the UI. We won't do this in this
 tutorial, but at this point you can write tests for your reducers and action creators. You won't
 need to mock anything because they are just
-[pure](../introduction/ThreePrinciples.md#changes-are-made-with-pure-functions) functions. Call
+[pure](../introduction/three-principles#changes-are-made-with-pure-functions) functions. Call
 them, and make assertions on what they return.
 
 ## Next Steps
 
 Before creating a UI for our todo app, we will take a detour to see 
-[how the data flows in a Redux application](DataFlow.md).
+[how the data flows in a Redux application](./data-flow).

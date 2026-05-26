@@ -2,12 +2,11 @@
 id: reducers
 title: Reducers
 sidebar_label: Reducers
-hide_title: true
 ---
 
 # Reducers
 
-**Reducers** specify how the application's state changes in response to [actions](./Actions.md) sent
+**Reducers** specify how the application's state changes in response to [actions](./actions) sent
 to the store. Remember that actions only describe _what happened_, but don't describe how the 
 application's state changes.
 
@@ -79,13 +78,13 @@ It's very important that the reducer stays pure. Things you should **never** do 
 - Perform side effects like API calls and routing transitions;
 - Call non-pure functions, e.g. `Date.now()` or `Math.random()`.
 
-We'll explore how to perform side effects in the [advanced walkthrough](../advanced/README.md). For 
+We'll explore how to perform side effects in the [advanced walkthrough](../advanced/). For 
 now, just remember that the reducer must be pure. **Given the same arguments, it should calculate 
 the next state and return it. No surprises. No side effects. No API calls. No mutations. Just a 
 calculation.**
 
 With this out of the way, let's start writing our reducer by gradually teaching it to understand the
-[actions](Actions.md) we defined earlier.
+[actions](./actions) we defined earlier.
 
 We'll start by specifying the initial state. Initial state can be defined in a few ways. In the
 example above we supplied default values to the `AppState` constructor, so that may be used. Another
@@ -281,7 +280,7 @@ and keep them completely independent and managing different data domains.
 
 > ##### Note on combining reducer boilerplate
 > Manually wiring together of the reducers does have bring some boilerplate with it. One alternative
-> patter for ReduxKotlin is using a [Reducible interface](TODO). How reducers are split is up to you
+> patter for ReduxKotlin is using a [Reducible interface](#todo). How reducers are split is up to you
 > and your team, and it is recommended being consistent how this is handled throughout a project. In
 > JS Redux `combineReducers` goes a long way to alleviate this boilerplate, however with statically 
 > typed Kotlin that function can not be implemented easily. There is the possibility of using
@@ -292,5 +291,5 @@ and keep them completely independent and managing different data domains.
 
 ## Next Steps
 
-Next, we'll explore how to [create a Redux store](Store.md) that holds the state and takes care of 
+Next, we'll explore how to [create a Redux store](./store) that holds the state and takes care of 
 calling your reducer when you dispatch an action.

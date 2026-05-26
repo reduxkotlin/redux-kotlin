@@ -2,39 +2,38 @@
 id: createstore
 title: createStore
 sidebar_label: createStore
-hide_title: true
 ---
 
 # `createStore(reducer, preloadedState, enhancer)`
 
-Creates a Redux [store](Store.md) that holds the complete state tree of your app.  
+Creates a Redux [store](./store-api) that holds the complete state tree of your app.  
 There should only be a single store in your app.
 
 If using `createStore` directly, it will not be threadsafe.
 
-It is ***STRONGLY*** recommended that [`createThreadSafeStore()`](./createThreadSafeStore.md) is used unless there is
+It is ***STRONGLY*** recommended that [`createThreadSafeStore()`](./createthreadsafestore) is used unless there is
  good reason to do otherwise.
 
 The rest of this doc applies to all `createStore` functions.
 
 #### Arguments
 
-1. `reducer` _(Reducer)_: A [reducing function](../Glossary.md#reducer) that returns the next 
-   [state tree](../Glossary.md#state), given the current state tree and an 
-   [action](../Glossary.md#action) to handle.
+1. `reducer` _(Reducer)_: A [reducing function](../glossary#reducer) that returns the next 
+   [state tree](../glossary#state), given the current state tree and an 
+   [action](../glossary#action) to handle.
 
 2. [`preloadedState`] _(State)_: The initial state. You may optionally specify it to hydrate the 
    state from the server, or to restore a previously serialized user session. 
 
 3. [`enhancer`] _(StoreEnhancer)_: The store enhancer. You may optionally specify it to enhance the 
    store with third-party capabilities such as middleware, time travel, persistence, etc. The only 
-   store enhancer that ships with Redux is [`applyMiddleware()`](./applyMiddleware.md).
+   store enhancer that ships with Redux is [`applyMiddleware()`](./applymiddleware).
 
 #### Returns
 
-([_`Store`_](Store.md)): An object that holds the complete state of your app. The only way to change
-its state is by [dispatching actions](Store.md#dispatchaction). You may also 
-[subscribe](Store.md#subscribelistener) to the changes to its state to update the UI.
+([_`Store`_](./store-api)): An object that holds the complete state of your app. The only way to change
+its state is by [dispatching actions](./store-api#dispatchaction-any-any). You may also 
+[subscribe](./store-api#subscribelistener-storesubscriber) to the changes to its state to update the UI.
 
 #### Example
 
@@ -66,7 +65,7 @@ fun main() {
 #### Tips
 
 - Don't create more than one store in an application! Instead, use 
-  [`combineReducers`](basics/Reducers.md) or combine your reducers in code to create a single root 
+  [`combineReducers`](/basics/reducers) or combine your reducers in code to create a single root 
   reducer out of many.
 
 - It is up to you to choose the state format and structure. Data classes work well as they have
@@ -79,4 +78,4 @@ fun main() {
 - When a store is created, Redux dispatches a dummy action to your reducer to populate the store
   with the initial state. You are not meant to handle the dummy action directly.
 
-- To apply multiple store enhancers, you may use [`compose()`](./compose.md).
+- To apply multiple store enhancers, you may use [`compose()`](./compose).

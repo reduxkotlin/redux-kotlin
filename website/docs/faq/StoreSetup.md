@@ -2,7 +2,6 @@
 id: store-setup
 title: Store Setup
 sidebar_label: Store Setup
-hide_title: true
 ---
 
 # Redux FAQ: Store Setup
@@ -30,8 +29,8 @@ disconnected.
 
 **Documentation**
 
-- [Advanced: Middleware](../advanced/Middleware.md)
-- [API: applyMiddleware](../api/applyMiddleware.md)
+- [Advanced: Middleware](../advanced/middleware)
+- [API: applyMiddleware](../api/applymiddleware)
 
 **Discussions**
 
@@ -48,7 +47,7 @@ value.
 
 This API is intended as a low-level primitive with no dependencies or complications, and can be used
 to build higher-level subscription logic. UI bindings such as
-[Presenter-middleware](TODO) can create a subscription for each connected component. It is also
+[Presenter-middleware](#todo) can create a subscription for each connected component. It is also
 possible to write functions that can intelligently compare the old state vs the new state, and
 execute additional logic if certain pieces have changed.
 
@@ -60,8 +59,8 @@ the action. Middleware can be used if the action is important and needs to be ha
 
 **Documentation**
 
-- [Basics: Store](../basics/Store.md)
-- [API: Store](../api/Store.md)
+- [Basics: Store](../basics/store)
+- [API: Store](../api/store-api)
 
 **Discussions**
 
@@ -73,4 +72,4 @@ the action. Middleware can be used if the action is important and needs to be ha
 
 **Libraries**
 
-- [Redux Addons Catalog: Store Change Subscriptions](https://github.com/markerikson/redux-ecosystem-links/blob/master/store.md#store-change-subscriptions)
+- [Redux Addons Catalog: Store Change Subscriptions](https://github.com/markerikson/redux-ecosystem-links/blob/master/store#store-change-subscriptions)

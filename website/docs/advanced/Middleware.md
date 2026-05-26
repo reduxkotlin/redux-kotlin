@@ -2,14 +2,13 @@
 id: middleware
 title: Middleware
 sidebar_label: Middleware
-hide_title: true
 ---
 
 # Middleware
 
 Middleware are functions that can have react to actions and have side effects. They can also
 dispatch other actions. You've seen middleware in action in the 
-[Async Actions](../advanced/AsyncActions.md) example. The best feature of middleware is that it's
+[Async Actions](../advanced/async-actions) example. The best feature of middleware is that it's
 composable in a chain. You can use multiple independent third-party middleware in a single project.
 
 Middleware are any functions that meet this type alias:

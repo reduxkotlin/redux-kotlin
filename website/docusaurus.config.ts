@@ -14,11 +14,8 @@ const config: Config = {
   projectName: 'redux-kotlin',
 
   trailingSlash: false,
-  // PR A keeps these as 'warn' so the scaffold build passes against the
-  // unmodified v1 doc content. PR B (doc cleanup) flips both back to
-  // 'throw' once the ~65 stale .md links and dangling refs are rewritten.
-  onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'throw',
 
   i18n: {
     defaultLocale: 'en',
@@ -79,7 +76,7 @@ const config: Config = {
       },
       items: [
         {to: '/introduction/getting-started', label: 'Getting Started', position: 'left'},
-        {to: '/api/api-reference', label: 'API', position: 'left'},
+        {to: '/api', label: 'API', position: 'left'},
         {to: '/faq', label: 'FAQ', position: 'left'},
         {
           href: 'https://github.com/reduxkotlin/redux-kotlin',
@@ -95,7 +92,7 @@ const config: Config = {
           title: 'Docs',
           items: [
             {label: 'Getting Started', to: '/introduction/getting-started'},
-            {label: 'API Reference', to: '/api/api-reference'},
+            {label: 'API Reference', to: '/api'},
             {label: 'FAQ', to: '/faq'},
           ],
         },

@@ -2,7 +2,6 @@
 id: actions
 title: Actions
 sidebar_label: Actions
-hide_title: true
 ---
 
 # Actions
@@ -11,7 +10,7 @@ First, let's define some actions.
 
 **Actions** are payloads of information that send data from your application to your store. They are
 the _only_ source of information for the store. You send them to the store using 
-[`store.dispatch()`](../api/Store.md#dispatchaction).
+[`store.dispatch()`](../api/store-api#dispatchaction-any-any).
 
 Here's an example action which represents adding a new todo item:
 
@@ -79,5 +78,5 @@ enum class VisibilityFilters {
 
 ## Next Steps
 
-Now let's [define some reducers](Reducers.md) to specify how the state updates when you dispatch 
+Now let's [define some reducers](./reducers) to specify how the state updates when you dispatch 
 these actions!
