@@ -51,5 +51,5 @@ public inline fun <State, reified Action : Any> createTypedThreadSafeStore(
 /**
  * Converts a given [Store] to a [ThreadSafeStore].
  */
-public inline fun <State> Store<State>.asThreadSafe(): ThreadSafeStore<State> =
+public fun <State> Store<State>.asThreadSafe(): ThreadSafeStore<State> =
     ThreadSafeStore(store)

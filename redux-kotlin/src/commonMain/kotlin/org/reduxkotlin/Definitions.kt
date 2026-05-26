@@ -3,7 +3,7 @@ package org.reduxkotlin
 /**
  * See also https://github.com/reactjs/redux/blob/master/docs/Glossary.md#reducer
  */
-public typealias Reducer<State> = TypedReducer<State, in Any>
+public typealias Reducer<State> = TypedReducer<State, Any>
 
 /**
  * Reducer for a particular subclass of actions.  Useful for Sealed classes &
