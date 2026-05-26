@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.jetbrains.rssreader.app.FeedAction
 import com.github.jetbrains.rssreader.app.FeedStoreHolder
+import com.github.jetbrains.rssreader.app.mainFeedPosts
 import com.github.jetbrains.rssreader.domain.Item
 import com.github.jetbrains.rssreader.domain.RssFeed
 import kotlinx.coroutines.launch
@@ -31,9 +32,7 @@ fun MainFeed(
 ) {
     val state = storeHolder.state.collectAsState()
     val posts = remember(state.value.feeds, state.value.selectedFeed) {
-        (state.value.selectedFeed?.channel?.item
-            ?: state.value.feeds.flatMap { it.channel?.item ?: emptyList() })
-            .sortedByDescending { it.pubDate }
+        state.value.mainFeedPosts()
     }
     Column {
         val coroutineScope = rememberCoroutineScope()
