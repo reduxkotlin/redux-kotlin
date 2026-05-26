@@ -47,7 +47,9 @@ class ThunkMiddlewareTest {
             preloadedState = FeedState(progress = false, feeds = emptyList()),
             enhancer = applyMiddleware(thunkMiddleware()),
         )
-        // After createStore the INIT action set lastSeenByReducer; overwrite by dispatching ours.
+        // INIT has already populated lastSeenByReducer — zero it so the assertion below
+        // proves the SelectFeed dispatch reached the reducer, not just that INIT did.
+        lastSeenByReducer = null
         store.dispatch(FeedAction.SelectFeed(null))
         assertEquals(FeedAction.SelectFeed(null), lastSeenByReducer)
     }

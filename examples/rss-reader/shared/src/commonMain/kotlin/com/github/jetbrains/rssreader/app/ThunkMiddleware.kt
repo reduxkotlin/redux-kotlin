@@ -17,6 +17,8 @@ import org.reduxkotlin.Middleware
 fun thunkMiddleware(): Middleware<FeedState> = { store ->
     { next ->
         { action ->
+            // function-type generic args are erased at runtime; cast is structurally safe
+            // because the only Function2 we ever dispatch is a Thunk (see KDoc above).
             @Suppress("UNCHECKED_CAST")
             val asThunk = action as? Thunk
             if (asThunk != null) asThunk(store.dispatch, store.getState)
