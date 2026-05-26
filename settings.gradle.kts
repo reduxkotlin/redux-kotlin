@@ -7,7 +7,7 @@ pluginManagement {
 }
 
 plugins {
-    id("com.gradle.enterprise") version "3.19.2"
+    id("com.gradle.develocity") version "3.19.2"
 }
 
 includeBuild("build-conventions/")
