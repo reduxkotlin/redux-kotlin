@@ -27,6 +27,8 @@ dependencies {
 tasks {
     withType<KotlinCompile>().configureEach {
         compilerOptions {
+            // Build-conventions code is loaded by the Gradle daemon. Keep its bytecode at
+            // JVM 17 so contributors on JDK 17+ can still build, even though CI uses JDK 21.
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
