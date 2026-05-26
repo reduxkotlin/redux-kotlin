@@ -11,10 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-sealed class FeedSideEffect : Effect {
-    data class Error(val error: Exception) : FeedSideEffect()
-}
-
 class FeedStore(
     private val rssReader: RssReader
 ) : Store<FeedState, FeedAction, FeedSideEffect>,
