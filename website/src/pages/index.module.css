@@ -1,23 +1,112 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
 .heroBanner {
   padding: 4rem 0;
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(180deg, var(--ifm-color-primary-lightest) 0%, transparent 100%);
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.heroTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.projectTitle {
+  font-size: 3rem;
+  margin: 0;
 }
 
 .buttons {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 1.5rem;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+  .projectTitle {
+    font-size: 2rem;
+  }
+}
+
+.featuresSection {
+  padding: 3rem 0;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.featureCard {
+  text-align: center;
+}
+
+.featureImage {
+  max-width: 120px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.librariesSection {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.librariesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.libraryCard {
+  display: block;
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.libraryCard:hover {
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.libraryCard h3 {
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.surveySection {
+  padding: 3rem 0 5rem;
+}
+
+.surveyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.surveyCard {
+  padding: 1.5rem;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 0.5rem;
+}
+
+@media screen and (max-width: 996px) {
+  .featuresGrid,
+  .librariesGrid {
+    grid-template-columns: 1fr;
+  }
+  .surveyGrid {
+    grid-template-columns: 1fr;
+  }
 }
