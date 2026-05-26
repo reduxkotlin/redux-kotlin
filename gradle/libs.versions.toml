@@ -12,6 +12,26 @@ git-hooks-gradle-plugin = "0.0.2"
 kotlin = "2.3.20"
 nexus-publish-plugin = "2.0.0"
 
+# rss-reader sample
+rssreader-compose = "1.11.0"
+rssreader-material3 = "1.11.0-alpha07"
+rssreader-koin = "4.2.1"
+rssreader-ktor = "3.4.3"
+rssreader-coil = "3.4.0"
+rssreader-napier = "2.7.1"
+rssreader-multiplatform-settings = "1.3.0"
+rssreader-kotlinx-datetime = "0.8.0"
+rssreader-kotlinx-serialization = "1.11.0"
+rssreader-xml-serialization = "0.91.3"
+rssreader-navigation-compose = "2.9.2"
+rssreader-androidx-lifecycle = "2.10.0"
+rssreader-activity-compose = "1.13.0"
+rssreader-material-icons-core = "1.7.3"
+rssreader-core-splashscreen = "1.2.0"
+rssreader-android-compile-sdk = "36"
+rssreader-android-min-sdk = "26"
+rssreader-android-target-sdk = "36"
+
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
@@ -23,5 +43,41 @@ git-hooks-gradle-plugin = { module = "com.github.jakemarsden:git-hooks-gradle-pl
 gradle-nexus-publish-plugin = { module = "io.github.gradle-nexus:publish-plugin", version.ref = "nexus-publish-plugin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+rssreader-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "rssreader-compose" }
+rssreader-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "rssreader-compose" }
+rssreader-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "rssreader-material3" }
+rssreader-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "rssreader-compose" }
+rssreader-compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "rssreader-compose" }
+rssreader-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "rssreader-compose" }
+rssreader-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "rssreader-material-icons-core" }
+rssreader-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "rssreader-navigation-compose" }
+rssreader-androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "rssreader-androidx-lifecycle" }
+rssreader-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "rssreader-activity-compose" }
+rssreader-koin-core = { module = "io.insert-koin:koin-core", version.ref = "rssreader-koin" }
+rssreader-koin-android = { module = "io.insert-koin:koin-android", version.ref = "rssreader-koin" }
+rssreader-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "rssreader-koin" }
+rssreader-ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "rssreader-ktor" }
+rssreader-ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "rssreader-ktor" }
+rssreader-ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "rssreader-ktor" }
+rssreader-ktor-xml = { module = "io.ktor:ktor-serialization-kotlinx-xml", version.ref = "rssreader-ktor" }
+rssreader-ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "rssreader-ktor" }
+rssreader-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "rssreader-coil" }
+rssreader-coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "rssreader-coil" }
+rssreader-napier = { module = "io.github.aakira:napier", version.ref = "rssreader-napier" }
+rssreader-multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "rssreader-multiplatform-settings" }
+rssreader-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "rssreader-kotlinx-datetime" }
+rssreader-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "rssreader-kotlinx-serialization" }
+rssreader-xml-serialization = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "rssreader-xml-serialization" }
+rssreader-xml-serialization-core = { module = "io.github.pdvrieze.xmlutil:core", version.ref = "rssreader-xml-serialization" }
+rssreader-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "rssreader-core-splashscreen" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+rssreader-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+rssreader-android-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
+rssreader-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+rssreader-compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "rssreader-compose" }
+rssreader-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
