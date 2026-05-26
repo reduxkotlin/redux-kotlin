@@ -98,7 +98,7 @@ abstract class AbstractCreateSameThreadEnforcedStoreTest<A>(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     @Test
     fun incrementsMassively() {
         suspend fun massiveRun(action: suspend () -> Unit) {
