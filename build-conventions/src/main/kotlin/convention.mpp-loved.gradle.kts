@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("convention.common")
@@ -20,7 +21,11 @@ kotlin {
         browser { testTask { useKarma() } }
         nodejs()
     }
-    jvm()
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
 
     iosArm64()
     iosSimulatorArm64()

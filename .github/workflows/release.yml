@@ -57,7 +57,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -127,7 +127,7 @@ jobs:
         if: ${{ matrix.repository.enabled == true }}
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
       - name: Set up Gradle
         if: ${{ matrix.repository.enabled == true }}
