@@ -14,20 +14,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.jetbrains.rssreader.Res
-import com.github.jetbrains.rssreader.app.FeedAction
-import com.github.jetbrains.rssreader.app.FeedStore
+import com.github.jetbrains.rssreader.app.FeedStoreHolder
+import com.github.jetbrains.rssreader.app.refresh
 import com.github.jetbrains.rssreader.app_name
 import com.github.jetbrains.rssreader.back_button
+import com.github.jetbrains.rssreader.core.RssReader
 import com.github.jetbrains.rssreader.feed_list
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import androidx.compose.ui.platform.LocalUriHandler
 
 enum class Screen(val title: StringResource) {
-    Main(Res.string.app_name), FeedList(Res.string.feed_list);
+    Main(Res.string.app_name), FeedList(Res.string.feed_list)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,19 +64,20 @@ fun MainScreen(
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val store: FeedStore = koinInject<FeedStore>()
-    val state by store.observeState().collectAsStateWithLifecycle()
+    val storeHolder: FeedStoreHolder = koinInject()
+    val rssReader: RssReader = koinInject()
+    val state by storeHolder.state.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
     LaunchedEffect(Unit) {
-        store.dispatch(FeedAction.Refresh(false))
+        storeHolder.store.dispatch(refresh(rssReader, forceLoad = false))
     }
     PullToRefreshBox(
         isRefreshing = state.progress,
-        onRefresh = { store.dispatch(FeedAction.Refresh(true)) },
+        onRefresh = { storeHolder.store.dispatch(refresh(rssReader, forceLoad = true)) },
         modifier = modifier,
         content = {
             MainFeed(
-                store = store,
+                storeHolder = storeHolder,
                 onPostClick = { post ->
                     post.link?.let { url ->
                         uriHandler.openUri(url)
@@ -83,11 +85,12 @@ fun MainScreen(
                 },
                 onEditClick = onEditClick
             )
-        })
+        }
+    )
 }
 
 @Composable
 fun FeedListScreen() {
-    val store: FeedStore = koinInject<FeedStore>()
-    FeedList(store = store)
+    val storeHolder: FeedStoreHolder = koinInject()
+    FeedList(storeHolder = storeHolder)
 }

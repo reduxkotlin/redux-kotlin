@@ -24,7 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.jetbrains.rssreader.app.FeedSideEffect
-import com.github.jetbrains.rssreader.app.FeedStore
+import com.github.jetbrains.rssreader.app.FeedStoreHolder
 import com.github.jetbrains.rssreader.ui.AppTheme
 import com.github.jetbrains.rssreader.ui.FeedListScreen
 import com.github.jetbrains.rssreader.ui.MainScreen
@@ -37,9 +37,7 @@ import org.koin.compose.koinInject
 @Composable
 fun RssReaderApp(navController: NavHostController = rememberNavController()) {
     AppTheme {
-        // Get current back stack entry
         val backStackEntry by navController.currentBackStackEntryAsState()
-        // Get the name of the current screen
         val currentScreen = Screen.valueOf(
             backStackEntry?.destination?.route ?: Screen.Main.name
         )
@@ -84,15 +82,13 @@ fun RssReaderApp(navController: NavHostController = rememberNavController()) {
                 }
             }
 
-            val store: FeedStore = koinInject<FeedStore>()
-            val error = store.observeSideEffect()
+            val storeHolder: FeedStoreHolder = koinInject()
+            val error = storeHolder.sideEffects
                 .filterIsInstance<FeedSideEffect.Error>()
                 .collectAsState(null)
             LaunchedEffect(error.value) {
                 error.value?.let {
-                    snackbarHostState.showSnackbar(
-                        it.error.message.toString()
-                    )
+                    snackbarHostState.showSnackbar(it.error.message.toString())
                 }
             }
         }

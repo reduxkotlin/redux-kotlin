@@ -18,20 +18,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.jetbrains.rssreader.app.FeedAction
-import com.github.jetbrains.rssreader.app.FeedStore
+import com.github.jetbrains.rssreader.app.FeedStoreHolder
 import com.github.jetbrains.rssreader.domain.Item
 import com.github.jetbrains.rssreader.domain.RssFeed
 import kotlinx.coroutines.launch
 
 @Composable
 fun MainFeed(
-    store: FeedStore,
+    storeHolder: FeedStoreHolder,
     onPostClick: (Item) -> Unit,
     onEditClick: () -> Unit,
 ) {
-    val state = store.observeState().collectAsState()
+    val state = storeHolder.state.collectAsState()
     val posts = remember(state.value.feeds, state.value.selectedFeed) {
-        (state.value.selectedFeed?.channel?.item ?: state.value.feeds.flatMap { it.channel?.item ?: emptyList() })
+        (state.value.selectedFeed?.channel?.item
+            ?: state.value.feeds.flatMap { it.channel?.item ?: emptyList() })
             .sortedByDescending { it.pubDate }
     }
     Column {
@@ -40,16 +41,16 @@ fun MainFeed(
         PostList(
             modifier = Modifier.weight(1f),
             posts = posts,
-            listState = listState
+            listState = listState,
         ) { post -> onPostClick(post) }
         MainFeedBottomBar(
             feeds = state.value.feeds,
             selectedFeed = state.value.selectedFeed,
             onFeedClick = { feed ->
                 coroutineScope.launch { listState.scrollToItem(0) }
-                store.dispatch(FeedAction.SelectFeed(feed))
+                storeHolder.store.dispatch(FeedAction.SelectFeed(feed))
             },
-            onEditClick = onEditClick
+            onEditClick = onEditClick,
         )
         Spacer(
             Modifier
@@ -70,7 +71,7 @@ fun MainFeedBottomBar(
     feeds: List<RssFeed>,
     selectedFeed: RssFeed?,
     onFeedClick: (RssFeed?) -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
 ) {
     val items = buildList {
         add(Icons.All)
@@ -79,22 +80,20 @@ fun MainFeedBottomBar(
     }
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(16.dp),
     ) {
         this.items(items) { item ->
             when (item) {
                 is Icons.All -> FeedIcon(
                     feed = null,
                     isSelected = selectedFeed == null,
-                    onClick = { onFeedClick(null) }
+                    onClick = { onFeedClick(null) },
                 )
-
                 is Icons.FeedIcon -> FeedIcon(
                     feed = item.feed,
                     isSelected = selectedFeed == item.feed,
-                    onClick = { onFeedClick(item.feed) }
+                    onClick = { onFeedClick(item.feed) },
                 )
-
                 is Icons.Edit -> EditIcon(onClick = onEditClick)
             }
             Spacer(modifier = Modifier.size(16.dp))

@@ -14,66 +14,59 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.jetbrains.rssreader.app.FeedAction
-import com.github.jetbrains.rssreader.app.FeedStore
+import com.github.jetbrains.rssreader.app.FeedStoreHolder
+import com.github.jetbrains.rssreader.app.addFeed
+import com.github.jetbrains.rssreader.app.deleteFeed
+import com.github.jetbrains.rssreader.core.RssReader
 import com.github.jetbrains.rssreader.domain.RssFeed
+import org.koin.compose.koinInject
 
 @Composable
-fun FeedList(store: FeedStore) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val state = store.observeState().collectAsState()
+fun FeedList(storeHolder: FeedStoreHolder) {
+    val rssReader: RssReader = koinInject()
+    Box(modifier = Modifier.fillMaxSize()) {
+        val state = storeHolder.state.collectAsState()
         val showAddDialog = remember { mutableStateOf(false) }
         val feedForDelete = remember<MutableState<RssFeed?>> { mutableStateOf(null) }
-        FeedItemList(feeds = state.value.feeds) {
-            feedForDelete.value = it
-        }
+        FeedItemList(feeds = state.value.feeds) { feedForDelete.value = it }
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
                 .navigationBarsPadding()
                 .imePadding(),
-            onClick = { showAddDialog.value = true }
+            onClick = { showAddDialog.value = true },
         ) {
             Image(
                 imageVector = Icons.Default.Add,
                 modifier = Modifier.align(Alignment.Center),
-                contentDescription = null
+                contentDescription = null,
             )
         }
         if (showAddDialog.value) {
             AddFeedDialog(
                 onAdd = {
-                    store.dispatch(FeedAction.Add(it))
+                    storeHolder.store.dispatch(addFeed(rssReader, it))
                     showAddDialog.value = false
                 },
-                onDismiss = {
-                    showAddDialog.value = false
-                }
+                onDismiss = { showAddDialog.value = false },
             )
         }
         feedForDelete.value?.let { feed ->
             DeleteFeedDialog(
                 feed = feed,
                 onDelete = {
-                    store.dispatch(FeedAction.Delete(feed.sourceUrl))
+                    storeHolder.store.dispatch(deleteFeed(rssReader, feed.sourceUrl))
                     feedForDelete.value = null
                 },
-                onDismiss = {
-                    feedForDelete.value = null
-                }
+                onDismiss = { feedForDelete.value = null },
             )
         }
     }
 }
 
 @Composable
-fun FeedItemList(
-    feeds: List<RssFeed>,
-    onClick: (RssFeed) -> Unit
-) {
+fun FeedItemList(feeds: List<RssFeed>, onClick: (RssFeed) -> Unit) {
     LazyColumn {
         itemsIndexed(feeds) { i, feed ->
             if (i == 0) Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
@@ -83,29 +76,20 @@ fun FeedItemList(
 }
 
 @Composable
-fun FeedItem(
-    feed: RssFeed,
-    onClick: () -> Unit
-) {
+fun FeedItem(feed: RssFeed, onClick: () -> Unit) {
     Row(
         Modifier
             .clickable(onClick = onClick, enabled = !feed.isDefault)
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         FeedIcon(feed = feed)
         Spacer(modifier = Modifier.size(16.dp))
         Column {
             feed.channel?.title?.let { title ->
-                Text(
-                    style = MaterialTheme.typography.bodyMedium,
-                    text = title
-                )
+                Text(style = MaterialTheme.typography.bodyMedium, text = title)
             }
             feed.channel?.description?.let { description ->
-                Text(
-                    style = MaterialTheme.typography.bodySmall,
-                    text = description
-                )
+                Text(style = MaterialTheme.typography.bodySmall, text = description)
             }
         }
     }
