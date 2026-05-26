@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- CI/toolchain bumped to JDK 21; library bytecode stays at JVM 17 to preserve downstream
+  compatibility with JDK 17 consumers. Test matrix runs both JDKs.
+- Sample apps modernised: `compileSdk`/`targetSdk` 33 → 35, `JavaVersion` 1.8 → 21,
+  `packagingOptions` → `packaging`. The standalone `examples/` Gradle build was folded into
+  the root composite so sample apps are now exercised in CI on every push.
+- Build conventions: adopted Kotlin's default hierarchy template via
+  `applyDefaultHierarchyTemplate`; removed the bespoke `targetGroup` wiring util.
+- Tooling: `com.gradle.enterprise` plugin migrated to `com.gradle.develocity`; Renovate
+  upgraded to `config:recommended` with grouped `packageRules` for kotlin-ecosystem,
+  android-build, gradle-build, and github-actions.
+
+### Removed
+
+- `kotlinx-atomicfu-gradle-plugin` is no longer applied. The codebase only uses
+  `kotlinx.atomicfu.locks` (not the AtomicXxx types the plugin optimises), so the plugin
+  was dead weight and was incompatible with the new `com.android.kotlin.multiplatform.library`
+  plugin. The `kotlinx-atomicfu` runtime library is retained.
+- Stale Android sample bits: `iosArm32()` target (removed in Kotlin 1.9.20),
+  `kotlin("android")` plugin (removed in AGP 9.0), unused `kotlin("kapt")` plugin.
+
 ---
 
 ## [0.6.0]

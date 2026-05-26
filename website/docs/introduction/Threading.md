@@ -74,7 +74,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin:0.5.5"
+                implementation "org.reduxkotlin:redux-kotlin:0.6.0"
             }
         }
     }
