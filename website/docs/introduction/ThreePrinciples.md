@@ -2,7 +2,6 @@
 id: three-principles
 title: Three Principles
 sidebar_label: Three Principles
-hide_title: true
 ---
 
 # Three Principles
@@ -11,8 +10,8 @@ Redux can be described in three fundamental principles:
 
 ### Single source of truth
 
-**The [state](../Glossary.md#state) of your whole application is stored in an object tree within a 
-single [store](../Glossary.md#store).**
+**The [state](../glossary#state) of your whole application is stored in an object tree within a 
+single [store](../glossary#store).**
 
 A single state tree also makes it easier to debug or inspect an application; it also enables you to
 persist your app's state in development, for a faster development cycle. Some functionality which
@@ -29,7 +28,7 @@ Appstate(visibilityFilter = "SHOW_ALL", todos = [Todo(text = "Consider using Red
 
 ### State is read-only
 
-**The only way to change the state is to emit an [action](../Glossary.md#action), an object
+**The only way to change the state is to emit an [action](../glossary#action), an object
 describing what happened.**
 
 This ensures that neither the views nor the network callbacks will ever write directly to the state.
@@ -47,7 +46,7 @@ store.dispatch(SetVisibilityFilter(VisibilityFilter.SHOW_COMPLETED))
 ### Changes are made with pure functions
 
 **To specify how the state tree is transformed by actions, you write pure 
-[reducers](../Glossary.md#reducer).**
+[reducers](../glossary#reducer).**
 
 Reducers are just pure functions that take the previous state and an action, and return the next
 state. Remember to return new state objects, instead of mutating the previous state. You can start

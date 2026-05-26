@@ -2,7 +2,6 @@
 id: feedback
 title: Feedback
 sidebar_label: Feedback
-hide_title: true
 ---
 
 # Feedback

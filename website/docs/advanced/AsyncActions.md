@@ -2,12 +2,11 @@
 id: async-actions
 title: Async Actions
 sidebar_label: Async Actions
-hide_title: true
 ---
 
 # Async Actions
 
-In the [basics guide](../basics/README.md), we built a simple todo application. It was fully 
+In the [basics guide](../basics/), we built a simple todo application. It was fully 
 synchronous. Every time an action was dispatched, the state was updated immediately.
 
 In this guide, we will build a different, asynchronous application. It will use the Cat API to fetch
@@ -121,4 +120,4 @@ the complete source code discussed in this example.
 
 ## Next Steps
 
-Read [Async Flow](AsyncFlow.md) to recap how async actions fit into the Redux flow.
+Read [Async Flow](./async-flow) to recap how async actions fit into the Redux flow.

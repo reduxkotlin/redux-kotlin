@@ -2,7 +2,6 @@
 id: multiplatform
 title: Multiplatform
 sidebar_label: Multiplatform
-hide_title: true
 ---
 
 # Redux FAQ: Multiplatform
@@ -26,7 +25,7 @@ platforms language and UI SDKs.
 #### Further information
 
 - [Official Kotlin site](https://kotlinlang.org/docs/reference/multiplatform.html)
-- [Examples of multiplatform projects using ReduxKotlin](../introduction/Examples.md)
+- [Examples of multiplatform projects using ReduxKotlin](../introduction/examples)
 - [Raywenderlich.com - Getting Started](https://www.raywenderlich.com/1022411-kotlin-multiplatform-project-for-android-and-ios-getting-started)
 
 ### Can I use existing JS Redux code?
@@ -46,7 +45,7 @@ bottom of this page.
 
 Kotlin does not ship a VM to native. It compiles to a native executable with objC headers. KN does
 include an
-[automated memory management scheme](https://github.com/JetBrains/kotlin-native/blob/master/FAQ.md)
+[automated memory management scheme](https://github.com/JetBrains/kotlin-native/blob/master/FAQ)
 that does automatic reference counting and garbage collection. There does not appear to be a
 significant performance or memory overhead, however I have not seen benchmarks. For more details,
 checkout the
@@ -54,7 +53,7 @@ checkout the
 
 ### How do I structure a multiplatform kotlin project?
 
-There some [examples](../introduction/Examples.md) that demonstrate Android and iOS sharing code.
+There some [examples](../introduction/examples) that demonstrate Android and iOS sharing code.
 JS examples will be added soon. Typically there is a shared module (or multiple shared modules) and
 the platforms pull it in as a dependency. Redux looks like a very promising pattern for multiplatform
 because the view layer can be very thin. Additionally Redux works well with

@@ -2,7 +2,6 @@
 id: reducers-faq
 title: Reducers
 sidebar_label: Reducers
-hide_title: true
 ---
 
 # Redux FAQ: Reducers
@@ -43,7 +42,7 @@ immutably rather than mutating it directly.
 
 **Documentation**
 
-- [Basics: Reducers](../basics/Reducers.md)
+- [Basics: Reducers](../basics/reducers)
 
 **Discussions**
 
@@ -52,5 +51,5 @@ immutably rather than mutating it directly.
 ### Do I have to use the `when` statement to handle actions?
 
 No. You are welcome to use any approach you'd like to respond to an action in a reducer. The `when`
-statement is a common approach, but it's fine to use `if` statements, a [reducible interface](TODO),
+statement is a common approach, but it's fine to use `if` statements, a [reducible interface](#todo),
 or to create a function that abstracts this away.
