@@ -2,7 +2,7 @@ package com.github.jetbrains.rssreader.app
 
 import com.github.jetbrains.rssreader.domain.RssFeed
 
-sealed class FeedAction : Action {
+sealed class FeedAction {
     data class Refresh(val forceLoad: Boolean) : FeedAction()
     data class Add(val url: String) : FeedAction()
     data class Delete(val url: String) : FeedAction()

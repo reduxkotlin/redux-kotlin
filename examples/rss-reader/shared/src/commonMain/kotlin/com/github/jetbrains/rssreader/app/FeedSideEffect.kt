@@ -1,5 +1,5 @@
 package com.github.jetbrains.rssreader.app
 
-sealed class FeedSideEffect : Effect {
+sealed class FeedSideEffect {
     data class Error(val error: Exception) : FeedSideEffect()
 }
