@@ -11,23 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-data class FeedState(
-    val progress: Boolean,
-    val feeds: List<RssFeed>,
-    val selectedFeed: RssFeed? = null //null means selected all
-) : State
-
-fun FeedState.mainFeedPosts() = (selectedFeed?.channel?.item ?: feeds.flatMap { it.channel?.item ?: emptyList() }).sortedByDescending { it.pubDate }
-
-sealed class FeedAction : Action {
-    data class Refresh(val forceLoad: Boolean) : FeedAction()
-    data class Add(val url: String) : FeedAction()
-    data class Delete(val url: String) : FeedAction()
-    data class SelectFeed(val feed: RssFeed?) : FeedAction()
-    data class Data(val feeds: List<RssFeed>) : FeedAction()
-    data class Error(val error: Exception) : FeedAction()
-}
-
 sealed class FeedSideEffect : Effect {
     data class Error(val error: Exception) : FeedSideEffect()
 }
