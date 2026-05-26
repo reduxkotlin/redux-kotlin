@@ -18,6 +18,6 @@
     "tar": "7.5.13",
     "docusaurus/**/minimatch": "10.2.4",
     "vercel/**/minimatch": "10.2.4",
-    "docusaurus/**/qs": "6.15.0"
+    "docusaurus/**/qs": "6.15.2"
   }
 }
