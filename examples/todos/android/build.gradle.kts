@@ -3,8 +3,6 @@
 plugins {
     id("convention.control")
     id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
 }
 
 android {
@@ -35,6 +33,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
 
-    implementation(project(":todos:common"))
-    implementation("org.reduxkotlin:redux-kotlin-threadsafe")
+    implementation(project(":examples:todos:common"))
+    implementation(project(":redux-kotlin-threadsafe"))
 }

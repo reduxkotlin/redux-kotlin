@@ -3,8 +3,6 @@
 plugins {
     id("convention.control")
     id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
 }
 
 android {
@@ -32,6 +30,6 @@ android {
 
 dependencies {
     implementation(libs.androidx.appcompat)
-    implementation(project(":counter:common"))
-    implementation("org.reduxkotlin:redux-kotlin-threadsafe")
+    implementation(project(":examples:counter:common"))
+    implementation(project(":redux-kotlin-threadsafe"))
 }
