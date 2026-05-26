@@ -1,6 +1,76 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
+  ],
+  "timezone": "America/Los_Angeles",
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "dependencyDashboard": true,
+  "labels": [
+    "dependencies"
+  ],
+  "packageRules": [
+    {
+      "description": "Kotlin language + first-party Kotlin libraries (kotlin, kotlinx, dokka, atomicfu, coroutines, ksp).",
+      "matchPackageNames": [
+        "/^org\\.jetbrains\\.kotlin/",
+        "/^org\\.jetbrains\\.kotlinx/",
+        "/^org\\.jetbrains\\.dokka/",
+        "/^com\\.google\\.devtools\\.ksp/"
+      ],
+      "groupName": "kotlin-ecosystem"
+    },
+    {
+      "description": "Android Gradle Plugin + AndroidX libraries.",
+      "matchPackageNames": [
+        "/^com\\.android\\.tools\\.build/",
+        "/^com\\.android\\.application/",
+        "/^com\\.android\\.library/",
+        "/^androidx\\./"
+      ],
+      "groupName": "android-build"
+    },
+    {
+      "description": "Gradle wrapper, Develocity, Detekt, and other build tooling.",
+      "matchPackageNames": [
+        "/^gradle$/",
+        "/^com\\.gradle\\.develocity/",
+        "/^com\\.gradle\\.enterprise/",
+        "/^io\\.gitlab\\.arturbosch\\.detekt/",
+        "/^io\\.github\\.gradle-nexus/"
+      ],
+      "groupName": "gradle-build"
+    },
+    {
+      "description": "GitHub Actions used in workflows.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Pin major-version bumps separately so they require explicit review.",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track JDK versions pinned in GitHub Actions YAML via `java-version` keys.",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/[^/]+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "java-version:\\s*['\"]?(?<currentValue>\\d+)['\"]?"
+      ],
+      "depNameTemplate": "eclipse-temurin",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "regex:^(?<major>\\d+)$"
+    }
   ]
 }
