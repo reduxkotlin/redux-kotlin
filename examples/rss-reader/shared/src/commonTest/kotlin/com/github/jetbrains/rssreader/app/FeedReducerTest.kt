@@ -24,10 +24,12 @@ class FeedReducerTest {
     )
 
     @Test
-    fun refreshWhileIdleFlipsProgressTrueAndKeepsFeeds() {
-        val next = feedReducer(initial.copy(feeds = listOf(feedA)), FeedAction.Refresh(forceLoad = false))
+    fun refreshWhileIdleFlipsProgressTrueAndKeepsFeedsAndSelection() {
+        val state = initial.copy(feeds = listOf(feedA, feedB), selectedFeed = feedA)
+        val next = feedReducer(state, FeedAction.Refresh(forceLoad = false))
         assertTrue(next.progress)
-        assertEquals(listOf(feedA), next.feeds)
+        assertEquals(listOf(feedA, feedB), next.feeds)
+        assertEquals(feedA, next.selectedFeed)
     }
 
     @Test
@@ -35,6 +37,24 @@ class FeedReducerTest {
         val state = FeedState(progress = true, feeds = listOf(feedA))
         val next = feedReducer(state, FeedAction.Refresh(forceLoad = false))
         assertEquals(state, next)
+    }
+
+    @Test
+    fun addWhileIdleFlipsProgressTrueAndPreservesFeedsAndSelection() {
+        val state = initial.copy(feeds = listOf(feedA), selectedFeed = feedA)
+        val next = feedReducer(state, FeedAction.Add(url = "https://c/feed"))
+        assertTrue(next.progress)
+        assertEquals(listOf(feedA), next.feeds)
+        assertEquals(feedA, next.selectedFeed)
+    }
+
+    @Test
+    fun deleteWhileIdleFlipsProgressTrueAndPreservesFeedsAndSelection() {
+        val state = initial.copy(feeds = listOf(feedA, feedB), selectedFeed = feedB)
+        val next = feedReducer(state, FeedAction.Delete(url = feedA.sourceUrl))
+        assertTrue(next.progress)
+        assertEquals(listOf(feedA, feedB), next.feeds)
+        assertEquals(feedB, next.selectedFeed)
     }
 
     @Test
