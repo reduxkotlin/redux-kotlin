@@ -1,5 +1,7 @@
 *.iml
 .gradle/
+.kotlin/
+/gradle/gradle-daemon-jvm.properties
 lint.xml
 /local.properties
 .idea/

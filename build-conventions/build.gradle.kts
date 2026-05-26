@@ -21,7 +21,6 @@ dependencies {
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${libs.versions.detekt.get()}")
     implementation(libs.gradle.nexus.publish.plugin)
     implementation(libs.dokka.gradle.plugin)
-    implementation(libs.kotlinx.atomicfu.gradle.plugin)
 }
 
 tasks {
