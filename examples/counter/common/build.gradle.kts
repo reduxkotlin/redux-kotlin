@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
     jvm()
-    js(IR) {
+    js {
         useCommonJs()
         browser()
         binaries.executable()
