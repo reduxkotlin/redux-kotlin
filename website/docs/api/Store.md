@@ -1,5 +1,5 @@
 ---
-id: store
+id: store-api
 title: Store
 sidebar_label: Store
 hide_title: true
@@ -44,7 +44,7 @@ It is equal to the last value returned by the store's reducer.
 
 _(State)_: The current state tree of your application with the generic `State` type supplied to the store.
 
-<hr>
+<hr />
 
 ### dispatch(action: Any): Any
 
@@ -115,7 +115,7 @@ store.dispatch(AddTodo("Read the docs"))
 store.dispatch(AddTodo("Read about the middleware"))
 ```
 
-<hr>
+<hr />
 
 ### subscribe(listener: StoreSubscriber)
 
@@ -184,9 +184,9 @@ val unsubscribe = store.subscribe(handleChange)
 unsubscribe()
 ```
 
-<hr>
+<hr />
 
-### replaceReducer(nextReducer: Reducer<State>): Unit
+### replaceReducer(nextReducer: Reducer\<State>): Unit
 
 Replaces the reducer currently used by the store to calculate the state.
 

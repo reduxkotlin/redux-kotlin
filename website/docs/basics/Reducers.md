@@ -227,7 +227,7 @@ fun todosReducer(state: List<Todos>, action: Any) =
     }
 ```
 
-Note that `todosReducer` also accepts `state`—but `state` is a List<Todo>! Now `todoReducer` gives
+Note that `todosReducer` also accepts `state`—but `state` is a `List<Todo>`! Now `todoReducer` gives
 `todos` just a slice of the state to manage, and `todosReducer` knows how to update just that slice.
 **This is called _reducer composition_, and it's the fundamental pattern of building Redux apps.**
 

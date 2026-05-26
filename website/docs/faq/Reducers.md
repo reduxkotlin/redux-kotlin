@@ -1,5 +1,5 @@
 ---
-id: reducers
+id: reducers-faq
 title: Reducers
 sidebar_label: Reducers
 hide_title: true
