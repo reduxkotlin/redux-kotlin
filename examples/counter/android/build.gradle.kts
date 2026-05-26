@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(project(":examples:counter:common"))
     implementation(project(":redux-kotlin-threadsafe"))
