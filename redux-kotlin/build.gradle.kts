@@ -17,7 +17,7 @@ val hasAndroidSdk: Boolean = run {
 }
 
 kotlin {
-    androidLibrary {
+    android {
         namespace = "org.reduxkotlin"
     }
 
