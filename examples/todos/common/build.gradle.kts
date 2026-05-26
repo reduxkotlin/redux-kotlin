@@ -4,8 +4,8 @@ plugins {
 }
 
 kotlin {
-    iosArm32()
     iosArm64()
+    iosSimulatorArm64()
     iosX64()
     js(IR) {
         useCommonJs()
@@ -17,7 +17,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("org.reduxkotlin:redux-kotlin")
+                implementation(project(":redux-kotlin"))
             }
         }
         commonTest {

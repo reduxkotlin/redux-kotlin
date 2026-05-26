@@ -12,12 +12,13 @@ kotlin {
     }
 
     iosArm64()
+    iosSimulatorArm64()
     iosX64()
 
     sourceSets {
         commonMain {
             dependencies {
-                implementation("org.reduxkotlin:redux-kotlin")
+                implementation(project(":redux-kotlin"))
             }
         }
         commonTest {
