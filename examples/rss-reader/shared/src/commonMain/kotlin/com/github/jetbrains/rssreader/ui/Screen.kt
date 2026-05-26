@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.jetbrains.rssreader.Res
 import com.github.jetbrains.rssreader.app.FeedAction
@@ -25,9 +24,10 @@ import com.github.jetbrains.rssreader.feed_list
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import androidx.compose.ui.platform.LocalUriHandler
 
 enum class Screen(val title: StringResource) {
-    Main(Res.string.app_name), FeedList(Res.string.feed_list)
+    Main(Res.string.app_name), FeedList(Res.string.feed_list);
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,8 +83,7 @@ fun MainScreen(
                 },
                 onEditClick = onEditClick
             )
-        }
-    )
+        })
 }
 
 @Composable

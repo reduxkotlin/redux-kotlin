@@ -43,10 +43,7 @@ private fun FeedIconSelectedPreview() {
 }
 
 private object PreviewData {
-    val mediaContent = MediaContent(
-        type = "image",
-        url = "https://blog.jetbrains.com/wp-content/uploads/2020/11/server.png"
-    )
+    val mediaContent = MediaContent(type = "image", url = "https://blog.jetbrains.com/wp-content/uploads/2020/11/server.png" )
     val post = Item(
         title = "Productive Server-Side Development With Kotlin: Stories From The Industry",
         description = "Kotlin was created as an alternative to Java, meaning that its application area within the JVM ecosystem was meant to be the same as Java’s. Obviously, this includes server-side development. We would love...",
@@ -56,13 +53,7 @@ private object PreviewData {
         guid = "https://blog.jetbrains.com/?post_type=idea&#038;p=577488",
         contentEncoded = "Blah"
     )
-    val image = Image(
-        url = "https://blog.jetbrains.com/wp-content/uploads/2024/01/cropped-mstile-310x310-1-32x32.png",
-        title = "The JetBrains Blog",
-        link = "https://blog.jetbrains.com",
-        width = 32,
-        height = 32
-    )
+    val image = Image(url = "https://blog.jetbrains.com/wp-content/uploads/2024/01/cropped-mstile-310x310-1-32x32.png", title = "The JetBrains Blog", link = "https://blog.jetbrains.com", width = 32, height = 32)
     val channel = Channel(
         title = "Kotlin Blog",
         link = "blog.jetbrains.com/kotlin/",

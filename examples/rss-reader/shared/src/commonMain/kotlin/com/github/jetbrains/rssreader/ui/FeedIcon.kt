@@ -49,6 +49,7 @@ fun FeedIcon(
                 .background(color = MaterialTheme.colorScheme.primary)
                 .clickable(enabled = onClick != null, onClick = onClick ?: {})
         ) {
+
             feed?.channel?.image?.url?.let { url ->
                 AsyncImage(
                     model = url,

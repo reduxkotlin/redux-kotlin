@@ -60,8 +60,7 @@ fun RssReaderApp(navController: NavHostController = rememberNavController()) {
                         WindowInsets.systemBars
                             .only(WindowInsetsSides.Bottom)
                             .asPaddingValues()
-                    ),
-                    hostState = snackbarHostState
+                    ), hostState = snackbarHostState
                 )
             }
         ) { innerPadding ->

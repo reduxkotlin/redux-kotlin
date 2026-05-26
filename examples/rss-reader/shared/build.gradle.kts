@@ -19,6 +19,8 @@ kotlin {
         androidResources { enable = true }
     }
 
+    jvm()
+
     sourceSets {
         commonMain.dependencies {
             implementation(project(":redux-kotlin"))
