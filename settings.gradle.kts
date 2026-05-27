@@ -18,6 +18,7 @@ include(
     ":redux-kotlin-granular",
     ":redux-kotlin-multimodel",
     ":redux-kotlin-compose",
+    ":redux-kotlin-multimodel-granular",
     ":examples:counter:common",
     ":examples:counter:android",
     ":examples:todos:common",
