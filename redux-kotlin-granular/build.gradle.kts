@@ -30,6 +30,9 @@ kotlin {
         jvmCommonTest {
             dependencies {
                 implementation(libs.kotlinx.coroutines.test)
+                // Concurrency stress tests use the thread-safe store as
+                // the canonical multi-threaded host.
+                implementation(project(":redux-kotlin-threadsafe"))
             }
         }
     }
