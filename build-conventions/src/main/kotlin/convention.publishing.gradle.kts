@@ -74,7 +74,9 @@ publishing {
         val ghOwnerOrganization: String = project.findProperty("gh.owner.organization")!!.toString()
         val ghOwnerOrganizationUrl: String = project.findProperty("gh.owner.organization.url")!!.toString()
         withType<MavenPublication> {
-            artifact(tasks["javadocJar"])
+            // tasks.named() returns a TaskProvider (lazy); `tasks["..."]`
+            // forces eager realization.
+            artifact(tasks.named("javadocJar"))
             pom {
                 name by project.name
                 url by "https://github.com/$ghOwnerId/${rootProject.name}"

@@ -23,28 +23,28 @@ tasks {
             setSource(files(projectDir))
         }
     }
-    afterEvaluate {
-        withType<Detekt> {
-            parallel = true
-            reports {
-                // observe findings in your browser with structure and code snippets
-                html.required.set(true)
-                // checkstyle-like format mainly for Jenkins-style integrations
-                // (renamed from `xml` in detekt 2.0).
-                checkstyle.required.set(true)
-                // standardized SARIF format (https://sarifweb.azurewebsites.net/) for GitHub Code Scanning.
-                sarif.required.set(true)
-                // markdown report (renamed from `md` in detekt 2.0).
-                markdown.required.set(true)
-            }
-            include("**/*.kt", "**/*.kts")
-            // `.claude/` holds Claude Code harness worktrees / caches; never
-            // scan them. `**/build` is the Gradle output dir.
-            // jvmBenchmark/ holds JMH benchmarks where the @Benchmark
-            // contract dictates the function-naming and KDoc shape; the
-            // benchmarks are not shipped as library API. Skip rather
-            // than burn the rule budget on paraphrasing method names.
-            exclude("**/build", "scripts/", ".claude/", "**/.claude/", "**/jvmBenchmark/**")
+    // `withType().configureEach` is fully lazy; no need to wrap in
+    // `afterEvaluate {}` (which Gradle 10's Provider-API migration discourages).
+    withType<Detekt>().configureEach {
+        parallel = true
+        reports {
+            // observe findings in your browser with structure and code snippets
+            html.required.set(true)
+            // checkstyle-like format mainly for Jenkins-style integrations
+            // (renamed from `xml` in detekt 2.0).
+            checkstyle.required.set(true)
+            // standardized SARIF format (https://sarifweb.azurewebsites.net/) for GitHub Code Scanning.
+            sarif.required.set(true)
+            // markdown report (renamed from `md` in detekt 2.0).
+            markdown.required.set(true)
         }
+        include("**/*.kt", "**/*.kts")
+        // `.claude/` holds Claude Code harness worktrees / caches; never
+        // scan them. `**/build` is the Gradle output dir.
+        // jvmBenchmark/ holds JMH benchmarks where the @Benchmark
+        // contract dictates the function-naming and KDoc shape; the
+        // benchmarks are not shipped as library API. Skip rather
+        // than burn the rule budget on paraphrasing method names.
+        exclude("**/build", "scripts/", ".claude/", "**/.claude/", "**/jvmBenchmark/**")
     }
 }

@@ -34,6 +34,12 @@ idea {
     }
 }
 
+// The `afterEvaluate` wrapper is load-bearing: KMP registers its own
+// `allTests` task (typed `KotlinTestReport`) later in configuration, so
+// the existence check has to run after all plugins have had a chance to
+// register their tasks. Migrating this off `afterEvaluate` would require
+// reacting to specific plugin application via `pluginManager.withPlugin`
+// for each plugin that may own these names.
 afterEvaluate {
     tasks {
         if (findByName("compile") == null) {
