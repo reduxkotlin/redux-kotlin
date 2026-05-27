@@ -1,8 +1,16 @@
+import kotlinx.benchmark.gradle.JvmBenchmarkTarget
 import util.jvmCommonTest
 
 plugins {
     id("convention.library-mpp-loved")
     id("convention.publishing-mpp")
+    alias(libs.plugins.kotlin.allopen)
+    alias(libs.plugins.kotlinx.benchmark)
+}
+
+allOpen {
+    // JMH requires @State-annotated classes to be open so it can subclass them.
+    annotation("org.openjdk.jmh.annotations.State")
 }
 
 val hasAndroidSdk: Boolean = run {
@@ -21,6 +29,16 @@ kotlin {
         namespace = "org.reduxkotlin.granular"
     }
 
+    // Dedicated benchmark compilation under the jvm target, associated
+    // with main so it sees the public API without having to depend on
+    // it transitively. Sources live under src/jvmBenchmark/kotlin.
+    jvm {
+        compilations {
+            val main by getting
+            create("benchmark") { associateWith(main) }
+        }
+    }
+
     sourceSets {
         commonMain {
             dependencies {
@@ -34,6 +52,21 @@ kotlin {
                 // the canonical multi-threaded host.
                 implementation(project(":redux-kotlin-threadsafe"))
             }
+        }
+        named("jvmBenchmark") {
+            dependencies {
+                implementation(libs.kotlinx.benchmark.runtime)
+                implementation(project(":redux-kotlin-threadsafe"))
+            }
+        }
+    }
+}
+
+benchmark {
+    targets {
+        register("jvmBenchmark") {
+            this as JvmBenchmarkTarget
+            jmhVersion = "1.37"
         }
     }
 }

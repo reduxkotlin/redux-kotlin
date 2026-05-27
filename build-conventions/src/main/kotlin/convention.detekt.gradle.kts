@@ -39,7 +39,11 @@ tasks {
             include("**/*.kt", "**/*.kts")
             // `.claude/` holds Claude Code harness worktrees / caches; never
             // scan them. `**/build` is the Gradle output dir.
-            exclude("**/build", "scripts/", ".claude/", "**/.claude/")
+            // jvmBenchmark/ holds JMH benchmarks where the @Benchmark
+            // contract dictates the function-naming and KDoc shape; the
+            // benchmarks are not shipped as library API. Skip rather
+            // than burn the rule budget on paraphrasing method names.
+            exclude("**/build", "scripts/", ".claude/", "**/.claude/", "**/jvmBenchmark/**")
         }
     }
 }
