@@ -57,24 +57,23 @@ class MainActivity : AppCompatActivity() {
         setFilterButtons(state.visibilityFilter)
     }
 
-    private fun setFilterButtons(visibilityFilter: VisibilityFilter) =
-        when (visibilityFilter) {
-            VisibilityFilter.SHOW_ALL -> {
-                binding.btnSelectAll.isSelected = true
-                binding.btnActive.isSelected = false
-                binding.btnCompleted.isSelected = false
-            }
-
-            VisibilityFilter.SHOW_ACTIVE -> {
-                binding.btnActive.isSelected = true
-                binding.btnSelectAll.isSelected = false
-                binding.btnCompleted.isSelected = false
-            }
-
-            VisibilityFilter.SHOW_COMPLETED -> {
-                binding.btnCompleted.isSelected = true
-                binding.btnSelectAll.isSelected = false
-                binding.btnActive.isSelected = false
-            }
+    private fun setFilterButtons(visibilityFilter: VisibilityFilter) = when (visibilityFilter) {
+        VisibilityFilter.SHOW_ALL -> {
+            binding.btnSelectAll.isSelected = true
+            binding.btnActive.isSelected = false
+            binding.btnCompleted.isSelected = false
         }
+
+        VisibilityFilter.SHOW_ACTIVE -> {
+            binding.btnActive.isSelected = true
+            binding.btnSelectAll.isSelected = false
+            binding.btnCompleted.isSelected = false
+        }
+
+        VisibilityFilter.SHOW_COMPLETED -> {
+            binding.btnCompleted.isSelected = true
+            binding.btnSelectAll.isSelected = false
+            binding.btnActive.isSelected = false
+        }
+    }
 }

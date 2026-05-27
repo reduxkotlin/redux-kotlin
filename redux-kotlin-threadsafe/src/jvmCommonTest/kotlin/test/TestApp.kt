@@ -21,10 +21,8 @@ object TestApp {
     }
 
     fun <State> createTestThunkMiddleware(): Middleware<State> = { store ->
-        {
-                next: Dispatcher ->
-            {
-                    action: Any ->
+        { next: Dispatcher ->
+            { action: Any ->
                 if (action is Function<*>) {
                     @Suppress("UNCHECKED_CAST")
                     val thunk = try {
@@ -45,7 +43,7 @@ object TestApp {
             timerTask {
                 dispatch(Increment)
             },
-            50
+            50,
         )
         getState()
     }

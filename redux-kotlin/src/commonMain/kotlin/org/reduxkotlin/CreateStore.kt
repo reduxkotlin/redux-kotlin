@@ -33,13 +33,13 @@ import org.reduxkotlin.utils.isPlainObject
 public fun <State> createStore(
     reducer: Reducer<State>,
     preloadedState: State,
-    enhancer: StoreEnhancer<State>? = null
+    enhancer: StoreEnhancer<State>? = null,
 ): Store<State> {
     if (enhancer != null) {
         return enhancer { r, initialState, _ -> createStore(r, initialState) }(
             reducer,
             preloadedState,
-            null
+            null,
         )
     }
 
@@ -224,13 +224,12 @@ public fun <State> createStore(
         dispatch(ActionTypes.REPLACE)
     }
 
-    /**
+    /*
      * Interoperability point for observable/reactive libraries.
-     * @returns {observable} A minimal observable of state changes.
-     * For more information, see the observable proposal:
-     * https://github.com/tc39/proposal-observable
+     * Returns a minimal observable of state changes.
+     * See https://github.com/tc39/proposal-observable for context.
+     * TODO: consider kotlinx.coroutines.flow?
      */
-    /* TODO: consider kotlinx.coroutines.flow? */
 
     // When a store is created, an "INIT" action is dispatched so that every
     // reducer returns their initial state. This effectively populates
@@ -252,7 +251,7 @@ public fun <State> createStore(
 public inline fun <State, reified Action : Any> createTypedStore(
     crossinline reducer: TypedReducer<State, Action>,
     preloadedState: State,
-    noinline enhancer: StoreEnhancer<State>? = null
+    noinline enhancer: StoreEnhancer<State>? = null,
 ): TypedStore<State, Action> = createStore(
     reducer = typedReducer(reducer),
     preloadedState,
