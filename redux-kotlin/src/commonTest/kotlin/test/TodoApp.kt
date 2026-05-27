@@ -15,6 +15,7 @@ object TodoApp {
     val todoReducer: Reducer<TodoState> = { state: TodoState, action: Any ->
         when (action) {
             is AddTodo -> state.copy(todos = state.todos.plus(Todo(action.id, action.text, false)))
+
             is ToggleTodo -> state.copy(
                 todos = state.todos.map {
                     if (it.id == action.id) {
@@ -22,7 +23,7 @@ object TodoApp {
                     } else {
                         it
                     }
-                }
+                },
             )
 
             else -> state

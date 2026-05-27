@@ -16,7 +16,7 @@ public typealias TypedReducer<State, Action> = (state: State, action: Action) ->
     replaceWith = ReplaceWith(
         expression = "TypedReducer",
         imports = arrayOf("org.reduxkotlin.TypedReducer"),
-    )
+    ),
 )
 public typealias ReducerForActionType<TState, TAction> = (state: TState, action: TAction) -> TState
 
@@ -30,7 +30,7 @@ public typealias TypedDispatcher<Action> = (Action) -> Any
 public typealias StoreCreator<State> = (
     reducer: Reducer<State>,
     initialState: State,
-    enhancer: Any?
+    enhancer: Any?,
 ) -> Store<State>
 
 /**
@@ -106,10 +106,8 @@ public interface TypedStore<State, Action> {
  */
 public fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action: Any) -> Any): Middleware<State> =
     { store ->
-        {
-                next ->
-            {
-                    action: Any ->
+        { next ->
+            { action: Any ->
                 dispatch(store, next, action)
             }
         }
@@ -144,7 +142,7 @@ public fun <State> middleware(dispatch: (Store<State>, next: Dispatcher, action:
  *   val store = createThreadSafeStore(rootReducer, AppState())
  */
 public inline fun <State, reified Action> typedReducer(
-    crossinline reducer: TypedReducer<State, Action>
+    crossinline reducer: TypedReducer<State, Action>,
 ): Reducer<State> = { state, action ->
     when (action) {
         is Action -> reducer(state, action)
@@ -157,7 +155,7 @@ public inline fun <State, reified Action> typedReducer(
     replaceWith = ReplaceWith(
         expression = "typedReducer",
         imports = arrayOf("org.reduxkotlin.typedReducer"),
-    )
+    ),
 )
 public inline fun <TState, reified TAction> reducerForActionType(
     crossinline reducer: TypedReducer<TState, TAction>,

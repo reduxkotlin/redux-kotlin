@@ -6,5 +6,5 @@ package org.reduxkotlin.examples.todos
  */
 fun rootReducer(state: AppState, action: Any) = AppState(
     todos = todosReducer(state.todos, action),
-    visibilityFilter = visibilityFilterReducer(state.visibilityFilter, action)
+    visibilityFilter = visibilityFilterReducer(state.visibilityFilter, action),
 )

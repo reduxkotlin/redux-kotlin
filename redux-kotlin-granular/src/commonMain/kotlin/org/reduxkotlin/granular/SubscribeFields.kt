@@ -79,11 +79,7 @@ internal class FieldSubscriptionRegistry<State>(
     @Volatile
     private var sealed: Boolean = false
 
-    override fun <F> on(
-        selector: (State) -> F,
-        triggerOnSubscribe: Boolean,
-        listener: (F, F) -> Unit,
-    ) {
+    override fun <F> on(selector: (State) -> F, triggerOnSubscribe: Boolean, listener: (F, F) -> Unit) {
         check(!sealed) {
             "FieldSubscriptionScope.on() called after subscribeFields block completed. " +
                 "Register all subscriptions inside the block."

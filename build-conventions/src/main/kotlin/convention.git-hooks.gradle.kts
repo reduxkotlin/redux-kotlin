@@ -8,27 +8,29 @@
 
 val hooks = mapOf(
     "pre-commit" to "detektAll --auto-correct",
-    "pre-push" to "detektAll"
+    "pre-push" to "detektAll",
 )
 
 fun hookBody(gradleArgs: String): String = """
     |#!/usr/bin/env sh
     |# Managed by convention.git-hooks. Do not edit by hand.
     |exec "${'$'}(git rev-parse --show-toplevel)/gradlew" $gradleArgs
-    |""".trimMargin()
+    |
+""".trimMargin()
 
-fun resolveHooksDir(): java.io.File? {
-    return try {
-        val process = ProcessBuilder("git", "rev-parse", "--git-path", "hooks")
-            .directory(layout.projectDirectory.asFile)
-            .redirectErrorStream(true)
-            .start()
-        val rel = process.inputStream.bufferedReader().readText().trim()
-        if (process.waitFor() != 0 || rel.isEmpty()) null
-        else layout.projectDirectory.asFile.resolve(rel)
-    } catch (_: Exception) {
+fun resolveHooksDir(): java.io.File? = try {
+    val process = ProcessBuilder("git", "rev-parse", "--git-path", "hooks")
+        .directory(layout.projectDirectory.asFile)
+        .redirectErrorStream(true)
+        .start()
+    val rel = process.inputStream.bufferedReader().readText().trim()
+    if (process.waitFor() != 0 || rel.isEmpty()) {
         null
+    } else {
+        layout.projectDirectory.asFile.resolve(rel)
     }
+} catch (_: Exception) {
+    null
 }
 
 fun writeHooks(dir: java.io.File) {

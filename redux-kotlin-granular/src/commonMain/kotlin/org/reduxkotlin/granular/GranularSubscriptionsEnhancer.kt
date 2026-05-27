@@ -15,8 +15,7 @@ import org.reduxkotlin.StoreEnhancer
  * the enhancer hook without breaking call sites that already use it.
  */
 public fun <State> granularSubscriptionsEnhancer(): StoreEnhancer<State> = { storeCreator ->
-    {
-            reducer, initialState, en ->
+    { reducer, initialState, en ->
         storeCreator(reducer, initialState, en)
     }
 }

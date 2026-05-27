@@ -24,7 +24,7 @@ printlnCI(
   hostIsLinux: ${HostManager.hostIsLinux}
   hostIsMac: ${HostManager.hostIsMac}
   hostIsMingw: ${HostManager.hostIsMingw}
-    """.trimIndent()
+    """.trimIndent(),
 )
 
 idea {
