@@ -37,7 +37,9 @@ tasks {
                 sarif.required.set(true)
             }
             include("**/*.kt", "**/*.kts")
-            exclude("**/build", "scripts/")
+            // `.claude/` holds Claude Code harness worktrees / caches; never
+            // scan them. `**/build` is the Gradle output dir.
+            exclude("**/build", "scripts/", ".claude/", "**/.claude/")
         }
     }
 }
