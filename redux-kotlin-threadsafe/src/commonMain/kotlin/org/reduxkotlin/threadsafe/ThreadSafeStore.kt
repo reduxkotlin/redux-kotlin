@@ -17,8 +17,8 @@ import org.reduxkotlin.StoreSubscription
  * TODO more info at [https://ReduxKotlin.org]
  */
 public class ThreadSafeStore<State>(override val store: Store<State>) :
-    Store<State>,
-    SynchronizedObject() {
+    SynchronizedObject(),
+    Store<State> {
     override var dispatch: Dispatcher = { action ->
         synchronized(this) { store.dispatch(action) }
     }
@@ -40,7 +40,7 @@ public class ThreadSafeStore<State>(override val store: Store<State>) :
     "Renamed to ThreadSafeStore",
     replaceWith = ReplaceWith(
         expression = "ThreadSafeStore",
-        "org.reduxkotlin.threadsafe.ThreadSafeStore"
-    )
+        "org.reduxkotlin.threadsafe.ThreadSafeStore",
+    ),
 )
 public typealias SynchronizedStore<State> = ThreadSafeStore<State>

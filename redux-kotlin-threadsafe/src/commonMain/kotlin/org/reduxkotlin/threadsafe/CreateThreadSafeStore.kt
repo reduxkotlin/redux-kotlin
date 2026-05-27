@@ -35,7 +35,7 @@ import org.reduxkotlin.typedReducer
 public fun <State> createThreadSafeStore(
     reducer: Reducer<State>,
     preloadedState: State,
-    enhancer: StoreEnhancer<State>? = null
+    enhancer: StoreEnhancer<State>? = null,
 ): Store<State> = ThreadSafeStore(createStore(reducer, preloadedState, enhancer))
 
 /**
@@ -44,12 +44,10 @@ public fun <State> createThreadSafeStore(
 public inline fun <State, reified Action : Any> createTypedThreadSafeStore(
     crossinline reducer: TypedReducer<State, Action>,
     preloadedState: State,
-    noinline enhancer: StoreEnhancer<State>? = null
-): TypedStore<State, Action> =
-    createThreadSafeStore(typedReducer(reducer), preloadedState, enhancer).asTyped()
+    noinline enhancer: StoreEnhancer<State>? = null,
+): TypedStore<State, Action> = createThreadSafeStore(typedReducer(reducer), preloadedState, enhancer).asTyped()
 
 /**
  * Converts a given [Store] to a [ThreadSafeStore].
  */
-public fun <State> Store<State>.asThreadSafe(): ThreadSafeStore<State> =
-    ThreadSafeStore(store)
+public fun <State> Store<State>.asThreadSafe(): ThreadSafeStore<State> = ThreadSafeStore(store)

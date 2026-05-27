@@ -10,43 +10,45 @@ import java.util.concurrent.Executors
 import kotlin.system.measureTimeMillis
 import kotlin.test.*
 
-class CreateSameThreadEnforcedStoreTest : AbstractCreateSameThreadEnforcedStoreTest<Any>(
-    Any(),
-    {
-        createSameThreadEnforcedStore(
-            TodoApp.todoReducer,
-            TodoApp.TodoState(
-                listOf(
-                    TodoApp.Todo(
-                        id = "1",
-                        text = "Hello"
-                    )
-                )
+class CreateSameThreadEnforcedStoreTest :
+    AbstractCreateSameThreadEnforcedStoreTest<Any>(
+        Any(),
+        {
+            createSameThreadEnforcedStore(
+                TodoApp.todoReducer,
+                TodoApp.TodoState(
+                    listOf(
+                        TodoApp.Todo(
+                            id = "1",
+                            text = "Hello",
+                        ),
+                    ),
+                ),
             )
-        )
-    }
-)
+        },
+    )
 
-class CreateSameThreadEnforcedTypedStoreTest : AbstractCreateSameThreadEnforcedStoreTest<TodoApp.TodoAction>(
-    TodoApp.DoNothing,
-    {
-        createTypedSameThreadEnforcedStore(
-            TodoApp.typedTodoReducer,
-            TodoApp.TodoState(
-                listOf(
-                    TodoApp.Todo(
-                        id = "1",
-                        text = "Hello"
-                    )
-                )
+class CreateSameThreadEnforcedTypedStoreTest :
+    AbstractCreateSameThreadEnforcedStoreTest<TodoApp.TodoAction>(
+        TodoApp.DoNothing,
+        {
+            createTypedSameThreadEnforcedStore(
+                TodoApp.typedTodoReducer,
+                TodoApp.TodoState(
+                    listOf(
+                        TodoApp.Todo(
+                            id = "1",
+                            text = "Hello",
+                        ),
+                    ),
+                ),
             )
-        )
-    }
-)
+        },
+    )
 
 abstract class AbstractCreateSameThreadEnforcedStoreTest<A>(
     private val action: A,
-    private val storeProvider: () -> TypedStore<TodoApp.TodoState, A>
+    private val storeProvider: () -> TypedStore<TodoApp.TodoState, A>,
 ) {
     private lateinit var store: TypedStore<TodoApp.TodoState, A>
 
@@ -88,7 +90,7 @@ abstract class AbstractCreateSameThreadEnforcedStoreTest<A>(
                 val store = createSameThreadEnforcedStore(
                     testReducer,
                     TodoApp.TodoState(),
-                    applyMiddleware(middleware.middleware)
+                    applyMiddleware(middleware.middleware),
                 )
 
                 store.dispatch(Any())

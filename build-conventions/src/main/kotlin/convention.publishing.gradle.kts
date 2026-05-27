@@ -33,7 +33,7 @@ tasks {
                 "Build-Jdk" to System.getProperty("java.version"),
                 "Implementation-Version" to project.version,
                 "Created-By" to "${GradleVersion.current()}",
-                "Created-From" to "${Git.headCommitHash}"
+                "Created-From" to "${Git.headCommitHash}",
             )
         }
     }

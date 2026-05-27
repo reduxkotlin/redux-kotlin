@@ -5,7 +5,7 @@ package org.reduxkotlin.examples.todos
  */
 data class AppState(
     val todos: List<Todo> = listOf(),
-    val visibilityFilter: VisibilityFilter = VisibilityFilter.SHOW_ALL
+    val visibilityFilter: VisibilityFilter = VisibilityFilter.SHOW_ALL,
 ) {
     val visibleTodos: List<Todo>
         get() = getVisibleTodos(visibilityFilter)
@@ -21,14 +21,10 @@ data class AppState(
  * A model used in the app state. Where these types of models are located is up to you and your team
  * It will likely make sense to place separate file in a real project.
  */
-data class Todo(
-    val text: String,
-    val completed: Boolean = false,
-    val id: Int
-)
+data class Todo(val text: String, val completed: Boolean = false, val id: Int)
 
 enum class VisibilityFilter {
     SHOW_ALL,
     SHOW_COMPLETED,
-    SHOW_ACTIVE
+    SHOW_ACTIVE,
 }

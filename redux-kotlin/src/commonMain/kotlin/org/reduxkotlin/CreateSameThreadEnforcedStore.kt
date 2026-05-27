@@ -16,7 +16,7 @@ import org.reduxkotlin.utils.stripCoroutineName
 public fun <State> createSameThreadEnforcedStore(
     reducer: Reducer<State>,
     preloadedState: State,
-    enhancer: StoreEnhancer<State>? = null
+    enhancer: StoreEnhancer<State>? = null,
 ): Store<State> {
     val store = createStore(reducer, preloadedState, enhancer)
     val storeThreadName = stripCoroutineName(getThreadName())
@@ -60,7 +60,7 @@ public fun <State> createSameThreadEnforcedStore(
 public inline fun <State, reified Action : Any> createTypedSameThreadEnforcedStore(
     crossinline reducer: TypedReducer<State, Action>,
     preloadedState: State,
-    noinline enhancer: StoreEnhancer<State>? = null
+    noinline enhancer: StoreEnhancer<State>? = null,
 ): TypedStore<State, Action> = createSameThreadEnforcedStore(
     reducer = typedReducer(reducer),
     preloadedState,

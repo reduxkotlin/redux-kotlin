@@ -39,11 +39,7 @@ class TodoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 }
 
 class DiffCallback : DiffUtil.ItemCallback<Todo>() {
-    override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
-        return oldItem.id == newItem.id
-    }
+    override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean = oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
-        return oldItem == newItem
-    }
+    override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean = oldItem == newItem
 }

@@ -6,9 +6,9 @@ complexity:
 
 comments:
   active: true
-  CommentOverPrivateFunction:
+  DocumentationOverPrivateFunction:
     active: false
-  CommentOverPrivateProperty:
+  DocumentationOverPrivateProperty:
     active: false
   DeprecatedBlockTag:
     active: true
@@ -45,14 +45,14 @@ style:
     active: false
   WildcardImport:
     active: false
-  UnnecessaryAbstractClass:
-    active: false
   MaxLineLength:
     active: false
   MagicNumber:
     active: false
 
-formatting:
+# Renamed from `formatting` -> `ktlint` in detekt 2.0
+# (rules now provided by the `dev.detekt:detekt-rules-ktlint-wrapper` plugin).
+ktlint:
   Filename:
     active: false
   NoWildcardImports:

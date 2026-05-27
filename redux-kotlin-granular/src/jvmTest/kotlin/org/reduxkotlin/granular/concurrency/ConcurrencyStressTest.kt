@@ -48,8 +48,7 @@ class ConcurrencyStressTest {
         }
     }
 
-    private fun daemonExecutor(threads: Int) =
-        Executors.newFixedThreadPool(threads, DaemonThreadFactory())!!
+    private fun daemonExecutor(threads: Int) = Executors.newFixedThreadPool(threads, DaemonThreadFactory())!!
 
     /**
      * Scenario 5a (per the plan). 100 separate `subscribeTo` calls (so the

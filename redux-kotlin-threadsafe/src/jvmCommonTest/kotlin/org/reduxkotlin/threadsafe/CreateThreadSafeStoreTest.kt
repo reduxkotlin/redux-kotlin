@@ -16,11 +16,7 @@ import kotlin.system.measureTimeMillis
 import kotlin.test.assertEquals
 
 class CreateThreadSafeStoreTest {
-    private suspend fun massiveRun(
-        numCoroutines: Int,
-        numRepeats: Int,
-        action: suspend () -> Unit
-    ) {
+    private suspend fun massiveRun(numCoroutines: Int, numRepeats: Int, action: suspend () -> Unit) {
         val time = measureTimeMillis {
             coroutineScope {
                 repeat(numCoroutines) {
@@ -55,8 +51,8 @@ class CreateThreadSafeStoreTest {
             compose(
                 applyMiddleware(TestApp.createTestThunkMiddleware()),
                 // needs to be placed after enhancers that requires synchronized store methods
-                createThreadSafeStoreEnhancer()
-            )
+                createThreadSafeStoreEnhancer(),
+            ),
         )
         runBlocking {
             withContext(Dispatchers.Default) {
@@ -69,7 +65,7 @@ class CreateThreadSafeStoreTest {
                 timerTask {
                     assertEquals(10000, store.state.counter)
                 },
-                50
+                50,
             )
         }
     }

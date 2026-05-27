@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             {
                 store.dispatch(Increment())
             },
-            1000
+            1000,
         )
     }
 }

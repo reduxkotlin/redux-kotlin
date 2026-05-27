@@ -1,11 +1,11 @@
-import io.gitlab.arturbosch.detekt.Detekt
+import dev.detekt.gradle.Detekt
 
 plugins {
-    id("io.gitlab.arturbosch.detekt")
+    id("dev.detekt")
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
+    detektPlugins("dev.detekt:detekt-rules-ktlint-wrapper:2.0.0-alpha.3")
 }
 
 detekt {
@@ -29,12 +29,13 @@ tasks {
             reports {
                 // observe findings in your browser with structure and code snippets
                 html.required.set(true)
-                // checkstyle like format mainly for integrations like Jenkins
-                xml.required.set(true)
-                // similar to the console output, contains issue signature to manually edit baseline files
-                txt.required.set(true)
-                // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
+                // checkstyle-like format mainly for Jenkins-style integrations
+                // (renamed from `xml` in detekt 2.0).
+                checkstyle.required.set(true)
+                // standardized SARIF format (https://sarifweb.azurewebsites.net/) for GitHub Code Scanning.
                 sarif.required.set(true)
+                // markdown report (renamed from `md` in detekt 2.0).
+                markdown.required.set(true)
             }
             include("**/*.kt", "**/*.kts")
             // `.claude/` holds Claude Code harness worktrees / caches; never
