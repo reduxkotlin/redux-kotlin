@@ -32,7 +32,15 @@ public class ThreadSafeStore<State>(override val store: Store<State>) :
     }
 
     override val subscribe: (StoreSubscriber) -> StoreSubscription = { storeSubscriber ->
-        synchronized(this) { store.subscribe(storeSubscriber) }
+        val inner = synchronized(this) { store.subscribe(storeSubscriber) }
+        // The returned StoreSubscription mutates the underlying store's
+        // listener list when invoked; without re-acquiring the lock, a
+        // teardown racing against a concurrent dispatch can corrupt the
+        // list or throw ConcurrentModificationException from inside the
+        // upstream store's iteration loop. Wrap it so unsubscribe takes
+        // the same lock as subscribe and dispatch.
+        val unsubscribe: StoreSubscription = { synchronized(this) { inner() } }
+        unsubscribe
     }
 }
 
