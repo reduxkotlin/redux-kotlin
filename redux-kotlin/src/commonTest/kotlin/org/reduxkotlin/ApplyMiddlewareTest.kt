@@ -10,8 +10,7 @@ class ApplyMiddlewareTest {
         fun dispatchingMiddleware(store: Store<TodoApp.TodoState>): (next: Dispatcher) -> (action: Any) -> Any {
             store.dispatch(TodoApp.AddTodo("1", "Dont dispatch in middleware setup"))
             return { next ->
-                {
-                        action ->
+                { action ->
                     {
                         next(action)
                     }

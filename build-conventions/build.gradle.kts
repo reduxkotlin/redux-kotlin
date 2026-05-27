@@ -17,7 +17,7 @@ repositories {
 dependencies {
     implementation(libs.android.gradle.plugin)
     implementation(libs.kotlin.gradle.plugin)
-    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${libs.versions.detekt.get()}")
+    implementation("dev.detekt:detekt-gradle-plugin:${libs.versions.detekt.get()}")
     implementation(libs.gradle.nexus.publish.plugin)
     implementation(libs.dokka.gradle.plugin)
 }

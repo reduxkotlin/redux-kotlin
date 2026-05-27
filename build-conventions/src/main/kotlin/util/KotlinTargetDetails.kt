@@ -8,10 +8,12 @@ val KonanTarget.buildHost: Family
         Family.OSX,
         Family.IOS,
         Family.TVOS,
-        Family.WATCHOS -> Family.OSX
+        Family.WATCHOS,
+        -> Family.OSX
 
         Family.ANDROID,
-        Family.LINUX -> Family.LINUX
+        Family.LINUX,
+        -> Family.LINUX
 
         Family.MINGW -> Family.MINGW
     }

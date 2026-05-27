@@ -15,10 +15,10 @@ class TypedReducerTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
 
         assertEquals(
@@ -27,10 +27,10 @@ class TypedReducerTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
     }
 
@@ -46,10 +46,10 @@ class TypedReducerTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
 
         // TODO are ids autoincrement?
@@ -60,14 +60,14 @@ class TypedReducerTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
+                        text = "Hello",
                     ),
                     TodoApp.Todo(
                         id = "2",
-                        text = "World"
-                    )
-                )
-            )
+                        text = "World",
+                    ),
+                ),
+            ),
         )
     }
 
@@ -79,10 +79,10 @@ class TypedReducerTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
         assertEquals(
             store.getState(),
@@ -90,10 +90,10 @@ class TypedReducerTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
 
         store.dispatch(TodoApp.AddTodo("2", "World"))
@@ -103,14 +103,14 @@ class TypedReducerTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
+                        text = "Hello",
                     ),
                     TodoApp.Todo(
                         id = "2",
-                        text = "World"
-                    )
-                )
-            )
+                        text = "World",
+                    ),
+                ),
+            ),
         )
     }
 }

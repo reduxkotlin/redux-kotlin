@@ -10,11 +10,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-private data class TestState(
-    val counter: Int = 0,
-    val label: String = "",
-    val items: List<String> = emptyList(),
-)
+private data class TestState(val counter: Int = 0, val label: String = "", val items: List<String> = emptyList())
 
 private sealed class TestAction {
     object Increment : TestAction()

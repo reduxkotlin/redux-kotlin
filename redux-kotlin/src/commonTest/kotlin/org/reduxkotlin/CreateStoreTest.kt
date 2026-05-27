@@ -13,10 +13,10 @@ class CreateStoreTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
 
         assertEquals(
@@ -25,10 +25,10 @@ class CreateStoreTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
     }
 
@@ -47,10 +47,10 @@ class CreateStoreTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
 
         // TODO are ids autoincrement?
@@ -61,14 +61,14 @@ class CreateStoreTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
+                        text = "Hello",
                     ),
                     TodoApp.Todo(
                         id = "2",
-                        text = "World"
-                    )
-                )
-            )
+                        text = "World",
+                    ),
+                ),
+            ),
         )
     }
 
@@ -80,10 +80,10 @@ class CreateStoreTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
         assertEquals(
             store.getState(),
@@ -91,10 +91,10 @@ class CreateStoreTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
 
         store.dispatch(Any())
@@ -104,10 +104,10 @@ class CreateStoreTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
-                    )
-                )
-            )
+                        text = "Hello",
+                    ),
+                ),
+            ),
         )
 
         store.dispatch(TodoApp.AddTodo("2", "World"))
@@ -117,14 +117,14 @@ class CreateStoreTest {
                 listOf(
                     TodoApp.Todo(
                         id = "1",
-                        text = "Hello"
+                        text = "Hello",
                     ),
                     TodoApp.Todo(
                         id = "2",
-                        text = "World"
-                    )
-                )
-            )
+                        text = "World",
+                    ),
+                ),
+            ),
         )
     }
 }
