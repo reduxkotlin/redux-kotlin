@@ -16,6 +16,8 @@ include(
     ":redux-kotlin",
     ":redux-kotlin-threadsafe",
     ":redux-kotlin-granular",
+    ":redux-kotlin-multimodel",
+    ":redux-kotlin-compose",
     ":examples:counter:common",
     ":examples:counter:android",
     ":examples:todos:common",
