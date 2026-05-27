@@ -162,18 +162,75 @@ class ConcurrencyStressTest {
         }
     }
 
-    // NOTE: A subscribe/unsubscribe-churn-during-dispatch-storm scenario
-    // was prototyped here but surfaces a pre-existing race in
-    // `ThreadSafeStore`: the unsubscribe lambda returned by
-    // `store.subscribe(...)` mutates the listener list without
-    // re-acquiring `synchronized(this)`, so churning subs from one
-    // thread while dispatching from another can throw
-    // `ConcurrentModificationException` from inside the upstream
-    // store's iteration loop. That's a finding worth its own
-    // follow-up patch against the threadsafe module; it is NOT
-    // introduced by the granular layer (which itself never mutates
-    // the entries list after `activate()`). Tracking issue: see
-    // redux-kotlin-threadsafe README.
+    /**
+     * Scenario 4 from the plan: subscribe/unsubscribe churn while a
+     * dispatch storm runs from peer threads. Regression test for the
+     * ThreadSafeStore unsubscribe-race fix — without that fix, the
+     * teardown lambda returned by `store.subscribe(...)` mutates the
+     * underlying listener list without re-acquiring the lock, so a
+     * concurrent dispatch's iteration through the list can throw
+     * `ConcurrentModificationException`.
+     *
+     * After the fix, churners can subscribe-and-immediately-unsubscribe
+     * indefinitely while dispatchers fire, with no exceptions and a
+     * clean listener-list state at teardown.
+     */
+    @Test
+    fun subscribe_unsubscribe_churn_during_dispatch_storm_does_not_throw() {
+        val store = createThreadSafeStore(reducer, CounterState())
+        val dispatcherThreads = 4
+        val churnerThreads = 2
+        val totalThreads = dispatcherThreads + churnerThreads
+        val dispatchesPerThread = 1_000
+        val churnCyclesPerThread = 1_000
+        val failures = AtomicLong()
+        val churnCount = AtomicLong()
+
+        val executor = daemonExecutor(totalThreads)
+        val start = CyclicBarrier(totalThreads)
+        try {
+            val dispatcherFutures = (1..dispatcherThreads).map {
+                executor.submit {
+                    start.await(SCENARIO_TIMEOUT_S, TimeUnit.SECONDS)
+                    repeat(dispatchesPerThread) {
+                        try {
+                            store.dispatch(IncrementAction)
+                        } catch (@Suppress("TooGenericExceptionCaught") t: Throwable) {
+                            failures.incrementAndGet()
+                            throw t
+                        }
+                    }
+                }
+            }
+            val churnerFutures = (1..churnerThreads).map {
+                executor.submit {
+                    start.await(SCENARIO_TIMEOUT_S, TimeUnit.SECONDS)
+                    repeat(churnCyclesPerThread) {
+                        try {
+                            val sub = store.subscribe { /* no-op */ }
+                            sub()
+                            churnCount.incrementAndGet()
+                        } catch (@Suppress("TooGenericExceptionCaught") t: Throwable) {
+                            failures.incrementAndGet()
+                            throw t
+                        }
+                    }
+                }
+            }
+            for (f in dispatcherFutures + churnerFutures) f.get(SCENARIO_TIMEOUT_S, TimeUnit.SECONDS)
+        } finally {
+            executor.shutdown()
+            assertTrue(executor.awaitTermination(SCENARIO_TIMEOUT_S, TimeUnit.SECONDS))
+        }
+
+        assertEquals(0L, failures.get(), "subscribe/unsubscribe churn raced with dispatch")
+        assertEquals(
+            (churnerThreads * churnCyclesPerThread).toLong(),
+            churnCount.get(),
+            "Churn count didn't reach expected total",
+        )
+        assertEquals(dispatcherThreads * dispatchesPerThread, store.state.counter)
+    }
 
     /**
      * Re-entrancy canary: a granular listener calls `store.dispatch()`
