@@ -9,7 +9,6 @@ compose-multiplatform = "1.10.0"
 coroutines = "1.10.2"
 detekt = "1.23.8"
 dokka = "2.2.0"
-git-hooks-gradle-plugin = "0.0.2"
 kotlin = "2.3.20"
 kotlinx-benchmark = "0.4.13"
 nexus-publish-plugin = "2.0.0"
@@ -21,7 +20,6 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
-git-hooks-gradle-plugin = { module = "com.github.jakemarsden:git-hooks-gradle-plugin", version.ref = "git-hooks-gradle-plugin" }
 gradle-nexus-publish-plugin = { module = "io.github.gradle-nexus:publish-plugin", version.ref = "nexus-publish-plugin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
