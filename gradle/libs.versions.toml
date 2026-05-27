@@ -1,5 +1,5 @@
 [versions]
-android-gradle-plugin = "9.1.0"
+android-gradle-plugin = "9.2.0"
 androidx-activity = "1.10.1"
 androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
