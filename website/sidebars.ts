@@ -48,6 +48,7 @@ const sidebars: SidebarsConfig = {
         'advanced/async-actions',
         'advanced/async-flow',
         'advanced/middleware',
+        'advanced/granular-subscriptions',
       ],
     },
     {
