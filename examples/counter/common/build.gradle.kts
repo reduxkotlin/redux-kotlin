@@ -11,14 +11,25 @@ kotlin {
         binaries.executable()
     }
 
-    iosArm64()
-    iosSimulatorArm64()
-    iosX64()
+    listOf(iosArm64(), iosSimulatorArm64(), iosX64()).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "SharedCounter"
+            isStatic = true
+            // Export the public APIs the Swift sample consumes directly,
+            // so call sites like `store.subscribeFields { ... }` resolve
+            // without re-exporting boilerplate.
+            export(project(":redux-kotlin"))
+            export(project(":redux-kotlin-granular"))
+            export(project(":redux-kotlin-threadsafe"))
+        }
+    }
 
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":redux-kotlin"))
+                api(project(":redux-kotlin"))
+                api(project(":redux-kotlin-granular"))
+                api(project(":redux-kotlin-threadsafe"))
             }
         }
         commonTest {
