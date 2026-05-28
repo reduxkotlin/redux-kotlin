@@ -49,6 +49,8 @@ const sidebars: SidebarsConfig = {
         'advanced/async-flow',
         'advanced/middleware',
         'advanced/granular-subscriptions',
+        'advanced/store-registry',
+        'advanced/compose-integration',
       ],
     },
     {
