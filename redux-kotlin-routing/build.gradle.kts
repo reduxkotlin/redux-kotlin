@@ -28,5 +28,10 @@ kotlin {
                 api(project(":redux-kotlin-multimodel"))
             }
         }
+        commonTest {
+            dependencies {
+                implementation(project(":redux-kotlin-granular"))
+            }
+        }
     }
 }
