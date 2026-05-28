@@ -124,6 +124,67 @@ val sub = store.subscribeFields(
 }
 ```
 
+## Multi-model stores
+
+If your store holds a `ModelState` from `redux-kotlin-multimodel` (a
+type-safe bag of independent feature models), the companion module
+`redux-kotlin-multimodel-granular` adds overloads that subscribe to a
+field of a **specific model** without naming `ModelState` at the call
+site. The model type is inferred from the property reference's receiver.
+
+```kotlin
+implementation("org.reduxkotlin:redux-kotlin-multimodel-granular:<version>")
+```
+
+```kotlin
+import org.reduxkotlin.multimodel.granular.subscribeTo
+
+// M (LoggedInUserModel) is inferred from the property reference.
+val unsubscribe = store.subscribeTo(LoggedInUserModel::displayName) { _, name ->
+    profileHeader.title = name
+}
+```
+
+Internally the selector is `state.get<M>().property` — one extra field
+read versus a plain single-model selector. The change-detection and
+`triggerOnSubscribe` semantics are identical to the core overloads.
+
+Inside a `subscribeFields { … }` block, use the `on(Model::field)`
+overload to mix fields from several feature models behind one underlying
+`store.subscribe`:
+
+```kotlin
+import org.reduxkotlin.multimodel.granular.on
+
+storeSubscription = store.subscribeFields {
+    on(LoggedInUserModel::displayName) { _, name -> userHeader.title = name }
+    on(CartModel::itemCount)           { _, n    -> cartBadge.count = n }
+    on(ThemeModel::palette)            { _, p    -> applyPalette(p) }
+}
+```
+
+### Raw JS / TS and Swift consumers
+
+The property-reference overloads above are `inline` + `reified` (and
+hidden from Swift), so they don't survive to the JS/TS or Objective-C
+boundary. Non-Kotlin consumers use the non-inline `subscribeToModel` /
+`onModel` overloads, which thread the model type through as a `KClass`
+argument and take a plain selector lambda:
+
+```kotlin
+import org.reduxkotlin.multimodel.granular.subscribeToModel
+
+val unsubscribe = store.subscribeToModel(
+    LoggedInUserModel::class,
+    { it.displayName },
+) { _, name ->
+    profileHeader.title = name
+}
+```
+
+`onModel(modelClass, selector) { … }` is the matching DSL form for use
+inside `subscribeFields { … }`.
+
 ## Threading
 
 The granular module does **not** introduce any locks of its own and
@@ -151,13 +212,16 @@ Composes safely with:
   contract (coroutine-serialised, lock-free MPSC queue, read-write
   lock, …).
 
-A subscribe/unsubscribe-during-dispatch-storm test surfaced a
-pre-existing race in `redux-kotlin-threadsafe` (the unsubscribe lambda
-returned by `store.subscribe(...)` mutates the listener list outside
-the lock). The granular layer itself never mutates its entries list
-after activation, so this is a `ThreadSafeStore`-level issue — see the
-`redux-kotlin-threadsafe` notes if you tear down subscriptions
-concurrently with dispatches.
+A subscribe/unsubscribe-during-dispatch-storm test originally surfaced a
+race in `redux-kotlin-threadsafe`: the unsubscribe lambda returned by
+`store.subscribe(...)` mutated the listener list outside the lock, which
+could corrupt the list or throw `ConcurrentModificationException` from
+inside the store's iteration loop. That race has since been **fixed** —
+`ThreadSafeStore` now wraps the returned unsubscribe so it re-acquires
+the same lock as `subscribe` and `dispatch`. The granular layer itself
+never mutates its entries list after activation, so tearing down
+granular subscriptions concurrently with dispatches is safe on
+`createThreadSafeStore`.
 
 ## Performance characteristics
 
