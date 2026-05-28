@@ -15,6 +15,7 @@ includeBuild("build-conventions/")
 include(
     ":redux-kotlin",
     ":redux-kotlin-threadsafe",
+    ":redux-kotlin-concurrent",
     ":redux-kotlin-registry",
     ":redux-kotlin-granular",
     ":redux-kotlin-multimodel",
