@@ -7,11 +7,12 @@ gate and conventions that aren't obvious from the source.
 
 ## Modules
 
-Eight published library modules (each applies `convention.library-mpp-*` +
+Nine published library modules (each applies `convention.library-mpp-*` +
 `convention.publishing-mpp`):
 
 - `redux-kotlin` — core: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
 - `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper).
+- `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; the CallerSerialized strategy).
 - `redux-kotlin-granular` — `subscribeTo` / `subscribeFields` field-level subscriptions.
 - `redux-kotlin-registry` — `StoreRegistry<K,S>` / `TypedStoreRegistry` keyed multi-store container.
 - `redux-kotlin-multimodel` — `ModelState` typesafe heterogeneous model bag.
