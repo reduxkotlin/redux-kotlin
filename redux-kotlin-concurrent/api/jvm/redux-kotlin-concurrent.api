@@ -16,6 +16,13 @@ public final class org/reduxkotlin/concurrent/ConcurrentStore$DefaultImpls {
 	public static fun getState (Lorg/reduxkotlin/concurrent/ConcurrentStore;)Ljava/lang/Object;
 }
 
+public final class org/reduxkotlin/concurrent/CreateConcurrentStoreKt {
+	public static final fun asConcurrent (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/concurrent/ConcurrentStore;
+	public static synthetic fun asConcurrent$default (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/concurrent/ConcurrentStore;
+	public static final fun createConcurrentStore (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/concurrent/ConcurrentStore;
+	public static synthetic fun createConcurrentStore$default (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/concurrent/ConcurrentStore;
+}
+
 public abstract interface class org/reduxkotlin/concurrent/NotificationContext {
 	public static final field Companion Lorg/reduxkotlin/concurrent/NotificationContext$Companion;
 	public abstract fun post (Lkotlin/jvm/functions/Function0;)V
