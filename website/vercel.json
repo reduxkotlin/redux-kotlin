@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
   "redirects": [
     { "source": "/introduction", "destination": "/introduction/getting-started" },
     { "source": "/basics", "destination": "/basics/basic-tutorial" },

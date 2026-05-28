@@ -96,3 +96,5 @@ website/build/
 website/node_modules/
 website/.docusaurus/
 .claude/
+.vercel
+.env*.local
