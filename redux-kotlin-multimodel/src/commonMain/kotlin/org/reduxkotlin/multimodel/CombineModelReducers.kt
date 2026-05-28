@@ -27,18 +27,15 @@ public class ModelReducerEntry<M : Any> @PublishedApi internal constructor(
  * sugar form; use [modelReducerOf] if you only have a [KClass] at the
  * call site (raw JS/TS, generic helpers).
  */
-public inline fun <reified M : Any> modelReducer(
-    noinline reducer: ModelReducer<M>,
-): ModelReducerEntry<M> = ModelReducerEntry(M::class, reducer)
+public inline fun <reified M : Any> modelReducer(noinline reducer: ModelReducer<M>): ModelReducerEntry<M> =
+    ModelReducerEntry(M::class, reducer)
 
 /**
  * Non-inline variant of [modelReducer] for callers that only hold a
  * [KClass] reference. Functionally equivalent.
  */
-public fun <M : Any> modelReducerOf(
-    modelClass: KClass<M>,
-    reducer: ModelReducer<M>,
-): ModelReducerEntry<M> = ModelReducerEntry(modelClass, reducer)
+public fun <M : Any> modelReducerOf(modelClass: KClass<M>, reducer: ModelReducer<M>): ModelReducerEntry<M> =
+    ModelReducerEntry(modelClass, reducer)
 
 /**
  * Composes per-model reducers into a single [Reducer] over
@@ -54,9 +51,7 @@ public fun <M : Any> modelReducerOf(
  *   for the same model class (review I3 — silent last-wins chaining
  *   is a footgun, prefer to fail loudly).
  */
-public fun combineModelReducers(
-    vararg entries: ModelReducerEntry<*>,
-): Reducer<ModelState> {
+public fun combineModelReducers(vararg entries: ModelReducerEntry<*>): Reducer<ModelState> {
     val byClass = LinkedHashMap<KClass<*>, ModelReducer<Any>>(entries.size)
     for (entry in entries) {
         @Suppress("UNCHECKED_CAST")
