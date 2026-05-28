@@ -84,6 +84,30 @@ public class ModelState @PublishedApi internal constructor(@PublishedApi interna
         return ModelState(models + (modelClass to model))
     }
 
+    /**
+     * Returns a new [ModelState] with every slot named in [changes]
+     * replaced, in a single map copy. Other models are shared with the
+     * receiver. Returns the receiver unchanged when [changes] is empty.
+     *
+     * This is the batch form of [with]; it exists so a routed reducer
+     * can apply several model writes from one dispatch with exactly one
+     * allocation, preserving the `===` identity of untouched slots.
+     *
+     * @throws IllegalStateException if any key in [changes] was not
+     *   declared at construction; the key set is fixed by
+     *   [Companion.of].
+     */
+    public fun withAll(changes: Map<KClass<*>, Any>): ModelState {
+        if (changes.isEmpty()) return this
+        for (klass in changes.keys) {
+            check(klass in models) {
+                "Cannot replace model ${klass.simpleName ?: klass} that wasn't declared at construction. " +
+                    "ModelState's key set is fixed by ModelState.of(...)."
+            }
+        }
+        return ModelState(models + changes)
+    }
+
     override fun equals(other: Any?): Boolean = other is ModelState && other.models == models
 
     override fun hashCode(): Int = models.hashCode()
