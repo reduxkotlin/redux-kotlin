@@ -49,5 +49,4 @@ public value class StableStore<S>(
  * `remember(store) { StableStore(store) }`.
  */
 @Composable
-public fun <S> rememberStableStore(store: Store<S>): StableStore<S> =
-    remember(store) { StableStore(store) }
+public fun <S> rememberStableStore(store: Store<S>): StableStore<S> = remember(store) { StableStore(store) }

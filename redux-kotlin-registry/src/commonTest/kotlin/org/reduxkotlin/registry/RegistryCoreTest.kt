@@ -88,7 +88,9 @@ class RegistryCoreTest {
         val thrown = try {
             core.getOrCreate("k") { throw boom }
             null
-        } catch (t: Throwable) { t }
+        } catch (t: Throwable) {
+            t
+        }
         assertSame(boom, thrown)
         assertNull(core.get("k"))
         assertEquals(0, core.size)
@@ -191,7 +193,9 @@ class RegistryCoreTest {
         val thrown = try {
             core.getOrCreate("k") { "v" }
             null
-        } catch (t: Throwable) { t }
+        } catch (t: Throwable) {
+            t
+        }
 
         assertTrue(thrown is IllegalStateException)
         assertEquals(0, captured.size)

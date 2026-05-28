@@ -30,9 +30,7 @@ import kotlin.reflect.KClass
  * supply a default constructor or a public `NOT_SET` sentinel
  * instance, so dependent code reads `String` rather than `String?`.
  */
-public class ModelState @PublishedApi internal constructor(
-    @PublishedApi internal val models: Map<KClass<*>, Any>,
-) {
+public class ModelState @PublishedApi internal constructor(@PublishedApi internal val models: Map<KClass<*>, Any>) {
 
     /**
      * Returns the registered model of type [M].

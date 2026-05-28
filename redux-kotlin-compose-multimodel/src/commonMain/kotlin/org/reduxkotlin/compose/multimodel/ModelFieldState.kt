@@ -36,9 +36,8 @@ import kotlin.reflect.KProperty1
 @OptIn(ExperimentalObjCRefinement::class)
 @HiddenFromObjC
 @Composable
-public inline fun <reified M : Any, F> Store<ModelState>.fieldState(
-    property: KProperty1<M, F>,
-): State<F> = selectorState { state -> property.get(state.get<M>()) }
+public inline fun <reified M : Any, F> Store<ModelState>.fieldState(property: KProperty1<M, F>): State<F> =
+    selectorState { state -> property.get(state.get<M>()) }
 
 /**
  * Non-inline [KClass]-keyed alternative to the reified [fieldState]
@@ -47,7 +46,5 @@ public inline fun <reified M : Any, F> Store<ModelState>.fieldState(
  * erased from generated `.d.ts` for raw JS/TS consumers).
  */
 @Composable
-public fun <M : Any, F> Store<ModelState>.fieldStateOf(
-    modelClass: KClass<M>,
-    selector: (M) -> F,
-): State<F> = selectorState { state -> selector(state.get(modelClass)) }
+public fun <M : Any, F> Store<ModelState>.fieldStateOf(modelClass: KClass<M>, selector: (M) -> F): State<F> =
+    selectorState { state -> selector(state.get(modelClass)) }

@@ -28,8 +28,7 @@ public class TypedStoreRegistry {
      * Lock-free lookup. Returns `null` if no store has been registered for [key].
      */
     @Suppress("UNCHECKED_CAST")
-    public fun <K : Any, S : Any> get(key: StoreKey<K, S>): Store<S>? =
-        core.get(key) as Store<S>?
+    public fun <K : Any, S : Any> get(key: StoreKey<K, S>): Store<S>? = core.get(key) as Store<S>?
 
     /**
      * Returns the existing store registered for [key], or creates one with
@@ -37,10 +36,8 @@ public class TypedStoreRegistry {
      * for the full contract.
      */
     @Suppress("UNCHECKED_CAST")
-    public fun <K : Any, S : Any> getOrCreate(
-        key: StoreKey<K, S>,
-        creator: () -> Store<S>,
-    ): Store<S> = core.getOrCreate(key) { creator() } as Store<S>
+    public fun <K : Any, S : Any> getOrCreate(key: StoreKey<K, S>, creator: () -> Store<S>): Store<S> =
+        core.getOrCreate(key) { creator() } as Store<S>
 
     /** Evicts the entry for [key]. Returns true iff anything was removed. */
     public fun <K : Any, S : Any> remove(key: StoreKey<K, S>): Boolean = core.remove(key)

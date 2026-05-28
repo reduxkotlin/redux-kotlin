@@ -32,8 +32,7 @@ class RegistryConcurrencyStressTest {
     private val reducer: (S, Any) -> S = { s, _ -> s }
     private fun newStore() = createStore(reducer, S())
 
-    private fun executor(threads: Int) =
-        Executors.newFixedThreadPool(threads, DaemonThreadFactory())
+    private fun executor(threads: Int) = Executors.newFixedThreadPool(threads, DaemonThreadFactory())
 
     /**
      * 32 threads call getOrCreate on the same id simultaneously. Creator must
@@ -104,7 +103,9 @@ class RegistryConcurrencyStressTest {
                         registry.getOrCreate(id) { newStore() }
                         i++
                     }
-                } catch (t: Throwable) { errors.add(t) }
+                } catch (t: Throwable) {
+                    errors.add(t)
+                }
             }
 
             val readerFutures = (1..readerCount).map { r ->
@@ -118,7 +119,9 @@ class RegistryConcurrencyStressTest {
                             iter++
                         }
                         assertTrue(seen >= 0L, "reader $r overflowed counter (unreachable)")
-                    } catch (t: Throwable) { errors.add(t) }
+                    } catch (t: Throwable) {
+                        errors.add(t)
+                    }
                 }
             }
 
@@ -163,7 +166,9 @@ class RegistryConcurrencyStressTest {
                             if (i % 3 == 0) registry.remove(id)
                             i++
                         }
-                    } catch (t: Throwable) { errors.add(t) }
+                    } catch (t: Throwable) {
+                        errors.add(t)
+                    }
                 }
             }
 
@@ -173,7 +178,9 @@ class RegistryConcurrencyStressTest {
                         val off = registry.addListener { /* observe; no work */ }
                         off()
                     }
-                } catch (t: Throwable) { errors.add(t) }
+                } catch (t: Throwable) {
+                    errors.add(t)
+                }
             }
 
             Thread.sleep(durationMs)
@@ -224,7 +231,9 @@ class RegistryConcurrencyStressTest {
                             }
                             i++
                         }
-                    } catch (t: Throwable) { errors.add(t) }
+                    } catch (t: Throwable) {
+                        errors.add(t)
+                    }
                 }
             }
 
@@ -234,7 +243,9 @@ class RegistryConcurrencyStressTest {
                         Thread.sleep(50)
                         registry.clear()
                     }
-                } catch (t: Throwable) { errors.add(t) }
+                } catch (t: Throwable) {
+                    errors.add(t)
+                }
             }
 
             Thread.sleep(durationMs)
@@ -270,7 +281,11 @@ class RegistryConcurrencyStressTest {
                 } else {
                     e is RegistryEvent.Removed
                 }
-                val expectedLabel = if (expectingAdded) { "Added" } else { "Removed" }
+                val expectedLabel = if (expectingAdded) {
+                    "Added"
+                } else {
+                    "Removed"
+                }
                 assertTrue(ok, "id=$id event #$idx out of order: expected $expectedLabel, got $e")
                 expectingAdded = !expectingAdded
             }
