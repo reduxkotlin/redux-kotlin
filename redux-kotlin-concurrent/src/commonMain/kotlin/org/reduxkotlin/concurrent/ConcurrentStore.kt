@@ -100,7 +100,13 @@ public class CallerSerializedStore<State>(
 
     override val replaceReducer: (Reducer<State>) -> Unit = { nextReducer ->
         synchronized(lock) {
-            inner.replaceReducer(nextReducer)
+            try {
+                context.enter()
+                inner.replaceReducer(nextReducer)
+            } finally {
+                mirror.value = inner.getState()
+                context.exit()
+            }
         }
     }
 }
