@@ -72,54 +72,38 @@ jobs:
             **/build/dokka
 
   release-Artefacts:
-    name: Release to ${{ matrix.repository.name }} on ${{ matrix.os.runner }}
-    runs-on: ${{ matrix.os.runner }}
+    name: Release to ${{ matrix.repository.name }}
+    # A single macOS host cross-compiles every Kotlin target (Apple, linux, mingw, js,
+    # wasm, jvm, android), so the whole multiplatform release publishes from one runner.
+    # The Central Publisher Portal has no shared server-side staging, so splitting across
+    # OS runners would create fragmented, separately-validated deployments.
+    runs-on: macos-latest
     needs:
       - check
       - resolve-version
-    defaults:
-      run:
-        shell: ${{ matrix.os.shell }}
     env:
       VERSION: ${{ needs.resolve-version.outputs.version }}
       GH_USERNAME: ${{ github.actor }}
       GH_PASSWORD: ${{ github.token }}
-      ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SECRET }}
-      ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.GPG_SIGNING_KEY_ID }}
-      ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
-      ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-      ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+      ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SECRET }}
+      ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.GPG_SIGNING_KEY_ID }}
+      ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
+      ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+      ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
         repository:
-          - name: Github Packages
+          - name: GitHub Packages
             tasks: publishAllPublicationsToGitHubRepository
             enabled: ${{ github.event.inputs.skipGitHub != 'y' }}
           - name: Maven Central
-            # `closeSonatypeStagingRepository` Requires to manually release a new version on https://s01.oss.sonatype.org/#stagingRepositories
-            # If you're brave, you could change it to `closeAndReleaseSonatypeStagingRepository` to fully automate the release
-            tasks: publishToSonatype closeAndReleaseSonatypeStagingRepository
+            # Uploads all modules to the Central Publisher Portal and leaves the
+            # deployment for a manual Drop/Publish in the Portal UI. Swap for
+            # `publishAndReleaseToMavenCentral` to auto-release once the flow is trusted.
+            tasks: publishToMavenCentral
             enabled: ${{ github.event.inputs.skipMavenCentral != 'y' }}
-        os:
-          - runner: macos-latest
-            shell: bash
-          - runner: windows-latest
-            shell: msys2 {0}
-          - runner: ubuntu-latest
-            shell: bash
     steps:
-      - uses: msys2/setup-msys2@v2
-        if: ${{ matrix.repository.enabled == true && runner.os == 'Windows' }}
-        with:
-          release: false
-          msystem: MINGW64
-          update: true
-          path-type: inherit
-          install: >-
-            mingw-w64-x86_64-curl
-            curl
-
       - uses: actions/checkout@v6
         if: ${{ matrix.repository.enabled == true }}
 

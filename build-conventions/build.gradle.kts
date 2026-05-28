@@ -18,7 +18,7 @@ dependencies {
     implementation(libs.android.gradle.plugin)
     implementation(libs.kotlin.gradle.plugin)
     implementation("dev.detekt:detekt-gradle-plugin:${libs.versions.detekt.get()}")
-    implementation(libs.gradle.nexus.publish.plugin)
+    implementation(libs.vanniktech.maven.publish.plugin)
     implementation(libs.dokka.gradle.plugin)
 }
 
