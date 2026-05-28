@@ -62,9 +62,10 @@ fun control(targets: NamedDomainObjectCollection<KotlinTarget>) {
         printlnCI("[${it.name}] ${!CI} || $SANDBOX || ${HostManager.hostIsMingw} = $enabled")
         enabled
     }
-    mainHostTargets.onlyBuildIf {
-        val enabled = mainEnabled || SANDBOX
-        printlnCI("[${it.name}] ${!CI} || $SANDBOX || $isMainHost = $enabled")
-        mainEnabled
-    }
+    // JVM/JS/Wasm/Android targets are host-independent and are consumed across the build
+    // (e.g. the Android sample apps depend on the example `:common` modules' compiled
+    // output). Host-gating their compilation — correct for native targets — starves those
+    // consumers on non-main hosts: the Android examples then fail to resolve their deps on a
+    // clean build. So always compile them; only native targets remain host-gated above.
+    mainHostTargets.onlyBuildIf { true }
 }
