@@ -11,7 +11,7 @@ internal actual class DispatchContext actual constructor() {
     }
 
     actual fun exit() {
-        depth--
+        if (depth > 0) depth--
     }
 
     actual val isActive: Boolean
