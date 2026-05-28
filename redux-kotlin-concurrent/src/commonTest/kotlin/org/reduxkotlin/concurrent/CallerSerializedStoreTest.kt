@@ -13,10 +13,10 @@ class CallerSerializedStoreTest {
     private val reducer: Reducer<S> = { s, a -> if (a is Inc) s.copy(count = s.count + 1) else s }
 
     private fun store(onError: (Throwable) -> Unit = LogAndContinue) = CallerSerializedStore(
-            inner = org.reduxkotlin.createStore(reducer, S()),
-            notificationContext = NotificationContext.Inline,
-            onError = onError,
-        )
+        inner = org.reduxkotlin.createStore(reducer, S()),
+        notificationContext = NotificationContext.Inline,
+        onError = onError,
+    )
 
     @Test
     fun dispatch_updates_state_visible_via_getState() {
@@ -87,15 +87,24 @@ class CallerSerializedStoreTest {
     }
 
     @Test
-    fun replaceReducer_runs_through_the_sequencer() {
+    fun replaceReducer_publishes_mirror_and_routes_context() {
         val s = store()
-        s.dispatch(Inc)
+        s.dispatch(Inc) // count = 1
+        var observedDuringReplace = -1
         var hits = 0
-        s.subscribe { hits++ }
-        s.replaceReducer { st, a -> if (a is Inc) st.copy(count = st.count + 10) else st }
+        s.subscribe {
+            hits++
+            observedDuringReplace = s.state.count
+        }
+        // New reducer: the REPLACE action (not Inc) sets a sentinel; Inc adds 10.
+        s.replaceReducer { st, a -> if (a is Inc) st.copy(count = st.count + 10) else st.copy(count = 42) }
+        // Off-context read with NO trailing dispatch must see the post-REPLACE state.
+        assertEquals(42, s.state.count, "mirror must be published after replaceReducer")
+        // The subscriber fired exactly once for REPLACE, and its on-context getState
+        // during the REPLACE fan-out routed to the inner store (saw the new state).
         assertEquals(1, hits, "REPLACE should notify the wrapper's listeners exactly once")
+        assertEquals(42, observedDuringReplace, "on-context getState during REPLACE must route to inner")
         s.dispatch(Inc)
-        assertEquals(11, s.state.count)
-        assertEquals(2, hits)
+        assertEquals(52, s.state.count)
     }
 }
