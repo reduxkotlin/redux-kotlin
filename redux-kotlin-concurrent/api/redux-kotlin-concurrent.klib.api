@@ -1,0 +1,38 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-concurrent>
+abstract fun interface org.reduxkotlin.concurrent/NotificationContext { // org.reduxkotlin.concurrent/NotificationContext|null[0]
+    abstract fun post(kotlin/Function0<kotlin/Unit>) // org.reduxkotlin.concurrent/NotificationContext.post|post(kotlin.Function0<kotlin.Unit>){}[0]
+
+    final object Companion { // org.reduxkotlin.concurrent/NotificationContext.Companion|null[0]
+        final val Inline // org.reduxkotlin.concurrent/NotificationContext.Companion.Inline|{}Inline[0]
+            final fun <get-Inline>(): org.reduxkotlin.concurrent/NotificationContext // org.reduxkotlin.concurrent/NotificationContext.Companion.Inline.<get-Inline>|<get-Inline>(){}[0]
+    }
+}
+
+abstract interface <#A: kotlin/Any?> org.reduxkotlin.concurrent/ConcurrentStore : org.reduxkotlin/TypedStore<#A, kotlin/Any> // org.reduxkotlin.concurrent/ConcurrentStore|null[0]
+
+final class <#A: kotlin/Any?> org.reduxkotlin.concurrent/CallerSerializedStore : org.reduxkotlin.concurrent/ConcurrentStore<#A> { // org.reduxkotlin.concurrent/CallerSerializedStore|null[0]
+    constructor <init>(org.reduxkotlin/TypedStore<#A, kotlin/Any>, org.reduxkotlin.concurrent/NotificationContext, kotlin/Function1<kotlin/Throwable, kotlin/Unit>) // org.reduxkotlin.concurrent/CallerSerializedStore.<init>|<init>(org.reduxkotlin.TypedStore<1:0,kotlin.Any>;org.reduxkotlin.concurrent.NotificationContext;kotlin.Function1<kotlin.Throwable,kotlin.Unit>){}[0]
+
+    final val getState // org.reduxkotlin.concurrent/CallerSerializedStore.getState|{}getState[0]
+        final fun <get-getState>(): kotlin/Function0<#A> // org.reduxkotlin.concurrent/CallerSerializedStore.getState.<get-getState>|<get-getState>(){}[0]
+    final val replaceReducer // org.reduxkotlin.concurrent/CallerSerializedStore.replaceReducer|{}replaceReducer[0]
+        final fun <get-replaceReducer>(): kotlin/Function1<kotlin/Function2<#A, kotlin/Any, #A>, kotlin/Unit> // org.reduxkotlin.concurrent/CallerSerializedStore.replaceReducer.<get-replaceReducer>|<get-replaceReducer>(){}[0]
+    final val store // org.reduxkotlin.concurrent/CallerSerializedStore.store|{}store[0]
+        final fun <get-store>(): org.reduxkotlin/TypedStore<#A, kotlin/Any> // org.reduxkotlin.concurrent/CallerSerializedStore.store.<get-store>|<get-store>(){}[0]
+    final val subscribe // org.reduxkotlin.concurrent/CallerSerializedStore.subscribe|{}subscribe[0]
+        final fun <get-subscribe>(): kotlin/Function1<kotlin/Function0<kotlin/Unit>, kotlin/Function0<kotlin/Unit>> // org.reduxkotlin.concurrent/CallerSerializedStore.subscribe.<get-subscribe>|<get-subscribe>(){}[0]
+
+    final var dispatch // org.reduxkotlin.concurrent/CallerSerializedStore.dispatch|{}dispatch[0]
+        final fun <get-dispatch>(): kotlin/Function1<kotlin/Any, kotlin/Any> // org.reduxkotlin.concurrent/CallerSerializedStore.dispatch.<get-dispatch>|<get-dispatch>(){}[0]
+        final fun <set-dispatch>(kotlin/Function1<kotlin/Any, kotlin/Any>) // org.reduxkotlin.concurrent/CallerSerializedStore.dispatch.<set-dispatch>|<set-dispatch>(kotlin.Function1<kotlin.Any,kotlin.Any>){}[0]
+}
+
+final val org.reduxkotlin.concurrent/LogAndContinue // org.reduxkotlin.concurrent/LogAndContinue|{}LogAndContinue[0]
+    final fun <get-LogAndContinue>(): kotlin/Function1<kotlin/Throwable, kotlin/Unit> // org.reduxkotlin.concurrent/LogAndContinue.<get-LogAndContinue>|<get-LogAndContinue>(){}[0]

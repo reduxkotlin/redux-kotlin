@@ -1,0 +1,31 @@
+public final class org/reduxkotlin/concurrent/CallerSerializedStore : org/reduxkotlin/concurrent/ConcurrentStore {
+	public fun <init> (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;)V
+	public fun getDispatch ()Lkotlin/jvm/functions/Function1;
+	public fun getGetState ()Lkotlin/jvm/functions/Function0;
+	public fun getReplaceReducer ()Lkotlin/jvm/functions/Function1;
+	public fun getState ()Ljava/lang/Object;
+	public fun getStore ()Lorg/reduxkotlin/TypedStore;
+	public fun getSubscribe ()Lkotlin/jvm/functions/Function1;
+	public fun setDispatch (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class org/reduxkotlin/concurrent/ConcurrentStore : org/reduxkotlin/TypedStore {
+}
+
+public final class org/reduxkotlin/concurrent/ConcurrentStore$DefaultImpls {
+	public static fun getState (Lorg/reduxkotlin/concurrent/ConcurrentStore;)Ljava/lang/Object;
+}
+
+public abstract interface class org/reduxkotlin/concurrent/NotificationContext {
+	public static final field Companion Lorg/reduxkotlin/concurrent/NotificationContext$Companion;
+	public abstract fun post (Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class org/reduxkotlin/concurrent/NotificationContext$Companion {
+	public final fun getInline ()Lorg/reduxkotlin/concurrent/NotificationContext;
+}
+
+public final class org/reduxkotlin/concurrent/NotificationContextKt {
+	public static final fun getLogAndContinue ()Lkotlin/jvm/functions/Function1;
+}
+
