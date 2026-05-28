@@ -1,0 +1,50 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Alias: native => [iosArm64, iosSimulatorArm64, iosX64, linuxX64, macosArm64, macosX64, mingwX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-threadsafe>
+final fun <#A: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.threadsafe/asThreadSafe(): org.reduxkotlin.threadsafe/ThreadSafeStore<#A> // org.reduxkotlin.threadsafe/asThreadSafe|asThreadSafe@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.threadsafe/createSynchronizedStoreEnhancer(): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.threadsafe/createSynchronizedStoreEnhancer|createSynchronizedStoreEnhancer(){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.threadsafe/createThreadSafeStore(kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>>? = ...): org.reduxkotlin/TypedStore<#A, kotlin/Any> // org.reduxkotlin.threadsafe/createThreadSafeStore|createThreadSafeStore(kotlin.Function2<0:0,kotlin.Any,0:0>;0:0;kotlin.Function1<kotlin.Function3<kotlin.Function2<0:0,kotlin.Any,0:0>,0:0,kotlin.Any?,org.reduxkotlin.TypedStore<0:0,kotlin.Any>>,kotlin.Function3<kotlin.Function2<0:0,kotlin.Any,0:0>,0:0,kotlin.Any?,org.reduxkotlin.TypedStore<0:0,kotlin.Any>>>?){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.threadsafe/createThreadSafeStoreEnhancer(): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.threadsafe/createThreadSafeStoreEnhancer|createThreadSafeStoreEnhancer(){0§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?, #B: reified kotlin/Any> org.reduxkotlin.threadsafe/createTypedThreadSafeStore(crossinline kotlin/Function2<#A, #B, #A>, #A, noinline kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>>? = ...): org.reduxkotlin/TypedStore<#A, #B> // org.reduxkotlin.threadsafe/createTypedThreadSafeStore|createTypedThreadSafeStore(kotlin.Function2<0:0,0:1,0:0>;0:0;kotlin.Function1<kotlin.Function3<kotlin.Function2<0:0,kotlin.Any,0:0>,0:0,kotlin.Any?,org.reduxkotlin.TypedStore<0:0,kotlin.Any>>,kotlin.Function3<kotlin.Function2<0:0,kotlin.Any,0:0>,0:0,kotlin.Any?,org.reduxkotlin.TypedStore<0:0,kotlin.Any>>>?){0§<kotlin.Any?>;1§<kotlin.Any>}[0]
+
+// Targets: [native]
+final class <#A: kotlin/Any?> org.reduxkotlin.threadsafe/ThreadSafeStore : kotlinx.atomicfu.locks/SynchronizedObject, org.reduxkotlin/TypedStore<#A, kotlin/Any> { // org.reduxkotlin.threadsafe/ThreadSafeStore|null[0]
+    constructor <init>(org.reduxkotlin/TypedStore<#A, kotlin/Any>) // org.reduxkotlin.threadsafe/ThreadSafeStore.<init>|<init>(org.reduxkotlin.TypedStore<1:0,kotlin.Any>){}[0]
+
+    final val getState // org.reduxkotlin.threadsafe/ThreadSafeStore.getState|{}getState[0]
+        final fun <get-getState>(): kotlin/Function0<#A> // org.reduxkotlin.threadsafe/ThreadSafeStore.getState.<get-getState>|<get-getState>(){}[0]
+    final val replaceReducer // org.reduxkotlin.threadsafe/ThreadSafeStore.replaceReducer|{}replaceReducer[0]
+        final fun <get-replaceReducer>(): kotlin/Function1<kotlin/Function2<#A, kotlin/Any, #A>, kotlin/Unit> // org.reduxkotlin.threadsafe/ThreadSafeStore.replaceReducer.<get-replaceReducer>|<get-replaceReducer>(){}[0]
+    final val store // org.reduxkotlin.threadsafe/ThreadSafeStore.store|{}store[0]
+        final fun <get-store>(): org.reduxkotlin/TypedStore<#A, kotlin/Any> // org.reduxkotlin.threadsafe/ThreadSafeStore.store.<get-store>|<get-store>(){}[0]
+    final val subscribe // org.reduxkotlin.threadsafe/ThreadSafeStore.subscribe|{}subscribe[0]
+        final fun <get-subscribe>(): kotlin/Function1<kotlin/Function0<kotlin/Unit>, kotlin/Function0<kotlin/Unit>> // org.reduxkotlin.threadsafe/ThreadSafeStore.subscribe.<get-subscribe>|<get-subscribe>(){}[0]
+
+    final var dispatch // org.reduxkotlin.threadsafe/ThreadSafeStore.dispatch|{}dispatch[0]
+        final fun <get-dispatch>(): kotlin/Function1<kotlin/Any, kotlin/Any> // org.reduxkotlin.threadsafe/ThreadSafeStore.dispatch.<get-dispatch>|<get-dispatch>(){}[0]
+        final fun <set-dispatch>(kotlin/Function1<kotlin/Any, kotlin/Any>) // org.reduxkotlin.threadsafe/ThreadSafeStore.dispatch.<set-dispatch>|<set-dispatch>(kotlin.Function1<kotlin.Any,kotlin.Any>){}[0]
+}
+
+// Targets: [js, wasmJs]
+final class <#A: kotlin/Any?> org.reduxkotlin.threadsafe/ThreadSafeStore : org.reduxkotlin/TypedStore<#A, kotlin/Any> { // org.reduxkotlin.threadsafe/ThreadSafeStore|null[0]
+    constructor <init>(org.reduxkotlin/TypedStore<#A, kotlin/Any>) // org.reduxkotlin.threadsafe/ThreadSafeStore.<init>|<init>(org.reduxkotlin.TypedStore<1:0,kotlin.Any>){}[0]
+
+    final val getState // org.reduxkotlin.threadsafe/ThreadSafeStore.getState|{}getState[0]
+        final fun <get-getState>(): kotlin/Function0<#A> // org.reduxkotlin.threadsafe/ThreadSafeStore.getState.<get-getState>|<get-getState>(){}[0]
+    final val replaceReducer // org.reduxkotlin.threadsafe/ThreadSafeStore.replaceReducer|{}replaceReducer[0]
+        final fun <get-replaceReducer>(): kotlin/Function1<kotlin/Function2<#A, kotlin/Any, #A>, kotlin/Unit> // org.reduxkotlin.threadsafe/ThreadSafeStore.replaceReducer.<get-replaceReducer>|<get-replaceReducer>(){}[0]
+    final val store // org.reduxkotlin.threadsafe/ThreadSafeStore.store|{}store[0]
+        final fun <get-store>(): org.reduxkotlin/TypedStore<#A, kotlin/Any> // org.reduxkotlin.threadsafe/ThreadSafeStore.store.<get-store>|<get-store>(){}[0]
+    final val subscribe // org.reduxkotlin.threadsafe/ThreadSafeStore.subscribe|{}subscribe[0]
+        final fun <get-subscribe>(): kotlin/Function1<kotlin/Function0<kotlin/Unit>, kotlin/Function0<kotlin/Unit>> // org.reduxkotlin.threadsafe/ThreadSafeStore.subscribe.<get-subscribe>|<get-subscribe>(){}[0]
+
+    final var dispatch // org.reduxkotlin.threadsafe/ThreadSafeStore.dispatch|{}dispatch[0]
+        final fun <get-dispatch>(): kotlin/Function1<kotlin/Any, kotlin/Any> // org.reduxkotlin.threadsafe/ThreadSafeStore.dispatch.<get-dispatch>|<get-dispatch>(){}[0]
+        final fun <set-dispatch>(kotlin/Function1<kotlin/Any, kotlin/Any>) // org.reduxkotlin.threadsafe/ThreadSafeStore.dispatch.<set-dispatch>|<set-dispatch>(kotlin.Function1<kotlin.Any,kotlin.Any>){}[0]
+}

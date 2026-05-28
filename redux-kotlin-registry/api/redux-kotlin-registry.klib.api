@@ -1,0 +1,114 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-registry>
+sealed interface <#A: out kotlin/Any?> org.reduxkotlin.registry/RegistryEvent { // org.reduxkotlin.registry/RegistryEvent|null[0]
+    abstract val id // org.reduxkotlin.registry/RegistryEvent.id|{}id[0]
+        abstract fun <get-id>(): #A // org.reduxkotlin.registry/RegistryEvent.id.<get-id>|<get-id>(){}[0]
+
+    final class <#A1: kotlin/Any?> Added : org.reduxkotlin.registry/RegistryEvent<#A1> { // org.reduxkotlin.registry/RegistryEvent.Added|null[0]
+        constructor <init>(#A1) // org.reduxkotlin.registry/RegistryEvent.Added.<init>|<init>(1:0){}[0]
+
+        final val id // org.reduxkotlin.registry/RegistryEvent.Added.id|{}id[0]
+            final fun <get-id>(): #A1 // org.reduxkotlin.registry/RegistryEvent.Added.id.<get-id>|<get-id>(){}[0]
+
+        final fun component1(): #A1 // org.reduxkotlin.registry/RegistryEvent.Added.component1|component1(){}[0]
+        final fun copy(#A1 = ...): org.reduxkotlin.registry/RegistryEvent.Added<#A1> // org.reduxkotlin.registry/RegistryEvent.Added.copy|copy(1:0){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.registry/RegistryEvent.Added.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.registry/RegistryEvent.Added.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.registry/RegistryEvent.Added.toString|toString(){}[0]
+    }
+
+    final class <#A1: kotlin/Any?> Removed : org.reduxkotlin.registry/RegistryEvent<#A1> { // org.reduxkotlin.registry/RegistryEvent.Removed|null[0]
+        constructor <init>(#A1) // org.reduxkotlin.registry/RegistryEvent.Removed.<init>|<init>(1:0){}[0]
+
+        final val id // org.reduxkotlin.registry/RegistryEvent.Removed.id|{}id[0]
+            final fun <get-id>(): #A1 // org.reduxkotlin.registry/RegistryEvent.Removed.id.<get-id>|<get-id>(){}[0]
+
+        final fun component1(): #A1 // org.reduxkotlin.registry/RegistryEvent.Removed.component1|component1(){}[0]
+        final fun copy(#A1 = ...): org.reduxkotlin.registry/RegistryEvent.Removed<#A1> // org.reduxkotlin.registry/RegistryEvent.Removed.copy|copy(1:0){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.registry/RegistryEvent.Removed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.registry/RegistryEvent.Removed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.registry/RegistryEvent.Removed.toString|toString(){}[0]
+    }
+}
+
+sealed interface org.reduxkotlin.registry/TypedRegistryEvent { // org.reduxkotlin.registry/TypedRegistryEvent|null[0]
+    abstract val key // org.reduxkotlin.registry/TypedRegistryEvent.key|{}key[0]
+        abstract fun <get-key>(): org.reduxkotlin.registry/StoreKey<*, *> // org.reduxkotlin.registry/TypedRegistryEvent.key.<get-key>|<get-key>(){}[0]
+
+    final class Added : org.reduxkotlin.registry/TypedRegistryEvent { // org.reduxkotlin.registry/TypedRegistryEvent.Added|null[0]
+        constructor <init>(org.reduxkotlin.registry/StoreKey<*, *>) // org.reduxkotlin.registry/TypedRegistryEvent.Added.<init>|<init>(org.reduxkotlin.registry.StoreKey<*,*>){}[0]
+
+        final val key // org.reduxkotlin.registry/TypedRegistryEvent.Added.key|{}key[0]
+            final fun <get-key>(): org.reduxkotlin.registry/StoreKey<*, *> // org.reduxkotlin.registry/TypedRegistryEvent.Added.key.<get-key>|<get-key>(){}[0]
+
+        final fun component1(): org.reduxkotlin.registry/StoreKey<*, *> // org.reduxkotlin.registry/TypedRegistryEvent.Added.component1|component1(){}[0]
+        final fun copy(org.reduxkotlin.registry/StoreKey<*, *> = ...): org.reduxkotlin.registry/TypedRegistryEvent.Added // org.reduxkotlin.registry/TypedRegistryEvent.Added.copy|copy(org.reduxkotlin.registry.StoreKey<*,*>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.registry/TypedRegistryEvent.Added.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.registry/TypedRegistryEvent.Added.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.registry/TypedRegistryEvent.Added.toString|toString(){}[0]
+    }
+
+    final class Removed : org.reduxkotlin.registry/TypedRegistryEvent { // org.reduxkotlin.registry/TypedRegistryEvent.Removed|null[0]
+        constructor <init>(org.reduxkotlin.registry/StoreKey<*, *>) // org.reduxkotlin.registry/TypedRegistryEvent.Removed.<init>|<init>(org.reduxkotlin.registry.StoreKey<*,*>){}[0]
+
+        final val key // org.reduxkotlin.registry/TypedRegistryEvent.Removed.key|{}key[0]
+            final fun <get-key>(): org.reduxkotlin.registry/StoreKey<*, *> // org.reduxkotlin.registry/TypedRegistryEvent.Removed.key.<get-key>|<get-key>(){}[0]
+
+        final fun component1(): org.reduxkotlin.registry/StoreKey<*, *> // org.reduxkotlin.registry/TypedRegistryEvent.Removed.component1|component1(){}[0]
+        final fun copy(org.reduxkotlin.registry/StoreKey<*, *> = ...): org.reduxkotlin.registry/TypedRegistryEvent.Removed // org.reduxkotlin.registry/TypedRegistryEvent.Removed.copy|copy(org.reduxkotlin.registry.StoreKey<*,*>){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.registry/TypedRegistryEvent.Removed.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.registry/TypedRegistryEvent.Removed.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.registry/TypedRegistryEvent.Removed.toString|toString(){}[0]
+    }
+}
+
+final class <#A: kotlin/Any, #B: kotlin/Any> org.reduxkotlin.registry/StoreKey { // org.reduxkotlin.registry/StoreKey|null[0]
+    constructor <init>(#A, kotlin.reflect/KClass<#B>) // org.reduxkotlin.registry/StoreKey.<init>|<init>(1:0;kotlin.reflect.KClass<1:1>){}[0]
+
+    final val id // org.reduxkotlin.registry/StoreKey.id|{}id[0]
+        final fun <get-id>(): #A // org.reduxkotlin.registry/StoreKey.id.<get-id>|<get-id>(){}[0]
+    final val stateType // org.reduxkotlin.registry/StoreKey.stateType|{}stateType[0]
+        final fun <get-stateType>(): kotlin.reflect/KClass<#B> // org.reduxkotlin.registry/StoreKey.stateType.<get-stateType>|<get-stateType>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.registry/StoreKey.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.registry/StoreKey.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.registry/StoreKey.toString|toString(){}[0]
+}
+
+final class <#A: kotlin/Any, #B: kotlin/Any?> org.reduxkotlin.registry/StoreRegistry { // org.reduxkotlin.registry/StoreRegistry|null[0]
+    constructor <init>() // org.reduxkotlin.registry/StoreRegistry.<init>|<init>(){}[0]
+
+    final val isEmpty // org.reduxkotlin.registry/StoreRegistry.isEmpty|{}isEmpty[0]
+        final fun <get-isEmpty>(): kotlin/Boolean // org.reduxkotlin.registry/StoreRegistry.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
+    final val size // org.reduxkotlin.registry/StoreRegistry.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // org.reduxkotlin.registry/StoreRegistry.size.<get-size>|<get-size>(){}[0]
+
+    final fun addListener(kotlin/Function1<org.reduxkotlin.registry/RegistryEvent<#A>, kotlin/Unit>): kotlin/Function0<kotlin/Unit> // org.reduxkotlin.registry/StoreRegistry.addListener|addListener(kotlin.Function1<org.reduxkotlin.registry.RegistryEvent<1:0>,kotlin.Unit>){}[0]
+    final fun clear() // org.reduxkotlin.registry/StoreRegistry.clear|clear(){}[0]
+    final fun get(#A): org.reduxkotlin/TypedStore<#B, kotlin/Any>? // org.reduxkotlin.registry/StoreRegistry.get|get(1:0){}[0]
+    final fun getOrCreate(#A, kotlin/Function0<org.reduxkotlin/TypedStore<#B, kotlin/Any>>): org.reduxkotlin/TypedStore<#B, kotlin/Any> // org.reduxkotlin.registry/StoreRegistry.getOrCreate|getOrCreate(1:0;kotlin.Function0<org.reduxkotlin.TypedStore<1:1,kotlin.Any>>){}[0]
+    final fun remove(#A): kotlin/Boolean // org.reduxkotlin.registry/StoreRegistry.remove|remove(1:0){}[0]
+}
+
+final class org.reduxkotlin.registry/TypedStoreRegistry { // org.reduxkotlin.registry/TypedStoreRegistry|null[0]
+    constructor <init>() // org.reduxkotlin.registry/TypedStoreRegistry.<init>|<init>(){}[0]
+
+    final val isEmpty // org.reduxkotlin.registry/TypedStoreRegistry.isEmpty|{}isEmpty[0]
+        final fun <get-isEmpty>(): kotlin/Boolean // org.reduxkotlin.registry/TypedStoreRegistry.isEmpty.<get-isEmpty>|<get-isEmpty>(){}[0]
+    final val size // org.reduxkotlin.registry/TypedStoreRegistry.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // org.reduxkotlin.registry/TypedStoreRegistry.size.<get-size>|<get-size>(){}[0]
+
+    final fun <#A1: kotlin/Any, #B1: kotlin/Any> get(org.reduxkotlin.registry/StoreKey<#A1, #B1>): org.reduxkotlin/TypedStore<#B1, kotlin/Any>? // org.reduxkotlin.registry/TypedStoreRegistry.get|get(org.reduxkotlin.registry.StoreKey<0:0,0:1>){0§<kotlin.Any>;1§<kotlin.Any>}[0]
+    final fun <#A1: kotlin/Any, #B1: kotlin/Any> getOrCreate(org.reduxkotlin.registry/StoreKey<#A1, #B1>, kotlin/Function0<org.reduxkotlin/TypedStore<#B1, kotlin/Any>>): org.reduxkotlin/TypedStore<#B1, kotlin/Any> // org.reduxkotlin.registry/TypedStoreRegistry.getOrCreate|getOrCreate(org.reduxkotlin.registry.StoreKey<0:0,0:1>;kotlin.Function0<org.reduxkotlin.TypedStore<0:1,kotlin.Any>>){0§<kotlin.Any>;1§<kotlin.Any>}[0]
+    final fun <#A1: kotlin/Any, #B1: kotlin/Any> remove(org.reduxkotlin.registry/StoreKey<#A1, #B1>): kotlin/Boolean // org.reduxkotlin.registry/TypedStoreRegistry.remove|remove(org.reduxkotlin.registry.StoreKey<0:0,0:1>){0§<kotlin.Any>;1§<kotlin.Any>}[0]
+    final fun addListener(kotlin/Function1<org.reduxkotlin.registry/TypedRegistryEvent, kotlin/Unit>): kotlin/Function0<kotlin/Unit> // org.reduxkotlin.registry/TypedStoreRegistry.addListener|addListener(kotlin.Function1<org.reduxkotlin.registry.TypedRegistryEvent,kotlin.Unit>){}[0]
+    final fun clear() // org.reduxkotlin.registry/TypedStoreRegistry.clear|clear(){}[0]
+}
+
+final inline fun <#A: kotlin/Any, #B: reified kotlin/Any> org.reduxkotlin.registry/storeKey(#A): org.reduxkotlin.registry/StoreKey<#A, #B> // org.reduxkotlin.registry/storeKey|storeKey(0:0){0§<kotlin.Any>;1§<kotlin.Any>}[0]

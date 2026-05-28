@@ -1,0 +1,29 @@
+public abstract interface class org/reduxkotlin/granular/FieldSubscriptionScope {
+	public abstract fun on (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;)V
+	public abstract fun on (Lkotlin/reflect/KProperty1;ZLkotlin/jvm/functions/Function2;)V
+	public static synthetic fun on$default (Lorg/reduxkotlin/granular/FieldSubscriptionScope;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static synthetic fun on$default (Lorg/reduxkotlin/granular/FieldSubscriptionScope;Lkotlin/reflect/KProperty1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class org/reduxkotlin/granular/FieldSubscriptionScope$DefaultImpls {
+	public static synthetic fun on$default (Lorg/reduxkotlin/granular/FieldSubscriptionScope;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static synthetic fun on$default (Lorg/reduxkotlin/granular/FieldSubscriptionScope;Lkotlin/reflect/KProperty1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class org/reduxkotlin/granular/GranularSubscriptionsEnhancerKt {
+	public static final fun granularSubscriptionsEnhancer ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class org/reduxkotlin/granular/SubscribeFieldsKPropertyKt {
+	public static final fun subscribeTo (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KProperty1;ZLkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function0;
+	public static synthetic fun subscribeTo$default (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KProperty1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlin/jvm/functions/Function0;
+}
+
+public final class org/reduxkotlin/granular/SubscribeFieldsKt {
+	public static final fun subscribeFields (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function0;
+	public static final fun subscribeFields (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function0;
+	public static synthetic fun subscribeFields$default (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlin/jvm/functions/Function0;
+	public static final fun subscribeTo (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function0;
+	public static synthetic fun subscribeTo$default (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlin/jvm/functions/Function0;
+}
+

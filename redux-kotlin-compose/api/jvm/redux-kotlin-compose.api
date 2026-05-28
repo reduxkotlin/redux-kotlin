@@ -1,0 +1,23 @@
+public final class org/reduxkotlin/compose/FieldStateKt {
+	public static final fun fieldState (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KProperty1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+	public static final fun selectorState (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+}
+
+public final class org/reduxkotlin/compose/StableStore {
+	public static final synthetic fun box-impl (Lorg/reduxkotlin/TypedStore;)Lorg/reduxkotlin/compose/StableStore;
+	public static fun constructor-impl (Lorg/reduxkotlin/TypedStore;)Lorg/reduxkotlin/TypedStore;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lorg/reduxkotlin/TypedStore;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/TypedStore;)Z
+	public final fun getValue ()Lorg/reduxkotlin/TypedStore;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lorg/reduxkotlin/TypedStore;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lorg/reduxkotlin/TypedStore;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lorg/reduxkotlin/TypedStore;
+}
+
+public final class org/reduxkotlin/compose/StableStoreKt {
+	public static final fun rememberStableStore (Lorg/reduxkotlin/TypedStore;Landroidx/compose/runtime/Composer;I)Lorg/reduxkotlin/TypedStore;
+}
+

@@ -1,0 +1,18 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-granular>
+abstract interface <#A: kotlin/Any?> org.reduxkotlin.granular/FieldSubscriptionScope { // org.reduxkotlin.granular/FieldSubscriptionScope|null[0]
+    abstract fun <#A1: kotlin/Any?> on(kotlin.reflect/KProperty1<#A, #A1>, kotlin/Boolean = ..., kotlin/Function2<#A1, #A1, kotlin/Unit>) // org.reduxkotlin.granular/FieldSubscriptionScope.on|on(kotlin.reflect.KProperty1<1:0,0:0>;kotlin.Boolean;kotlin.Function2<0:0,0:0,kotlin.Unit>){0§<kotlin.Any?>}[0]
+    abstract fun <#A1: kotlin/Any?> on(kotlin/Function1<#A, #A1>, kotlin/Boolean = ..., kotlin/Function2<#A1, #A1, kotlin/Unit>) // org.reduxkotlin.granular/FieldSubscriptionScope.on|on(kotlin.Function1<1:0,0:0>;kotlin.Boolean;kotlin.Function2<0:0,0:0,kotlin.Unit>){0§<kotlin.Any?>}[0]
+}
+
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.granular/subscribeTo(kotlin.reflect/KProperty1<#A, #B>, kotlin/Boolean = ..., kotlin/Function2<#B, #B, kotlin/Unit>): kotlin/Function0<kotlin/Unit> // org.reduxkotlin.granular/subscribeTo|subscribeTo@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(kotlin.reflect.KProperty1<0:0,0:1>;kotlin.Boolean;kotlin.Function2<0:1,0:1,kotlin.Unit>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.granular/subscribeTo(kotlin/Function1<#A, #B>, kotlin/Boolean = ..., kotlin/Function2<#B, #B, kotlin/Unit>): kotlin/Function0<kotlin/Unit> // org.reduxkotlin.granular/subscribeTo|subscribeTo@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(kotlin.Function1<0:0,0:1>;kotlin.Boolean;kotlin.Function2<0:1,0:1,kotlin.Unit>){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.granular/subscribeFields(kotlin/Function1<kotlin/Throwable, kotlin/Unit>? = ..., kotlin/Function1<org.reduxkotlin.granular/FieldSubscriptionScope<#A>, kotlin/Unit>): kotlin/Function0<kotlin/Unit> // org.reduxkotlin.granular/subscribeFields|subscribeFields@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(kotlin.Function1<kotlin.Throwable,kotlin.Unit>?;kotlin.Function1<org.reduxkotlin.granular.FieldSubscriptionScope<0:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.granular/granularSubscriptionsEnhancer(): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.granular/granularSubscriptionsEnhancer|granularSubscriptionsEnhancer(){0§<kotlin.Any?>}[0]
+final inline fun <#A: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.granular/subscribeFields(crossinline kotlin/Function1<org.reduxkotlin.granular/FieldSubscriptionScope<#A>, kotlin/Unit>): kotlin/Function0<kotlin/Unit> // org.reduxkotlin.granular/subscribeFields|subscribeFields@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(kotlin.Function1<org.reduxkotlin.granular.FieldSubscriptionScope<0:0>,kotlin.Unit>){0§<kotlin.Any?>}[0]

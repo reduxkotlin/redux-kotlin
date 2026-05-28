@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
     id("convention.common")
@@ -8,6 +9,15 @@ plugins {
 }
 
 kotlin {
+    // Track the public ABI of every published library module. Dumps live under
+    // each module's `api/` dir (JVM + merged klib). `checkKotlinAbi` (aggregated
+    // by the root `apiCheck` task) gates surface drift; regenerate with
+    // `./gradlew apiDump` after an intentional public-API change.
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled.set(true)
+    }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     applyDefaultHierarchyTemplate {
         common {
