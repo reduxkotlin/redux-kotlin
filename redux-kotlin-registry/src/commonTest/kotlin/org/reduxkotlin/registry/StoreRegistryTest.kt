@@ -20,8 +20,7 @@ class StoreRegistryTest {
 
     private fun newRegistry() = StoreRegistry<String, CounterState>()
 
-    private fun newStore(initial: Int = 0): Store<CounterState> =
-        createStore(reducer, CounterState(initial))
+    private fun newStore(initial: Int = 0): Store<CounterState> = createStore(reducer, CounterState(initial))
 
     @Test
     fun get_returns_null_when_absent() {

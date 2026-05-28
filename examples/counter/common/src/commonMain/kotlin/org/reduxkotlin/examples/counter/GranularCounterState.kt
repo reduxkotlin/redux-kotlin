@@ -32,15 +32,19 @@ public val granularCounterReducer: Reducer<GranularCounterState> = { state, acti
             count = state.count + action.amount,
             lastAction = "Increment(${action.amount})",
         )
+
         is GranularDecrement -> state.copy(
             count = state.count - action.amount,
             lastAction = "Decrement(${action.amount})",
         )
+
         is GranularSetLabel -> state.copy(
             label = action.label,
             lastAction = "SetLabel(${action.label})",
         )
+
         is GranularReset -> GranularCounterState(lastAction = "Reset")
+
         else -> state
     }
 }

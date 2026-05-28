@@ -40,9 +40,7 @@ import kotlin.reflect.KProperty1
  * resubscribe by hand inside a `LaunchedEffect` keyed on the variable.
  */
 @Composable
-public fun <S, F> Store<S>.selectorState(
-    selector: (S) -> F,
-): State<F> {
+public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
     val store = this
     val rememberedSelector = remember(store) { selector }
     val mutableState = remember(store, rememberedSelector) {
@@ -75,9 +73,7 @@ public fun <S, F> Store<S>.selectorState(
 @OptIn(ExperimentalObjCRefinement::class)
 @HiddenFromObjC
 @Composable
-public fun <S, F> Store<S>.fieldState(
-    property: KProperty1<S, F>,
-): State<F> {
+public fun <S, F> Store<S>.fieldState(property: KProperty1<S, F>): State<F> {
     val store = this
     val mutableState = remember(store, property) {
         mutableStateOf(property.get(store.state))

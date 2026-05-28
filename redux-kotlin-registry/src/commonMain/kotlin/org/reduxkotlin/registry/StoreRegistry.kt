@@ -65,8 +65,7 @@ public class StoreRegistry<K : Any, S> {
      *
      * Fires [RegistryEvent.Added] only on actual creation; not on a hit.
      */
-    public fun getOrCreate(id: K, creator: () -> Store<S>): Store<S> =
-        core.getOrCreate(id, creator)
+    public fun getOrCreate(id: K, creator: () -> Store<S>): Store<S> = core.getOrCreate(id, creator)
 
     /**
      * Evicts the entry for [id] and returns `true` if anything was removed.
@@ -90,10 +89,9 @@ public class StoreRegistry<K : Any, S> {
      * invoked, unregisters. See the class KDoc for the listener invocation
      * contract.
      */
-    public fun addListener(listener: (RegistryEvent<K>) -> Unit): RegistrySubscription =
-        core.addListener { coreEvent ->
-            listener(coreEvent.toPublic())
-        }
+    public fun addListener(listener: (RegistryEvent<K>) -> Unit): RegistrySubscription = core.addListener { coreEvent ->
+        listener(coreEvent.toPublic())
+    }
 
     private fun RegistryCore.Event<K>.toPublic(): RegistryEvent<K> = when (this) {
         is RegistryCore.Event.Added -> RegistryEvent.Added(id)

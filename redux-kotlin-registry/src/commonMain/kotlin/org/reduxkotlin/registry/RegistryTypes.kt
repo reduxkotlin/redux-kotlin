@@ -51,8 +51,7 @@ public class StoreKey<K : Any, S : Any> @PublishedApi internal constructor(
 /**
  * Inline factory; captures the static state type `S` via `reified`.
  */
-public inline fun <K : Any, reified S : Any> storeKey(id: K): StoreKey<K, S> =
-    StoreKey(id, S::class)
+public inline fun <K : Any, reified S : Any> storeKey(id: K): StoreKey<K, S> = StoreKey(id, S::class)
 
 /**
  * Event emitted by [TypedStoreRegistry]. The carried key is star-projected
