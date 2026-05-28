@@ -18,6 +18,7 @@ public final class org/reduxkotlin/multimodel/ModelState {
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public final fun with (Lkotlin/reflect/KClass;Ljava/lang/Object;)Lorg/reduxkotlin/multimodel/ModelState;
+	public final fun withAll (Ljava/util/Map;)Lorg/reduxkotlin/multimodel/ModelState;
 }
 
 public final class org/reduxkotlin/multimodel/ModelState$Companion {
