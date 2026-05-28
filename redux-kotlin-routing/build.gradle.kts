@@ -31,6 +31,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(project(":redux-kotlin-granular"))
+                implementation(project(":redux-kotlin-threadsafe"))
             }
         }
     }
