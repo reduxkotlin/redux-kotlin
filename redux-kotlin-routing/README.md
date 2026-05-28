@@ -39,6 +39,10 @@ val store = createModelStore {
 - **Immutability is required.** Return a new instance to signal a
   change, the same instance for "no change". Enable `devChecks = true`
   to fail fast on wasteful structurally-equal copies.
+- **Handlers must be pure.** `on` / `onAction` / `onBroadcast` handlers
+  compute the next model(s) from their inputs only — never call
+  `dispatch` or read the store from inside a handler (side effects
+  belong in middleware). The same applies to the `onWrite` observer.
 - **All-or-nothing.** A handler that throws aborts the whole dispatch;
   no partial commit.
 

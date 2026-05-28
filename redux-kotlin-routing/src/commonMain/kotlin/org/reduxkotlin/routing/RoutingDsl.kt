@@ -42,6 +42,8 @@ public class RoutingBuilder @PublishedApi internal constructor() {
     /**
      * Registers a multi-model handler for action [A]. The handler reads
      * any models via [Reads] and returns a [WriteSet] of replacements.
+     * The handler must be pure: it must not call `dispatch` or read the
+     * store, only compute the next models from its inputs.
      */
     public inline fun <reified A : Any> onAction(noinline handler: (reads: Reads, action: A) -> WriteSet) {
         addCell(A::class, "onAction:${A::class.simpleName}") { working, action ->
@@ -55,7 +57,8 @@ public class RoutingBuilder @PublishedApi internal constructor() {
      * installed model. [transform] receives each model instance and
      * returns its (possibly unchanged) replacement. Use for
      * cross-cutting actions such as reset/logout that every model must
-     * observe.
+     * observe. The transform must be pure: it must not call `dispatch`
+     * or read the store, only compute the next model from its inputs.
      */
     public inline fun <reified A : Any> onBroadcast(noinline transform: (model: Any, action: A) -> Any) {
         @Suppress("UNCHECKED_CAST")
@@ -100,7 +103,8 @@ public class ModelHandlerScope<M : Any> @PublishedApi internal constructor(
      * current model and the action, return the next model instance
      * (return the same instance to signal "no change"). Matching is by
      * exact leaf class — a handler on [A] does not catch subtypes of
-     * [A].
+     * [A]. The reducer must be pure: it must not call `dispatch` or read
+     * the store, only compute the next model from its inputs.
      */
     public inline fun <reified A : Any> on(noinline reducer: (model: M, action: A) -> M) {
         builder.addCell(A::class, "model:${modelClass.simpleName}") { working, action ->
