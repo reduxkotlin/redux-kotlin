@@ -10,20 +10,14 @@ import kotlin.reflect.KClass
  * replacements it wants to make (possibly empty). The change gate and
  * the onWrite notification are applied centrally by [routedReducer].
  */
-internal class Cell(
-    val source: String,
-    val handler: (working: WorkingState, action: Any) -> Map<KClass<*>, Any>,
-)
+internal class Cell(val source: String, val handler: (working: WorkingState, action: Any) -> Map<KClass<*>, Any>)
 
 /**
  * A broadcast handler that runs once per installed model for its action
  * class. Materialized into per-model [Cell]s at reducer-build time so
  * it covers every model regardless of declaration order.
  */
-internal class Broadcast(
-    val actionClass: KClass<*>,
-    val perModel: (model: Any, action: Any) -> Any,
-)
+internal class Broadcast(val actionClass: KClass<*>, val perModel: (model: Any, action: Any) -> Any)
 
 /**
  * Transient per-dispatch working view over a base [ModelState]. Reads
