@@ -1,12 +1,11 @@
-import org.jetbrains.dokka.gradle.tasks.DokkaGeneratePublicationTask
-import org.jetbrains.kotlin.konan.target.HostManager
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
 import util.Git
 
 plugins {
     id("convention.common")
     id("org.jetbrains.dokka")
-    `maven-publish`
-    signing
+    id("com.vanniktech.maven.publish")
 }
 
 // The `androidMain` source set shares files with `jvmCommonMain` via `kotlin.srcDir`
@@ -19,13 +18,63 @@ dokka {
     }
 }
 
-tasks {
-    val dokkaPublicationHtml = named<DokkaGeneratePublicationTask>("dokkaGeneratePublicationHtml")
-    register<Jar>("javadocJar") {
-        dependsOn(dokkaPublicationHtml)
-        archiveClassifier.set("javadoc")
-        from(dokkaPublicationHtml.flatMap { it.outputDirectory })
+val ghOwnerId: String = project.findProperty("gh.owner.id")!!.toString()
+val ghOwnerName: String = project.findProperty("gh.owner.name")!!.toString()
+val ghOwnerOrganization: String = project.findProperty("gh.owner.organization")!!.toString()
+val ghOwnerOrganizationUrl: String = project.findProperty("gh.owner.organization.url")!!.toString()
+
+mavenPublishing {
+    configure(
+        KotlinMultiplatform(
+            javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml"),
+            sourcesJar = true,
+        ),
+    )
+    coordinates(project.group.toString(), project.name, project.version.toString())
+
+    // No-arg targets the Central Publisher Portal (the OSSRH replacement). Release is
+    // left manual (drop/publish from the Portal UI); pass automaticRelease = true to
+    // fully automate once the flow is trusted.
+    publishToMavenCentral()
+
+    // Only sign when a key is configured. Locally (publishToLocal / publishToMavenLocal)
+    // no key is present and Maven Central doesn't require signatures for local repos, so
+    // skipping avoids "no configured signatory" failures. CI sets signingInMemoryKey.
+    if (providers.gradleProperty("signingInMemoryKey").isPresent) {
+        signAllPublications()
     }
+
+    pom {
+        name.set(project.name)
+        description.set(project.description ?: project.name)
+        url.set("https://github.com/$ghOwnerId/${rootProject.name}")
+
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("repo")
+            }
+        }
+
+        developers {
+            developer {
+                id.set(ghOwnerId)
+                name.set(ghOwnerName)
+                organization.set(ghOwnerOrganization)
+                organizationUrl.set(ghOwnerOrganizationUrl)
+            }
+        }
+
+        scm {
+            connection.set("scm:git:git@github.com:$ghOwnerId/${rootProject.name.lowercase()}.git")
+            url.set("https://github.com/$ghOwnerId/${rootProject.name.lowercase()}")
+            tag.set(Git.headCommitHash ?: "HEAD")
+        }
+    }
+}
+
+tasks {
     withType<Jar> {
         manifest {
             attributes += sortedMapOf(
@@ -50,71 +99,21 @@ tasks {
     named("clean") {
         dependsOn(cleanMavenLocal)
     }
+    // Offline rehearsal: publishes every module to the real Maven Local repo
+    // (~/.m2). vanniktech skips signing for Maven Local, so this needs no GPG key.
     register("publishToLocal") {
-        description = "Publishes all packages to local maven repository at rootDir/build/localMaven"
-        dependsOn("publishAllPublicationsToLocalRepository")
+        description = "Publishes all packages to the local maven repository (~/.m2)"
+        dependsOn("publishToMavenLocal")
     }
 }
-
-signing {
-    val signingKey: String? by project
-    val signingPassword: String? by project
-    if (signingKey != null) {
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign(publishing.publications)
-    }
-}
-
-val isMainHost = HostManager.simpleOsName().equals("${project.findProperty("project.mainOS")}", true)
 
 publishing {
-    publications {
-        val ghOwnerId: String = project.findProperty("gh.owner.id")!!.toString()
-        val ghOwnerName: String = project.findProperty("gh.owner.name")!!.toString()
-        val ghOwnerOrganization: String = project.findProperty("gh.owner.organization")!!.toString()
-        val ghOwnerOrganizationUrl: String = project.findProperty("gh.owner.organization.url")!!.toString()
-        withType<MavenPublication> {
-            artifact(tasks["javadocJar"])
-            pom {
-                name by project.name
-                url by "https://github.com/$ghOwnerId/${rootProject.name}"
-                description.set(project.description ?: project.name)
-
-                licenses {
-                    license {
-                        name by "The Apache License, Version 2.0"
-                        url by "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                        distribution by "repo"
-                    }
-                }
-
-                developers {
-                    developer {
-                        id by ghOwnerId
-                        name by ghOwnerName
-                        organization by ghOwnerOrganization
-                        organizationUrl by ghOwnerOrganizationUrl
-                    }
-                }
-
-                scm {
-                    connection by "scm:git:git@github.com:$ghOwnerId/${rootProject.name.lowercase()}.git"
-                    url by "https://github.com/$ghOwnerId/${rootProject.name.lowercase()}"
-                    tag.set(Git.headCommitHash ?: "HEAD")
-                }
-            }
-        }
-
-        repositories {
-            maven("https://maven.pkg.github.com/$ghOwnerId/${rootProject.name}") {
-                name = "GitHub"
-                credentials {
-                    username = System.getenv("GH_USERNAME")
-                    password = System.getenv("GH_PASSWORD")
-                }
-            }
-            maven(rootProject.layout.buildDirectory.dir("localMaven").map { it.asFile.toURI() }) {
-                name = "Local"
+    repositories {
+        maven("https://maven.pkg.github.com/$ghOwnerId/${rootProject.name}") {
+            name = "GitHub"
+            credentials {
+                username = System.getenv("GH_USERNAME")
+                password = System.getenv("GH_PASSWORD")
             }
         }
     }
