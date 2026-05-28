@@ -30,6 +30,9 @@ public interface ConcurrentStore<State> : Store<State>
  * The v1 `CallerSerialized` strategy: the calling thread runs the full pipeline
  * under a reentrant lock; readers go lock-free through the mirror.
  *
+ * Do not reassign [dispatch] after construction — doing so bypasses the writer
+ * lock and the state mirror.
+ *
  * @param State the application state type held by the store.
  * @param inner a freshly-created, non-thread-safe store (its INIT dispatch must
  *  have already run). Middleware must be installed on [inner] via the enhancer,
@@ -67,8 +70,8 @@ public class CallerSerializedStore<State>(
     }
 
     private fun sequenced(pipeline: Dispatcher, action: Any): Any = synchronized(lock) {
-        context.enter()
         try {
+            context.enter()
             pipeline(action)
         } finally {
             mirror.value = inner.getState()
@@ -96,6 +99,8 @@ public class CallerSerializedStore<State>(
     }
 
     override val replaceReducer: (Reducer<State>) -> Unit = { nextReducer ->
-        inner.replaceReducer(nextReducer)
+        synchronized(lock) {
+            inner.replaceReducer(nextReducer)
+        }
     }
 }
