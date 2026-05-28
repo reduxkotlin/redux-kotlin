@@ -1,0 +1,22 @@
+public final class org/reduxkotlin/threadsafe/CreateThreadSafeStoreKt {
+	public static final fun asThreadSafe (Lorg/reduxkotlin/TypedStore;)Lorg/reduxkotlin/threadsafe/ThreadSafeStore;
+	public static final fun createThreadSafeStore (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
+	public static synthetic fun createThreadSafeStore$default (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
+}
+
+public final class org/reduxkotlin/threadsafe/EnhancersKt {
+	public static final fun createSynchronizedStoreEnhancer ()Lkotlin/jvm/functions/Function1;
+	public static final fun createThreadSafeStoreEnhancer ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class org/reduxkotlin/threadsafe/ThreadSafeStore : org/reduxkotlin/TypedStore {
+	public fun <init> (Lorg/reduxkotlin/TypedStore;)V
+	public fun getDispatch ()Lkotlin/jvm/functions/Function1;
+	public fun getGetState ()Lkotlin/jvm/functions/Function0;
+	public fun getReplaceReducer ()Lkotlin/jvm/functions/Function1;
+	public fun getState ()Ljava/lang/Object;
+	public fun getStore ()Lorg/reduxkotlin/TypedStore;
+	public fun getSubscribe ()Lkotlin/jvm/functions/Function1;
+	public fun setDispatch (Lkotlin/jvm/functions/Function1;)V
+}
+

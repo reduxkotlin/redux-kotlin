@@ -1,0 +1,22 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-compose>
+final value class <#A: kotlin/Any?> org.reduxkotlin.compose/StableStore { // org.reduxkotlin.compose/StableStore|null[0]
+    constructor <init>(org.reduxkotlin/TypedStore<#A, kotlin/Any>) // org.reduxkotlin.compose/StableStore.<init>|<init>(org.reduxkotlin.TypedStore<1:0,kotlin.Any>){}[0]
+
+    final val value // org.reduxkotlin.compose/StableStore.value|{}value[0]
+        final fun <get-value>(): org.reduxkotlin/TypedStore<#A, kotlin/Any> // org.reduxkotlin.compose/StableStore.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.compose/StableStore.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.compose/StableStore.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.compose/StableStore.toString|toString(){}[0]
+}
+
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose/fieldState(kotlin.reflect/KProperty1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/fieldState|fieldState@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(kotlin.reflect.KProperty1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose/selectorState(kotlin/Function1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/selectorState|selectorState@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(kotlin.Function1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.compose/rememberStableStore(org.reduxkotlin/TypedStore<#A, kotlin/Any>, androidx.compose.runtime/Composer?, kotlin/Int): org.reduxkotlin.compose/StableStore<#A> // org.reduxkotlin.compose/rememberStableStore|rememberStableStore(org.reduxkotlin.TypedStore<0:0,kotlin.Any>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>}[0]

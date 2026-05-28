@@ -1,0 +1,83 @@
+public abstract interface class org/reduxkotlin/registry/RegistryEvent {
+	public abstract fun getId ()Ljava/lang/Object;
+}
+
+public final class org/reduxkotlin/registry/RegistryEvent$Added : org/reduxkotlin/registry/RegistryEvent {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lorg/reduxkotlin/registry/RegistryEvent$Added;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/registry/RegistryEvent$Added;Ljava/lang/Object;ILjava/lang/Object;)Lorg/reduxkotlin/registry/RegistryEvent$Added;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/registry/RegistryEvent$Removed : org/reduxkotlin/registry/RegistryEvent {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lorg/reduxkotlin/registry/RegistryEvent$Removed;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/registry/RegistryEvent$Removed;Ljava/lang/Object;ILjava/lang/Object;)Lorg/reduxkotlin/registry/RegistryEvent$Removed;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/registry/StoreKey {
+	public fun <init> (Ljava/lang/Object;Lkotlin/reflect/KClass;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/Object;
+	public final fun getStateType ()Lkotlin/reflect/KClass;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/registry/StoreRegistry {
+	public fun <init> ()V
+	public final fun addListener (Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function0;
+	public final fun clear ()V
+	public final fun get (Ljava/lang/Object;)Lorg/reduxkotlin/TypedStore;
+	public final fun getOrCreate (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Lorg/reduxkotlin/TypedStore;
+	public final fun getSize ()I
+	public final fun isEmpty ()Z
+	public final fun remove (Ljava/lang/Object;)Z
+}
+
+public abstract interface class org/reduxkotlin/registry/TypedRegistryEvent {
+	public abstract fun getKey ()Lorg/reduxkotlin/registry/StoreKey;
+}
+
+public final class org/reduxkotlin/registry/TypedRegistryEvent$Added : org/reduxkotlin/registry/TypedRegistryEvent {
+	public fun <init> (Lorg/reduxkotlin/registry/StoreKey;)V
+	public final fun component1 ()Lorg/reduxkotlin/registry/StoreKey;
+	public final fun copy (Lorg/reduxkotlin/registry/StoreKey;)Lorg/reduxkotlin/registry/TypedRegistryEvent$Added;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/registry/TypedRegistryEvent$Added;Lorg/reduxkotlin/registry/StoreKey;ILjava/lang/Object;)Lorg/reduxkotlin/registry/TypedRegistryEvent$Added;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Lorg/reduxkotlin/registry/StoreKey;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/registry/TypedRegistryEvent$Removed : org/reduxkotlin/registry/TypedRegistryEvent {
+	public fun <init> (Lorg/reduxkotlin/registry/StoreKey;)V
+	public final fun component1 ()Lorg/reduxkotlin/registry/StoreKey;
+	public final fun copy (Lorg/reduxkotlin/registry/StoreKey;)Lorg/reduxkotlin/registry/TypedRegistryEvent$Removed;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/registry/TypedRegistryEvent$Removed;Lorg/reduxkotlin/registry/StoreKey;ILjava/lang/Object;)Lorg/reduxkotlin/registry/TypedRegistryEvent$Removed;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Lorg/reduxkotlin/registry/StoreKey;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/registry/TypedStoreRegistry {
+	public fun <init> ()V
+	public final fun addListener (Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function0;
+	public final fun clear ()V
+	public final fun get (Lorg/reduxkotlin/registry/StoreKey;)Lorg/reduxkotlin/TypedStore;
+	public final fun getOrCreate (Lorg/reduxkotlin/registry/StoreKey;Lkotlin/jvm/functions/Function0;)Lorg/reduxkotlin/TypedStore;
+	public final fun getSize ()I
+	public final fun isEmpty ()Z
+	public final fun remove (Lorg/reduxkotlin/registry/StoreKey;)Z
+}
+

@@ -1,0 +1,39 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-multimodel>
+final class <#A: kotlin/Any> org.reduxkotlin.multimodel/ModelReducerEntry { // org.reduxkotlin.multimodel/ModelReducerEntry|null[0]
+    constructor <init>(kotlin.reflect/KClass<#A>, kotlin/Function2<#A, kotlin/Any, #A>) // org.reduxkotlin.multimodel/ModelReducerEntry.<init>|<init>(kotlin.reflect.KClass<1:0>;kotlin.Function2<1:0,kotlin.Any,1:0>){}[0]
+
+    final val modelClass // org.reduxkotlin.multimodel/ModelReducerEntry.modelClass|{}modelClass[0]
+        final fun <get-modelClass>(): kotlin.reflect/KClass<#A> // org.reduxkotlin.multimodel/ModelReducerEntry.modelClass.<get-modelClass>|<get-modelClass>(){}[0]
+    final val reducer // org.reduxkotlin.multimodel/ModelReducerEntry.reducer|{}reducer[0]
+        final fun <get-reducer>(): kotlin/Function2<#A, kotlin/Any, #A> // org.reduxkotlin.multimodel/ModelReducerEntry.reducer.<get-reducer>|<get-reducer>(){}[0]
+}
+
+final class org.reduxkotlin.multimodel/ModelState { // org.reduxkotlin.multimodel/ModelState|null[0]
+    constructor <init>(kotlin.collections/Map<kotlin.reflect/KClass<*>, kotlin/Any>) // org.reduxkotlin.multimodel/ModelState.<init>|<init>(kotlin.collections.Map<kotlin.reflect.KClass<*>,kotlin.Any>){}[0]
+
+    final val models // org.reduxkotlin.multimodel/ModelState.models|{}models[0]
+        final fun <get-models>(): kotlin.collections/Map<kotlin.reflect/KClass<*>, kotlin/Any> // org.reduxkotlin.multimodel/ModelState.models.<get-models>|<get-models>(){}[0]
+
+    final fun <#A1: kotlin/Any> get(kotlin.reflect/KClass<#A1>): #A1 // org.reduxkotlin.multimodel/ModelState.get|get(kotlin.reflect.KClass<0:0>){0§<kotlin.Any>}[0]
+    final fun <#A1: kotlin/Any> with(kotlin.reflect/KClass<#A1>, #A1): org.reduxkotlin.multimodel/ModelState // org.reduxkotlin.multimodel/ModelState.with|with(kotlin.reflect.KClass<0:0>;0:0){0§<kotlin.Any>}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.multimodel/ModelState.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.multimodel/ModelState.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.multimodel/ModelState.toString|toString(){}[0]
+    final inline fun <#A1: reified kotlin/Any> get(): #A1 // org.reduxkotlin.multimodel/ModelState.get|get(){0§<kotlin.Any>}[0]
+    final inline fun <#A1: reified kotlin/Any> with(#A1): org.reduxkotlin.multimodel/ModelState // org.reduxkotlin.multimodel/ModelState.with|with(0:0){0§<kotlin.Any>}[0]
+
+    final object Companion { // org.reduxkotlin.multimodel/ModelState.Companion|null[0]
+        final fun of(kotlin/Array<out kotlin/Any>...): org.reduxkotlin.multimodel/ModelState // org.reduxkotlin.multimodel/ModelState.Companion.of|of(kotlin.Array<out|kotlin.Any>...){}[0]
+    }
+}
+
+final fun <#A: kotlin/Any> org.reduxkotlin.multimodel/modelReducerOf(kotlin.reflect/KClass<#A>, kotlin/Function2<#A, kotlin/Any, #A>): org.reduxkotlin.multimodel/ModelReducerEntry<#A> // org.reduxkotlin.multimodel/modelReducerOf|modelReducerOf(kotlin.reflect.KClass<0:0>;kotlin.Function2<0:0,kotlin.Any,0:0>){0§<kotlin.Any>}[0]
+final fun org.reduxkotlin.multimodel/combineModelReducers(kotlin/Array<out org.reduxkotlin.multimodel/ModelReducerEntry<*>>...): kotlin/Function2<org.reduxkotlin.multimodel/ModelState, kotlin/Any, org.reduxkotlin.multimodel/ModelState> // org.reduxkotlin.multimodel/combineModelReducers|combineModelReducers(kotlin.Array<out|org.reduxkotlin.multimodel.ModelReducerEntry<*>>...){}[0]
+final inline fun <#A: reified kotlin/Any> org.reduxkotlin.multimodel/modelReducer(noinline kotlin/Function2<#A, kotlin/Any, #A>): org.reduxkotlin.multimodel/ModelReducerEntry<#A> // org.reduxkotlin.multimodel/modelReducer|modelReducer(kotlin.Function2<0:0,kotlin.Any,0:0>){0§<kotlin.Any>}[0]

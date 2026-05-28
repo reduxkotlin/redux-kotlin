@@ -1,0 +1,26 @@
+public final class org/reduxkotlin/multimodel/CombineModelReducersKt {
+	public static final fun combineModelReducers ([Lorg/reduxkotlin/multimodel/ModelReducerEntry;)Lkotlin/jvm/functions/Function2;
+	public static final fun modelReducerOf (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)Lorg/reduxkotlin/multimodel/ModelReducerEntry;
+}
+
+public final class org/reduxkotlin/multimodel/ModelReducerEntry {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)V
+	public final fun getModelClass ()Lkotlin/reflect/KClass;
+	public final fun getReducer ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class org/reduxkotlin/multimodel/ModelState {
+	public static final field Companion Lorg/reduxkotlin/multimodel/ModelState$Companion;
+	public fun <init> (Ljava/util/Map;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun get (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public final fun getModels ()Ljava/util/Map;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun with (Lkotlin/reflect/KClass;Ljava/lang/Object;)Lorg/reduxkotlin/multimodel/ModelState;
+}
+
+public final class org/reduxkotlin/multimodel/ModelState$Companion {
+	public final fun of ([Ljava/lang/Object;)Lorg/reduxkotlin/multimodel/ModelState;
+}
+
