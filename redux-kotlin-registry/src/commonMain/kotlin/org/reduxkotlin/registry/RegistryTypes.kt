@@ -14,8 +14,13 @@ public typealias RegistrySubscription = () -> Unit
  * KDoc and the design spec for the listener invocation contract.
  */
 public sealed interface RegistryEvent<out K> {
+    /** The registry key identifying the store that was added or removed. */
     public val id: K
+
+    /** Emitted when a store is registered under [id]. */
     public data class Added<K>(override val id: K) : RegistryEvent<K>
+
+    /** Emitted when a store previously registered under [id] is removed. */
     public data class Removed<K>(override val id: K) : RegistryEvent<K>
 }
 
@@ -30,7 +35,9 @@ public sealed interface RegistryEvent<out K> {
  * of `S` at the call site.
  */
 public class StoreKey<K : Any, S : Any> @PublishedApi internal constructor(
+    /** The user-supplied identifier for this store entry. */
     public val id: K,
+    /** The Kotlin class of the state type `S`, used for type-safe lookup. */
     public val stateType: KClass<S>,
 ) {
     override fun equals(other: Any?): Boolean =
@@ -53,7 +60,12 @@ public inline fun <K : Any, reified S : Any> storeKey(id: K): StoreKey<K, S> =
  * `event.key.stateType` when needed.
  */
 public sealed interface TypedRegistryEvent {
+    /** The [StoreKey] identifying the store that was added or removed. */
     public val key: StoreKey<*, *>
+
+    /** Emitted when a store is registered under [key]. */
     public data class Added(override val key: StoreKey<*, *>) : TypedRegistryEvent
+
+    /** Emitted when a store previously registered under [key] is removed. */
     public data class Removed(override val key: StoreKey<*, *>) : TypedRegistryEvent
 }
