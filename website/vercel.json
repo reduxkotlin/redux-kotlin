@@ -1,0 +1,40 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/introduction", "destination": "/introduction/getting-started" },
+    { "source": "/basics", "destination": "/basics/basic-tutorial" },
+    { "source": "/advanced", "destination": "/advanced/advanced-tutorial" },
+    { "source": "/api", "destination": "/api/api-reference" },
+
+    { "source": "/introduction/coreconcepts", "destination": "/introduction/core-concepts" },
+    { "source": "/introduction/learningresources", "destination": "/introduction/learning-resources" },
+    { "source": "/introduction/threeprinciples", "destination": "/introduction/three-principles" },
+    { "source": "/basics/dataflow", "destination": "/basics/data-flow" },
+    { "source": "/advanced/asyncactions", "destination": "/advanced/async-actions" },
+    { "source": "/advanced/asyncflow", "destination": "/advanced/async-flow" },
+    { "source": "/faq/storesetup", "destination": "/faq/store-setup" },
+
+    { "source": "/docs/introduction/CoreConcepts.html", "destination": "/introduction/core-concepts" },
+    { "source": "/docs/introduction/Motivation.html", "destination": "/introduction/motivation" },
+    { "source": "/docs/introduction/Ecosystem.html", "destination": "/introduction/ecosystem" },
+    { "source": "/docs/introduction/ThreePrinciples.html", "destination": "/introduction/three-principles" },
+    { "source": "/docs/introduction/Examples.html", "destination": "/introduction/examples" },
+    { "source": "/docs/basics/Reducers.html", "destination": "/basics/reducers" },
+    { "source": "/docs/basics/Actions.html", "destination": "/basics/actions" },
+    { "source": "/docs/basics/DataFlow.html", "destination": "/basics/data-flow" },
+    { "source": "/docs/basics/Store.html", "destination": "/basics/store" },
+    { "source": "/docs/advanced/AsyncActions.html", "destination": "/advanced/async-actions" },
+    { "source": "/docs/advanced/Middleware.html", "destination": "/advanced/middleware" },
+    { "source": "/docs/advanced/AsyncFlow.html", "destination": "/advanced/async-flow" },
+    { "source": "/docs/faq/General.html", "destination": "/faq/general" },
+    { "source": "/docs/faq/Reducers.html", "destination": "/faq/reducers-faq" },
+    { "source": "/docs/faq/StoreSetup.html", "destination": "/faq/store-setup" },
+    { "source": "/docs/api/createStore.html", "destination": "/api/createstore" },
+    { "source": "/docs/api/applyMiddleware.html", "destination": "/api/applymiddleware" },
+    { "source": "/docs/api/compose.html", "destination": "/api/compose" },
+    { "source": "/docs/api/Store.html", "destination": "/api/store-api" },
+    { "source": "/docs/Glossary.html", "destination": "/glossary" },
+    { "source": "/docs/Troubleshooting.html", "destination": "/troubleshooting" },
+    { "source": "/docs/FAQ.html", "destination": "/faq" }
+  ]
+}

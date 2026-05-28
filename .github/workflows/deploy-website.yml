@@ -1,0 +1,67 @@
+# Deploys the Docusaurus website (website/) to Vercel production.
+#
+# PREREQUISITES — this workflow is inert until you do both:
+#   1. Add three repo secrets (Settings → Secrets and variables → Actions):
+#        VERCEL_TOKEN        a Vercel access token (Account Settings → Tokens)
+#        VERCEL_ORG_ID       from `website/.vercel/project.json` after `vercel link`
+#        VERCEL_PROJECT_ID   from `website/.vercel/project.json` after `vercel link`
+#   2. Turn OFF Vercel's native Git auto-deploy for this project
+#        (Vercel → Project → Settings → Git → "Production Branch" / Ignored Build Step),
+#        otherwise every push to master deploys TWICE — once here, once by Vercel's
+#        own Git integration.
+#
+# Until VERCEL_TOKEN is set, the job short-circuits and stays green.
+name: Deploy Website
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'website/**'
+      - '.github/workflows/deploy-website.yml'
+  workflow_dispatch:
+
+# Avoid overlapping production deploys; cancel superseded runs.
+concurrency:
+  group: deploy-website
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build & deploy to Vercel (production)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Guard — require VERCEL_TOKEN
+        id: guard
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::VERCEL_TOKEN is not configured — skipping deploy. See workflow header for setup."
+          else
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.guard.outputs.has_token == 'true'
+        uses: actions/checkout@v6
+
+      - name: Install Vercel CLI
+        if: steps.guard.outputs.has_token == 'true'
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel project settings (production)
+        if: steps.guard.outputs.has_token == 'true'
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build with production env
+        if: steps.guard.outputs.has_token == 'true'
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy prebuilt output to production
+        if: steps.guard.outputs.has_token == 'true'
+        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
