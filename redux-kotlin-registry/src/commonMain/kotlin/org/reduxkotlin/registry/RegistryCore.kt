@@ -71,13 +71,26 @@ internal class RegistryCore<K : Any, V : Any> {
         cur.keys.forEach { fireUnderLock(Event.Removed(it)) }
     }
 
+    /**
+     * Registers a listener and returns an unsubscribe lambda.
+     *
+     * If the **same** lambda instance is registered more than once, each
+     * registration is independent: every event fires once per registration,
+     * and each returned unsubscribe lambda only removes the registration it
+     * was paired with (the first matching entry by `List.minus` semantics).
+     * Callers who care about idempotent subscription should hold a single
+     * reference and avoid double-registering.
+     */
     fun addListener(listener: (Event<K>) -> Unit): RegistrySubscription {
         listeners.update { it + listener }
         return { listeners.update { cur -> cur - listener } }
     }
 
     private fun fireUnderLock(event: Event<K>) {
-        // Snapshot of listeners list; the list itself is CoW-immutable.
-        listeners.value.forEach { it(event) }
+        // Capture a snapshot of the listener list. The list itself is CoW-immutable,
+        // so adds/removes happening on other threads only swap in a new list — they
+        // can't perturb iteration in progress here.
+        val snapshot = listeners.value
+        snapshot.forEach { it(event) }
     }
 }
