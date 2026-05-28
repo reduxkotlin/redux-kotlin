@@ -1,0 +1,49 @@
+public final class org/reduxkotlin/routing/CreateModelStoreKt {
+	public static final fun createModelStore (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
+	public static synthetic fun createModelStore$default (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
+}
+
+public final class org/reduxkotlin/routing/ModelHandlerScope {
+	public fun <init> (Lkotlin/reflect/KClass;Lorg/reduxkotlin/routing/RoutingBuilder;)V
+	public final fun getBuilder ()Lorg/reduxkotlin/routing/RoutingBuilder;
+	public final fun getModelClass ()Lkotlin/reflect/KClass;
+}
+
+public abstract interface class org/reduxkotlin/routing/Reads {
+	public abstract fun get (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+}
+
+public abstract interface class org/reduxkotlin/routing/ReduxModule {
+	public abstract fun contribute (Lorg/reduxkotlin/routing/RoutingBuilder;)V
+}
+
+public final class org/reduxkotlin/routing/RoutingBuilder {
+	public fun <init> ()V
+	public final fun addCell (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public final fun getBroadcasts ()Ljava/util/List;
+	public final fun getInitials ()Ljava/util/List;
+	public final fun getModelClasses ()Ljava/util/List;
+	public final fun getTable ()Ljava/util/Map;
+	public final fun registerBroadcast (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function2;)V
+	public final fun registerModel (Lkotlin/reflect/KClass;Ljava/lang/Object;)V
+}
+
+public final class org/reduxkotlin/routing/RoutingDslKt {
+	public static final fun install (Lorg/reduxkotlin/routing/RoutingBuilder;Lorg/reduxkotlin/routing/ReduxModule;)V
+}
+
+public final class org/reduxkotlin/routing/WriteSet {
+	public fun <init> (Ljava/util/Map;)V
+	public final fun getChanges ()Ljava/util/Map;
+}
+
+public final class org/reduxkotlin/routing/WriteSetBuilder {
+	public fun <init> ()V
+	public final fun getChanges ()Ljava/util/Map;
+	public final fun set (Lkotlin/reflect/KClass;Ljava/lang/Object;)V
+}
+
+public final class org/reduxkotlin/routing/WriteSetKt {
+	public static final fun writeSet (Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/routing/WriteSet;
+}
+
