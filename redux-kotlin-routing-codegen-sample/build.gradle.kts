@@ -13,6 +13,10 @@ ksp {
 }
 
 kotlin {
+    android {
+        namespace = "org.reduxkotlin.routing.sample"
+    }
+
     sourceSets {
         commonMain {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
