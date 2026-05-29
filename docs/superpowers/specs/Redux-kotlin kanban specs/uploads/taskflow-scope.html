@@ -1,0 +1,71 @@
+<h2>TaskFlow — proposed layout & API coverage</h2>
+<p class="subtitle">This is what "medium complexity" looks like. Each region maps to a bundle API (tag in brackets). Goal: every region earns its place by demonstrating something. Look it over — I'll ask in the terminal whether the scope is right.</p>
+
+<div class="mockup">
+  <div class="mockup-header">TaskFlow — single screen, responsive (phone = stacked, tablet/web = columns)</div>
+  <div class="mockup-body" style="font-size:12px">
+    <div class="mock-nav" style="display:flex;justify-content:space-between;align-items:center">
+      <span><b>TaskFlow</b> &nbsp; ▾ Board: Sprint&nbsp;42 <span class="label">[registry: multi-board]</span></span>
+      <span>🔍 <input class="mock-input" style="width:120px;display:inline-block" placeholder="filter…"> <span class="label">[FilterModel → all columns]</span></span>
+      <span>👤 ann · 2 online <span class="label">[SessionModel]</span></span>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <div class="mock-content" style="flex:1">
+        <b>To&nbsp;Do</b> <span class="label">3 · WIP ok</span><br>
+        <span class="placeholder" style="display:block;margin:5px 0">Wire KSP codegen</span>
+        <span class="placeholder" style="display:block;margin:5px 0">Doc the registry</span>
+        <span class="placeholder" style="display:block">Fix wasm target</span>
+      </div>
+      <div class="mock-content" style="flex:1">
+        <b>Doing</b> <span class="label" style="color:#c0392b">2/2 · WIP HIT</span><br>
+        <span class="placeholder" style="display:block;margin:5px 0">Bundle BOM ▸ selected</span>
+        <span class="placeholder" style="display:block">Granular bench</span>
+      </div>
+      <div class="mock-content" style="flex:1">
+        <b>Done</b> <span class="label">5</span><br>
+        <span class="placeholder" style="display:block;margin:5px 0">Routing PR</span>
+        <span class="placeholder" style="display:block">Concurrent store</span>
+      </div>
+    </div>
+    <p class="label" style="margin-top:4px">↑ each column subscribes only to its own slice [granular: subscribeFields / fieldStateOf] — moving a card re-renders just two columns, not the board</p>
+
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <div class="mock-sidebar" style="flex:1.4">
+        <b>Card detail</b> <span class="label">[mirrors selected card across tree]</span><br>
+        <span class="placeholder" style="display:block;margin-top:5px">title · assignee · column · move ◂ ▸</span>
+      </div>
+      <div class="mock-sidebar" style="flex:1">
+        <b>Activity feed</b> <span class="label">[middleware logs every action]</span><br>
+        <span class="placeholder" style="display:block;margin-top:5px">ann moved "Bundle BOM" → Doing</span>
+        <span class="placeholder" style="display:block">bot added "Granular bench"</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Bundle API → feature map (draft)</span>
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>Core bundle [redux-kotlin-bundle]</h4>
+      <ul style="font-size:13px">
+        <li><b>multimodel</b> — BoardModel, FilterModel, SessionModel in one ModelState</li>
+        <li><b>routing</b> — <code>on&lt;Action&gt;</code> routed reducers per model</li>
+        <li><b>concurrent</b> — <code>createConcurrentModelStore</code> backs the store</li>
+        <li><b>granular / multimodel-granular</b> — columns, badges, detail panel each subscribe to a slice</li>
+        <li><b>registry</b> — switch between boards (Sprint 42 / Backlog), each its own store</li>
+        <li><b>middleware</b> (core) — activity-feed logger + a "bot collaborator" that dispatches on a timer</li>
+      </ul>
+    </div>
+    <div class="pros">
+      <h4>Compose [redux-kotlin-bundle-compose]</h4>
+      <ul style="font-size:13px">
+        <li><code>rememberStableStore</code> at the root</li>
+        <li><code>fieldStateOf(BoardModel::class){…}</code> for column card-lists</li>
+        <li><code>selectorState{…}</code> for derived WIP/online counts</li>
+        <li><code>subscribeToModel / onModel</code> for the detail panel</li>
+      </ul>
+    </div>
+  </div>
+</div>

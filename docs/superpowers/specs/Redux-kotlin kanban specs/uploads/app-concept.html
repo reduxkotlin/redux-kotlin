@@ -1,0 +1,46 @@
+<h2>Pick an app concept for the bundle showcase</h2>
+<p class="subtitle">Each is medium-complexity, Compose Multiplatform (iOS / Android / Web), and forces components to react to each other's state <em>without</em> direct access — the redux-kotlin value prop. Click your favorite (or tell me in the terminal).</p>
+
+<div class="cards" data-multiselect>
+  <div class="card" data-choice="kanban" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:10px">
+      <div class="mock-nav" style="font-size:11px">🔍 filter: "api"   •   WIP 3/5   •   ann ▸ 2 online</div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <div class="mock-content" style="flex:1;min-height:90px;font-size:10px">To Do <span class="placeholder" style="display:block;margin:4px 0">card</span><span class="placeholder" style="display:block">card</span></div>
+        <div class="mock-content" style="flex:1;min-height:90px;font-size:10px">Doing <span class="placeholder" style="display:block;margin:4px 0">card</span></div>
+        <div class="mock-content" style="flex:1;min-height:90px;font-size:10px">Done <span class="placeholder" style="display:block;margin:4px 0">card</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — TaskFlow (Kanban board)</h3>
+      <p>Columns, draggable cards, a global filter/search bar, per-column WIP badges, an activity feed, a card-detail panel. <b>Shared state everywhere:</b> the filter bar dims/hides cards in every column; WIP badges derive from card counts; detail panel mirrors the selected card. Multiple boards via the registry.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="player" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:10px">
+      <div class="mock-content" style="font-size:10px;min-height:70px">♫ Library<span class="placeholder" style="display:block;margin:4px 0">▶ track — now playing</span><span class="placeholder" style="display:block">track</span></div>
+      <div class="mock-nav" style="font-size:11px;margin-top:8px">⏮ ⏸ ⏭  ▓▓▓▓░░░ 1:12 / 3:40  •  queue 4</div>
+    </div>
+    <div class="card-body">
+      <h3>B — Pulse (Music/Podcast player)</h3>
+      <p>Library list, a persistent now-playing bar, a queue panel, mini-player. <b>Shared state everywhere:</b> the row for the active track highlights, the now-playing bar + queue + progress all reflect one playback model. A ticking middleware advances progress — nice middleware demo.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="store" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:10px">
+      <div class="mock-nav" style="font-size:11px">ReduxMart            🛒 3  $42</div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <div class="placeholder" style="flex:1;min-height:70px;font-size:10px">product<br>＋ add</div>
+        <div class="placeholder" style="flex:1;min-height:70px;font-size:10px">product<br>✓ in cart</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — ReduxMart (Storefront + cart)</h3>
+      <p>Product grid, header cart badge, cart drawer, product detail, checkout stepper. <b>Shared state everywhere:</b> the cart badge + "in cart" markers + totals all derive from one cart model. Classic — but maybe too close to the canonical Redux todo/cart demo.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:18px">My recommendation: <b>A — TaskFlow</b>. It maximizes <code>redux-kotlin-granular</code> (each column/badge subscribes to just its slice, so you visibly see render-isolation), uses several <code>ModelState</code> models (Board / Filter / Session), the <code>StoreRegistry</code> (multiple boards), and routed reducers — the widest, most honest API coverage. B is the most intuitive "shared state" story; C is the most familiar.</p>

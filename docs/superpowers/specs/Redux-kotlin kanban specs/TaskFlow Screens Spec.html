@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskFlow — Screens Spec (Phase 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Roboto+Flex:opsz,wght@8..144,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="spec-assets/spec.css">
+<link rel="stylesheet" href="spec-assets/screens.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">T</div>
+      <div class="t">TaskFlow<small>Screens Spec · Phase 2</small></div>
+    </div>
+    <nav class="nav">
+      <div class="grp">Phase 2</div>
+      <a href="#overview"><span class="n">00</span> Overview</a>
+      <div class="grp">Screens</div>
+      <a href="#login"><span class="n">1</span> Login</a>
+      <a href="#switcher"><span class="n">2</span> Account switcher</a>
+      <a href="#boardlist"><span class="n">3</span> Board list</a>
+      <a href="#board"><span class="n">4</span> Board · kanban</a>
+      <a href="#card"><span class="n">5</span> Card detail</a>
+      <a href="#profile"><span class="n">6</span> Profile</a>
+      <a href="#settings"><span class="n">7</span> Settings</a>
+      <div class="grp">Specs</div>
+      <a href="#motion"><span class="n">8</span> Motion choreography</a>
+      <a href="#assets"><span class="n">9</span> Asset list</a>
+      <div class="grp">Reference</div>
+      <a href="TaskFlow Hi-Fi Spec.html"><span class="n">←</span> Foundations &amp; tokens</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+  <div class="wrap">
+
+    <!-- OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="eyebrow">redux-kotlin bundle showcase · Phase 2 — redlined screens</div>
+      <h1>Screens</h1>
+      <p class="lead">All seven TaskFlow screens, drawn from the approved Phase&nbsp;1 tokens. Each shows a <strong>compact</strong> (phone) and <strong>expanded</strong> (web/desktop) layout in real device frames, with numbered redlines mapping every element to its tokens, dp metrics, and bundle data source.</p>
+      <div class="metarow">
+        <span class="chip"><span class="dot"></span>iOS · Android · Browser frames</span>
+        <span class="chip">Compact + Expanded</span>
+        <span class="chip"><span class="dot ok"></span>Dark on Board &amp; Card detail</span>
+        <span class="chip">48 dp min targets</span>
+      </div>
+
+      <div class="panel">
+        <h4 style="margin-top:0">How to read these</h4>
+        <div class="grid g3" style="margin-top:14px">
+          <div><div style="display:flex;align-items:center;gap:9px"><span class="pin" style="position:static;transform:none">1</span><b style="font-size:13px">Numbered pins</b></div><p style="font-size:12.5px;margin-top:6px">Each pin on a mockup maps to a numbered redline on the right with dp, token, and component ref.</p></div>
+          <div><div style="display:flex;align-items:center;gap:9px"><span class="devcap" style="font-size:10px"><span class="os ios"></span>iOS<span class="os android"></span>Android<span class="os web"></span>Web</span></div><p style="font-size:12.5px;margin-top:6px">Frame badges show the platform. The UI is one Compose M3 surface; frames show platform context only.</p></div>
+          <div><div style="display:flex;align-items:center;gap:9px"><b style="font-size:13px">Platform notes</b></div><p style="font-size:12.5px;margin-top:6px">Each screen ends with iOS / Android / Web adaptation notes — safe areas, predictive-back, hover, breakpoints.</p></div>
+        </div>
+      </div>
+      <div class="note">
+        <div class="lbl">Adaptation, not restyle</div>
+        <p>Compose Multiplatform renders the same M3 Expressive surface on every target. Platform differences are <strong>adaptation</strong>: iOS safe-area insets &amp; back-swipe, Android edge-to-edge &amp; predictive-back, Web hover/pointer states &amp; a 1280&nbsp;dp content cap. Where a layout genuinely changes, it's the window <em>size class</em> (compact/medium/expanded) driving it — not the OS.</p>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- ============ 1 · LOGIN ============ -->
+    <section class="section" id="login">
+      <div class="eyebrow">Screen 1 · root: AuthFlowModel</div>
+      <h2>Login / Add account</h2>
+      <p>Fake auth — pick a seeded user, no password. <span class="in-code">Continue</span> sets <span class="in-code">inFlight</span> (fake latency), then <span class="in-code">AccountLoggedIn</span> creates that account's store in the registry. Real auth slots behind the same actions later.</p>
+
+      <div class="screen-block">
+        <div>
+          <div class="devcap"><span class="os ios"></span>iOS · Compact</div>
+          <div class="fig" style="width:300px;margin-top:10px">
+            <div class="phone m3">
+              <div class="scr" style="background:linear-gradient(165deg,#e7e0ff,#fffbfe 60%)">
+                <div class="island"></div>
+                <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 􀋦</span></div>
+                <div class="scrbody" style="justify-content:center;padding:24px 20px;gap:0">
+                  <div class="headline" style="font-size:40px;text-align:center;color:#21005d;font-variation-settings:'wght' 600">TaskFlow</div>
+                  <div class="body-m" style="text-align:center;margin-top:6px">Sign in to continue</div>
+                  <div style="background:var(--s-lowest);border-radius:24px;padding:16px;margin-top:26px;box-shadow:0 4px 16px rgba(33,0,93,.10)">
+                    <div class="body-s" style="font-variation-settings:'wght' 600;margin-bottom:10px;color:var(--on-sv)">PICK A DEMO ACCOUNT</div>
+                    <div class="row sel" style="padding:9px;min-height:0">
+                      <span class="av" style="width:32px;height:32px;background:#7568e0;font-size:13px">A</span>
+                      <span class="title-s" style="flex:1">ann@taskflow.dev</span><span style="color:var(--p)">✓</span>
+                    </div>
+                    <div class="row" style="padding:9px;min-height:0">
+                      <span class="av" style="width:32px;height:32px;background:#7e5260;font-size:13px">R</span>
+                      <span class="title-s" style="flex:1">raj@taskflow.dev</span>
+                    </div>
+                  </div>
+                  <div class="btn filled" style="margin-top:18px;width:100%;padding:14px">Continue</div>
+                  <div class="body-s" style="text-align:center;margin-top:14px">No password — demo data only</div>
+                </div>
+                <div class="homebar"></div>
+              </div>
+            </div>
+            <span class="pin" style="left:50%;top:24%">1</span>
+            <span class="pin" style="left:50%;top:50%">2</span>
+            <span class="pin" style="left:50%;top:72%">3</span>
+          </div>
+        </div>
+
+        <div class="redlines">
+          <h4>Login redlines</h4>
+          <div class="api-line">AuthFlowModel · mode · inFlight · error?</div>
+          <ol>
+            <li><b>Wordmark</b> — <span class="tok">Display Small</span> 36/44, <span class="tok">onPrimaryContainer</span>. Hero gradient = <span class="tok">primaryContainer → surface</span>, 165°.</li>
+            <li><b>Account list card</b> — <span class="tok">surfaceContainerLowest</span>, shape <span class="tok">Extra Large 28dp</span>, Level 1. Rows are <span class="tok">AccountRow</span>; selected = <span class="tok">primaryContainer</span> + 2dp primary outline. Row min height 48dp.</li>
+            <li><b>Continue</b> — filled button, <span class="tok">Label Large</span>, full-width, 14dp v-padding (≥48dp target). On tap → <span class="tok">inFlight</span> swaps the label for a 3-dot loader (Effects·Default spring).</li>
+          </ol>
+          <div class="plat">
+            <div class="h">Platform adaptation</div>
+            <p><span class="os">iOS</span> Card sits above the home indicator; no system back on root.</p>
+            <p><span class="os">Android</span> Edge-to-edge gradient under the status bar; back exits app (root).</p>
+            <p><span class="os">Web</span> Renders as the centered card below — no device chrome.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="devcap" style="margin-top:34px"><span class="os web"></span>Web / Desktop · Expanded</div>
+      <div class="fig" style="margin-top:10px">
+        <div class="browser m3">
+          <div class="chrome"><div class="lights"><i></i><i></i><i></i></div><div class="url">taskflow.dev/login</div></div>
+          <div class="vp" style="height:380px;background:linear-gradient(160deg,#efeafc,#fffbfe);display:grid;place-items:center">
+            <div style="background:var(--s-lowest);border-radius:28px;padding:34px 38px;box-shadow:0 12px 40px rgba(33,0,93,.12);width:380px">
+              <div class="headline" style="font-size:44px;text-align:center;color:#21005d">TaskFlow</div>
+              <div class="body-m" style="text-align:center;margin-top:4px">Sign in to continue</div>
+              <div style="margin-top:22px;display:flex;flex-direction:column;gap:8px">
+                <div class="row sel" style="padding:11px"><span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px">A</span><span class="title-s" style="flex:1">ann@taskflow.dev</span><span style="color:var(--p)">✓</span></div>
+                <div class="row" style="padding:11px"><span class="av" style="width:34px;height:34px;background:#7e5260;font-size:14px">R</span><span class="title-s" style="flex:1">raj@taskflow.dev</span></div>
+              </div>
+              <div class="btn filled" style="margin-top:20px;width:100%;padding:13px">Continue</div>
+            </div>
+          </div>
+        </div>
+        <span class="pin" style="left:50%;top:54%">4</span>
+      </div>
+      <div class="redlines" style="position:static;margin-top:14px">
+        <ol style="counter-reset:rl 3"><li><b>Expanded</b> — same <span class="tok">AuthFlowModel</span> surface, centered in a 380dp card on a tinted page. No layout fork; the window size class only changes outer padding &amp; centering. Account rows gain a hover state on Web (<span class="tok">surfaceContainerLow</span>).</li></ol>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- ============ 2 · ACCOUNT SWITCHER ============ -->
+    <section class="section" id="switcher">
+      <div class="eyebrow">Screen 2 · root: AccountsModel</div>
+      <h2>Account switcher</h2>
+      <p>The registry-isolation surface. Switching sets <span class="in-code">activeAccountId</span> → Compose rebinds <span class="in-code">registry.store(id)</span> via <span class="in-code">rememberStableStore</span>. Each account keeps its own Nav + undo, like browser profiles. Logout disposes only that store.</p>
+
+      <div class="screen-block">
+        <div>
+          <div class="devcap"><span class="os android"></span>Android · Compact (modal sheet)</div>
+          <div class="fig" style="width:300px;margin-top:10px">
+            <div class="phone android m3">
+              <div class="scr">
+                <div class="island"></div>
+                <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 ▮</span></div>
+                <div class="scrbody" style="background:rgba(28,27,31,.32);justify-content:flex-end">
+                  <div style="background:var(--surf);border-radius:28px 28px 0 0;padding:20px 18px 26px">
+                    <div style="width:34px;height:4px;border-radius:2px;background:var(--outline-var);margin:0 auto 16px"></div>
+                    <div class="title-m emph">Switch account</div>
+                    <div style="display:flex;flex-direction:column;gap:9px;margin-top:14px">
+                      <div class="row sel">
+                        <span class="av" style="width:36px;height:36px;background:#7568e0;font-size:15px">A</span>
+                        <div style="flex:1"><div class="title-s">ann</div><div class="body-s" style="color:var(--p)">active · on “Sprint 42”</div></div><span style="color:var(--p)">✓</span>
+                      </div>
+                      <div class="row">
+                        <span class="av" style="width:36px;height:36px;background:#7e5260;font-size:15px">R</span>
+                        <div style="flex:1"><div class="title-s">raj</div><div class="body-s">on Settings · 3 undo steps kept</div></div>
+                      </div>
+                      <div class="row" style="color:var(--p)">
+                        <span class="av sq" style="width:36px;height:36px;border:2px dashed var(--outline-var);background:transparent;color:var(--on-sv)">＋</span>
+                        <span class="title-s" style="color:var(--p)">Add account</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="navhint"></div>
+              </div>
+            </div>
+            <span class="pin" style="left:50%;top:43%">1</span>
+            <span class="pin" style="left:26%;top:55%">2</span>
+            <span class="pin" style="left:50%;top:80%">3</span>
+          </div>
+        </div>
+
+        <div class="redlines">
+          <h4>Switcher redlines</h4>
+          <div class="api-line">AccountsModel · accounts · activeAccountId</div>
+          <ol>
+            <li><b>Modal bottom sheet</b> — <span class="tok">surface</span>, shape <span class="tok">Extra Large 28dp</span> top corners, scrim <span class="tok">scrim @ 32%</span>. Drag handle 34×4dp. Sheet enters on Spatial·Slow.</li>
+            <li><b>AccountRow</b> — active = <span class="tok">primaryContainer</span> + 2dp <span class="tok">primary</span> outline; status line is <span class="tok">Body Small</span> showing each account's remembered screen (proof of per-store Nav isolation).</li>
+            <li><b>Add account</b> — dashed <span class="tok">Avatar</span> + <span class="tok">primary</span> label → routes to Login in <span class="tok">AddAccount</span> mode.</li>
+          </ol>
+          <div class="plat">
+            <div class="h">Platform adaptation</div>
+            <p><span class="os">iOS</span> Sheet uses page-sheet detent; swipe-down dismisses.</p>
+            <p><span class="os">Android</span> Predictive-back scales the sheet as you drag the back gesture.</p>
+            <p><span class="os">Web</span> Becomes an account menu anchored to the app-bar avatar (see expanded).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="devcap" style="margin-top:34px"><span class="os web"></span>Web · Expanded (anchored menu)</div>
+      <div class="fig" style="margin-top:10px">
+        <div class="browser m3">
+          <div class="chrome"><div class="lights"><i></i><i></i><i></i></div><div class="url">taskflow.dev/b/sprint-42</div></div>
+          <div class="vp" style="height:300px;background:var(--s-);position:relative">
+            <div class="appbar" style="background:var(--surf)"><div class="title-m emph" style="color:#21005d">Sprint 42</div><span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px">A</span></div>
+            <div style="position:absolute;right:18px;top:58px;width:280px;background:var(--s-lowest);border-radius:20px;box-shadow:0 12px 32px rgba(28,27,31,.18);padding:10px">
+              <div class="row sel" style="min-height:0;padding:9px"><span class="av" style="width:32px;height:32px;background:#7568e0;font-size:13px">A</span><div style="flex:1"><div class="title-s">ann</div><div class="body-s" style="color:var(--p)">active</div></div><span style="color:var(--p)">✓</span></div>
+              <div class="row" style="min-height:0;padding:9px"><span class="av" style="width:32px;height:32px;background:#7e5260;font-size:13px">R</span><div style="flex:1"><div class="title-s">raj</div><div class="body-s">on Settings</div></div></div>
+              <hr class="hr" style="margin:6px 0">
+              <div class="row" style="min-height:0;padding:9px;color:var(--p)"><span class="av sq" style="width:32px;height:32px;border:2px dashed var(--outline-var);background:transparent;color:var(--on-sv);font-size:14px">＋</span><span class="title-s" style="color:var(--p)">Add account</span></div>
+            </div>
+          </div>
+        </div>
+        <span class="pin" style="right:14%;left:auto;top:36%">4</span>
+      </div>
+      <div class="redlines" style="position:static;margin-top:14px">
+        <ol style="counter-reset:rl 3"><li><b>Expanded</b> — the sheet becomes a <span class="tok">menu</span> (shape <span class="tok">Large 16dp</span>, Level 2) anchored to the app-bar avatar. Same <span class="tok">AccountsModel</span> data; only the container differs by size class.</li></ol>
+      </div>
+    </section>
+
+    <!-- ============ 3 · BOARD LIST ============ -->
+    <section class="section" id="boardlist">
+      <div class="eyebrow">Screen 3 · account: BoardListModel</div>
+      <h2>Board list</h2>
+      <p>The account home. The grid is <span class="in-code">BoardListModel</span> summaries; tapping a board → <span class="in-code">Nav→Board(id)</span> injects Board/Filter/Undo/Sync and fires the load effect (skeleton shimmer).</p>
+
+      <div class="screen-block">
+        <div>
+          <div class="devcap"><span class="os ios"></span>iOS · Compact</div>
+          <div class="fig" style="width:300px;margin-top:10px">
+            <div class="phone m3">
+              <div class="scr">
+                <div class="island"></div>
+                <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 􀋦</span></div>
+                <div class="scrbody" style="background:var(--s-)">
+                  <div class="appbar" style="padding:8px 18px 14px"><div class="headline" style="font-size:28px;color:#21005d">ann's boards</div></div>
+                  <div style="padding:0 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+                    <div class="kcard" style="padding:0;overflow:hidden">
+                      <div style="height:8px;background:var(--p)"></div>
+                      <div style="padding:13px">
+                        <div class="ktitle">Sprint 42</div>
+                        <div class="body-s" style="margin-top:3px">12 cards · 5 done</div>
+                        <div style="height:6px;border-radius:4px;background:var(--s-high);margin-top:9px"><div style="width:42%;height:6px;border-radius:4px;background:var(--ok)"></div></div>
+                        <div class="body-s" style="margin-top:8px">updated 2h ago</div>
+                      </div>
+                    </div>
+                    <div class="kcard" style="padding:0;overflow:hidden">
+                      <div style="height:8px;background:var(--tert)"></div>
+                      <div style="padding:13px">
+                        <div class="ktitle">Backlog</div>
+                        <div class="body-s" style="margin-top:3px">31 cards · 0 done</div>
+                        <div style="height:6px;border-radius:4px;background:var(--s-high);margin-top:9px"></div>
+                        <div class="body-s" style="margin-top:8px">updated yesterday</div>
+                      </div>
+                    </div>
+                    <div style="border:2px dashed var(--outline-var);border-radius:16px;min-height:64px;display:grid;place-items:center;color:var(--p)" class="title-s">＋ New board</div>
+                  </div>
+                  <div class="navbar" style="margin-top:auto">
+                    <div class="navitem on"><span class="ind">▦</span><span>Boards</span></div>
+                    <div class="navitem"><span class="ind">👤</span><span>Profile</span></div>
+                    <div class="navitem"><span class="ind">⚙</span><span>Settings</span></div>
+                  </div>
+                </div>
+                <div class="homebar"></div>
+              </div>
+            </div>
+            <span class="pin" style="left:50%;top:32%">1</span>
+            <span class="pin" style="left:18%;top:30%">2</span>
+            <span class="pin" style="left:50%;top:62%">3</span>
+            <span class="pin" style="left:50%;top:88%">4</span>
+          </div>
+        </div>
+
+        <div class="redlines">
+          <h4>Board list redlines</h4>
+          <div class="api-line">BoardListModel · boards · order</div>
+          <ol>
+            <li><b>Title</b> — <span class="tok">Headline Medium</span> emphasized, <span class="tok">onPrimaryContainer</span> tint. Screen margin 16dp (compact).</li>
+            <li><b>BoardSummaryCard</b> — <span class="tok">surfaceContainerLowest</span>, shape <span class="tok">Large 16dp</span>, Level 1. 8dp top accent stripe (per-board color). Progress bar = done/total, <span class="tok">positive green</span> fill.</li>
+            <li><b>Create tile</b> — dashed <span class="tok">outlineVariant</span>, <span class="tok">primary</span> label → dispatch <span class="tok">CreateBoard</span>.</li>
+            <li><b>NavigationBar</b> — Level 1 surface, selected item = <span class="tok">secondaryContainer</span> pill + emphasized <span class="tok">Label Medium</span>. Bar height 80dp.</li>
+          </ol>
+          <div class="plat">
+            <div class="h">Platform adaptation</div>
+            <p><span class="os">iOS</span> Bar sits above home indicator; large-title collapse on scroll.</p>
+            <p><span class="os">Android</span> Edge-to-edge; NavigationBar draws behind the gesture pill.</p>
+            <p><span class="os">Web</span> Grid widens to 3–4 columns; cards gain hover lift to Level 2.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="devcap" style="margin-top:34px"><span class="os web"></span>Web · Expanded (rail + grid)</div>
+      <div class="fig" style="margin-top:10px">
+        <div class="browser m3">
+          <div class="chrome"><div class="lights"><i></i><i></i><i></i></div><div class="url">taskflow.dev/boards</div></div>
+          <div class="vp" style="height:330px;background:var(--s-);display:flex">
+            <div class="rail">
+              <span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px;margin-bottom:6px">A</span>
+              <div class="railitem on"><span class="ind">▦</span><span>Boards</span></div>
+              <div class="railitem"><span class="ind">👤</span><span>Profile</span></div>
+              <div class="railitem"><span class="ind">⚙</span><span>Settings</span></div>
+            </div>
+            <div style="flex:1;padding:22px 26px;overflow:hidden">
+              <div class="headline" style="font-size:30px;color:#21005d">ann's boards</div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px">
+                <div class="kcard" style="padding:0;overflow:hidden"><div style="height:8px;background:var(--p)"></div><div style="padding:14px"><div class="ktitle">Sprint 42</div><div class="body-s" style="margin-top:3px">12 cards · 5 done</div><div style="height:6px;border-radius:4px;background:var(--s-high);margin-top:10px"><div style="width:42%;height:6px;border-radius:4px;background:var(--ok)"></div></div></div></div>
+                <div class="kcard" style="padding:0;overflow:hidden"><div style="height:8px;background:var(--tert)"></div><div style="padding:14px"><div class="ktitle">Backlog</div><div class="body-s" style="margin-top:3px">31 cards · 0 done</div><div style="height:6px;border-radius:4px;background:var(--s-high);margin-top:10px"></div></div></div>
+                <div style="border:2px dashed var(--outline-var);border-radius:16px;display:grid;place-items:center;color:var(--p);min-height:120px" class="title-s">＋ New board</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="pin" style="left:4.5%;top:30%">5</span>
+      </div>
+      <div class="redlines" style="position:static;margin-top:14px">
+        <ol style="counter-reset:rl 4"><li><b>NavigationRail</b> — NavigationBar promotes to a 80dp rail at expanded; avatar header opens the account menu. Grid reflows to 3 columns, content capped at 1280dp.</li></ol>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- ============ 4 · BOARD (HERO) ============ -->
+    <section class="section" id="board">
+      <div class="eyebrow">Screen 4 · account: BoardModel + FilterModel + UndoModel</div>
+      <h2>Board · kanban</h2>
+      <p>The flagship. Each column subscribes only to its own slice (<span class="in-code">fieldStateOf(BoardModel){ column.cardIds }</span>) so moving a card re-composes just two columns. WIP badges are <span class="in-code">selectorState</span>; the filter bar feeds <span class="in-code">FilterModel</span> across every column. Shown in both phone platforms (compact) and the web layout (expanded), light + dark.</p>
+
+      <div class="board-compact">
+        <div style="display:flex;gap:22px;flex-wrap:wrap">
+          <div>
+            <div class="devcap"><span class="os ios"></span>iOS · Compact</div>
+            <div class="fig" style="width:286px;margin-top:10px">
+              <div class="phone m3">
+                <div class="scr">
+                  <div class="island"></div>
+                  <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 􀋦</span></div>
+                  <div class="scrbody">
+                    <div style="background:var(--pc);padding:10px 16px 12px">
+                      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                        <div><div class="headline" style="font-size:26px;color:var(--on-pc)">Sprint 42</div><div class="body-s" style="color:var(--on-pc);opacity:.8">12 cards · ann +1 online</div></div>
+                        <span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px">A</span>
+                      </div>
+                      <div class="bgroup" style="margin-top:12px"><span class="on">🔍 api</span><span>Filter ▾</span><span>↺ ↻</span></div>
+                    </div>
+                    <div style="padding:12px 16px;flex:1;overflow:hidden">
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                        <span class="title-s" style="font-variation-settings:'wght' 600">Doing</span><span class="badge wip-lim">2 / 2</span>
+                      </div>
+                      <div class="kcard sel" style="margin-bottom:10px">
+                        <div class="ktitle">Wire KSP codegen</div>
+                        <div class="body-s" style="margin-top:4px">Generate routed reducers from @Reduce…</div>
+                        <div style="display:flex;gap:5px;margin-top:9px"><span class="chip be">backend</span><span class="chip p1">p1</span></div>
+                        <div class="imgph" style="height:44px;margin-top:10px">🖼 image attachment</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span class="body-s">📎 2 · 🔗 1 · ✎ md</span><span class="av" style="width:22px;height:22px;background:var(--ok);font-size:10px"></span></div>
+                      </div>
+                      <div class="kcard ghost"><div class="ktitle">Bundle BOM</div><div class="body-s" style="color:var(--ok);margin-top:3px">⟳ saving… (optimistic)</div></div>
+                    </div>
+                    <div class="navbar" style="position:relative">
+                      <div class="navitem on"><span class="ind">▦</span><span>Boards</span></div>
+                      <div class="navitem"><span class="ind">👤</span><span>Profile</span></div>
+                      <div class="navitem"><span class="ind">⚙</span><span>Settings</span></div>
+                      <div class="fab" style="position:absolute;right:14px;top:-28px;width:52px;height:52px;font-size:24px">＋</div>
+                    </div>
+                  </div>
+                  <div class="homebar"></div>
+                </div>
+              </div>
+              <span class="pin" style="left:50%;top:11%">1</span>
+              <span class="pin" style="left:50%;top:24%">2</span>
+              <span class="pin" style="left:84%;top:34%">3</span>
+              <span class="pin" style="left:50%;top:50%">4</span>
+              <span class="pin" style="left:88%;top:81%">5</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="devcap"><span class="os android"></span>Android · Compact</div>
+            <div class="fig" style="width:286px;margin-top:10px">
+              <div class="phone android m3">
+                <div class="scr">
+                  <div class="island"></div>
+                  <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 ▮</span></div>
+                  <div class="scrbody">
+                    <div style="background:var(--pc);padding:8px 16px 12px">
+                      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                        <div><div class="headline" style="font-size:26px;color:var(--on-pc)">Sprint 42</div><div class="body-s" style="color:var(--on-pc);opacity:.8">12 cards · ann +1 online</div></div>
+                        <span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px">A</span>
+                      </div>
+                      <div class="bgroup" style="margin-top:12px"><span class="on">🔍 api</span><span>Filter ▾</span><span>↺ ↻</span></div>
+                    </div>
+                    <div style="padding:12px 16px;flex:1;overflow:hidden">
+                      <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center"><span class="title-s" style="font-variation-settings:'wght' 600">To Do</span><span class="badge">3</span></div>
+                      <div class="kcard" style="margin-bottom:9px"><div class="ktitle">Doc the registry</div><div style="display:flex;gap:5px;margin-top:8px"><span class="chip doc">docs</span></div></div>
+                      <div class="kcard"><div class="ktitle">Fix wasm target</div></div>
+                    </div>
+                    <div class="navbar" style="position:relative">
+                      <div class="navitem on"><span class="ind">▦</span><span>Boards</span></div>
+                      <div class="navitem"><span class="ind">👤</span><span>Profile</span></div>
+                      <div class="navitem"><span class="ind">⚙</span><span>Settings</span></div>
+                      <div class="fab" style="position:absolute;right:14px;top:-28px;width:52px;height:52px;font-size:24px">＋</div>
+                    </div>
+                  </div>
+                  <div class="navhint"></div>
+                </div>
+              </div>
+              <span class="pin" style="left:50%;top:60%">6</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="redlines wide-rl" style="position:static;margin-top:22px">
+          <h4>Board redlines</h4>
+          <div class="api-line">fieldStateOf(BoardModel) · selectorState · FilterModel · UndoModel</div>
+          <ol>
+            <li><b>Hero app bar</b> — <span class="tok">primaryContainer</span>, board name <span class="tok">Headline Medium</span> emphasized. Compact = horizontally-paged single column.</li>
+            <li><b>FilterBar ButtonGroup</b> — selected segment expands via shape-morph (Spatial·Fast). Search → <span class="tok">FilterModel.query</span> dims non-matching cards board-wide; undo/redo → <span class="tok">UndoModel</span>.</li>
+            <li><b>Avatar</b> — opens the account switcher (screen 2). 34dp, presence-aware.</li>
+            <li><b>KanbanCard</b> — shape <span class="tok">Large-increased 20dp</span> (compact), Level 1; selected = 2dp <span class="tok">primary</span> outline. WIP badge here is <span class="tok">at-limit</span> (2 of 2) = <span class="tok">tertiaryContainer</span> rose; <span class="tok">over-limit</span> escalates to <span class="tok">errorContainer</span>. Ghost card at 55% = optimistic in-flight.</li>
+            <li><b>FloatingActionButtonMenu</b> — <span class="tok">primaryContainer</span> FAB, 52dp, morphs to a labelled menu (Add card / column). Level 3.</li>
+            <li><b>Same surface, Android</b> — identical Compose M3 board; only the frame, status bar and back model differ (predictive-back animates the screen transition).</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="devcap" style="margin-top:34px"><span class="os web"></span>Web · Expanded — Light</div>
+      <div class="fig" style="margin-top:10px">
+        <div class="browser m3">
+          <div class="chrome"><div class="lights"><i></i><i></i><i></i></div><div class="url">taskflow.dev/b/sprint-42</div></div>
+          <div class="vp" style="height:360px;background:var(--s-);display:flex">
+            <div class="rail">
+              <span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px;margin-bottom:6px">A</span>
+              <div class="railitem on"><span class="ind">▦</span><span>Boards</span></div>
+              <div class="railitem"><span class="ind">👤</span><span>Profile</span></div>
+              <div class="railitem"><span class="ind">⚙</span><span>Settings</span></div>
+              <div class="fab" style="margin-top:auto;width:48px;height:48px;font-size:22px">＋</div>
+            </div>
+            <div style="flex:1;padding:16px 18px;overflow:hidden">
+              <div style="display:flex;justify-content:space-between;align-items:center"><div class="headline" style="font-size:26px;color:#21005d">Sprint 42</div><div class="bgroup"><span class="on">🔍 api</span><span>Filter ▾</span><span>↺ ↻</span></div></div>
+              <div style="display:flex;gap:12px;margin-top:14px;align-items:flex-start">
+                <div style="flex:1;background:var(--s-low);border-radius:18px;padding:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:center"><span class="title-s">To Do</span><span class="badge">3</span></div>
+                  <div class="kcard" style="margin-top:9px;padding:11px"><div class="title-s">Doc the registry</div><div style="margin-top:6px"><span class="chip doc">docs</span></div></div>
+                  <div class="kcard" style="margin-top:8px;padding:11px"><div class="title-s">Fix wasm target</div></div>
+                </div>
+                <div style="flex:1;background:var(--s-low);border-radius:18px;padding:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:center"><span class="title-s">Doing</span><span class="badge wip-lim">2 / 2</span></div>
+                  <div class="kcard sel" style="margin-top:9px;padding:11px"><div class="title-s">Wire KSP codegen</div><div style="display:flex;gap:5px;margin-top:6px"><span class="chip be">backend</span><span class="chip p1">p1</span></div></div>
+                  <div class="kcard ghost" style="margin-top:8px;padding:11px"><div class="title-s">Bundle BOM</div><div class="body-s" style="color:var(--ok)">⟳ saving</div></div>
+                </div>
+                <div style="flex:1;background:var(--s-low);border-radius:18px;padding:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:center"><span class="title-s">Done</span><span class="badge">5</span></div>
+                  <div class="kcard" style="margin-top:9px;padding:11px;opacity:.85"><div class="title-s">Routing PR ✓</div></div>
+                </div>
+                <div style="width:140px;background:var(--s-lowest);border-radius:18px;padding:12px">
+                  <div class="title-s" style="margin-bottom:8px">Activity</div>
+                  <div class="body-s">🤖 bot moved “Bundle BOM” → Doing</div>
+                  <div class="body-s" style="margin-top:8px">ann added “Fix wasm”</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="pin" style="left:4%;top:18%">7</span>
+        <span class="pin" style="right:12%;left:auto;top:30%">8</span>
+      </div>
+
+      <div class="devcap" style="margin-top:30px"><span class="os web"></span>Web · Expanded — Dark</div>
+      <div class="fig" style="margin-top:10px">
+        <div class="browser dark m3 dark">
+          <div class="chrome"><div class="lights"><i></i><i></i><i></i></div><div class="url">taskflow.dev/b/sprint-42</div></div>
+          <div class="vp" style="height:360px;background:var(--bg);display:flex">
+            <div class="rail">
+              <span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px;margin-bottom:6px">A</span>
+              <div class="railitem on"><span class="ind">▦</span><span>Boards</span></div>
+              <div class="railitem"><span class="ind">👤</span><span>Profile</span></div>
+              <div class="railitem"><span class="ind">⚙</span><span>Settings</span></div>
+              <div class="fab" style="margin-top:auto;width:48px;height:48px;font-size:22px">＋</div>
+            </div>
+            <div style="flex:1;padding:16px 18px;overflow:hidden">
+              <div style="display:flex;justify-content:space-between;align-items:center"><div class="headline" style="font-size:26px;color:var(--p)">Sprint 42</div><div class="bgroup"><span class="on">🔍 api</span><span>Filter ▾</span><span>↺ ↻</span></div></div>
+              <div style="display:flex;gap:12px;margin-top:14px;align-items:flex-start">
+                <div style="flex:1;background:var(--s-low);border-radius:18px;padding:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:center"><span class="title-s">To Do</span><span class="badge">3</span></div>
+                  <div class="kcard" style="margin-top:9px;padding:11px"><div class="title-s">Doc the registry</div><div style="margin-top:6px"><span class="chip doc">docs</span></div></div>
+                </div>
+                <div style="flex:1;background:var(--s-low);border-radius:18px;padding:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:center"><span class="title-s">Doing</span><span class="badge wip-lim">2 / 2</span></div>
+                  <div class="kcard sel" style="margin-top:9px;padding:11px"><div class="title-s">Wire KSP codegen</div><div style="display:flex;gap:5px;margin-top:6px"><span class="chip be">backend</span><span class="chip p1">p1</span></div></div>
+                </div>
+                <div style="flex:1;background:var(--s-low);border-radius:18px;padding:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:center"><span class="title-s">Done</span><span class="badge">5</span></div>
+                  <div class="kcard" style="margin-top:9px;padding:11px;opacity:.85"><div class="title-s">Routing PR ✓</div></div>
+                </div>
+                <div style="width:140px;background:var(--s-);border-radius:18px;padding:12px">
+                  <div class="title-s" style="margin-bottom:8px">Activity</div>
+                  <div class="body-s">🤖 bot moved card</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="redlines" style="position:static;margin-top:14px">
+        <ol style="counter-reset:rl 6">
+          <li><b>NavigationRail + side-by-side columns</b> — all columns visible, persistent <span class="tok">Activity</span> rail (<span class="tok">ActivityModel</span>). FAB anchors to the rail foot.</li>
+          <li><b>Card detail opens as a side sheet</b> here (full-screen on compact). Hover lifts cards to Level 2; pointer cursor on all interactive elements.</li>
+          <li style="counter-increment:rl"><b>Dark</b> — surfaces separate by tonal tint, not shadow; board name uses <span class="tok">primary</span> (P80), WIP keeps the rose <span class="tok">tertiaryContainer</span>. Same tokens, <span class="tok">expressiveDarkColorScheme</span>.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ 5 · CARD DETAIL ============ -->
+    <section class="section" id="card">
+      <div class="eyebrow">Screen 5 · account: Nav.openCardId → subscribeToModel(BoardModel)</div>
+      <h2>Card detail</h2>
+      <p>One screen, three modes — <strong>view · edit · create</strong> — no extra route. Side sheet on expanded, full-screen on compact. Editor keystrokes live in local Compose <span class="in-code">remember</span> (never the store) and commit via dispatch on Save.</p>
+
+      <div class="screen-block" data-modegroup>
+        <div>
+          <div class="mode-tabs">
+            <button class="active" data-mode="view">View</button>
+            <button data-mode="edit">Edit / Create</button>
+            <button data-mode="dark">View · Dark</button>
+          </div>
+
+          <!-- VIEW -->
+          <div class="mode-pane active" data-mode="view">
+            <div class="devcap" style="margin-top:12px"><span class="os android"></span>Android · Compact · view</div>
+            <div class="fig" style="width:300px;margin-top:10px">
+              <div class="phone android m3">
+                <div class="scr">
+                  <div class="island"></div>
+                  <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 ▮</span></div>
+                  <div class="scrbody">
+                    <div class="appbar hero" style="padding:12px 16px"><span class="body-s" style="color:var(--on-pc);font-variation-settings:'wght' 600">DOING · SPRINT 42</span><span class="assist">✎ Edit</span></div>
+                    <div style="padding:16px;flex:1;overflow:hidden">
+                      <div class="headline" style="font-size:23px">Wire KSP codegen</div>
+                      <div style="display:flex;gap:5px;margin-top:10px"><span class="chip be">backend</span><span class="chip p1">p1</span><span class="chip dash">＋ label</span></div>
+                      <div style="margin-top:14px;font-size:14px;line-height:1.5;color:var(--on-surf)"><div style="font-variation-settings:'wght' 700;margin-bottom:3px">Goal</div>Generate routed reducers from <span style="background:var(--sv);color:var(--p);padding:1px 5px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px">@Reduce</span>.<ul style="margin:8px 0 0 18px;padding:0;color:var(--on-sv);font-size:13px"><li>kspCommonMainMetadata wiring</li><li>fail-closed on unvalidated symbols</li></ul></div>
+                      <div style="display:flex;gap:8px;margin-top:14px"><div class="imgph" style="flex:1;height:60px">🖼 image · Coil 3</div><div style="flex:1;border:1px solid var(--outline-var);border-radius:12px;padding:9px;font-size:11px;font-variation-settings:'wght' 600">🔗 KSP docs<div class="body-s">kotlinlang.org</div></div></div>
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px"><span class="body-s" style="display:flex;align-items:center;gap:7px"><span class="av" style="width:24px;height:24px;background:var(--ok);font-size:10px"></span>assignee: kai</span><div class="bgroup"><span>◂ To Do</span><span>Done ▸</span></div></div>
+                    </div>
+                  </div>
+                  <div class="navhint"></div>
+                </div>
+              </div>
+              <span class="pin" style="left:80%;top:9%">1</span>
+              <span class="pin" style="left:50%;top:35%">2</span>
+              <span class="pin" style="left:30%;top:58%">3</span>
+              <span class="pin" style="left:80%;top:78%">4</span>
+            </div>
+          </div>
+
+          <!-- EDIT/CREATE -->
+          <div class="mode-pane" data-mode="edit">
+            <div class="devcap" style="margin-top:12px"><span class="os android"></span>Android · Compact · create</div>
+            <div class="fig" style="width:300px;margin-top:10px">
+              <div class="phone android m3">
+                <div class="scr">
+                  <div class="island"></div>
+                  <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 ▮</span></div>
+                  <div class="scrbody">
+                    <div class="appbar" style="background:var(--p)"><span class="title-s" style="color:var(--on-p)">New card · To Do</span><span class="label-l" style="color:#d8d2ff">Cancel</span></div>
+                    <div style="padding:16px;flex:1;overflow:hidden">
+                      <div class="field flat" style="padding:6px 0;font-variation-settings:'wght' 700;font-size:18px;border-bottom:2px solid var(--p)">Card title…</div>
+                      <div style="display:flex;gap:4px;margin-top:14px;background:var(--s-high);border-radius:10px;padding:6px"><span style="font-variation-settings:'wght' 700;color:var(--p);padding:2px 8px">B</span><span style="font-style:italic;color:var(--p);padding:2px 8px">I</span><span style="color:var(--p);padding:2px 8px;font-size:13px">• list</span><span style="color:var(--p);padding:2px 8px;font-family:'IBM Plex Mono',monospace">&lt;/&gt;</span><span style="color:var(--p);padding:2px 8px">🔗</span><span style="color:var(--p);padding:2px 8px">🖼</span></div>
+                      <div style="margin-top:8px;border:1px solid var(--outline-var);border-radius:12px;padding:10px;min-height:84px;font:13px/1.5 'IBM Plex Mono',monospace;color:var(--on-sv)">## Goal<br>Generate routed reducers from `@Reduce`<br>- wiring<br>- fail-closed</div>
+                      <div style="display:flex;gap:14px;margin-top:7px;font-size:12px"><span class="body-s">Write</span><span style="color:var(--p);font-variation-settings:'wght' 700;border-bottom:2px solid var(--p)">Preview</span></div>
+                      <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><span class="assist">＋ label</span><span class="assist">📎 attach</span><span class="assist">👤 assign</span></div>
+                      <div style="display:flex;justify-content:flex-end;margin-top:18px"><span class="btn filled">Save</span></div>
+                    </div>
+                  </div>
+                  <div class="navhint"></div>
+                </div>
+              </div>
+              <span class="pin" style="left:50%;top:23%">5</span>
+              <span class="pin" style="left:50%;top:40%">6</span>
+              <span class="pin" style="left:84%;top:84%">7</span>
+            </div>
+          </div>
+
+          <!-- VIEW DARK -->
+          <div class="mode-pane" data-mode="dark">
+            <div class="devcap" style="margin-top:12px"><span class="os android"></span>Android · Compact · view (dark)</div>
+            <div class="fig" style="width:300px;margin-top:10px">
+              <div class="phone android m3 dark">
+                <div class="scr">
+                  <div class="island"></div>
+                  <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 ▮</span></div>
+                  <div class="scrbody">
+                    <div class="appbar" style="background:var(--pc)"><span class="body-s" style="color:var(--on-pc);font-variation-settings:'wght' 600">DOING · SPRINT 42</span><span class="assist">✎ Edit</span></div>
+                    <div style="padding:16px;flex:1;overflow:hidden">
+                      <div class="headline" style="font-size:23px">Wire KSP codegen</div>
+                      <div style="display:flex;gap:5px;margin-top:10px"><span class="chip be">backend</span><span class="chip p1">p1</span></div>
+                      <div style="margin-top:14px;font-size:14px;line-height:1.5"><div style="font-variation-settings:'wght' 700;margin-bottom:3px">Goal</div><span style="color:var(--on-sv)">Generate routed reducers from</span> <span style="background:var(--sv);color:var(--p);padding:1px 5px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px">@Reduce</span>.</div>
+                      <div class="imgph" style="height:60px;margin-top:14px">🖼 image · Coil 3</div>
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px"><span class="body-s" style="display:flex;align-items:center;gap:7px"><span class="av" style="width:24px;height:24px;background:var(--ok);font-size:10px"></span>kai</span><div class="bgroup"><span>◂ To Do</span><span>Done ▸</span></div></div>
+                    </div>
+                  </div>
+                  <div class="navhint"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="redlines">
+          <h4>Card detail redlines</h4>
+          <div class="api-line">Nav.openCardId · subscribeToModel(BoardModel) · local remember (editor)</div>
+          <ol>
+            <li><b>Mode header</b> — view = <span class="tok">primaryContainer</span> + ✎ Edit assist chip; create = <span class="tok">primary</span> bar + Cancel. Overline = <span class="tok">Label Small</span>.</li>
+            <li><b>Title</b> — <span class="tok">Headline Small</span>. Labels are <span class="tok">LabelChip</span> + a dashed “＋ label”.</li>
+            <li><b>MarkdownView</b> — rendered via <span class="tok">multiplatform-markdown-renderer-m3</span>; inline code on <span class="tok">surfaceVariant</span>. Attachments = <span class="tok">AttachmentChip</span> (image / link), shape <span class="tok">Medium 12dp</span>.</li>
+            <li><b>MoveToGroup</b> — connected ButtonGroup, optimistic <span class="tok">CardMoveRequested</span>; edge columns disable.</li>
+            <li><b>MarkdownEditor</b> — title field <span class="tok">Extra Small 4dp</span> top; toolbar inserts tokens. Text is local state — only Save dispatches.</li>
+            <li><b>Write / Preview</b> — toggle; Preview renders with the same MarkdownView.</li>
+            <li><b>Save</b> — filled button → dispatch <span class="tok">AddCard</span> / <span class="tok">EditCard</span>; undoable.</li>
+          </ol>
+          <div class="plat">
+            <div class="h">Platform adaptation</div>
+            <p><span class="os">iOS</span> Full-screen modal; swipe-from-edge = back (cancel/close).</p>
+            <p><span class="os">Android</span> IME-aware: editor scrolls above the keyboard; predictive-back closes.</p>
+            <p><span class="os">Web</span> 330dp side sheet beside the board (see below); Esc closes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="devcap" style="margin-top:34px"><span class="os web"></span>Web · Expanded — board + side sheet</div>
+      <div class="fig" style="margin-top:10px">
+        <div class="browser m3">
+          <div class="chrome"><div class="lights"><i></i><i></i><i></i></div><div class="url">taskflow.dev/b/sprint-42?card=ksp</div></div>
+          <div class="vp" style="height:340px;background:var(--s-);display:flex">
+            <div style="flex:1;padding:16px 18px;overflow:hidden">
+              <div class="headline" style="font-size:24px;color:#21005d">Sprint 42</div>
+              <div style="display:flex;gap:12px;margin-top:14px">
+                <div style="flex:1;background:var(--s-low);border-radius:18px;padding:10px"><span class="title-s">To Do</span><div class="kcard" style="margin-top:9px;padding:11px"><div class="title-s">Doc the registry</div></div></div>
+                <div style="flex:1;background:var(--s-low);border-radius:18px;padding:10px"><div style="display:flex;justify-content:space-between"><span class="title-s">Doing</span><span class="badge wip-lim">2 / 2</span></div><div class="kcard sel" style="margin-top:9px;padding:11px"><div class="title-s">Wire KSP codegen</div></div></div>
+              </div>
+            </div>
+            <div style="width:330px;background:var(--s-lowest);border-left:1px solid var(--outline-var);padding:18px;overflow:hidden">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span class="body-s" style="font-variation-settings:'wght' 600">DOING · SPRINT 42</span><span style="color:var(--on-sv)">✕</span></div>
+              <div class="headline" style="font-size:20px;margin-top:10px">Wire KSP codegen</div>
+              <div style="display:flex;gap:5px;margin-top:10px"><span class="chip be">backend</span><span class="chip p1">p1</span></div>
+              <div style="margin-top:12px;font-size:13px;line-height:1.5;color:var(--on-surf)"><b>Goal</b> — generate routed reducers from <span style="background:var(--sv);color:var(--p);padding:1px 4px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:11px">@Reduce</span>.</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px"><span class="body-s">assignee: kai</span><div class="bgroup"><span>◂</span><span>▸</span></div></div>
+            </div>
+          </div>
+        </div>
+        <span class="pin" style="right:9%;left:auto;top:18%">8</span>
+      </div>
+      <div class="redlines" style="position:static;margin-top:14px">
+        <ol style="counter-reset:rl 7"><li><b>Side sheet</b> — 330dp, <span class="tok">surfaceContainerLowest</span>, left divider <span class="tok">outlineVariant</span>. Opening uses a container-transform from the tapped card (shared bounds, Spatial·Default). Board stays interactive behind it.</li></ol>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- ============ 6 · PROFILE ============ -->
+    <section class="section" id="profile">
+      <div class="eyebrow">Screen 6 · account: SessionModel</div>
+      <h2>Profile / User</h2>
+      <p>Edits dispatch to this account's store only. <span class="in-code">Log out</span> disposes that store from the registry — other accounts untouched.</p>
+
+      <div class="screen-block">
+        <div>
+          <div class="devcap"><span class="os ios"></span>iOS · Compact</div>
+          <div class="fig" style="width:300px;margin-top:10px">
+            <div class="phone m3">
+              <div class="scr">
+                <div class="island"></div>
+                <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 􀋦</span></div>
+                <div class="scrbody" style="background:var(--s-)">
+                  <div style="background:var(--pc);height:64px"></div>
+                  <div style="padding:0 16px 16px;margin-top:-26px">
+                    <span class="av sq" style="width:56px;height:56px;background:#7568e0;font-size:22px;border:3px solid var(--s-)">A</span>
+                    <div class="headline" style="font-size:19px;margin-top:8px">Ann Patterson</div>
+                    <div class="body-m">ann@taskflow.dev</div>
+                    <div class="kcard" style="margin-top:14px;padding:4px 14px">
+                      <div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px"><span class="body-m">Display name</span><span class="title-s">Ann Patterson ✎</span></div>
+                      <hr class="hr">
+                      <div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px"><span class="body-m">Boards</span><span class="title-s">2</span></div>
+                      <hr class="hr">
+                      <div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px"><span class="body-m">Cards created</span><span class="title-s">18</span></div>
+                    </div>
+                    <div class="btn danger" style="margin-top:14px;width:100%;padding:11px">Log out</div>
+                  </div>
+                  <div class="navbar" style="margin-top:auto"><div class="navitem"><span class="ind">▦</span><span>Boards</span></div><div class="navitem on"><span class="ind">👤</span><span>Profile</span></div><div class="navitem"><span class="ind">⚙</span><span>Settings</span></div></div>
+                </div>
+                <div class="homebar"></div>
+              </div>
+            </div>
+            <span class="pin" style="left:24%;top:24%">1</span>
+            <span class="pin" style="left:50%;top:52%">2</span>
+            <span class="pin" style="left:50%;top:72%">3</span>
+          </div>
+        </div>
+
+        <div class="redlines">
+          <h4>Profile redlines</h4>
+          <div class="api-line">SessionModel · profile: AccountDetail</div>
+          <ol>
+            <li><b>Avatar</b> — 56dp squircle (<span class="tok">Large-rounded</span>), 3dp surface border breaking the cover band (<span class="tok">primaryContainer</span>).</li>
+            <li><b>Detail card</b> — <span class="tok">surfaceContainerLowest</span>, <span class="tok">Large 16dp</span>; rows split by <span class="tok">outlineVariant</span> hairlines. Editable rows show ✎ and dispatch <span class="tok">EditProfile</span>.</li>
+            <li><b>Log out</b> — outlined <span class="tok">error</span> button (≥48dp) → confirm dialog → <span class="tok">registry.dispose(accountId)</span>.</li>
+          </ol>
+          <div class="plat">
+            <div class="h">Platform adaptation</div>
+            <p><span class="os">iOS</span> Cover respects the status-bar inset; pull-to-refresh re-pulls session.</p>
+            <p><span class="os">Android</span> Edge-to-edge cover under the status bar.</p>
+            <p><span class="os">Web</span> Two-column at expanded: detail card beside an activity summary.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="devcap" style="margin-top:34px"><span class="os web"></span>Web · Expanded (two-column)</div>
+      <div class="fig" style="margin-top:10px">
+        <div class="browser m3">
+          <div class="chrome"><div class="lights"><i></i><i></i><i></i></div><div class="url">taskflow.dev/profile</div></div>
+          <div class="vp" style="height:330px;background:var(--s-);display:flex">
+            <div class="rail">
+              <span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px;margin-bottom:6px">A</span>
+              <div class="railitem"><span class="ind">▦</span><span>Boards</span></div>
+              <div class="railitem on"><span class="ind">👤</span><span>Profile</span></div>
+              <div class="railitem"><span class="ind">⚙</span><span>Settings</span></div>
+            </div>
+            <div style="flex:1;overflow:hidden">
+              <div style="background:var(--pc);height:60px"></div>
+              <div style="padding:0 26px 22px;margin-top:-28px">
+                <div style="display:flex;align-items:flex-end;gap:16px">
+                  <span class="av sq" style="width:64px;height:64px;background:#7568e0;font-size:26px;border:3px solid var(--s-)">A</span>
+                  <div style="padding-bottom:4px"><div class="headline" style="font-size:22px">Ann Patterson</div><div class="body-m">ann@taskflow.dev</div></div>
+                </div>
+                <div style="display:flex;gap:16px;margin-top:18px;align-items:flex-start">
+                  <div class="kcard" style="flex:1;padding:4px 16px">
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px"><span class="body-m">Display name</span><span class="title-s">Ann Patterson ✎</span></div>
+                    <hr class="hr">
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px"><span class="body-m">Boards</span><span class="title-s">2</span></div>
+                    <hr class="hr">
+                    <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px"><span class="body-m">Cards created</span><span class="title-s">18</span></div>
+                    <hr class="hr">
+                    <div style="padding:12px 0"><div class="btn danger" style="padding:9px 18px">Log out</div></div>
+                  </div>
+                  <div style="width:230px;background:var(--s-lowest);border-radius:16px;padding:14px">
+                    <div class="title-s" style="margin-bottom:8px">Recent activity</div>
+                    <div class="body-s">moved “Wire KSP” → Doing</div>
+                    <div class="body-s" style="margin-top:7px">created “Fix wasm target”</div>
+                    <div class="body-s" style="margin-top:7px">edited “Doc the registry”</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="pin" style="right:24%;left:auto;top:46%">4</span>
+      </div>
+      <div class="redlines" style="position:static;margin-top:14px">
+        <ol style="counter-reset:rl 3"><li><b>Expanded</b> — the detail card sits beside a read-only activity summary; the NavigationRail replaces the bottom bar. Same <span class="tok">SessionModel</span>; cover band caps at 1280dp content width.</li></ol>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- ============ 7 · SETTINGS ============ -->
+    <section class="section" id="settings">
+      <div class="eyebrow">Screen 7 · root: AppSettingsModel</div>
+      <h2>Settings</h2>
+      <p>The live fake-backend knobs. These mutate <span class="in-code">AppSettingsModel</span>; the fake service reads them live — crank latency or failure to <em>see</em> the loading / error / undo paths on demand.</p>
+
+      <div class="screen-block">
+        <div>
+          <div class="devcap"><span class="os android"></span>Android · Compact</div>
+          <div class="fig" style="width:300px;margin-top:10px">
+            <div class="phone android m3">
+              <div class="scr">
+                <div class="island"></div>
+                <div class="statusbar"><span>9:41</span><span>􀙇 􀛨 ▮</span></div>
+                <div class="scrbody">
+                  <div class="appbar" style="padding:14px 16px 8px"><div class="headline" style="font-size:22px">Settings</div></div>
+                  <div style="padding:6px 16px;flex:1;overflow:hidden">
+                    <div class="body-s" style="font-variation-settings:'wght' 700;letter-spacing:.5px;margin-top:8px">APPEARANCE</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0"><span class="body-m" style="color:var(--on-surf)">Theme</span><div class="bgroup"><span>System</span><span class="on">Light</span><span>Dark</span></div></div>
+                    <div class="body-s" style="font-variation-settings:'wght' 700;letter-spacing:.5px;margin-top:14px">FAKE BACKEND · DEMO KNOBS</div>
+                    <div style="padding:10px 0"><div style="display:flex;justify-content:space-between" class="body-m"><span style="color:var(--on-surf)">Latency</span><span>300–800 ms</span></div><div class="slider" style="margin-top:12px"><i style="width:42%"></i><b style="left:40%"></b></div></div>
+                    <div style="padding:10px 0"><div style="display:flex;justify-content:space-between" class="body-m"><span style="color:var(--on-surf)">Failure rate</span><span>10%</span></div><div class="slider err" style="margin-top:12px"><i style="width:10%"></i><b style="left:8%"></b></div></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0" class="body-m"><span style="color:var(--on-surf)">Bot collaborator</span><span class="switch"><i></i></span></div>
+                  </div>
+                  <div class="navbar"><div class="navitem"><span class="ind">▦</span><span>Boards</span></div><div class="navitem"><span class="ind">👤</span><span>Profile</span></div><div class="navitem on"><span class="ind">⚙</span><span>Settings</span></div></div>
+                </div>
+                <div class="navhint"></div>
+              </div>
+            </div>
+            <span class="pin" style="left:78%;top:25%">1</span>
+            <span class="pin" style="left:50%;top:48%">2</span>
+            <span class="pin" style="left:78%;top:74%">3</span>
+          </div>
+        </div>
+
+        <div class="redlines">
+          <h4>Settings redlines</h4>
+          <div class="api-line">AppSettingsModel · theme · fakeService{ latency, failureRate, bot }</div>
+          <ol>
+            <li><b>Theme</b> — <span class="tok">ButtonGroup</span> (System/Light/Dark) → drives <span class="tok">MaterialExpressiveTheme</span> color scheme app-wide (Effects·Slow crossfade).</li>
+            <li><b>SettingsSlider</b> — <span class="tok">primary</span> track; failure-rate uses the <span class="tok">error</span> track. Value label on drag. Writes straight to <span class="tok">AppSettingsModel</span>.</li>
+            <li><b>Switch</b> — bot collaborator on/off; starts/stops the timer middleware that dispatches like a 2nd user.</li>
+          </ol>
+          <div class="plat">
+            <div class="h">Platform adaptation</div>
+            <p><span class="os">iOS</span> Grouped-inset list rhythm; sliders use larger 44dp thumbs.</p>
+            <p><span class="os">Android</span> Edge-to-edge; Material You can seed from wallpaper (optional).</p>
+            <p><span class="os">Web</span> Single centered 640dp column; sliders keyboard-steppable.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="devcap" style="margin-top:34px"><span class="os web"></span>Web · Expanded (centered column)</div>
+      <div class="fig" style="margin-top:10px">
+        <div class="browser m3">
+          <div class="chrome"><div class="lights"><i></i><i></i><i></i></div><div class="url">taskflow.dev/settings</div></div>
+          <div class="vp" style="height:340px;background:var(--s-);display:flex">
+            <div class="rail">
+              <span class="av" style="width:34px;height:34px;background:#7568e0;font-size:14px;margin-bottom:6px">A</span>
+              <div class="railitem"><span class="ind">▦</span><span>Boards</span></div>
+              <div class="railitem"><span class="ind">👤</span><span>Profile</span></div>
+              <div class="railitem on"><span class="ind">⚙</span><span>Settings</span></div>
+            </div>
+            <div style="flex:1;padding:24px;overflow:hidden;display:flex;justify-content:center">
+              <div style="width:520px">
+                <div class="headline" style="font-size:26px">Settings</div>
+                <div class="body-s" style="font-variation-settings:'wght' 700;letter-spacing:.5px;margin-top:18px;color:var(--on-sv)">APPEARANCE</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0"><span class="body-m" style="color:var(--on-surf)">Theme</span><div class="bgroup"><span>System</span><span class="on">Light</span><span>Dark</span></div></div>
+                <hr class="hr">
+                <div class="body-s" style="font-variation-settings:'wght' 700;letter-spacing:.5px;margin-top:16px;color:var(--on-sv)">FAKE BACKEND · DEMO KNOBS</div>
+                <div style="padding:12px 0"><div style="display:flex;justify-content:space-between" class="body-m"><span style="color:var(--on-surf)">Latency</span><span>300–800 ms</span></div><div class="slider" style="margin-top:12px"><i style="width:42%"></i><b style="left:40%"></b></div></div>
+                <div style="padding:12px 0"><div style="display:flex;justify-content:space-between" class="body-m"><span style="color:var(--on-surf)">Failure rate</span><span>10%</span></div><div class="slider err" style="margin-top:12px"><i style="width:10%"></i><b style="left:8%"></b></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0" class="body-m"><span style="color:var(--on-surf)">Bot collaborator</span><span class="switch"><i></i></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="pin" style="left:50%;top:24%">4</span>
+      </div>
+      <div class="redlines" style="position:static;margin-top:14px">
+        <ol style="counter-reset:rl 3"><li><b>Expanded</b> — a single centered 520–640dp column on the rail layout; sliders become keyboard-steppable and the theme ButtonGroup stays inline. Same <span class="tok">AppSettingsModel</span> knobs, read live by the fake service.</li></ol>
+      </div>
+    </section>
+
+    <!-- ============ 8 · MOTION CHOREOGRAPHY ============ -->
+    <section class="section" id="motion">
+      <div class="eyebrow">Spec · 8</div>
+      <h2>Motion choreography</h2>
+      <p>Every named interaction, mapped to the Phase&nbsp;1 spring tokens. Spatial springs (slight overshoot) drive anything that moves or resizes; Effects springs (no bounce) drive color, opacity and elevation. A few are shown live below.</p>
+
+      <style>
+        @keyframes tf-move { 0%,12% { transform:translateY(34px); opacity:.4 } 55% { transform:translateY(-4px); opacity:1 } 70%,100% { transform:translateY(0); opacity:1 } }
+        @keyframes tf-pulse { 0%,60%,100% { transform:scale(1) } 70% { transform:scale(1.14) } 82% { transform:scale(.97) } }
+        @keyframes tf-fade { 0%,40% { opacity:.45 } 60%,100% { opacity:1 } }
+        .mdemo { border:1px solid var(--line); border-radius:14px; background:var(--card); padding:16px; }
+        .mdemo .stage { height:96px; border-radius:10px; background:var(--paper-2); display:grid; place-items:center; overflow:hidden; margin-bottom:12px; }
+        .mdemo h4 { margin:0 0 2px; }
+        .mdemo .tok2 { font:500 11px var(--mono); color:var(--accent-ink); background:var(--accent-wash); padding:2px 7px; border-radius:5px; }
+      </style>
+      <div class="grid g3">
+        <div class="mdemo">
+          <div class="stage"><div style="width:120px;background:#fff;border:1px solid #e6e0e9;border-radius:12px;padding:9px;box-shadow:0 1px 3px rgba(28,27,31,.14);animation:tf-move 2.4s ease-in-out infinite"><div style="font:600 12px var(--sans);color:#1c1b1f">Wire KSP</div><div style="margin-top:5px"><span style="background:#dce6ff;color:#13366b;font:600 9px var(--sans);padding:2px 6px;border-radius:6px">backend</span></div></div></div>
+          <h4>Card move / reorder</h4>
+          <p style="font-size:12.5px;margin-top:4px">Slide + settle via <span class="tok2">animateItem</span>; only the two affected columns recompose.</p>
+          <div style="margin-top:8px"><span class="tok2">Spatial · Default · 0.8 / 380</span></div>
+        </div>
+        <div class="mdemo">
+          <div class="stage"><span class="badge wip-over m3" style="font:600 14px var(--sans);padding:4px 14px;border-radius:999px;background:#ffdbe3;color:#8c0c3a;animation:tf-pulse 2s ease-in-out infinite">2 / 2</span></div>
+          <h4>WIP badge count + pulse</h4>
+          <p style="font-size:12.5px;margin-top:4px">Number count-up + container crossfade ok→at-limit→over; a scale pulse fires when it reaches the limit.</p>
+          <div style="margin-top:8px"><span class="tok2">Effects · Fast</span> + <span class="tok2">Spatial · Fast</span></div>
+        </div>
+        <div class="mdemo">
+          <div class="stage"><div style="width:130px"><div class="skel m3" style="height:12px;background:linear-gradient(90deg,#f0ebf3 25%,#ece6f0 37%,#f0ebf3 63%);background-size:400% 100%;border-radius:6px;animation:sh 1.3s ease-in-out infinite"></div><div class="skel m3" style="height:12px;width:70%;margin-top:8px;background:linear-gradient(90deg,#f0ebf3 25%,#ece6f0 37%,#f0ebf3 63%);background-size:400% 100%;border-radius:6px;animation:sh 1.3s ease-in-out infinite"></div><div class="skel m3" style="height:34px;margin-top:8px;background:linear-gradient(90deg,#f0ebf3 25%,#ece6f0 37%,#f0ebf3 63%);background-size:400% 100%;border-radius:8px;animation:sh 1.3s ease-in-out infinite"></div></div></div>
+          <h4>Skeleton shimmer</h4>
+          <p style="font-size:12.5px;margin-top:4px">Plays while the board load effect runs; content cross-fades in on success.</p>
+          <div style="margin-top:8px"><span class="tok2">1300 ms loop → Effects · Default</span></div>
+        </div>
+      </div>
+
+      <table class="tbl" style="margin-top:24px">
+        <thead><tr><th style="width:20%">Motion</th><th style="width:24%">Trigger</th><th style="width:22%">Spring token</th><th>Choreography</th></tr></thead>
+        <tbody>
+          <tr><td><b style="color:var(--ink)">Card move</b></td><td class="mono">CardMoveRequested</td><td class="mono">Spatial·Default</td><td>Source &amp; target columns animate their id-lists; the card slides out/in with overshoot. Optimistic — board updates before the backend confirms.</td></tr>
+          <tr><td><b style="color:var(--ink)">Optimistic save</b></td><td class="mono">…Requested → …Succeeded/Failed</td><td class="mono">Effects·Default + Spatial·Fast</td><td>Card drops to 55% alpha with a sync chip; on success fades to 100%, on failure reverts position + raises a Retry snackbar.</td></tr>
+          <tr><td><b style="color:var(--ink)">WIP badge</b></td><td class="mono">selectorState change</td><td class="mono">Effects·Fast + Spatial·Fast</td><td>Count animates; container color crossfades ok→at-limit→over. Crossing the limit fires a one-shot scale pulse.</td></tr>
+          <tr><td><b style="color:var(--ink)">Screen transition</b></td><td class="mono">Nav.route change</td><td class="mono">Spatial·Default</td><td>Shared-axis / container-transform between BoardList ↔ Board. Android predictive-back scrubs this with the gesture.</td></tr>
+          <tr><td><b style="color:var(--ink)">Card detail open</b></td><td class="mono">openCardId set</td><td class="mono">Spatial·Default</td><td>Container transform from the tapped card → side sheet (expanded) or full screen (compact); reverses on close.</td></tr>
+          <tr><td><b style="color:var(--ink)">FAB → menu</b></td><td class="mono">FAB tap</td><td class="mono">Spatial·Fast + Effects·Default</td><td>FAB morphs shape + position into the labelled menu; scrim fades in behind.</td></tr>
+          <tr><td><b style="color:var(--ink)">Skeleton shimmer</b></td><td class="mono">load effect in-flight</td><td class="mono">1300 ms loop</td><td>Gradient sweep over placeholder blocks; real content cross-fades in (Effects·Default) on SyncSucceeded.</td></tr>
+          <tr><td><b style="color:var(--ink)">Account switch</b></td><td class="mono">activeAccountId set</td><td class="mono">Effects·Default + Spatial·Default</td><td>Fade-through to the new account's remembered screen; the avatar is a shared element between switcher and app bar.</td></tr>
+          <tr><td><b style="color:var(--ink)">Filter apply</b></td><td class="mono">FilterModel.query</td><td class="mono">Effects·Default + Spatial·Default</td><td>Non-matching cards dim to 38% then collapse height; clearing the filter reverses. Every column reacts independently.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- ============ 9 · ASSET LIST ============ -->
+    <section class="section" id="assets">
+      <div class="eyebrow">Spec · 9</div>
+      <h2>Asset list</h2>
+      <p>All imagery loads through <strong>Coil&nbsp;3</strong> (per spec §6). Sources are free, deterministic, keyless stock services; every asset has a bundled <span class="in-code">composeResources</span> fallback so the demo runs fully offline and survives a flaky network (which the failure-rate knob simulates).</p>
+
+      <table class="tbl">
+        <thead><tr><th style="width:16%">Asset</th><th style="width:30%">Source URL pattern</th><th style="width:20%">Used in</th><th>Offline fallback</th></tr></thead>
+        <tbody>
+          <tr><td><b style="color:var(--ink)">Account avatars</b></td><td class="mono">i.pravatar.cc/150?u={accountId}</td><td>Login, switcher, app bar, profile, assignee, presence</td><td>Monogram <span class="tok">Avatar</span> (deterministic tonal bg from id) — already the loading/empty state, so no extra asset needed.</td></tr>
+          <tr><td><b style="color:var(--ink)">Avatar (alt)</b></td><td class="mono">api.dicebear.com/9.x/glass/svg?seed={id}</td><td>Bot collaborator, seeded demo users</td><td>Bundled SVG set in <span class="tok">composeResources/files/avatars/</span>.</td></tr>
+          <tr><td><b style="color:var(--ink)">Card image attachments</b></td><td class="mono">picsum.photos/seed/{cardId}/600/400</td><td>KanbanCard image, card-detail image attachment</td><td>3–4 bundled JPEGs in <span class="tok">composeResources/files/cards/</span>, picked by hash.</td></tr>
+          <tr><td><b style="color:var(--ink)">Link-preview thumb</b></td><td class="mono">LinkAttachment.imageUrl (seeded)</td><td>AttachmentChip (link variant)</td><td>Generic link glyph on <span class="tok">surfaceContainer</span> when null/failed.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="grid g2" style="margin-top:22px">
+        <div class="panel">
+          <h4 style="margin-top:0">Loading &amp; error policy</h4>
+          <p style="font-size:13px">Coil states map to UI: <strong>loading</strong> → skeleton/shimmer placeholder at the image's aspect ratio; <strong>error</strong> → bundled fallback (never a broken-image glyph); <strong>success</strong> → cross-fade in (Effects·Default). The same path covers the Settings failure-rate knob.</p>
+        </div>
+        <div class="panel">
+          <h4 style="margin-top:0">Why keyless + bundled</h4>
+          <p style="font-size:13px">pravatar / dicebear / picsum need no API key and give stable, seedable results — ideal for a reproducible sample. Bundling fallbacks keeps the showcase honest on <span class="tok">wasmJs</span> (CORS/offline) and in CI screenshot tests, where the network shouldn't be a dependency.</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <div class="lbl">Phase 2 complete</div>
+        <p>All 7 screens (compact + expanded, light + dark on Board &amp; Card detail), full redlines, motion choreography, and the asset plan are specified. Next step — on your go — is the <strong>implementation plan</strong> (module wiring, reducer/middleware breakdown, screen-by-screen build order), which the approved design holds as the step after this one.</p>
+      </div>
+    </section>
+    <!-- APPEND -->
+
+
+
+
+
+    <footer class="docfoot">
+      <div>TaskFlow Hi-Fi Design Spec · Phase 2 (screens) · <span class="mono">2026-05-29</span></div>
+      <div style="margin-top:4px">Material 3 Expressive · Compose Multiplatform 1.10.0 · 7 screens · compact + expanded · light + dark.</div>
+    </footer>
+
+  </div>
+  </main>
+</div>
+
+<script src="spec-assets/screens.js"></script>
+</body>
+</html>

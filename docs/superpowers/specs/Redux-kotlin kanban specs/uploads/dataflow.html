@@ -1,0 +1,61 @@
+<h2>Design §2 — data flow, effects, undo, bot</h2>
+<p class="subtitle">How actions travel and where side-effects / history / the fake backend live. Everything is plain actions through one store — components react to state, never to each other.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Middleware pipeline (applyMiddleware order = outer → inner) on the ConcurrentModelStore</div>
+  <div class="mockup-body" style="font-size:12px">
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <span class="placeholder">dispatch(action)</span> →
+      <span class="placeholder" style="border:2px solid #8e44ad">① activityLogger<br><span class="label">humanize → ActivityModel</span></span> →
+      <span class="placeholder" style="border:2px solid #e67e22">② undo<br><span class="label">snapshot board before undoable actions; handle Undo/Redo</span></span> →
+      <span class="placeholder" style="border:2px solid #16a085">③ effects (coroutine)<br><span class="label">Request → launch → Success/Failure</span></span> →
+      <span class="placeholder" style="border:2px solid #2c3e50">reducer<br><span class="label">combineModelReducers (routed on&lt;Action&gt;)</span></span> →
+      <span class="placeholder">new ModelState</span>
+    </div>
+    <p class="label" style="margin-top:8px">+ <code>granularSubscriptionsEnhancer</code> so columns/badges/detail/feed each re-render off their own slice. Form keystrokes stay in local Compose <code>remember</code> (not the store) — committed via dispatch on submit.</p>
+  </div>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header" style="background:#16a085;color:#fff">Async fake backend (simulated latency)</div>
+    <div class="mockup-body" style="font-size:12px">
+      <b>FakeBackend</b> = in-memory repo, <code>suspend</code> fns, 300–800ms delay, occasional failure.<br><br>
+      <b>Optimistic flow</b> (move a card):
+      <ol style="font-size:12px;margin:4px 0 0 16px">
+        <li><code>CardMoveRequested</code> → reducer updates board immediately (optimistic)</li>
+        <li>effects middleware persists via backend; <code>SyncModel.inFlight++</code></li>
+        <li><code>CardMoveSucceeded</code> → clear inflight · or <code>…Failed</code> → revert + toast + Retry</li>
+      </ol>
+      <p class="label" style="margin-top:6px">Demonstrates loading/error UI, retries, and Request/Success/Failure action triples — the real-world async shape.</p>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header" style="background:#e67e22;color:#fff">Undo / Redo</div>
+    <div class="mockup-body" style="font-size:12px">
+      <b>UndoModel</b>: <code>past[]</code> / <code>future[]</code> snapshots of the board slice (capped, e.g. 50).<br><br>
+      Undoable: move / create / edit / delete card.<br>
+      Not undoable: nav, filter, loading flags, session, bot presence.<br><br>
+      <code>Undo</code> → push present→future, restore past top, re-persist via the same effect path. <code>Redo</code> reverses.
+      <p class="label" style="margin-top:6px">Lives in the <b>undo middleware</b>, so the UI just dispatches Undo/Redo.</p>
+    </div>
+  </div>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header" style="background:#2980b9;color:#fff">Bot collaborator</div>
+    <div class="mockup-body" style="font-size:12px">
+      A coroutine (started by middleware, toggleable) periodically dispatches <b>normal actions</b> — move/add a card — simulating a 2nd user.<br><br>
+      Drives "2 online" + activity feed. Proves the UI reacts to <b>externally-originated</b> state changes with zero coupling — components never know the action came from a bot vs you.
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header" style="background:#34495e;color:#fff">Navigation = Redux state (wasm/iOS-safe)</div>
+    <div class="mockup-body" style="font-size:12px">
+      <b>NavModel</b>: <code>route = BoardList | Board(id)</code>, <code>openCardId?</code>.<br>
+      Compose renders from <code>selectorState{ nav.route }</code>; back = dispatch.<br><br>
+      Entering a board → <b>inject</b> its models + fire load effect. Leaving → <b>eject</b> (bounded memory, §1). No external nav lib → identical on iOS / Android / Web.
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<h2>Hi-fi design — pick a visual direction</h2>
+<p class="subtitle">Same TaskFlow board column rendered three ways. All build on Compose Material 3 and all ship light + dark. Pick the feel; I'll then design the 7 screens in that style. Click your favorite.</p>
+
+<div class="cards">
+  <div class="card" data-choice="calm-m3" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#eef1f8;padding:14px">
+      <div style="font:600 13px system-ui;color:#3b3f5c;display:flex;justify-content:space-between">Doing <span style="background:#e7e0ff;color:#5b3dd6;border-radius:10px;padding:1px 8px;font-size:11px">2 / 3</span></div>
+      <div style="background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(20,20,50,.10);padding:10px;margin-top:10px">
+        <div style="font:600 13px system-ui;color:#23263b">Wire KSP codegen</div>
+        <div style="margin-top:6px;display:flex;gap:6px"><span style="background:#dcebff;color:#3457d5;font-size:10px;border-radius:8px;padding:1px 7px">backend</span><span style="background:#ffe2ec;color:#c2185b;font-size:10px;border-radius:8px;padding:1px 7px">p1</span></div>
+        <div style="margin-top:8px;font:11px system-ui;color:#8b8fa6;display:flex;justify-content:space-between"><span>📎 2 · 🔗 1</span><span style="width:20px;height:20px;border-radius:50%;background:#7c5cff"></span></div>
+      </div>
+      <div style="background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(20,20,50,.10);padding:10px;margin-top:8px">
+        <div style="font:600 13px system-ui;color:#23263b">Bundle BOM</div>
+      </div>
+    </div>
+    <div class="card-body"><h3>A — Calm Material 3</h3><p>Soft tinted surfaces, 12px radius, gentle elevation, one indigo accent. Modern, professional, lowest risk — maps 1:1 to Compose M3 defaults. <b>Recommended.</b></p></div>
+  </div>
+
+  <div class="card" data-choice="vibrant" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0f1226;padding:14px">
+      <div style="font:700 13px system-ui;color:#fff;display:flex;justify-content:space-between">DOING <span style="background:#ff4d6d;color:#fff;border-radius:20px;padding:1px 9px;font-size:11px">2/3</span></div>
+      <div style="background:linear-gradient(135deg,#1b2247,#23295c);border:1px solid #3a4488;border-radius:14px;padding:10px;margin-top:10px">
+        <div style="height:5px;width:46px;background:#ff8a3d;border-radius:4px;margin-bottom:8px"></div>
+        <div style="font:600 13px system-ui;color:#eaf">Wire KSP codegen</div>
+        <div style="margin-top:6px;display:flex;gap:6px"><span style="background:#2bd4c4;color:#04221f;font-size:10px;border-radius:8px;padding:1px 7px">backend</span><span style="background:#ff8a3d;color:#2a1500;font-size:10px;border-radius:8px;padding:1px 7px">p1</span></div>
+        <div style="margin-top:8px;font:11px system-ui;color:#9aa3d6">📎 2 · 🔗 1</div>
+      </div>
+    </div>
+    <div class="card-body"><h3>B — Vibrant / dark-first</h3><p>Saturated accents, gradient cards, color-coded label stripes, neon highlights. Energetic, Trello-meets-arcade. Higher polish ceiling, more art direction to get right.</p></div>
+  </div>
+
+  <div class="card" data-choice="mono" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#fcfcfc;padding:14px">
+      <div style="font:600 12px ui-monospace,monospace;color:#111;display:flex;justify-content:space-between;border-bottom:1px solid #e4e4e4;padding-bottom:8px">Doing <span style="color:#888">2/3</span></div>
+      <div style="border:1px solid #e4e4e4;border-radius:6px;padding:9px;margin-top:10px">
+        <div style="font:500 13px system-ui;color:#111">Wire KSP codegen</div>
+        <div style="margin-top:6px;display:flex;gap:6px;font:10px ui-monospace,monospace;color:#555"><span style="border:1px solid #ddd;border-radius:4px;padding:0 6px">backend</span><span style="border:1px solid #ddd;border-radius:4px;padding:0 6px">p1</span></div>
+        <div style="margin-top:8px;font:11px system-ui;color:#999">2 attachments</div>
+      </div>
+      <div style="border:1px solid #e4e4e4;border-radius:6px;padding:9px;margin-top:8px;font:500 13px system-ui;color:#111">Bundle BOM</div>
+    </div>
+    <div class="card-body"><h3>C — Minimal mono</h3><p>Near-monochrome, hairline borders, dense, typographic, one restrained accent. Linear-style "pro tool" feel. Calm and fast-reading; less visually showy for animation demos.</p></div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px">Whichever you pick, the <b>animation spec</b> stays the same: card move = shared-element/animateItem slide + spring settle, optimistic fade, column WIP badge count-up, screen transitions crossfade/slide, skeleton shimmer while the fake backend "loads". We'll detail those per-screen next.</p>

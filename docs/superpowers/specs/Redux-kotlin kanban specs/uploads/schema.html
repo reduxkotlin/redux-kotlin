@@ -1,0 +1,58 @@
+<h2>Design §4 — state schema</h2>
+<p class="subtitle">Normalized (Redux best practice): cards live in a <code>Map&lt;CardId, Card&gt;</code>; columns hold ordered <code>List&lt;CardId&gt;</code>. Moving a card edits two id-lists → only those two columns recompose. Typed id value classes throughout.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header" style="background:#2980b9;color:#fff">Root AppStore — ModelState</div>
+    <div class="mockup-body" style="font-size:12px">
+      <b>AccountsModel</b><br>
+      <span class="placeholder" style="display:block;margin:3px 0">accounts: Map&lt;AccountId, AccountSummary&gt;<br>activeAccountId: AccountId?</span>
+      <b>AppSettingsModel</b><br>
+      <span class="placeholder" style="display:block;margin:3px 0">theme · language<br>fakeService: { latencyMin/Max, failureRate, botEnabled, botIntervalMs }</span>
+      <b>AuthFlowModel</b><br>
+      <span class="placeholder" style="display:block;margin:3px 0">mode(Login|AddAccount) · inFlight · error?</span>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header" style="background:#27ae60;color:#fff">Per-account store — ModelState (registry key = AccountId)</div>
+    <div class="mockup-body" style="font-size:12px">
+      <b>SessionModel</b> <span class="placeholder">profile: AccountDetail</span><br>
+      <b>NavModel</b> <span class="placeholder">route(BoardList|Board(id)|Profile|Settings) · openCardId?</span><br>
+      <b>BoardListModel</b> <span class="placeholder">boards: Map&lt;BoardId, BoardSummary&gt; · order</span><br>
+      <span class="label">injected on board open ↓</span><br>
+      <b>BoardModel</b> <span class="placeholder">columns: List&lt;Column&gt; · cards: Map&lt;CardId, Card&gt;</span><br>
+      <b>FilterModel</b> <span class="placeholder">query · assignee? · labelIds</span><br>
+      <b>UndoModel</b> <span class="placeholder">past[] / future[] BoardSnapshot (capped)</span><br>
+      <b>SyncModel</b> <span class="placeholder">inFlight ops · lastError?</span><br>
+      <b>ActivityModel</b> <span class="placeholder">entries[] (capped)</span>
+    </div>
+  </div>
+</div>
+
+<div class="mockup" style="margin-top:12px">
+  <div class="mockup-header" style="background:#8e44ad;color:#fff">Card — rich content model (the part you asked about)</div>
+  <div class="mockup-body" style="font-size:13px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div class="mock-content" style="flex:1;min-width:230px">
+        <b>Card</b>
+        <pre style="font-size:12px;margin:4px 0;line-height:1.45">id: CardId
+title: String
+description: String   // Markdown rich text
+attachments: List&lt;Attachment&gt;
+labels: List&lt;Label&gt;
+assigneeId: AccountId?
+createdBy: AccountId
+createdAt / updatedAt: Instant</pre>
+      </div>
+      <div class="mock-content" style="flex:1;min-width:230px">
+        <b>Attachment</b> (sealed)
+        <pre style="font-size:12px;margin:4px 0;line-height:1.45">ImageAttachment(
+  url, alt, width?, height?)
+LinkAttachment(
+  url, title?, desc?, imageUrl?)  // link preview card</pre>
+        <span class="label">Markdown body covers inline bold/italic/lists/code/inline links + images; attachments give structured image thumbnails &amp; link-preview chips (Trello-style).</span>
+      </div>
+    </div>
+    <p class="label" style="margin-top:8px">⚠ Two multiplatform dependencies this introduces — both must work on <b>wasmJs</b>: a <b>markdown renderer</b> and <b>async image loading</b>. That's a real scope/feasibility lever — question in the terminal.</p>
+  </div>
+</div>

@@ -295,8 +295,9 @@ data class ActivityEntry(
 
 `Instant` is `kotlinx.datetime.Instant`. All ids are typed value classes. `BoardModel.board == null`
 is the NotLoaded sentinel so the `BoardModel` key is always present (required — `ModelState`'s key
-set is fixed). `BoardSummary` counts/`updatedAt` are recomputed by a reducer step on each card
-mutation (or derived in a selector when the board is loaded) so the board-list tiles never go stale.
+set is fixed). `BoardSummary` counts/`updatedAt` for the **open** board are **derived in a selector**
+from `BoardModel` (never recomputed in a reducer — reducers stay pure, no `Clock.now()`); the
+**board-list** tiles are a DB-aggregate cache refreshed on `LoadBoardListSucceeded`.
 
 ## 6. Seeded data (incl. stock profile images)
 
@@ -411,7 +412,7 @@ re-generation on the existing `redux-kotlin-compose*` modules (commit the update
 | Date/time | `org.jetbrains.kotlinx:kotlinx-datetime` **0.6.2** |
 | Images | `io.coil-kt.coil3:coil-compose` **3.2.0** + `io.coil-kt.coil3:coil-network-ktor3` **3.2.0** |
 | Ktor | `io.ktor:*` **3.1.0**; engines: `ktor-client-darwin` (iOS), `ktor-client-java` (jvm), `ktor-client-android` (android); **wasmJs needs no engine** |
-| Markdown | `com.mikepenz:multiplatform-markdown-renderer-m3` + `-coil3` **0.39.0** |
+| Markdown | `com.mikepenz:multiplatform-markdown-renderer-m3` + `-coil3` **0.4x** (Compose-1.11 build; not 0.39.0) |
 | Persistence | `app.cash.sqldelight` **2.3.2** (see §13) |
 
 **Platform-parity rule:** where a library/API is missing on web or iOS, **do not drop the feature
