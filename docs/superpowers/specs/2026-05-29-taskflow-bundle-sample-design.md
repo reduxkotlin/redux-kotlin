@@ -215,11 +215,10 @@ data class AuthFlowModel(
 enum class AuthMode { Login, AddAccount }
 
 // --- Per-account models (ALL declared up front; board slices start empty/sentinel) ---
-data class SessionModel(val profile: AccountDetail)
-data class AccountDetail(
-    val id: AccountId, val displayName: String, val email: String,
-    val avatarUrl: String, val bio: String? = null,
-)
+// Identity (name/email/avatar) is NOT duplicated here — it lives once in CollaboratorsModel
+// (which includes self). SessionModel holds only the id + session-only fields. EditProfile
+// updates root AccountsModel + CollaboratorsModel so the switcher/cards never go stale.
+data class SessionModel(val accountId: AccountId, val bio: String? = null)
 data class NavModel(
     val route: Route = Route.BoardList,
     val openCardId: CardId? = null,
@@ -282,9 +281,9 @@ data class UndoModel(
     val cap: Int = 15,
 )
 data class SyncModel(
-    val inFlight: PersistentSet<OpId> = persistentSetOf(),   // ops being pushed right now
+    val inFlight: PersistentSet<CardId> = persistentSetOf(),  // cards with an in-flight op (drives per-card optimistic alpha)
     val pendingCount: Int = 0,                                // queued outbound ops not yet synced
-    val online: Boolean = true,                               // mirrors the connectivity toggle
+    val online: Boolean = true,                               // one-way projection of AppSettings.fakeService.online (via SyncStatusChanged only)
     val lastSyncedAt: Instant? = null,
     val lastError: String? = null,
 )
@@ -518,4 +517,24 @@ In-memory driver (`JdbcSqliteDriver.IN_MEMORY`) backs `LocalStore` round-trip te
 `SyncEngine` tested under `runTest` virtual time: push Accepted/Rejected/Deferred paths, offline →
 queue grows, reconnect → queue drains + pull merges, retry/backoff, and that a `Rejected` push triggers
 the inverse revert. Heavy DB tests stay off the wasmJs CI gate (build-only there).
+
+### 13e. Concrete carriers & lifecycle (v3)
+
+- **`SyncOp` codec:** `@Serializable sealed interface SyncOp` (one variant per card mutation: Move/Add/Edit/Delete),
+  carrying the forward params, the `OpId`, **and the `InverseOp`** (so a `Rejected` push reconstructs the
+  revert from the queued op — the engine does NOT keep a side map). Serialized to `pending_op.payload` (TEXT)
+  via `kotlinx-serialization-json` (catalog + `kotlin.plugin.serialization`). Value-class ids need
+  `@Serializable` value-class support or a small surrogate.
+- **Threading:** every `ConcurrentModelStore` is built with a **main-thread `NotificationContext`**; effects/sync/bot
+  run on a background scope and `withContext(Main)` before `store.dispatch` (subscribers write Compose state).
+- **Sync perf:** `pull` early-returns on an empty page; `applyRemote` merges **by changed key only** (reuse
+  unchanged `Card`/`Column` instances); `SyncStatusChanged` fires only on a real delta; periodic `Refresh`
+  ≥ 10 s (`FakeServiceConfig.syncIntervalMs`), keyed to cancel on `BoardClosed`.
+- **Process-death rehydration:** persist `activeAccountId` in `app_settings`; on launch the bootstrap effect
+  loads it + each account's `account_nav` (route/openCard) into the store so Android process death / web reload
+  restore the screen.
+- **iOS resources:** the static framework's compose resources are synced by
+  `embedAndSignAppleFrameworkForXcode` (no hand-rolled copy script).
+- **wasm assets:** `devNpm("copy-webpack-plugin")` + `composeApp/webpack.config.d/sqljs.config.js` copy
+  `sql-wasm.wasm` into the dist; commit the root `kotlin-js-store` lockfile.
 ```
