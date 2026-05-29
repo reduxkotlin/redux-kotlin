@@ -29,6 +29,46 @@
 
 Where a library/API is unavailable on web/iOS, **do not drop the feature on Android/iOS/jvm** — shim via `expect/actual`. Android/iOS/jvm get the full implementation; only the web target degrades, and only where unavoidable, documented in the README.
 
+## v3 corrections — CROSS-CUTTING RULES (apply to every relevant task; from the 2nd multi-agent review)
+
+These override anything below that conflicts. They were verified against source/release notes.
+
+**A. Compose 1.11.0 target removal (build).** Compose MP 1.11.0 **deleted `iosX64` + `macosX64`** from all Compose modules. Therefore: remove `iosX64()` + `macosX64()` from `convention.library-mpp-loved` (and from `convention.library-mpp-all` if declared there) repo-wide; the sample targets **`iosArm64` + `iosSimulatorArm64` only** (no `iosX64`). After the bump, run **root `./gradlew apiDump`** (every module's klib `// Targets:` header changes — not just the 3 compose modules) and commit all `*.api`. `compileSdk = 36` (both composeApp `android{}` and `androidApp`). Bump `multiplatform-markdown-renderer` to the **0.4x** release built for Compose 1.11.0 (verify in its release notes; 0.39.0 targets 1.10.x and trips 1.11's runtime compat check).
+
+**B. Real library-API names (verified — these break compile as previously written).**
+- `ModelState.models` is `@PublishedApi internal` → **read via the public `get(KClass)`** only. `inline fun <reified M> ModelState.getModel(): M = get(M::class)`. There is **no** nullable `peek`; fixed slots mean `get` always succeeds.
+- `StoreRegistry.getOrCreate(id){ creator }` returns `Store<S>` only — it **cannot** hold the `AccountStoreHandle` (scope/engine/bot). `AccountRegistry` keeps a **side `MutableMap<AccountId, AccountStoreHandle>`** alongside the registry; `remove(id)` = `handle.scope.cancel()` + side-map remove + `registry.remove(id)`.
+- Compose binding shapes: single flat field → `store.fieldState(Model::field)` (reified `KProperty1`); derived/multi-field → `store.selectorState { it.get<M>().… }` (the lambda receives `ModelState` — **never** write `selectorState { SomeModel }`, that returns the class ref); whole-model slot → `store.fieldStateOf(M::class) { it }`. `subscribeToModel(...)` returns a `StoreSubscription` (imperative) — **never** use it for Compose binding; card detail binds `fieldStateOf(BoardModel::class){ it.board?.cards?.get(openCardId) }`.
+
+**C. Compose ↔ store wiring discipline (every component + screen).**
+- [ ] Read state ONLY via `rememberStableStore(store).value` then `fieldState`/`selectorState`/`fieldStateOf`. Never `store.state` in composition.
+- [ ] Select the **minimal slice**; **no composable may select `board`, `board.cards`, or `board.columns` wholesale** (collapses render isolation).
+- [ ] Per-column card lists bind **by `ColumnId`** (`it.board?.columnById(colId)?.cardIds ?: persistentListOf()`), **not by index**, and each column composable is wrapped in `key(colId)` — in the **real Board screen**, not only the isolation test.
+- [ ] Selectors return **referentially-stable** values when the slice is unchanged (primitives, the existing `Persistent*`/`Card` instance, or value-equal `data class`) — never a freshly `filter`/`map`ped collection or a closure-per-emission. (Selectors re-run on **every** dispatch; only `===`/`==`-stable returns prevent recomposition.)
+- [ ] **All derivation** (filtered/visible lists, WIP counts, per-card optimistic flag) lives in `selectorState{}` selectors or reducers — never `.filter`/`.count`/membership in the composable body.
+- [ ] Components take `@Stable`/`Persistent*` params + **remembered** callbacks; **never pass a raw `Store`/`TypedStore`** into a child (pass `StableStore` or finished data) — else skippability breaks.
+- [ ] Every user interaction fires `store.dispatch(action)` (move buttons, toggles, Save, retry, nav, offline switch). No repository/SyncEngine/Coil-imperative call from a composable; only transient editor text lives in local `remember`.
+
+**D. State-model best-practice (single source of truth + purity).**
+- `SyncModel.inFlight` is a **`PersistentSet<CardId>`** (not `OpId`) so the board can compute the optimistic alpha per card. `online` is a **one-way projection** of `AppSettingsModel.fakeService.online` (updated only via `SyncStatusChanged`) — or drop it and read root settings; never write it independently.
+- **Collapse 3-way identity duplication:** `CollaboratorsModel` (which includes self) is the per-account source for display name/email/avatar; `SessionModel` holds only `AccountId` + session-only `bio`. `EditProfile` propagates to root `AccountsModel` **and** `CollaboratorsModel` (else the switcher/cards go stale).
+- `BoardSummary` counts/`updatedAt`: **derive in a selector** for the open board; for the list, treat `BoardListModel` counts as a DB-aggregate cache refreshed on `LoadBoardListSucceeded`. **Never call `Clock.now()` in a reducer** — `updatedAt` comes from the action's pre-minted `now`.
+- Reducers stay pure: all `OpId`/`CardId`/`Instant` minting and all logging/persistence/sync/bot/time live in middleware or the dispatch site (via an injected `IdGenerator` + `Clock`), never a reducer.
+
+**E. Threading.** Construct each `ConcurrentModelStore` with a **main-thread `NotificationContext`** (default is `Inline` = dispatch thread). Effects/sync/bot run on a background scope but must `withContext(Main)` before `store.dispatch` — subscribers write Compose state, which is UB off-main on wasm/iOS.
+
+**F. Sync performance.** `RemoteApi.pull` **early-returns** without dispatch on an empty page; `applyRemote` merges by **changed key only** (`PersistentMap.put` on changed rows; reuse unchanged `Card`/`Column` instances). Gate `SyncStatusChanged` to actual deltas. Periodic `Refresh` tick ≥ 10 s (a new `FakeServiceConfig.syncIntervalMs`), keyed so it cancels on `BoardClosed`. Use `AsyncImage` (not `SubcomposeAsyncImage`) for list items with fixed dimensions.
+
+**G. New required artifacts (don't let an autonomous run guess).**
+- **`pending_op.payload` codec:** add `org.jetbrains.kotlin.plugin.serialization` + `kotlinx-serialization-json` to the catalog; define a `@Serializable sealed interface SyncOp` (one variant per card mutation, carrying everything needed to push **and** the `InverseOp`), serialized to the `pending_op.payload` TEXT column. The engine reconstructs the inverse from the queued `SyncOp` on `Rejected` (the inverse **rides the queued op**, not a middleware-side map).
+- **`IdGenerator`** interface (`newOpId(): OpId`, `newCardId(): CardId`, `newBoardId()`, `newColumnId()`) over `platform/newUuid()`; a `fakeIdGenerator(seq)` for tests; injected into `App()` and passed to screens via a `CompositionLocal`. Screens build `AddCard(col, idGen.newCardId(), …, idGen.newOpId(), clock.now())` at the click handler.
+- **`IdGenerator`/`Clock` are NOT defaults on actions** — mint explicitly at the dispatch site.
+- **Process-death rehydration:** the bootstrap effect loads `activeAccountId` (persist it in `app_settings`) + each account's `account_nav` route/openCard from the DB into the store on launch.
+- **Enumerate ALL actions in Task 7 up front** (incl. `SyncStatusChanged`, `Refresh`, `SetOnline`, `RetryOp(opId)`, `AddColumn`, `BoardRestored`, `StartCreateCard`/`CancelCreateCard`, `LoadAccountsFailed`) — no "// ..." and no later back-edits.
+- **SeedData is concrete:** ann/raj/mia + bot; the 6 semantic labels with `spec-data.js` colors; per account one board / three columns with **one column whose `wipLimit` is at its limit in seed** (so the Rejected-conflict test reproduces); ≥1 markdown card, ≥1 image, ≥1 link, ≥1 labelled; a fixed `Instant` constant. `LocalStore` seed and `FakeRemoteApi` server snapshot consume the **same** `SeedData`.
+
+**H. Misc completeness.** `Theme.System` resolves via `isSystemInDarkTheme()` (Compose-common). Add `contentDescription` to `Avatar`/icon buttons/`FabMenu` (a11y, P0 UX). Decide strings: literals-only for v1, noted in README. iOS host = **framework-link + a `swiftc` smoke compile, Mac/CI-gated**; the full `.xcodeproj` app is a documented manual follow-up (do not author a `project.pbxproj` autonomously). iOS resource bundling uses `embedAndSignAppleFrameworkForXcode` (auto-syncs compose resources) — **no** hand-rolled copy script.
+
 ## File structure
 
 ```
@@ -63,21 +103,23 @@ examples/taskflow/
 │       ├── wasmJsMain/{kotlin/{main.kt, actual ...}, resources/index.html}
 │       └── jvmTest/kotlin/...                 # compose.uiTest
 ├── androidApp/                                # com.android.application (hosts MainActivity)
-└── iosApp/                                    # real Xcode project
+└── iosApp/                                    # framework-link + swiftc smoke (full .xcodeproj = manual follow-up)
 ```
 
 ---
 
 ## Phase 0 — Repo prep, deps, and a build-the-stack spike
 
-### Task 0: Stack on the bundle branch + bump Compose to 1.11.0 repo-wide
+### Task 0: Sync to master (bundle), bump Compose 1.11.0, drop x64 targets, regen ALL api dumps
 
-**Files:** `settings.gradle.kts`, `gradle/libs.versions.toml`, regenerated `*.api` dumps.
+**Files:** merge from `origin/master`, `gradle/libs.versions.toml`, `build-conventions/src/main/kotlin/convention.library-mpp-loved.gradle.kts` (+ `convention.library-mpp-all` if it declares x64), regenerated `*.api` dumps for **all** modules.
 
-- [ ] **Step 1: Base this branch on the bundle work.** Confirm `:redux-kotlin-bundle` and `:redux-kotlin-bundle-compose` build files + `src/` exist and are in `settings.gradle.kts`. If absent (they live on `feat/redux-kotlin-bundle`): `git merge origin/feat/redux-kotlin-bundle` into `feat/taskflow-bundle-sample` (or rebase the sample branch onto it). Verify: `./gradlew :redux-kotlin-bundle-compose:jvmJar` → BUILD SUCCESSFUL.
-- [ ] **Step 2: Bump Compose.** In `gradle/libs.versions.toml` set `compose-multiplatform = "1.11.0"`.
-- [ ] **Step 3: Rebuild + regenerate API dumps for the compose modules** (the bump shifts synthetic API): `./gradlew :redux-kotlin-compose:apiDump :redux-kotlin-compose-multimodel:apiDump :redux-kotlin-bundle-compose:apiDump`. Then `./gradlew build` → must be green. Commit the updated `*.api`.
-- [ ] **Step 4: Commit.** `git add -A && git commit -m "build: bump Compose Multiplatform 1.10.0→1.11.0; regen compose api dumps"`
+- [ ] **Step 1: Sync onto master (the bundle is already there).** The bundle modules are merged into `origin/master`; this branch forked from a pre-bundle base and is ~14 commits behind. `git fetch origin && git merge origin/master` (per CLAUDE.md "branches from latest remote master"). Confirm `:redux-kotlin-bundle` + `:redux-kotlin-bundle-compose` are in `settings.gradle.kts` with `src/`. Verify `./gradlew :redux-kotlin-bundle-compose:jvmJar` → SUCCESS. (Do NOT merge `feat/redux-kotlin-bundle` — wrong/stale source.)
+- [ ] **Step 2: Bump Compose.** `compose-multiplatform = "1.11.0"` in the catalog.
+- [ ] **Step 3: Remove the x64 Compose targets repo-wide.** Compose 1.11.0 deleted `iosX64` + `macosX64` from all Compose modules. In `convention.library-mpp-loved.gradle.kts` delete the `iosX64()` and `macosX64()` target declarations (keep `iosArm64`, `iosSimulatorArm64`, `macosArm64`, `linuxX64`, `mingwX64`, etc.); check `convention.library-mpp-all.gradle.kts` and remove them there too if declared. This makes the whole graph's target set uniform.
+- [ ] **Step 4: Bump markdown-renderer to a 1.11-built release.** Set `markdown-renderer` to the latest `0.4x` whose release notes say Compose MP 1.11.0 (verify; NOT 0.39.0).
+- [ ] **Step 5: Regenerate EVERY module's API dump** (the target removal changes all klib `// Targets:` headers, not just compose): `./gradlew apiDump` (root). Then `./gradlew build` → must be green (incl. `apiCheck`). Commit all updated `*.api`.
+- [ ] **Step 6: Commit.** `git add -A && git commit -m "build: merge master(bundle); Compose 1.11.0; drop iosX64/macosX64; regen all api dumps"`
 
 ### Task 1: Version catalog + settings registration
 
@@ -88,9 +130,11 @@ examples/taskflow/
 ```toml
 kotlinx-collections-immutable = "0.5.0-beta01"
 kotlinx-datetime = "0.6.2"
+kotlinx-serialization = "1.7.3"   # verify vs Kotlin 2.3.20; for pending_op payload codec
 coil = "3.2.0"
 ktor = "3.1.0"
-markdown-renderer = "0.39.0"
+# markdown-renderer bumped in Task 0 Step 4 to the 0.4x release built for Compose 1.11.0
+androidx-activity-compose = "1.11.0"   # dedicated; not coupled to androidx-activity (activity-ktx)
 sqldelight = "2.3.2"
 ```
 
@@ -100,6 +144,7 @@ sqldelight = "2.3.2"
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
@@ -107,7 +152,7 @@ ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdown-renderer" }
 markdown-renderer-coil3 = { module = "com.mikepenz:multiplatform-markdown-renderer-coil3", version.ref = "markdown-renderer" }
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
@@ -122,7 +167,10 @@ sqldelight-web-worker-driver = { module = "app.cash.sqldelight:web-worker-driver
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradle-plugin" }
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ```
+
+> Also add `devNpm("copy-webpack-plugin", "9.1.0")` to `wasmJsMain` (Task 2) — required for the SQLDelight sql.js worker asset copy (Task 2 webpack step).
 
 - [ ] **Step 4: Register modules.** In `settings.gradle.kts` `include(...)`, near the other `:examples:*` entries add `":examples:taskflow:composeApp",`. Then gate the app module (it needs the Android SDK) — after the `include(...)` block:
 
@@ -138,7 +186,7 @@ if (hasAndroidSdk) include(":examples:taskflow:androidApp")
 
 **Files:** Create `examples/taskflow/composeApp/build.gradle.kts`
 
-- [ ] **Step 1: Write it.** Android via the AGP-9 KMP library plugin (`androidLibrary {}`), SDK-gated; wasmJs executable; SQLDelight `generateAsync`; desktop `application` block; Ktor engines per target; **no `js{}` target**.
+- [ ] **Step 1: Write it.** Android via the AGP-9 KMP library plugin using the **`android {}`** DSL (the renamed block; `androidLibrary{}` is deprecated at 9.1+), SDK-gated, `compileSdk = 36`; wasmJs executable; **iOS = `iosArm64` + `iosSimulatorArm64` only (no `iosX64` — Compose 1.11.0 dropped it)**; SQLDelight `generateAsync`; desktop `application` block; Ktor engines per target; kotlinx-serialization for the sync-op payload; **no `js{}` target**.
 
 ```kotlin
 import org.jetbrains.compose.ExperimentalComposeLibrary
@@ -149,6 +197,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 val hasAndroidSdk: Boolean = run {
@@ -168,13 +217,15 @@ kotlin {
     jvm()
     wasmJs { browser(); binaries.executable() }
     if (hasAndroidSdk) {
-        androidLibrary {
+        // AGP 9 KMP library plugin — block renamed to android{}; androidLibrary{} is deprecated
+        android {
             namespace = "org.reduxkotlin.sample.taskflow"
-            compileSdk = 35
+            compileSdk = 36          // Compose 1.11 androidx artifacts require API 36
             minSdk = 24
+            androidResources { enable = true }   // else composeResources fallbacks don't package on Android
         }
     }
-    listOf(iosArm64(), iosSimulatorArm64(), iosX64()).forEach {
+    listOf(iosArm64(), iosSimulatorArm64()).forEach {     // no iosX64 (removed in Compose 1.11.0)
         it.binaries.framework { baseName = "TaskFlowApp"; isStatic = true }
     }
 
@@ -193,6 +244,7 @@ kotlin {
             implementation(libs.markdown.renderer.coil3)
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
+            implementation(libs.kotlinx.serialization.json)   // pending_op payload codec
         }
         commonTest.dependencies {
             implementation(kotlin("test")); implementation(libs.kotlinx.coroutines.test)
@@ -205,7 +257,7 @@ kotlin {
             implementation(libs.sqldelight.sqlite.driver); implementation(libs.ktor.client.java)
         }
         val iosMain by creating { dependsOn(commonMain.get()) }
-        iosArm64Main.get().dependsOn(iosMain); iosSimulatorArm64Main.get().dependsOn(iosMain); iosX64Main.get().dependsOn(iosMain)
+        iosArm64Main.get().dependsOn(iosMain); iosSimulatorArm64Main.get().dependsOn(iosMain)
         iosMain.dependencies {
             implementation(libs.sqldelight.native.driver); implementation(libs.ktor.client.darwin)
         }
@@ -213,7 +265,8 @@ kotlin {
             implementation(libs.sqldelight.web.worker.driver)
             implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.0.2"))
             implementation(npm("sql.js", "1.8.0"))
-            // wasmJs needs NO explicit Ktor engine (coil uses the browser fetch path)
+            implementation(devNpm("copy-webpack-plugin", "9.1.0"))   // copies sql-wasm.wasm + worker into dist
+            // wasmJs needs NO explicit Ktor engine (Ktor service-loads its built-in JS engine)
         }
         val jvmTest by getting {
             dependencies {
@@ -227,12 +280,24 @@ kotlin {
 compose.desktop { application { mainClass = "org.reduxkotlin.sample.taskflow.MainKt" } }
 ```
 
-- [ ] **Step 2: Verify the dependency stack resolves on every host-runnable target** (this is the R1/R4 spike — do it before writing features). Run, each must SUCCEED:
+- [ ] **Step 2: Create `composeApp/webpack.config.d/sqljs.config.js`** so sql.js can fetch its `.wasm` in the browser (without this the wasmJs DB fails to init at runtime):
+
+```javascript
+// composeApp/webpack.config.d/sqljs.config.js
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+config.plugins.push(new CopyWebpackPlugin({
+  patterns: [{ from: "../../node_modules/sql.js/dist/sql-wasm.wasm", to: "." }]
+}));
+config.resolve = config.resolve || {}; config.resolve.fallback = { fs: false, path: false, crypto: false };
+```
+
+- [ ] **Step 3: Verify the stack resolves on every host-runnable target** (R1/R4 spike — before features). Each must SUCCEED:
   - `./gradlew :examples:taskflow:composeApp:compileKotlinJvm`
-  - `./gradlew :examples:taskflow:composeApp:compileKotlinWasmJs`  ← proves material3/coil/markdown/sqldelight/immutable all have wasmJs variants
-  - `./gradlew :examples:taskflow:composeApp:dependencies --configuration commonMainApi 2>&1 | grep -Ei "material3|coil|ktor|sqldelight|immutable"` → confirm the pinned versions resolve.
+  - `./gradlew :examples:taskflow:composeApp:compileKotlinWasmJs`  ← proves material3/coil/markdown/sqldelight/immutable/serialization all have wasmJs variants
+  - `./gradlew :examples:taskflow:composeApp:dependencies --configuration commonMainApi 2>&1 | grep -Ei "material3|coil|ktor|sqldelight|immutable|markdown|serialization"`
+  - Re-run `compileKotlinJvm` with `--configuration-cache` to confirm the SQLDelight 2.3.2 + Compose plugins are config-cache-safe; if it breaks, document `org.gradle.configuration-cache=false` for the sample.
   If any wasmJs compile fails for a missing variant, STOP and report (do not silently drop the dep).
-- [ ] **Step 3: Commit.** `git add examples/taskflow/composeApp/build.gradle.kts && git commit -m "build(taskflow): composeApp targets + deps + sqldelight + desktop app"`
+- [ ] **Step 4: Commit.** `git add examples/taskflow/composeApp/build.gradle.kts examples/taskflow/composeApp/webpack.config.d && git commit -m "build(taskflow): composeApp targets + deps + sqldelight(wasm webpack) + desktop app"`
 
 ### Task 3: Entry points + minimal App + iOS/Android hosts; link all targets
 
@@ -521,7 +586,7 @@ fun createAppStore(): Store<ModelState> = createConcurrentModelStore(
     model(AuthFlowModel())   { on<StartLogin>{s,a->authFlowReducer(s,a)}; on<LoginRequested>{s,_->authFlowReducer(s,LoginRequested)}; on<AccountLoggedIn>{s,a->authFlowReducer(s,a)}; on<LoginFailed>{s,a->authFlowReducer(s,a)} }
 }
 ```
-`StoreExt.kt`: `fun ModelState.peek(k: KClass<*>) = models[k]` (the `models` map is public) and `inline fun <reified M> ModelState.getModel() = get(M::class)`. **Step 4: PASS. Commit.**
+`StoreExt.kt`: **`ModelState.models` is `@PublishedApi internal` — do NOT use it.** Only `inline fun <reified M : Any> ModelState.getModel(): M = get(M::class)` (public `get`; fixed slots mean it never throws). No nullable `peek`. **Step 4: PASS. Commit.**
 
 ### Task 19: AccountStore + AccountRegistry
 
