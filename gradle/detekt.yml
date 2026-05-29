@@ -39,6 +39,9 @@ naming:
     active: false
   TopLevelPropertyNaming:
     constantPattern: '[A-Z][_a-zA-Z0-9]*'
+  FunctionNaming:
+    # @Composable functions conventionally use PascalCase (e.g. `App()`).
+    ignoreAnnotated: [ 'androidx.compose.runtime.Composable' ]
 
 style:
   ForbiddenComment:
