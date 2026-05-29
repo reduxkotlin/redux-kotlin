@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class StoreFactoryTest {
-    private fun store() = createThreadSafeModelStore {
+    private fun store() = createConcurrentModelStore {
         model(counterInitial()) {
             on<Increment> { s, a -> onIncrement(s, a) }
             on<Reset> { s, a -> onReset(s, a) }
@@ -12,7 +12,7 @@ class StoreFactoryTest {
     }
 
     @Test
-    fun thread_safe_model_store_dispatches() {
+    fun concurrent_model_store_dispatches() {
         val s = store()
         s.dispatch(Increment(3))
         s.dispatch(Increment(4))

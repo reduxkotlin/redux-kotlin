@@ -17,9 +17,9 @@ class RegistryExtensionsTest {
     @Test
     fun store_registry_get_or_create_is_cached_per_id() {
         val registry = StoreRegistry<String, ModelState>()
-        val a1 = registry.getOrCreateThreadSafeModelStore("a", block = block)
-        val a2 = registry.getOrCreateThreadSafeModelStore("a", block = block)
-        val b = registry.getOrCreateThreadSafeModelStore("b", block = block)
+        val a1 = registry.getOrCreateConcurrentModelStore("a", block = block)
+        val a2 = registry.getOrCreateConcurrentModelStore("a", block = block)
+        val b = registry.getOrCreateConcurrentModelStore("b", block = block)
         assertSame(a1, a2)
         a1.dispatch(Increment(5))
         assertEquals(5, a1.state.get<CounterModel>().count)
@@ -30,8 +30,8 @@ class RegistryExtensionsTest {
     fun typed_store_registry_get_or_create_works() {
         val registry = TypedStoreRegistry()
         val key = storeKey<String, ModelState>("counter")
-        val s1 = registry.getOrCreateThreadSafeModelStore(key, block = block)
-        val s2 = registry.getOrCreateThreadSafeModelStore(key, block = block)
+        val s1 = registry.getOrCreateConcurrentModelStore(key, block = block)
+        val s2 = registry.getOrCreateConcurrentModelStore(key, block = block)
         assertSame(s1, s2)
     }
 }

@@ -1,12 +1,12 @@
 public final class org/reduxkotlin/bundle/RegistryExtensionsKt {
-	public static final fun getOrCreateThreadSafeModelStore (Lorg/reduxkotlin/registry/StoreRegistry;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
-	public static final fun getOrCreateThreadSafeModelStore (Lorg/reduxkotlin/registry/TypedStoreRegistry;Lorg/reduxkotlin/registry/StoreKey;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
-	public static synthetic fun getOrCreateThreadSafeModelStore$default (Lorg/reduxkotlin/registry/StoreRegistry;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
-	public static synthetic fun getOrCreateThreadSafeModelStore$default (Lorg/reduxkotlin/registry/TypedStoreRegistry;Lorg/reduxkotlin/registry/StoreKey;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
+	public static final fun getOrCreateConcurrentModelStore (Lorg/reduxkotlin/registry/StoreRegistry;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
+	public static final fun getOrCreateConcurrentModelStore (Lorg/reduxkotlin/registry/TypedStoreRegistry;Lorg/reduxkotlin/registry/StoreKey;Lkotlin/jvm/functions/Function1;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
+	public static synthetic fun getOrCreateConcurrentModelStore$default (Lorg/reduxkotlin/registry/StoreRegistry;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
+	public static synthetic fun getOrCreateConcurrentModelStore$default (Lorg/reduxkotlin/registry/TypedStoreRegistry;Lorg/reduxkotlin/registry/StoreKey;Lkotlin/jvm/functions/Function1;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
 }
 
 public final class org/reduxkotlin/bundle/StoreFactoryKt {
-	public static final fun createThreadSafeModelStore (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
-	public static synthetic fun createThreadSafeModelStore$default (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
+	public static final fun createConcurrentModelStore (Lkotlin/jvm/functions/Function1;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/concurrent/ConcurrentStore;
+	public static synthetic fun createConcurrentModelStore$default (Lkotlin/jvm/functions/Function1;Lorg/reduxkotlin/concurrent/NotificationContext;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/concurrent/ConcurrentStore;
 }
 

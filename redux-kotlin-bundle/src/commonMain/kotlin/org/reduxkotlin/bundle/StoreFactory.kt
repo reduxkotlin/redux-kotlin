@@ -1,29 +1,35 @@
 package org.reduxkotlin.bundle
 
-import org.reduxkotlin.Store
 import org.reduxkotlin.StoreEnhancer
+import org.reduxkotlin.concurrent.ConcurrentStore
+import org.reduxkotlin.concurrent.LogAndContinue
+import org.reduxkotlin.concurrent.NotificationContext
+import org.reduxkotlin.concurrent.asConcurrent
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.routing.OnWrite
 import org.reduxkotlin.routing.RoutingBuilder
 import org.reduxkotlin.routing.createModelStore
-import org.reduxkotlin.threadsafe.ThreadSafeStore
 
 /**
- * Builds a routed [ModelState] store (see `createModelStore`) wrapped in a
- * thread-safe store for cross-thread access. The optional [enhancer]
- * (e.g. `applyMiddleware(...)`) is applied to the routed store before
- * wrapping, so middleware runs inside the synchronized dispatch.
+ * Builds a routed [ModelState] store (see `createModelStore`) adopted as a
+ * [ConcurrentStore] (lock-free reads, caller-serialized writes). The optional
+ * [enhancer] (e.g. `applyMiddleware(...)`) is applied to the routed store
+ * before it is adopted.
  *
  * @param enhancer optional store enhancer forwarded to `createModelStore`.
+ * @param notificationContext where subscriber callbacks run (default: inline on the dispatching thread).
+ * @param onError isolates listener throwables (default: log and continue).
  * @param devChecks forwarded: throws on a wasteful structurally-equal write.
  * @param onWrite forwarded: observes effective model writes.
  * @param block registers models and handlers via the routing DSL.
  */
-public fun createThreadSafeModelStore(
+public fun createConcurrentModelStore(
     enhancer: StoreEnhancer<ModelState>? = null,
+    notificationContext: NotificationContext = NotificationContext.Inline,
+    onError: (Throwable) -> Unit = LogAndContinue,
     devChecks: Boolean = false,
     onWrite: OnWrite? = null,
     block: RoutingBuilder.() -> Unit,
-): Store<ModelState> = ThreadSafeStore(
-    createModelStore(enhancer = enhancer, devChecks = devChecks, onWrite = onWrite, block = block),
-)
+): ConcurrentStore<ModelState> =
+    createModelStore(enhancer = enhancer, devChecks = devChecks, onWrite = onWrite, block = block)
+        .asConcurrent(notificationContext, onError)
