@@ -382,7 +382,10 @@ INSERT OR REPLACE INTO pending_op(opId, accountId, kind, payload, createdAt, att
 VALUES (?, ?, ?, ?, ?, ?);
 
 selectPendingOps:
-SELECT * FROM pending_op WHERE accountId = ? ORDER BY createdAt ASC;
+SELECT * FROM pending_op WHERE accountId = ? ORDER BY createdAt ASC, opId ASC;
+
+selectOp:
+SELECT * FROM pending_op WHERE opId = ?;
 
 countPendingOps:
 SELECT count(*) FROM pending_op WHERE accountId = ?;
