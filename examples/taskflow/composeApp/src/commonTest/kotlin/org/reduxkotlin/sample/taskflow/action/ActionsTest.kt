@@ -1,6 +1,5 @@
 package org.reduxkotlin.sample.taskflow.action
 
-import kotlinx.datetime.Instant
 import org.reduxkotlin.sample.taskflow.model.CardId
 import org.reduxkotlin.sample.taskflow.model.ColumnId
 import org.reduxkotlin.sample.taskflow.model.OpId
@@ -8,6 +7,7 @@ import org.reduxkotlin.sample.taskflow.model.Route
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 class ActionsTest {
     private val now = Instant.fromEpochMilliseconds(0)
