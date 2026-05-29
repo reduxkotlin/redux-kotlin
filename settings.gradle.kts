@@ -35,6 +35,11 @@ include(
     ":examples:counter:android",
     ":examples:todos:common",
     ":examples:todos:android",
+    ":examples:taskflow:composeApp",
 )
+
+val hasAndroidSdk = file("local.properties").let { it.exists() && it.readText().contains("sdk.dir=") } ||
+    System.getenv("ANDROID_HOME") != null || System.getenv("ANDROID_SDK_ROOT") != null
+if (hasAndroidSdk) include(":examples:taskflow:androidApp")
 
 rootProject.name = "Redux-Kotlin"
