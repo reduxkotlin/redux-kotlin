@@ -11,7 +11,7 @@ kotlin {
         binaries.executable()
     }
 
-    listOf(iosArm64(), iosSimulatorArm64(), iosX64()).forEach { iosTarget ->
+    listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "SharedCounter"
             isStatic = true
