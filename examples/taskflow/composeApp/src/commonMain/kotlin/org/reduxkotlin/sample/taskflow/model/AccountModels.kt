@@ -4,7 +4,7 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 // --- Per-account models (ALL declared up front; board slices start empty/sentinel) ---
 // Identity (name/email/avatar) is NOT duplicated here — it lives once in CollaboratorsModel

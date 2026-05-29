@@ -28,20 +28,6 @@ sqldelight {
     }
 }
 
-// Compose 1.11 (material3 1.9.0) pulls kotlinx-datetime 0.7.1 transitively, which RELOCATED
-// `kotlinx.datetime.Instant` to `kotlin.time.Instant` (the class is GONE from the 0.7.1 jar).
-// The sample compiles against the catalog 0.6.2 `kotlinx.datetime.Instant`; without this pin the
-// runtime classpath conflict-resolves up to 0.7.1 → NoClassDefFoundError at test/run time.
-// Force 0.6.2 so compile and runtime agree on the version that still ships the class.
-configurations.configureEach {
-    resolutionStrategy.eachDependency {
-        if (requested.group == "org.jetbrains.kotlinx" && requested.name.startsWith("kotlinx-datetime")) {
-            useVersion(libs.versions.kotlinx.datetime.get())
-            because("material3 1.9.0 forces datetime 0.7.1 which dropped kotlinx.datetime.Instant")
-        }
-    }
-}
-
 kotlin {
     jvm()
     @OptIn(ExperimentalWasmDsl::class)

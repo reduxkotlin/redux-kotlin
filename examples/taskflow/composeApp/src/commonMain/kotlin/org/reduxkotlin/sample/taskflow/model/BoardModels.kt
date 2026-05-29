@@ -3,7 +3,7 @@ package org.reduxkotlin.sample.taskflow.model
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 // Always-present slot. board == null is the NotLoaded sentinel (reset by BoardClosed).
 data class BoardModel(val board: Board? = null)
