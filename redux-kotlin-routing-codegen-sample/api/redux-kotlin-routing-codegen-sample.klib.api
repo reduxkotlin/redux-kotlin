@@ -1,0 +1,11 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-routing-codegen-sample>
+final object org.reduxkotlin.routing.sample.generated/SampleModule : org.reduxkotlin.routing/ReduxModule { // org.reduxkotlin.routing.sample.generated/SampleModule|null[0]
+    final fun (org.reduxkotlin.routing/RoutingBuilder).contribute() // org.reduxkotlin.routing.sample.generated/SampleModule.contribute|contribute@org.reduxkotlin.routing.RoutingBuilder(){}[0]
+}
