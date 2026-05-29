@@ -62,4 +62,26 @@ class GenerationTest {
         val result = compileWithProcessor(moduleName = "Multi", a, b)
         assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode)
     }
+
+    /** Two @Reduce for the same (model, action) both render as on<A> (DSL last-write-wins applies). */
+    @Test
+    fun duplicate_handlers_for_same_action_both_render() {
+        val src = SourceFile.kotlin(
+            "Dup.kt",
+            """
+            package dup
+            import org.reduxkotlin.routing.*
+            data class M(val n: Int = 0)
+            data class A(val x: Int)
+            @ReduxInitial fun mi(): M = M()
+            @Reduce fun first(s: M, a: A): M = s.copy(n = a.x)
+            @Reduce fun second(s: M, a: A): M = s.copy(n = a.x + 1)
+            """.trimIndent(),
+        )
+        val result = compileWithProcessor(moduleName = "Dup", src)
+        assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode)
+        val text = result.generatedRegistrar("Dup")!!
+        // both handler references present (aliased or not)
+        assertTrue(text.contains("first") && text.contains("second"), text)
+    }
 }
