@@ -48,14 +48,20 @@ sample teaches a defensible synthesis where each philosophy is used for its real
 
 ### Decision
 
-- **Single store + dynamic model injection/ejection (philosophy A)** organizes each
-  account's screens. Boards' working models are injected when a board opens and ejected
-  when it closes, bounding memory — redux-kotlin's analogue of Redux's `injectReducer`
-  code-splitting pattern, via `ModelState.with` + `combineModelReducers` +
-  `Store.replaceReducer`.
+- **Single store with fixed-slot models + reset-on-leave (philosophy A)** organizes each
+  account's screens. `ModelState`'s key set is **immutable at construction** (`with`/`withAll`
+  throw on an undeclared class; the widening constructor is `@PublishedApi internal`), so the
+  earlier "inject models via `replaceReducer`" idea is **not possible** and is dropped. Instead
+  every per-account model slot — including the board working slices — is **declared up front**
+  with an empty/`NotLoaded` sentinel. Opening a board fills `BoardModel` (via the load effect);
+  **leaving a board dispatches `BoardClosed`, which resets `BoardModel`/`FilterModel`/`UndoModel`/
+  `SyncModel` back to their empty sentinels** — the large `cards` map and undo snapshots are
+  released to GC, bounding memory, while the key set stays fixed. This is the showcase's bound-
+  memory lesson, expressed within the routing store's contract.
 - **Multi-store via `StoreRegistry` (philosophy B)** isolates **accounts**. One store per
   logged-in account is the textbook isolation case (Slack workspaces / browser profiles).
-  Logging out disposes only that account's store.
+  Logging out removes only that account's store (`registry.remove(id)`) and cancels its
+  coroutine scope.
 
 ### Two-layer structure
 
@@ -70,9 +76,10 @@ account, created lazily on login via `getOrCreateConcurrentModelStore(accountId)
 account store holds:
 
 - `SessionModel` — that account's profile.
-- `NavModel` — that account's current screen (remembered across switches).
+- `NavModel` — that account's current screen (remembered across switches) + `openCardId` + `composing` (create-card column).
 - `BoardListModel` — that account's boards.
-- *(injected on board open)* `BoardModel`, `FilterModel`, `UndoModel`, `SyncModel`.
+- `CollaboratorsModel` — `PersistentMap<AccountId, AccountSummary>` of people referenceable on this account's cards (owner + bot + assignees), so assignee/creator/bot avatars resolve **without** reaching into the root store.
+- `BoardModel`, `FilterModel`, `UndoModel`, `SyncModel` — **declared up front**; empty/`NotLoaded` until a board opens; reset by `BoardClosed` on leave.
 - `ActivityModel`.
 
 Switching accounts sets `activeAccountId`; Compose rebinds `registry.store(activeAccountId)`
@@ -88,7 +95,10 @@ state isolation.
   cross-store ordering coupling. Microsoft's production `redux-micro-frontend` deliberately
   chose *selective* global-action routing + read-only projection over broadcast. The
   legitimate version of "every reducer sees every action" is just philosophy A (single
-  store), with memory bounded by ejection.
+  store), with memory bounded by reset-on-leave.
+- **Runtime model inject/eject via `replaceReducer`** — *rejected as infeasible*. `ModelState`
+  is immutable-keyed (verified in `redux-kotlin-multimodel/.../ModelState.kt`); you cannot add
+  a model slot to a live store. Fixed slots + sentinel reset is the supported equivalent.
 
 References: [Redux Store Setup FAQ](https://redux.js.org/faq/store-setup),
 [Redux code-splitting](https://redux.js.org/usage/code-splitting),
@@ -99,50 +109,89 @@ References: [Redux Store Setup FAQ](https://redux.js.org/faq/store-setup),
 **Middleware pipeline** (applyMiddleware order, outer → inner) on each ConcurrentModelStore:
 
 1. **activityLogger** — humanizes actions into `ActivityModel` (capped list).
-2. **undo** — snapshots the board slice before undoable actions; handles `Undo`/`Redo`.
-3. **effects (coroutine)** — intercepts `*Requested` actions, launches a coroutine on a
-   store-scoped `CoroutineScope`, calls the fake backend, dispatches `*Succeeded`/`*Failed`.
-4. **reducer** — `combineModelReducers` over routed `on<Action>` reducers.
+2. **undo** — snapshots the board before **user** undoable actions; handles `Undo`/`Redo`.
+   Bot-originated mutations are distinct, **non-`Undoable`** action types, so they never enter
+   the user's undo history.
+3. **effects (coroutine)** — intercepts `*Requested` actions, launches a coroutine on the
+   account store's `CoroutineScope`, calls the `Repository`, dispatches `*Succeeded`/`*Failed`.
+4. **reducer** — authored with the **routing DSL** (`model(Init()) { on<Action> { s, a -> … } }`)
+   inside `createConcurrentModelStore { … }`. `on<A>` routes by **exact leaf class**. Pure
+   `when`-style reducer helpers exist only as internal, unit-testable functions the `on` blocks
+   delegate to; the store is **not** assembled via `combineModelReducers`.
 
 Plus `granularSubscriptionsEnhancer` so columns/badges/detail/feed each re-render off
 their own slice. Form keystrokes stay in local Compose `remember` state (not the store),
 committed via dispatch on submit.
 
-**Async fake backend (simulated latency).** `FakeBackend` is an in-memory repository of
-`suspend` functions with configurable latency (default 300–800ms) and a configurable
-failure rate (default 10%). Card moves are **optimistic**: the reducer updates the board
-immediately, the effects middleware persists, and on `*Failed` the change reverts with a
-toast + Retry. Demonstrates Request/Success/Failure action triples and real loading/error UI.
+**Offline-first persistence + fake network sync (two distinct layers — see §13).** Local
+persistence and the network are **separate concerns**:
 
-**Undo / redo.** `UndoModel` holds `past[]` / `future[]` snapshots of the board slice
-(capped, e.g. 50). Undoable: card move / create / edit / delete. Not undoable: nav, filter,
-loading flags, session, bot presence. `Undo`/`Redo` re-persist via the same effect path.
+- **LocalStore (SQLDelight)** is the durable offline cache — instant, **no** artificial latency.
+- **RemoteApi (fake network)** simulates a backend (`pull`/`push`) with the configurable
+  latency + failure + an **online/offline** toggle from `AppSettingsModel.fakeService`. It is the
+  thing later replaced by a real HTTP client behind the same interface.
+- **SyncEngine** wires them offline-first.
 
-**Bot collaborator.** A toggleable coroutine (started by middleware) periodically dispatches
-*normal* actions (move/add a card) as a simulated second user, driving presence + the
-activity feed. Proves the UI reacts to externally-originated state with zero component
-coupling.
+Flow for a card mutation (move/add/edit/delete) — all optimistic + undoable: the reducer updates
+the store immediately; the effect (a) writes LocalStore (durable, instant), (b) **enqueues an
+outbound op** (persisted in a `pending_op` table) carrying a unique `OpId`, and (c) kicks the
+SyncEngine. The engine pushes queued ops to `RemoteApi.push` (latency/failure apply here):
+**`Accepted`** → mark synced, drop from queue; **`Rejected(reason)`** (server validation/conflict)
+→ apply the **per-op inverse** (move-back / delete-the-added / restore-the-edited / re-add-the-
+deleted — never a whole-board snapshot, so a concurrent bot edit isn't clobbered) + a `SyncToast`;
+**`Deferred`** (offline/transient) → keep queued, increment `pendingCount`, retry with backoff /
+on reconnect. Reads always come from LocalStore (works offline). A pull (`RemoteApi.pull(since)`)
+merges remote changes (incl. the bot's "server-side" edits) into LocalStore (last-write-wins).
+`SyncModel` surfaces `online`, `pendingCount`, `inFlight`, `lastSyncedAt`, `lastError`; the board
+header shows a sync indicator. Toggling **offline** in Settings, making edits, then back **online**
+visibly drains the pending queue — the offline-support showcase.
+
+**Undo / redo.** `UndoModel` holds `past`/`future` **full-board** snapshots (`PersistentList<BoardModel>`,
+cap **15**). Snapshots are O(board size) but immutable `Card`/`Column` instances are structurally
+shared across snapshots, so unchanged cards aren't copied. Undoable (user): card move / add /
+edit / delete. Not undoable: nav, filter, loading flags, session, **bot mutations**. `Undo`/`Redo`
+apply via a dedicated `BoardRestored(board)` action (not by overloading `LoadBoardSucceeded`) and
+re-persist via the effect path. `BoardClosed` clears the undo stacks.
+
+**Bot collaborator.** A toggleable coroutine (started per account, cancelled on `BoardClosed`/
+logout) periodically dispatches **distinct, non-`Undoable`** bot actions (`BotMovedCard`/`BotAddedCard`)
+treated as "server-truth" — no optimistic revert, not in the user's undo history. Drives presence +
+the activity feed. Proves the UI reacts to externally-originated state with zero component coupling.
+`moveCard` reducers are integrity-preserving (remove the id from **all** columns, then insert once)
+so a stale `from` from interleaved bot/user moves can't orphan a card.
 
 **Navigation = Redux state.** `NavModel.route` (`BoardList | Board(id) | Profile | Settings`)
-+ `openCardId`. Compose renders from `selectorState { nav.route }`. No external nav library
-→ identical behavior on iOS / Android / Web. Entering a board injects its models + fires the
-load effect; leaving ejects them.
++ `openCardId` + `composing: ColumnId?` (drives card-detail **create** mode). Compose renders from
+`selectorState { nav.route }`. No external nav library → identical behavior on iOS / Android / Web.
+Entering `Board(id)` fires the load effect (fills the pre-declared `BoardModel` slot); leaving
+dispatches `BoardClosed`, resetting the board slices to sentinels (memory released).
 
 ## 5. State schema
 
-Typed id value classes throughout; cards are **normalized** (a `Map<CardId, Card>`; columns
-hold ordered `List<CardId>`), so a move edits two id-lists and only those two columns recompose.
+**Immutability is mandatory.** Every Redux model is an immutable `data class`, and **all
+collections use `kotlinx.collections.immutable`** (`PersistentList`/`PersistentMap`/`PersistentSet`)
+— never the stdlib `List`/`Map`/`Set`. This guarantees the store state is deeply immutable (no
+accidental in-place mutation), gives O(1) structural sharing for undo snapshots, and keeps
+granular subscriptions' reference-equality checks honest.
+
+Typed id value classes throughout; cards are **normalized** (a `PersistentMap<CardId, Card>`;
+columns hold ordered `PersistentList<CardId>`), so a move edits two id-lists and only those two
+columns recompose.
 
 ```kotlin
+import kotlinx.collections.immutable.*
+import kotlinx.datetime.Instant
+
 @JvmInline value class AccountId(val v: String)
 @JvmInline value class BoardId(val v: String)
 @JvmInline value class ColumnId(val v: String)
 @JvmInline value class CardId(val v: String)
 @JvmInline value class LabelId(val v: String)
+@JvmInline value class OpId(val v: String)          // unique per async op (minted at dispatch)
 
 // --- Root AppStore models ---
 data class AccountsModel(
-    val accounts: Map<AccountId, AccountSummary> = emptyMap(),
+    val accounts: PersistentMap<AccountId, AccountSummary> = persistentMapOf(),
     val activeAccountId: AccountId? = null,
 )
 data class AccountSummary(
@@ -155,26 +204,27 @@ data class AppSettingsModel(
 )
 enum class Theme { System, Light, Dark }
 data class FakeServiceConfig(
-    val latencyMinMs: Int = 300,
-    val latencyMaxMs: Int = 800,
-    val failureRate: Float = 0.10f,   // 0f..1f
-    val botEnabled: Boolean = true,
-    val botIntervalMs: Int = 4_000,
+    val latencyMinMs: Int = 300, val latencyMaxMs: Int = 800,
+    val failureRate: Float = 0.10f,                 // 0f..1f
+    val botEnabled: Boolean = true, val botIntervalMs: Int = 4_000,
+    val online: Boolean = true,                     // connectivity toggle: when false, RemoteApi is unreachable
 )
 data class AuthFlowModel(
-    val mode: AuthMode = AuthMode.Login,
-    val inFlight: Boolean = false,
-    val error: String? = null,
+    val mode: AuthMode = AuthMode.Login, val inFlight: Boolean = false, val error: String? = null,
 )
 enum class AuthMode { Login, AddAccount }
 
-// --- Per-account models ---
+// --- Per-account models (ALL declared up front; board slices start empty/sentinel) ---
 data class SessionModel(val profile: AccountDetail)
 data class AccountDetail(
     val id: AccountId, val displayName: String, val email: String,
     val avatarUrl: String, val bio: String? = null,
 )
-data class NavModel(val route: Route = Route.BoardList, val openCardId: CardId? = null)
+data class NavModel(
+    val route: Route = Route.BoardList,
+    val openCardId: CardId? = null,
+    val composing: ColumnId? = null,                // non-null => card-detail in CREATE mode
+)
 sealed interface Route {
     data object BoardList : Route
     data class Board(val boardId: BoardId) : Route
@@ -182,30 +232,35 @@ sealed interface Route {
     data object Settings : Route
 }
 data class BoardListModel(
-    val boards: Map<BoardId, BoardSummary> = emptyMap(),
-    val order: List<BoardId> = emptyList(),
+    val boards: PersistentMap<BoardId, BoardSummary> = persistentMapOf(),
+    val order: PersistentList<BoardId> = persistentListOf(),
 )
 data class BoardSummary(
     val id: BoardId, val name: String, val color: Long,
     val cardCount: Int, val doneCount: Int, val updatedAt: Instant,
 )
+// Resolves assignee/creator/bot avatars within the account store (no root reach-in).
+data class CollaboratorsModel(val byId: PersistentMap<AccountId, AccountSummary> = persistentMapOf())
 
-// injected on board open
+// Always-present slot. board == null is the NotLoaded sentinel (reset by BoardClosed).
 data class BoardModel(
+    val board: Board? = null,
+)
+data class Board(
     val boardId: BoardId,
-    val columns: List<Column>,
-    val cards: Map<CardId, Card>,
+    val columns: PersistentList<Column>,
+    val cards: PersistentMap<CardId, Card>,
 )
 data class Column(
     val id: ColumnId, val title: String,
-    val cardIds: List<CardId>, val wipLimit: Int? = null,
+    val cardIds: PersistentList<CardId>, val wipLimit: Int? = null,
 )
 data class Card(
     val id: CardId,
     val title: String,
-    val description: String,                 // Markdown
-    val attachments: List<Attachment> = emptyList(),
-    val labels: List<Label> = emptyList(),
+    val description: String,                         // Markdown
+    val attachments: PersistentList<Attachment> = persistentListOf(),
+    val labels: PersistentList<Label> = persistentListOf(),
     val assigneeId: AccountId? = null,
     val createdBy: AccountId,
     val createdAt: Instant, val updatedAt: Instant,
@@ -219,51 +274,56 @@ data class Label(val id: LabelId, val name: String, val color: Long)
 data class FilterModel(
     val query: String = "",
     val assignee: AccountId? = null,
-    val labelIds: Set<LabelId> = emptySet(),
+    val labelIds: PersistentSet<LabelId> = persistentSetOf(),
 )
 data class UndoModel(
-    val past: List<BoardModel> = emptyList(),
-    val future: List<BoardModel> = emptyList(),
-    val cap: Int = 50,
+    val past: PersistentList<Board> = persistentListOf(),
+    val future: PersistentList<Board> = persistentListOf(),
+    val cap: Int = 15,
 )
 data class SyncModel(
-    val inFlight: Set<String> = emptySet(),  // operation ids
+    val inFlight: PersistentSet<OpId> = persistentSetOf(),   // ops being pushed right now
+    val pendingCount: Int = 0,                                // queued outbound ops not yet synced
+    val online: Boolean = true,                               // mirrors the connectivity toggle
+    val lastSyncedAt: Instant? = null,
     val lastError: String? = null,
 )
-data class ActivityModel(val entries: List<ActivityEntry> = emptyList())
+data class ActivityModel(val entries: PersistentList<ActivityEntry> = persistentListOf())
 data class ActivityEntry(
     val id: String, val actorId: AccountId, val summary: String, val timestamp: Instant,
 )
 ```
 
-`Instant` is `kotlinx.datetime.Instant` (adds a multiplatform `kotlinx-datetime` dependency
-to the sample). All ids are typed value classes.
+`Instant` is `kotlinx.datetime.Instant`. All ids are typed value classes. `BoardModel.board == null`
+is the NotLoaded sentinel so the `BoardModel` key is always present (required — `ModelState`'s key
+set is fixed). `BoardSummary` counts/`updatedAt` are recomputed by a reducer step on each card
+mutation (or derived in a selector when the board is loaded) so the board-list tiles never go stale.
 
 ## 6. Seeded data (incl. stock profile images)
 
-Auth is **fake**: a small set of seeded accounts, no password — "Continue" simulates
-latency and logs in. Stock profile photos are loaded remotely via Coil 3 (so the sample
-also exercises async image loading on every platform, including wasmJs). They can later be
-swapped for bundled Compose Resources for fully offline operation.
+Auth is **fake**: a small set of seeded accounts, no password — "Continue" simulates latency
+and logs in. Images load remotely via Coil 3 (exercising async image loading on every platform
+incl. wasmJs). **All asset URLs are keyless, deterministic, and CORS-`*`** — verified, because
+`pravatar.cc` sends **no** `Access-Control-Allow-Origin` header and therefore **fails on wasmJs**
+(Compose web fetches images in CORS mode). **PNG only** (no SVG) so no `coil-svg` decoder is needed.
 
-Seeded accounts (stock avatars via [pravatar.cc](https://pravatar.cc), stable URLs):
+| Asset | Scheme | Notes |
+|-------|--------|-------|
+| User avatars | `https://api.dicebear.com/9.x/avataaars/png?seed={accountId}` | DiceBear, CORS-`*` ✅, distinct illustrated people, CC0, no real-face privacy concern. |
+| Bot avatar | `https://api.dicebear.com/9.x/bottts/png?seed=taskflow` | Robot look — visually distinct from humans. |
+| Card image attachments | `https://picsum.photos/seed/{cardId}/600/400` | Unsplash-backed, CORS-`*` ✅, deterministic, one 3:2 aspect everywhere. |
+| Link-preview thumb | seeded `picsum` URL or `null` → generic glyph | `AttachmentChip` link variant. |
 
-| AccountId | Display name  | Email               | avatarUrl                          |
-|-----------|---------------|---------------------|------------------------------------|
-| `ann`     | Ann Patterson | ann@taskflow.dev    | `https://i.pravatar.cc/240?img=47` |
-| `raj`     | Raj Mehta     | raj@taskflow.dev    | `https://i.pravatar.cc/240?img=12` |
-| `mia`     | Mia Chen      | mia@taskflow.dev    | `https://i.pravatar.cc/240?img=5`  |
+Seeded accounts: `ann` Ann Patterson, `raj` Raj Mehta, `mia` Mia Chen (`@taskflow.dev`); plus a
+non-login `bot` "TaskBot" collaborator. Each seeded account starts with **one board, three columns
+(To Do / Doing / Done), ~6–8 cards** — including ≥1 with a markdown body, ≥1 image attachment, ≥1
+link attachment, ≥1 with labels, and assignees across the owner + bot. Seed timestamps use a
+**fixed `Instant` constant** (deterministic for tests); only runtime-created cards use `Clock.System.now()`.
 
-Simulated bot collaborator: `bot` "TaskBot", avatar
-`https://api.dicebear.com/9.x/bottts/png?seed=taskflow` (illustrated, distinct from humans).
-
-Seeded card image/link attachments use stable stock sources (e.g.
-`https://picsum.photos/seed/<id>/600/360` for images). Each seeded account starts with 1–2
-boards of realistic cards (some with markdown bodies, labels, attachments, assignees).
-
-> If pravatar/picsum availability is a concern for CI or offline demos, mirror a handful of
-> images into `composeApp` Compose Resources and point the seed data at those instead. The
-> data shape does not change.
+**Offline fallback (always wired):** the Coil `ImageLoader` falls back to **bundled PNG/JPEG** in
+`composeResources/files/{avatars,cards}/` (picked by id-hash) on network/error — so the demo is
+honest offline and CI screenshot tests never depend on the network. Bundled files are CC0 (DiceBear
+export) / Unsplash-license, sourced in the README.
 
 ## 7. Screens (7; all Compose Multiplatform, nav = Redux state)
 
@@ -320,40 +380,65 @@ boards of realistic cards (some with markdown bodies, labels, attachments, assig
 examples/taskflow/
 ├── composeApp/   ← KMP + Compose MP; ALL code + UI
 │     plugins: convention.control, kotlin("multiplatform"),
-│              compose.multiplatform, compose.compiler
-│     deps: redux-kotlin-bundle-compose, kotlinx-datetime,
-│           coil3 (+ coil3 network), multiplatform-markdown-renderer
-│     targets: androidTarget · jvm(desktop) ·
+│              compose.multiplatform, compose.compiler,
+│              com.android.kotlin.multiplatform.library (SDK-gated),
+│              app.cash.sqldelight
+│     deps: redux-kotlin-bundle-compose, compose.material3 (Expressive),
+│           kotlinx-collections-immutable, kotlinx-datetime, kotlinx-coroutines,
+│           coil-compose + coil-network-ktor3 + ktor engines, markdown-renderer-m3/-coil3,
+│           sqldelight runtime + per-target drivers
+│     android via kotlin.androidLibrary { } (AGP 9), NOT bare androidTarget()
+│     targets: android · jvm(desktop) ·
 │              iosX64/iosArm64/iosSimulatorArm64 (framework) ·
-│              wasmJs { browser; binaries.executable() }
-├── androidApp/   ← com.android.application host → App()
-└── iosApp/       ← Xcode project embedding the framework (SwiftUI ComposeView)
+│              wasmJs { browser; binaries.executable() }   (no separate js{} target)
+├── androidApp/   ← com.android.application host (MainActivity lives HERE) → App()
+└── iosApp/       ← real Xcode project: Info.plist + UIViewControllerRepresentable(MainViewController())
+                    + a run-script copying the compose-resources bundle (static framework)
 ```
 
-- Web = `composeApp` wasmJs browser executable + `index.html`. Desktop = `application { Window { App() } }` for the fast dev loop. `commonMain` holds `App()` + all Redux + all screens; platform entry points are logic-free hosts.
-- Register modules in `settings.gradle.kts`. The sample is not published → no `apiDump`/`apiCheck`, no mandatory `explicitApi()` KDoc; detekt formatting still applies tree-wide.
+- Web = `composeApp` wasmJs browser executable + `index.html` (empty body; `ComposeViewport(document.body)`). Desktop = `compose.desktop { application { ... } }` for the fast dev loop. `commonMain` holds `App()` + all Redux + all screens; platform entry points are logic-free hosts.
+- Register modules in `settings.gradle.kts` (gate the `androidApp` include behind SDK presence). The sample is not published → no `apiDump`/`apiCheck`, no mandatory `explicitApi()` KDoc; detekt formatting still applies tree-wide.
 
-**New sample-only dependencies (all must support wasmJs):**
+**Repo-wide change:** bump `org.jetbrains.compose` **1.10.0 → 1.11.0 (stable)** — its bundled
+`material3` carries the Expressive APIs (no separate alpha pin). This forces `./gradlew apiDump`
+re-generation on the existing `redux-kotlin-compose*` modules (commit the updated `*.api`).
 
-- `org.jetbrains.kotlinx:kotlinx-datetime`
-- `io.coil-kt.coil3:coil-compose` + network fetcher (async stock images)
-- `com.mikepenz:multiplatform-markdown-renderer` (markdown bodies)
-- Material 3 **Expressive** APIs — require a `material3` artifact compatible with the
-  repo's Compose 1.10.0.
+**Pinned sample dependencies (all verified for wasmJs unless noted):**
+
+| Dep | Coordinate / version |
+|-----|----------------------|
+| Compose MP plugin | `org.jetbrains.compose` **1.11.0**; Expressive via the `compose.material3` accessor |
+| Immutable collections | `org.jetbrains.kotlinx:kotlinx-collections-immutable` **0.5.0-beta01** |
+| Date/time | `org.jetbrains.kotlinx:kotlinx-datetime` **0.6.2** |
+| Images | `io.coil-kt.coil3:coil-compose` **3.2.0** + `io.coil-kt.coil3:coil-network-ktor3` **3.2.0** |
+| Ktor | `io.ktor:*` **3.1.0**; engines: `ktor-client-darwin` (iOS), `ktor-client-java` (jvm), `ktor-client-android` (android); **wasmJs needs no engine** |
+| Markdown | `com.mikepenz:multiplatform-markdown-renderer-m3` + `-coil3` **0.39.0** |
+| Persistence | `app.cash.sqldelight` **2.3.2** (see §13) |
+
+**Platform-parity rule:** where a library/API is missing on web or iOS, **do not drop the feature
+on Android/iOS/jvm** — shim via `expect/actual` (e.g. the DB `DriverFactory`, the Ktor engine,
+Android dynamic-color). Android/iOS/jvm always get the full implementation; only the web target
+degrades, and only where unavoidable (documented).
 
 ## 10. Testing strategy
 
 Matches repo convention (`commonTest` default; `jvmTest` for JVM-only).
 
-- **commonTest (bulk, pure, every target):** routed reducer transitions; undo/redo
-  middleware (snapshot, undo, redo, cap, non-undoable ignored); effects middleware with a
-  fake backend + test dispatcher (success, failure→optimistic revert, retry); **account
-  isolation** (actions on account A never touch B; logout disposes only that store); model
-  inject/eject (enter/leave board adds/removes models; memory bounded).
-- **jvmTest (Compose UI, desktop, `compose.uiTest`):** the **render-isolation proof** (move
-  a card → only the two affected columns recompose) and account-switch restores each
-  account's screen. Pattern already used by `redux-kotlin-compose`'s jvmTest.
-- Native/iOS-sim tests trusted to CI per repo convention. Entry points have no logic.
+- **commonTest (bulk, pure, every target):** routed reducer transitions (dispatched through the
+  assembled store, since `on<A>` adaptation is where bugs hide); undo/redo (snapshot, undo, redo,
+  cap, bot mutations excluded); effects middleware against an **in-memory `Repository`** + a
+  test-scheduler scope (`backgroundScope`/`StandardTestDispatcher`) — success, failure→**per-op
+  inverse** revert, retry; **account isolation** (actions on A never touch B; logout removes only
+  that store); **board reset-on-leave** (BoardClosed empties the slices; memory released);
+  integrity invariant (`cards.keys == ∪ column.cardIds`, no duplicates) after every mutation;
+  edge cases — board-close-while-load-in-flight, logout-while-in-flight, bot-during-undo,
+  empty-stack undo; `Repository` round-trips against the in-memory SQLite driver.
+- **jvmTest (Compose UI, desktop, `compose.uiTest` with a fake no-network `ImageLoader`):** the
+  **render-isolation proof** — baseline captured after first `waitForIdle()`, each column under
+  `key(colId)` with stable params, assert recomposition deltas (moved columns increment, others
+  flat) + a control dispatch proving an unrelated column stays flat; and account-switch restores
+  each account's remembered screen.
+- Native/iOS-sim + wasmJs DB tests trusted to CI/build per repo convention. Entry points have no logic.
 
 ## 11. Process / next steps (intentional deviation from default flow)
 
@@ -365,10 +450,72 @@ Only after the hi-fi spec is finalized do we write the implementation plan, then
 
 ## 12. Out of scope (v1) / future
 
-- Real backend / network sync, real auth, persistence across launches (fake backend +
-  in-memory now; the action surface is designed so real implementations slot in behind the
-  same actions later).
-- Full drag-and-drop (tap-to-move chosen instead).
-- Offline-bundled images (remote stock images now; Compose Resources fallback documented).
+- A **real** network backend + real auth (in scope now: local SQLite persistence **and** a fake
+  network sync layer with offline support — see §13; the `RemoteApi` interface is the seam a real
+  HTTP client replaces behind the same actions/sync flow).
+- Full drag-and-drop (animated tap-to-move chosen instead; the spec-data "dragging" card state is intentionally unused).
 - KSP routing-codegen (`@Reduce`) in the sample — possible later enhancement, not v1.
+- Room 3 / OPFS web persistence — revisit when `room3` + `androidx.sqlite:sqlite-web` exit alpha (better web durability than sql.js/IndexedDB).
+
+## 13. Persistence (local) & Sync (fake network) — two distinct layers
+
+These are **separate concerns**. The local DB is durable offline storage; the fake network is a
+replaceable backend simulation. The effects middleware talks to a `SyncRepository` that composes both.
+
+### 13a. LocalStore — SQLDelight (durable offline cache, no latency)
+
+- **Engine:** SQLDelight **2.3.2** (plugin `app.cash.sqldelight`, `generateAsync = true`). Same
+  generated SQL on every target: native SQLite on android/ios/jvm; **sql.js in a Web Worker**
+  (IndexedDB-persisted) on wasmJs via `web-worker-driver`.
+- **`expect class DriverFactory { suspend fun createDriver(): SqlDriver }`**, one `actual` per source
+  set: `AndroidSqliteDriver`, `NativeSqliteDriver` (iosMain, shared across the 3 iOS targets),
+  `JdbcSqliteDriver` (jvm/desktop file), `WebWorkerDriver` over the sql.js worker (wasmJs; async
+  `Schema.create(driver).await()`). Canonical platform shim — android/ios/jvm get full file-backed
+  SQLite; only web differs (IndexedDB durability); nothing degraded.
+- **Schema** (normalized, mirrors §5): `account`, `account_nav`, `app_settings`, `board`,
+  `board_column`, `card` (`columnId`+`sortIndex`), `attachment` (sealed image/link via `kind`),
+  `label`, `card_label`, `activity`, `collaborator`, **plus a `pending_op` outbound sync queue**
+  (`opId`, `kind`, payload, `createdAt`, `attempts`) and a `sync_meta` (`lastSyncedAt` cursor). Typed
+  ids → TEXT; `Instant` → INTEGER via adapter; `color`/bools → INTEGER. **Ephemeral, never persisted:**
+  `UndoModel`, in-flight push set, `AuthFlowModel`, bot presence.
+- **`LocalStore`** (suspend, immutable returns) implemented by `SqlDelightLocalStore` — instant
+  reads/writes (**no chaos/latency**), multi-row writes in `db.transaction {}`, plus queue ops
+  (`enqueue`, `pendingOps`, `markSynced`) and `applyRemote(changes)` (merge).
+- **Seed-on-first-run:** `LocalStore.ensureSeeded()` (idempotent, guarded by `SELECT count(*) FROM account`).
+- **wasmJs build:** `@cashapp/sqldelight-sqljs-worker` + `sql.js` npm deps + a `webpack.config.d`
+  `CopyWebpackPlugin` step copying `sql-wasm.wasm`/worker into the dist; commit the `kotlin-js-store`
+  lockfile. Never wire a synchronous driver on wasm (OOM — use the worker driver).
+
+### 13b. RemoteApi — fake network backend (latency, failure, offline; later real)
+
+- **`interface RemoteApi`** (suspend): `push(ops: List<SyncOp>): PushResult`, `pull(since: Instant?): RemotePage`,
+  plus auth/board fetch as needed. **This is the seam a real HTTP client replaces** — keep it pure of
+  any DB/Compose types.
+- **`FakeRemoteApi`** holds an in-memory "server" snapshot (seeded identically) and applies, from
+  `AppSettingsModel.fakeService`: configurable **latency** (300–800ms), **failure rate** (transient),
+  and the **`online` toggle** (when false, every call throws `OfflineException`). `push` returns
+  `PushResult.Accepted` / `Rejected(reason)` (deterministic validation, e.g. move into a full WIP
+  column, to demo conflict) / and surfaces transient failures as exceptions → treated as `Deferred`.
+  The bot collaborator's "server-side" edits originate here and arrive via `pull`.
+
+### 13c. SyncEngine + SyncRepository (offline-first orchestration)
+
+- **`SyncRepository`** is what the effects middleware calls. Local-first: reads from `LocalStore`;
+  a mutation writes `LocalStore` + `enqueue(SyncOp)` immediately (durable, instant), then signals the
+  `SyncEngine`.
+- **`SyncEngine`** drains `pending_op` to `RemoteApi.push`: `Accepted` → `markSynced` + drop;
+  `Rejected` → emit a `CardOpFailed(opId, reason, inverse)` so the reducer applies the **per-op inverse**
+  + a `SyncToast`; `Deferred`/`OfflineException` → leave queued, bump `attempts`, retry with backoff /
+  on reconnect. After a successful push it `pull`s and `applyRemote`s, updating `lastSyncedAt`. Triggers:
+  after each mutation, on the `online` toggle flipping true, on manual refresh, and on a periodic tick.
+  Status flows to `SyncModel` (`online`, `pendingCount`, `inFlight`, `lastSyncedAt`, `lastError`).
+- **Offline showcase:** toggle offline in Settings → mutations queue (board updates locally, sync badge
+  shows N pending) → toggle online → queue drains, badge clears. Proves offline support end-to-end.
+
+### 13d. Tests
+
+In-memory driver (`JdbcSqliteDriver.IN_MEMORY`) backs `LocalStore` round-trip tests. `FakeRemoteApi` +
+`SyncEngine` tested under `runTest` virtual time: push Accepted/Rejected/Deferred paths, offline →
+queue grows, reconnect → queue drains + pull merges, retry/backoff, and that a `Rejected` push triggers
+the inverse revert. Heavy DB tests stay off the wasmJs CI gate (build-only there).
 ```
