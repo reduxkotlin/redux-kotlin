@@ -1,0 +1,5 @@
+public final class org/reduxkotlin/routing/sample/generated/SampleModule : org/reduxkotlin/routing/ReduxModule {
+	public static final field INSTANCE Lorg/reduxkotlin/routing/sample/generated/SampleModule;
+	public fun contribute (Lorg/reduxkotlin/routing/RoutingBuilder;)V
+}
+

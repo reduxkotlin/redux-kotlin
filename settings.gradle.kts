@@ -24,6 +24,7 @@ include(
     ":redux-kotlin-multimodel",
     ":redux-kotlin-routing",
     ":redux-kotlin-routing-codegen",
+    ":redux-kotlin-routing-codegen-sample",
     ":redux-kotlin-compose",
     ":redux-kotlin-multimodel-granular",
     ":redux-kotlin-compose-multimodel",
