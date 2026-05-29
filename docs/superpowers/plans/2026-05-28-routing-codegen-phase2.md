@@ -285,7 +285,10 @@ fun compileWithProcessor(
     val compilation = KotlinCompilation().apply {
         this.sources = sources.toList()
         inheritClassPath = true
-        configureKsp(useKsp2 = true) {
+        // kctfork 0.12.1: configureKsp{} takes NO useKsp2 arg — KSP2 is invoked internally
+        // (0.10+ is KSP2-only). The lambda receiver is KspTool, exposing
+        // symbolProcessorProviders (MutableList) and processorOptions (MutableMap).
+        configureKsp {
             symbolProcessorProviders.add(RoutingSymbolProcessorProvider())
             if (moduleName != null) processorOptions["routing.moduleName"] = moduleName
         }
@@ -293,12 +296,12 @@ fun compileWithProcessor(
     return compilation.compile()
 }
 
-/** Reads the single generated registrar file's text, or null. */
+/** Reads the single generated registrar file's text, or null. (workingDir/ksp/sources/kotlin) */
 fun KotlinCompilation.Result.generatedRegistrar(name: String): String? =
     outputDirectory.parentFile.resolve("ksp/sources/kotlin")
         .walkTopDown().firstOrNull { it.name == "$name.kt" }?.readText()
 ```
-Note: `kspProcessorOptions`/`kspSourcesDir`/`configureKsp` names vary across kctfork versions; if `configureKsp` is absent, use the older `compilation.symbolProcessorProviders` + `compilation.kspProcessorOptions` properties and set `compilation.languageVersion`/KSP2 flag as that version documents. The acceptance criterion: the smoke test below runs the processor under KSP2 and the result `exitCode == OK`.
+Verified (plan review): `com.tschuchort.compiletesting` is the correct package for `KotlinCompilation`/`SourceFile`; `configureKsp { }` (no args) is the kctfork 0.12.1 API; `result.exitCode`/`result.messages` and `ExitCode.OK`/`COMPILATION_ERROR` behave as asserted (`logger.error` → non-OK exit). The generated-source path `workingDir/ksp/sources/kotlin` is correct. Acceptance: the smoke test runs the processor under KSP2 and returns `OK`.
 
 Create `SmokeTest.kt`:
 ```kotlin
@@ -442,14 +445,15 @@ internal fun validateReduce(fn: KSFunctionDeclaration, logger: KSPLogger): Handl
     if (returnType == null || returnType.declaration !== modelType.declaration) {
         logger.error("@Reduce return type must equal the model (first parameter) type.", fn); return null
     }
+    // isUsableConcreteClass already rejects generic (type-arg-bearing), nullable, inner,
+    // non-public/internal, and qualifiedName-null types. The message contains "non-generic"
+    // so the generic-action test's "generic" substring assertion matches.
     if (!modelType.isUsableConcreteClass()) {
         logger.error("@Reduce model type must be a non-generic, non-null, public/internal class.", fn); return null
     }
-    if (modelType.arguments.isNotEmpty()) { logger.error("@Reduce model type must not be generic.", fn); return null }
     if (!actionType.isUsableConcreteClass()) {
         logger.error("@Reduce action type must be a non-generic, non-null, public/internal class.", fn); return null
     }
-    if (actionType.arguments.isNotEmpty()) { logger.error("@Reduce action type must not be generic.", fn); return null }
     val modelDecl = modelType.declaration as KSClassDeclaration
     val actionDecl = actionType.declaration as KSClassDeclaration
     val pkg = fn.packageName.asString()
@@ -624,6 +628,11 @@ internal fun writeRegistrar(
         .addModifiers(KModifier.OVERRIDE)
         .receiver(ROUTING_BUILDER)
 
+    // Collect every top-level function reference (providers + handlers) as MemberNames
+    // so we can detect simple-name clashes and emit aliased imports — KotlinPoet's %M
+    // does NOT auto-alias clashing simple names from different packages.
+    val usedMembers = mutableListOf<MemberName>()
+
     // Deterministic order: models by FQN, handlers by (action FQN, handler FQN).
     for (modelFqn in handlersByModel.keys.sorted()) {
         val handlers = handlersByModel.getValue(modelFqn)
@@ -631,10 +640,12 @@ internal fun writeRegistrar(
         val initial = initials.getValue(modelFqn)
         val modelClass = handlers.first().modelDecl.toClassName()
         val provider = MemberName(initial.providerPackage, initial.providerSimpleName)
+        usedMembers += provider
         contribute.beginControlFlow("model<%T>(%M())", modelClass, provider)
         for (h in handlers) {
             val action = h.actionDecl.toClassName()
             val handler = MemberName(h.handlerPackage, h.handlerSimpleName)
+            usedMembers += handler
             contribute.addStatement("on<%T> { s, a -> %M(s, a) }", action, handler)
         }
         contribute.endControlFlow()
@@ -650,11 +661,21 @@ internal fun writeRegistrar(
         .addFunction(contribute.build())
         .build()
 
-    val file = FileSpec.builder(generatedPackage, moduleName)
-        .addType(registrar)
-        .build()
+    val fileBuilder = FileSpec.builder(generatedPackage, moduleName).addType(registrar)
 
-    file.writeTo(codeGenerator, Dependencies(aggregating = true, *originatingFiles.toTypedArray()))
+    // Alias top-level function imports whose simple names collide across packages.
+    // %M renders the registered alias for that exact MemberName (equality is by
+    // package+simpleName, so deterministic aliasing fixes the otherwise-clashing imports).
+    usedMembers.distinct().groupBy { it.simpleName }.forEach { (simple, members) ->
+        if (members.size > 1) {
+            members.sortedBy { it.packageName }.forEachIndexed { index, member ->
+                fileBuilder.addAliasedImport(member, "${simple}_$index")
+            }
+        }
+    }
+
+    fileBuilder.build()
+        .writeTo(codeGenerator, Dependencies(aggregating = true, *originatingFiles.toTypedArray()))
 }
 ```
 
@@ -748,7 +769,7 @@ class DeterminismTest {
 }
 ```
 
-- [ ] **Step 2: Run → expect PASS** (KotlinPoet handles import aliasing; sorting is already implemented in Task 4). If the clash test fails with a duplicate-import/compile error, ensure `RegistrarWriter` uses `MemberName`/`ClassName` (KotlinPoet auto-aliases) and not raw strings. If determinism fails, confirm the sort comparators in `writeRegistrar` are total (model FQN, then action FQN, then handler FQN).
+- [ ] **Step 2: Run → expect PASS.** The clash test passes because `writeRegistrar` (Task 4) explicitly detects simple-name collisions among the collected `MemberName`s and calls `FileSpec.addAliasedImport` (KotlinPoet `%M` does NOT auto-alias). The determinism test passes because emission is sorted (model FQN, then action FQN, then handler FQN — a total order). If the clash test fails with a duplicate-import/compile error, the alias logic in Task 4 is missing or the `usedMembers` collection didn't capture the clashing members. If determinism fails, confirm the sort comparators in `writeRegistrar` are total.
 Run: `./gradlew :redux-kotlin-routing-codegen:test`
 Expected: all green.
 
@@ -824,7 +845,6 @@ internal object Reset
 package org.reduxkotlin.routing.sample
 
 import org.reduxkotlin.routing.createModelStore
-import org.reduxkotlin.routing.get
 import org.reduxkotlin.routing.install
 import org.reduxkotlin.routing.sample.generated.SampleModule
 import kotlin.test.Test
