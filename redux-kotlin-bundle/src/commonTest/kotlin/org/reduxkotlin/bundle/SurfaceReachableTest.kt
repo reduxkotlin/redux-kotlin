@@ -3,14 +3,14 @@ package org.reduxkotlin.bundle
 import org.reduxkotlin.Reducer
 import org.reduxkotlin.Store
 import org.reduxkotlin.createStore
-import org.reduxkotlin.threadsafe.ThreadSafeStore
-import org.reduxkotlin.threadsafe.createThreadSafeStore
 import org.reduxkotlin.granular.subscribeTo
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.multimodel.granular.subscribeToModel
 import org.reduxkotlin.registry.StoreRegistry
 import org.reduxkotlin.routing.RoutingBuilder
 import org.reduxkotlin.routing.createModelStore
+import org.reduxkotlin.threadsafe.ThreadSafeStore
+import org.reduxkotlin.threadsafe.createThreadSafeStore
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -20,11 +20,11 @@ class SurfaceReachableTest {
     fun every_bundled_module_symbol_is_reachable() {
         // KClass references prove the type symbols are accessible from each module.
         val types = listOf(
-            Store::class,            // redux-kotlin core
-            ThreadSafeStore::class,  // redux-kotlin-threadsafe
-            ModelState::class,       // redux-kotlin-multimodel
-            StoreRegistry::class,    // redux-kotlin-registry
-            RoutingBuilder::class,   // redux-kotlin-routing
+            Store::class, // redux-kotlin core
+            ThreadSafeStore::class, // redux-kotlin-threadsafe
+            ModelState::class, // redux-kotlin-multimodel
+            StoreRegistry::class, // redux-kotlin-registry
+            RoutingBuilder::class, // redux-kotlin-routing
         )
         // Typed lambdas reference the factory functions so imports resolve + re-exports are proven.
         val fns = listOf<Any>(
