@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.validate
 
 /** Collects @Reduce/@ReduxInitial functions and generates a ReduxModule registrar. */
 public class RoutingSymbolProcessor(
@@ -18,11 +19,14 @@ public class RoutingSymbolProcessor(
 
     @Suppress("ReturnCount")
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val reduceFns = resolver.getSymbolsWithAnnotation(reduceAnno)
+        val reduceAll = resolver.getSymbolsWithAnnotation(reduceAnno)
             .filterIsInstance<KSFunctionDeclaration>().toList()
-        val initialFns = resolver.getSymbolsWithAnnotation(initialAnno)
+        val initialAll = resolver.getSymbolsWithAnnotation(initialAnno)
             .filterIsInstance<KSFunctionDeclaration>().toList()
-        if (reduceFns.isEmpty() && initialFns.isEmpty()) return emptyList()
+        val deferred = (reduceAll + initialAll).filterNot { it.validate() }
+        val reduceFns = reduceAll.filter { it.validate() }
+        val initialFns = initialAll.filter { it.validate() }
+        if (reduceFns.isEmpty() && initialFns.isEmpty()) return deferred
 
         val moduleName = options["routing.moduleName"]
         if (moduleName == null) {
@@ -30,7 +34,7 @@ public class RoutingSymbolProcessor(
                 "redux-kotlin-routing-codegen: missing KSP arg 'routing.moduleName'. " +
                     "Add ksp { arg(\"routing.moduleName\", \"YourFeature\") } to this module's build.gradle.kts.",
             )
-            return emptyList()
+            return deferred
         }
 
         val handlers = reduceFns.mapNotNull { validateReduce(it, logger) }
@@ -52,7 +56,7 @@ public class RoutingSymbolProcessor(
             }
         }
         val anyMissingInitial = byModel.keys.any { it !in initials }
-        if (handlers.isEmpty() || anyMissingInitial) return emptyList()
+        if (handlers.isEmpty() || anyMissingInitial) return deferred
 
         val generatedPackage = options["routing.generatedPackage"] ?: "org.reduxkotlin.routing.generated"
         val originating = (reduceFns + initialFns).mapNotNull { it.containingFile }.distinct()
@@ -61,6 +65,6 @@ public class RoutingSymbolProcessor(
             "redux-kotlin-routing-codegen: generated $generatedPackage.$moduleName " +
                 "(install with install($moduleName))",
         )
-        return emptyList()
+        return deferred
     }
 }

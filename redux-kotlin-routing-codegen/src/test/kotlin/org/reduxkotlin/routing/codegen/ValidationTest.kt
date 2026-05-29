@@ -61,4 +61,27 @@ class ValidationTest {
         assertTrue(r.messages.contains("top-level"), r.messages)
         assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, r.exitCode)
     }
+
+    /** If ONE model lacks its @ReduxInitial, the whole module is fail-closed: nothing is generated. */
+    @Test fun one_missing_initial_suppresses_generation_for_all_models() {
+        val r = compileWithProcessor(
+            "Multi",
+            SourceFile.kotlin(
+                "Src.kt",
+                """
+                package t
+                import org.reduxkotlin.routing.*
+                data class M1(val n: Int = 0)
+                data class M2(val n: Int = 0)
+                data class A1(val x: Int)
+                data class A2(val x: Int)
+                @ReduxInitial fun m1i(): M1 = M1()
+                @Reduce fun h1(s: M1, a: A1): M1 = s
+                @Reduce fun h2(s: M2, a: A2): M2 = s
+                """.trimIndent(),
+            ),
+        )
+        assertEquals(KotlinCompilation.ExitCode.COMPILATION_ERROR, r.exitCode)
+        assertTrue(r.generatedRegistrar("Multi") == null, "no registrar should be generated when any model is invalid")
+    }
 }
