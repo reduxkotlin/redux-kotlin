@@ -51,7 +51,16 @@ public class RoutingSymbolProcessor(
                 )
             }
         }
-        // Generation added in Task 4.
+        val anyMissingInitial = byModel.keys.any { it !in initials }
+        if (handlers.isEmpty() || anyMissingInitial) return emptyList()
+
+        val generatedPackage = options["routing.generatedPackage"] ?: "org.reduxkotlin.routing.generated"
+        val originating = (reduceFns + initialFns).mapNotNull { it.containingFile }.distinct()
+        writeRegistrar(codeGenerator, moduleName, generatedPackage, byModel, initials, originating)
+        logger.info(
+            "redux-kotlin-routing-codegen: generated $generatedPackage.$moduleName " +
+                "(install with install($moduleName))",
+        )
         return emptyList()
     }
 }
