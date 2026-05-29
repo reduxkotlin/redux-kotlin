@@ -7,5 +7,6 @@ internal object Reset
 
 internal fun counterInitial(): CounterModel = CounterModel()
 internal fun onIncrement(s: CounterModel, a: Increment): CounterModel = s.copy(count = s.count + a.by)
+
 @Suppress("UnusedParameter")
 internal fun onReset(s: CounterModel, a: Reset): CounterModel = CounterModel()

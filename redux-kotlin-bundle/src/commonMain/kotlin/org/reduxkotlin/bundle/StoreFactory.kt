@@ -25,5 +25,5 @@ public fun createThreadSafeModelStore(
     onWrite: OnWrite? = null,
     block: RoutingBuilder.() -> Unit,
 ): Store<ModelState> = ThreadSafeStore(
-        createModelStore(enhancer = enhancer, devChecks = devChecks, onWrite = onWrite, block = block),
-    )
+    createModelStore(enhancer = enhancer, devChecks = devChecks, onWrite = onWrite, block = block),
+)
