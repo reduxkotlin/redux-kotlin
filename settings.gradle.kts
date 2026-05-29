@@ -4,6 +4,9 @@ pluginManagement {
         mavenCentral()
         google()
     }
+    plugins {
+        id("com.google.devtools.ksp") version "2.3.9"
+    }
 }
 
 plugins {
