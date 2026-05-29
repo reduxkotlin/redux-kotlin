@@ -98,3 +98,4 @@ website/.docusaurus/
 .claude/
 .vercel
 .env*.local
+.superpowers/
