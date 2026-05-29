@@ -23,6 +23,11 @@ public sealed interface SyncOp {
     public val cardId: String
 
     /**
+     * Serializable inverse used to revert this op when the backend rejects it.
+     */
+    public val inverse: InverseOpDto
+
+    /**
      * Serializable form of a card move between columns.
      *
      * @property opId stable operation id.
@@ -39,7 +44,7 @@ public sealed interface SyncOp {
         public val from: String,
         public val to: String,
         public val toIndex: Int,
-        public val inverse: InverseOpDto,
+        public override val inverse: InverseOpDto,
     ) : SyncOp
 
     /**
@@ -57,7 +62,7 @@ public sealed interface SyncOp {
         public override val cardId: String,
         public val columnId: String,
         public val card: CardDto,
-        public val inverse: InverseOpDto,
+        public override val inverse: InverseOpDto,
     ) : SyncOp
 
     /**
@@ -77,7 +82,7 @@ public sealed interface SyncOp {
         public val title: String,
         public val description: String,
         public val nowMillis: Long,
-        public val inverse: InverseOpDto,
+        public override val inverse: InverseOpDto,
     ) : SyncOp
 
     /**
@@ -91,7 +96,7 @@ public sealed interface SyncOp {
     public data class Delete(
         public override val opId: String,
         public override val cardId: String,
-        public val inverse: InverseOpDto,
+        public override val inverse: InverseOpDto,
     ) : SyncOp
 }
 
