@@ -37,22 +37,28 @@ class GenerationTest {
     /** Two handlers with the same simple name in different packages must still compile (aliased imports). */
     @Test
     fun two_handlers_same_simple_name_different_packages_compile() {
-        val a = SourceFile.kotlin("A.kt", """
+        val a = SourceFile.kotlin(
+            "A.kt",
+            """
             package a
             import org.reduxkotlin.routing.*
             data class MA(val n: Int = 0)
             data class Act(val x: Int)
             @ReduxInitial fun mi(): MA = MA()
             @Reduce fun onAct(s: MA, a: Act): MA = s.copy(n = a.x)
-        """.trimIndent())
-        val b = SourceFile.kotlin("B.kt", """
+            """.trimIndent(),
+        )
+        val b = SourceFile.kotlin(
+            "B.kt",
+            """
             package b
             import org.reduxkotlin.routing.*
             data class MB(val n: Int = 0)
             data class Act(val x: Int)
             @ReduxInitial fun mi(): MB = MB()
             @Reduce fun onAct(s: MB, a: Act): MB = s.copy(n = a.x)
-        """.trimIndent())
+            """.trimIndent(),
+        )
         val result = compileWithProcessor(moduleName = "Multi", a, b)
         assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode)
     }

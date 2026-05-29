@@ -13,4 +13,5 @@ internal object Reset
 @Reduce internal fun onIncrement(s: CounterModel, a: Increment): CounterModel = s.copy(count = s.count + a.by)
 
 @Suppress("UnusedParameter")
-@Reduce internal fun onReset(s: CounterModel, a: Reset): CounterModel = CounterModel()
+@Reduce
+internal fun onReset(s: CounterModel, a: Reset): CounterModel = CounterModel()
