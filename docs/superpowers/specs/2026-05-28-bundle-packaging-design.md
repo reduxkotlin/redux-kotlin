@@ -41,32 +41,35 @@ Plus a small **convenience API** (the only hand-written code in the module), com
 ```kotlin
 /** Builds a routed ModelState store wrapped for thread-safe cross-thread access. */
 public fun createThreadSafeModelStore(
+    enhancer: StoreEnhancer<ModelState>? = null,
     devChecks: Boolean = false,
     onWrite: OnWrite? = null,
     block: RoutingBuilder.() -> Unit,
 ): Store<ModelState> =
-    ThreadSafeStore(createModelStore(devChecks = devChecks, onWrite = onWrite, block = block))
+    ThreadSafeStore(createModelStore(enhancer = enhancer, devChecks = devChecks, onWrite = onWrite, block = block))
 
 /** Get-or-create a routed thread-safe store in this registry under [id] (lazy, concurrency-safe). */
 public fun <K : Any> StoreRegistry<K, ModelState>.getOrCreateThreadSafeModelStore(
     id: K,
+    enhancer: StoreEnhancer<ModelState>? = null,
     devChecks: Boolean = false,
     onWrite: OnWrite? = null,
     block: RoutingBuilder.() -> Unit,
 ): Store<ModelState> =
-    getOrCreate(id) { createThreadSafeModelStore(devChecks, onWrite, block) }
+    getOrCreate(id) { createThreadSafeModelStore(enhancer, devChecks, onWrite, block) }
 
-/** TypedStoreRegistry variant, keyed by a typed [StoreKey]. */
+/** TypedStoreRegistry variant, keyed by a typed [StoreKey] (build one with `storeKey<ModelState>(id)`). */
 public fun <K : Any> TypedStoreRegistry.getOrCreateThreadSafeModelStore(
     key: StoreKey<K, ModelState>,
+    enhancer: StoreEnhancer<ModelState>? = null,
     devChecks: Boolean = false,
     onWrite: OnWrite? = null,
     block: RoutingBuilder.() -> Unit,
 ): Store<ModelState> =
-    getOrCreate(key) { createThreadSafeModelStore(devChecks, onWrite, block) }
+    getOrCreate(key) { createThreadSafeModelStore(enhancer, devChecks, onWrite, block) }
 ```
 
-Rationale: there is **no** one-liner today for a thread-safe *routed* store — `createModelStore` builds on plain `createStore`, and `ThreadSafeStore(store)` is a public wrapper over any `Store`. The factory closes that gap; the registry extensions wire it into the keyed multi-store container in one call. INIT dispatches on the calling thread during `createModelStore`, then the wrapper synchronizes all later `dispatch`/`getState`/`subscribe` — safe.
+Rationale: there is **no** one-liner today for a thread-safe *routed* store — `createModelStore` builds on plain `createStore`, and `ThreadSafeStore(store)` is a public wrapper over any `Store`. The factory closes that gap; the registry extensions wire it into the keyed multi-store container in one call. The `enhancer` is forwarded to `createModelStore` so middleware (`applyMiddleware`) composes too — it runs *inside* the thread-safe wrapper's synchronized dispatch. INIT dispatches on the calling thread during `createModelStore`, then the wrapper synchronizes all later `dispatch`/`getState`/`subscribe` — safe. (`StoreEnhancer` is from core, available transitively via `api(routing)`.)
 
 ### 2. `redux-kotlin-bundle-compose` (KMP library)
 
@@ -104,10 +107,10 @@ A versionless constraints artifact listing **every** published module at the pro
 
 ## API stability
 
-`redux-kotlin-bundle` and `-bundle-compose` carry committed ABI dumps (the convenience factory + registry extensions are public surface; the re-exported `api` deps also appear). Dumps are small and stable (the factory signatures don't change with bundled-module internals). The BOM has no ABI. Run `apiDump` after adding the modules.
+`redux-kotlin-bundle` and `-bundle-compose` carry committed ABI dumps. The binary-compatibility validator dumps a module's **own** declarations only — so the bundle dump contains just the convenience factory + the two registry extensions (and `-bundle-compose` an empty/near-empty dump), **not** the re-exported `api` dependencies, which are tracked by their own modules' dumps. The dumps are therefore tiny and stable. The BOM has no ABI. Run `apiDump` after adding the modules.
 
 ## Open items / pre-release follow-ups
 
-- **BOM publishing:** confirm the vanniktech publish plugin handles a `java-platform` module, or add a thin platform-publishing configuration. (The existing `convention.publishing-mpp` is MPP-only; the BOM is not MPP.)
+- **BOM publishing:** the BOM is a `java-platform` module and does **not** use `convention.publishing-mpp` (MPP-only). The vanniktech publish plugin exposes a `JavaPlatform()` target (`mavenPublishing { configure(JavaPlatform()) }`) — that is the intended mechanism; confirm it against the pinned vanniktech `0.36.0` in the plan, falling back to plain `maven-publish` with `from(components["javaPlatform"])` + the shared POM/coordinates if needed.
 - **Stacking:** the bundle depends on `redux-kotlin-routing` (PR #303). Its PR is stacked on `feat/redux-kotlin-routing`; retarget to `master` after #303 merges. (`-bundle-compose` and the BOM also reference routing transitively / by constraint.)
 - **Naming:** chosen `redux-kotlin-bundle` / `-bundle-compose` / `-bom`.
