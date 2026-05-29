@@ -44,8 +44,10 @@ class ForeignThreadDispatchTest {
         store.subscribe { hits.incrementAndGet() }
         val t1 = Thread { repeat(5_000) { store.dispatch(Inc) } }
         val t2 = Thread { repeat(5_000) { store.dispatch(Inc) } }
-        t1.start(); t2.start()
-        t1.join(30_000); t2.join(30_000)
+        t1.start()
+        t2.start()
+        t1.join(30_000)
+        t2.join(30_000)
         assertEquals(10_000, store.state.count)
         assertEquals(10_000L, hits.get(), "Every dispatch notifies exactly once (Inline context)")
     }
