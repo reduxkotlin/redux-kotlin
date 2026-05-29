@@ -1,0 +1,56 @@
+<h2>Design §1 — State topology &amp; store wiring</h2>
+<p class="subtitle">How state is split into stores and models. This is the spine of the showcase; it decides how honestly the registry + multimodel APIs get used. My recommendation is drawn solid; the alternative is noted below.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Recommended: root app store + StoreRegistry&lt;BoardId, ModelState&gt; (one store per board)</div>
+  <div class="mockup-body" style="font-size:12px">
+    <div class="mock-sidebar" style="border:2px solid #2980b9">
+      <b>Root AppStore</b> — <code>createConcurrentModelStore { … }</code> &nbsp;<span class="label">multimodel + routing + concurrent</span><br>
+      <span class="placeholder" style="display:inline-block;margin:5px 5px 0 0">NavModel · route = BoardList | Board(id), open card id</span>
+      <span class="placeholder" style="display:inline-block;margin:5px 0 0 0">SessionModel · current user, online peers</span>
+      <span class="placeholder" style="display:inline-block;margin:5px 0 0 0">BoardListModel · board summaries (id, name, card count)</span>
+    </div>
+
+    <div style="text-align:center;margin:6px 0">▼ navigating to a board lazily creates / looks up its store ▼<br><span class="label">registry.getOrCreateConcurrentModelStore(boardId) { … }</span></div>
+
+    <div style="display:flex;gap:8px">
+      <div class="mock-content" style="flex:1;border:2px solid #27ae60">
+        <b>Board store: "sprint-42"</b><br>
+        <span class="placeholder" style="display:block;margin-top:4px">BoardModel · columns + cards</span>
+        <span class="placeholder" style="display:block;margin-top:4px">FilterModel · query, assignee</span>
+        <span class="placeholder" style="display:block;margin-top:4px">UndoModel · history / future stacks</span>
+        <span class="placeholder" style="display:block;margin-top:4px">SyncModel · loading / error / latency</span>
+      </div>
+      <div class="mock-content" style="flex:1;border:2px dashed #95a5a6">
+        <b>Board store: "backlog"</b> <span class="label">isolated</span><br>
+        <span class="placeholder" style="display:block;margin-top:4px">its own Board/Filter/Undo/Sync</span>
+        <span class="placeholder" style="display:block;margin-top:18px">→ each board has independent undo history &amp; filter</span>
+      </div>
+    </div>
+
+    <p class="label" style="margin-top:8px">Compose layer: <code>rememberStableStore</code> on root + active board store · columns use <code>fieldStateOf(BoardModel::class){ it.columns[id] }</code> · WIP/online badges use <code>selectorState{…}</code> · detail panel uses <code>subscribeToModel/onModel</code></p>
+  </div>
+</div>
+
+<div class="pros-cons">
+  <div class="pros">
+    <h4>Why this (registry-per-board)</h4>
+    <ul style="font-size:13px">
+      <li>Uses <code>StoreRegistry</code> for its real purpose — keyed, lazily-created stores</li>
+      <li>Per-board isolation: undo history &amp; filter don't leak across boards</li>
+      <li>Realistic: mirrors how multi-document apps actually shard state</li>
+      <li>Board store can be disposed when you leave (shows registry lifecycle)</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>Alternative: one global store</h4>
+    <ul style="font-size:13px">
+      <li>All boards as data inside one ModelState <code>BoardsModel: Map&lt;id, Board&gt;</code></li>
+      <li>Simpler wiring, but registry becomes pointless → weaker showcase</li>
+      <li>Undo/filter must be keyed by board by hand inside one model</li>
+      <li>One giant reducer surface; less honest about real-world sharding</li>
+    </ul>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px"><b>Cross-component-without-direct-access</b> shows up here: a column never reads another column; the WIP badge never reads the detail panel; the activity feed never reads the board. They all subscribe to slices of the same store and re-render independently. That's the thing the demo is meant to prove.</p>

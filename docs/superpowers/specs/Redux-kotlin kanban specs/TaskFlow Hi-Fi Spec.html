@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskFlow — Hi-Fi Design Spec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Roboto+Flex:opsz,wght@8..144,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="spec-assets/spec.css">
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">T</div>
+      <div class="t">TaskFlow<small>Hi-Fi Design Spec · v1</small></div>
+    </div>
+    <nav class="nav">
+      <div class="grp">Overview</div>
+      <a href="#overview"><span class="n">00</span> Summary</a>
+      <a href="#feasibility"><span class="n">0</span> Feasibility spike</a>
+      <div class="grp">Foundations</div>
+      <a href="#color"><span class="n">1</span> Color</a>
+      <a href="#type"><span class="n">2</span> Typography</a>
+      <a href="#shape"><span class="n">3</span> Shape</a>
+      <a href="#spacing"><span class="n">4</span> Spacing &amp; layout</a>
+      <a href="#elevation"><span class="n">5</span> Elevation</a>
+      <a href="#motion"><span class="n">6</span> Motion</a>
+      <div class="grp">Library</div>
+      <a href="#components"><span class="n">7</span> Component inventory</a>
+      <div class="grp">Next</div>
+      <a href="TaskFlow Screens Spec.html"><span class="n">→</span> Screens (Phase 2)</a>
+    </nav>
+  </aside>
+
+  <!-- ============ CONTENT ============ -->
+  <main class="content">
+  <div class="wrap">
+
+    <!-- OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="eyebrow">redux-kotlin bundle showcase · Phase 1 — tokens for approval</div>
+      <h1>TaskFlow<br>Hi-Fi Design Spec</h1>
+      <p class="lead">The visual system for TaskFlow, a Kanban sample app built on Compose Multiplatform with <strong>Material&nbsp;3 Expressive</strong>. This document defines the design tokens, component library, and platform adaptation rules that the 7 screens are drawn from.</p>
+
+      <div class="metarow">
+        <span class="chip"><span class="dot"></span><b>Direction A</b> · Calm M3 Expressive</span>
+        <span class="chip"><b>Seed</b> #4A3FB8 indigo</span>
+        <span class="chip">Android · iOS · Web (wasmJs) · Desktop</span>
+        <span class="chip">Compact · Medium · Expanded</span>
+        <span class="chip"><span class="dot ok"></span>Light + Dark</span>
+      </div>
+
+      <div class="note">
+        <div class="lbl">Approval gate</div>
+        <p>This is <strong>Phase 1</strong>: foundations + component inventory + the Step&nbsp;0 feasibility findings. Per the approved design, I'm holding here for your sign-off on tokens before drawing all 7 screens (compact + expanded, in device frames, fully red-lined) in <strong>Phase 2</strong>. Token values that need verification against the repo's resolved dependency graph are flagged inline.</p>
+      </div>
+
+      <div class="panel">
+        <h4 style="margin-top:0">What this system optimizes for</h4>
+        <p style="margin-top:8px">UX is P0 — the app has to feel <strong>smooth and alive</strong>. Material&nbsp;3 Expressive is the vehicle: a higher-energy spring scheme (<span class="in-code">MotionScheme.expressive</span>), shape-morph on interaction, emphasized type for hierarchy, and the new <span class="in-code">ButtonGroup</span> / <span class="in-code">FloatingActionButtonMenu</span> patterns. Every token below is chosen so the render-isolation story (a card move re-composes only two columns) is also <em>visible</em> — motion and color make the reactive updates legible.</p>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- FEASIBILITY -->
+    <section class="section" id="feasibility">
+      <div class="eyebrow">Step 0</div>
+      <h2>Feasibility spike</h2>
+      <p>De-risking the UI before tokens are locked: can this repo's Compose 1.10.0 actually run experimental M3 Expressive, Coil&nbsp;3 async images, and a markdown renderer on <strong>wasmJs</strong>? Below are recommended artifacts and fallbacks. Versions are drawn from current public releases and <strong>must be confirmed against the repo's resolved dependency graph</strong> — the JetBrains Material3 wrapper in particular is versioned independently of the core CMP plugin.</p>
+
+      <table class="tbl">
+        <thead><tr><th style="width:18%">Area</th><th style="width:24%">Recommended</th><th style="width:11%">Status</th><th>Notes &amp; fallback</th></tr></thead>
+        <tbody id="feas-rows"></tbody>
+      </table>
+
+      <div class="note warn">
+        <div class="lbl">Verdict</div>
+        <p>All four capabilities are <strong>feasible today</strong>. Two carry conditions: (1) the exact Expressive-capable <span class="in-code">material3</span> artifact for CMP&nbsp;1.10 must be pinned and gated with <span class="in-code">@OptIn(ExperimentalMaterial3ExpressiveApi::class)</span>; (2) Web requires a modern (Wasm-GC) browser, with a Kotlin/JS compatibility distribution as the floor. Neither blocks the design — Expressive composables degrade cleanly to their stable M3 counterparts where a build lacks them.</p>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- COLOR -->
+    <section class="section" id="color">
+      <div class="eyebrow">Foundations · 1</div>
+      <h2>Color</h2>
+      <p>A single seed (<span class="in-code">#4A3FB8</span>) generates the full M3 tonal system. The role schemes below are authored to match Direction&nbsp;A — indigo primary, a rose tertiary for WIP/accents, warm-neutral surfaces. In code these come from <span class="in-code">expressiveLightColorScheme()</span> / <span class="in-code">expressiveDarkColorScheme()</span> seeded from the source color; the exact HCT-generated values should be reconciled with Material Theme Builder output.</p>
+
+      <h3>Tonal palettes</h3>
+      <p>Six tonal ramps (tones 0–100) underpin every role. Moving a card, dimming a filtered card, and the WIP badge all pull from these same ramps so state changes stay in-family.</p>
+      <div id="tonal-palettes"></div>
+
+      <h3>Role scheme</h3>
+      <p>Both modes ship. Surfaces use the M3 tonal container ladder (<span class="in-code">surfaceContainerLowest</span> → <span class="in-code">…Highest</span>) so cards, sheets and the board background separate by elevation tint rather than borders.</p>
+      <div data-tabgroup>
+        <div class="scheme-tabs">
+          <button class="active" data-pane="light">Light</button>
+          <button data-pane="dark">Dark</button>
+          <div></div>
+        </div>
+        <div class="scheme-pane active" data-pane="light" id="scheme-light"></div>
+        <div class="scheme-pane" data-pane="dark" id="scheme-dark"></div>
+      </div>
+
+      <h3>Semantic mapping</h3>
+      <p>App concepts mapped onto roles so they re-theme automatically. Card labels are a fixed tonal set; WIP and sync states derive from container roles.</p>
+      <h4>Card labels</h4>
+      <div id="semantic-labels"></div>
+      <h4>State colors</h4>
+      <div id="semantic-states"></div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- TYPE -->
+    <section class="section" id="type">
+      <div class="eyebrow">Foundations · 2</div>
+      <h2>Typography</h2>
+      <p>Type is <strong>Roboto&nbsp;Flex</strong> — the M3-native variable font, which gives the Expressive <em>emphasized</em> roles for free via the <span class="in-code">wght</span> axis. The baseline scale is standard M3; the emphasized column raises weight (and tightens optical sizing) for screen titles, board names, selected nav, and primary actions. Specimens render live in Roboto&nbsp;Flex below.</p>
+      <div class="panel" style="padding:6px 22px">
+        <div id="type-rows"></div>
+      </div>
+      <div class="note">
+        <div class="lbl">Emphasis rule</div>
+        <p>Use exactly one emphasized element per visual group. Board name (Headline emphasized) + everything else baseline; never stack emphasized title <em>and</em> emphasized body in the same card.</p>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- SHAPE -->
+    <section class="section" id="shape">
+      <div class="eyebrow">Foundations · 3</div>
+      <h2>Shape</h2>
+      <p>The Expressive shape scale adds the <em>increased</em> and <em>extra-extra-large</em> steps that drive shape-<strong>morph</strong>: a card rounds up on press, the FAB morphs into the FAB-menu, a selected ButtonGroup segment expands. Corner values are the resting state; morph targets are noted per component in the inventory.</p>
+      <div class="grid g4" id="shape-grid"></div>
+      <h3>Per-component shape</h3>
+      <table class="tbl"><thead><tr><th style="width:24%">Shape token</th><th style="width:14%">Radius</th><th>Applied to</th></tr></thead><tbody id="shape-use"></tbody></table>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- SPACING -->
+    <section class="section" id="spacing">
+      <div class="eyebrow">Foundations · 4</div>
+      <h2>Spacing &amp; layout</h2>
+      <p>A 4&nbsp;dp base unit. Touch targets never drop below <strong>48&nbsp;dp</strong>; the inter-column gutter and card padding carry most of the board's rhythm.</p>
+      <div class="panel">
+        <div id="spacing-rows"></div>
+      </div>
+
+      <h3>Window size classes</h3>
+      <p>Adaptive layout keys off M3 window size classes. The board re-flows from a single paged column (compact) to all columns plus a persistent activity rail (expanded); the card detail moves from full-screen → bottom sheet → side sheet.</p>
+      <table class="tbl"><thead><tr><th style="width:11%">Class</th><th style="width:13%">Width</th><th style="width:18%">Devices</th><th>Layout behaviour</th><th style="width:14%">Margin</th></tr></thead><tbody id="bp-rows"></tbody></table>
+
+      <div class="note">
+        <div class="lbl">Platform adaptation — preview</div>
+        <p><strong>iOS</strong>: respect safe-area insets; system back-swipe maps to <span class="in-code">dispatch(NavBack)</span>. <strong>Android</strong>: edge-to-edge, predictive-back progress drives the screen transition. <strong>Web</strong>: hover states + pointer affordances on cards/buttons, content capped at 1280&nbsp;dp and centered. Full per-platform redlines land in Phase&nbsp;2.</p>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- ELEVATION -->
+    <section class="section" id="elevation">
+      <div class="eyebrow">Foundations · 5</div>
+      <h2>Elevation</h2>
+      <p>M3 uses both a shadow and a tonal surface tint per level. Resting cards sit at Level&nbsp;1; a dragged card lifts to Level&nbsp;3 with a scale bump; the FAB-menu and dialogs own Level&nbsp;3. In dark mode the tonal tint does the heavy lifting (shadows read weakly on dark surfaces).</p>
+      <div class="grid g3" id="elev-grid"></div>
+      <table class="tbl" style="margin-top:22px"><thead><tr><th style="width:16%">Level</th><th style="width:12%">Shadow</th><th style="width:14%">Tonal tint</th><th>Applied to</th></tr></thead><tbody id="elev-use"></tbody></table>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- MOTION -->
+    <section class="section" id="motion">
+      <div class="eyebrow">Foundations · 6</div>
+      <h2>Motion</h2>
+      <p>Motion is governed by <span class="in-code">MotionScheme.expressive</span> — six spring tokens split into <strong>spatial</strong> (anything that moves or resizes) and <strong>effects</strong> (color, opacity, elevation). Spatial springs carry a deliberate overshoot; effects springs never bounce. These are the token-level specs; the per-interaction choreography (card move, account switch, skeleton shimmer) is detailed in Phase&nbsp;2.</p>
+      <div class="grid g3" id="spring-grid"></div>
+      <div class="note">
+        <div class="lbl">Why springs, not durations</div>
+        <p id="motion-why"></p>
+      </div>
+      <div class="grid g2" style="margin-top:24px">
+        <div>
+          <h4 style="margin-top:0">Legacy duration tokens</h4>
+          <table class="tbl"><thead><tr><th>Token</th><th>Value</th><th>Use</th></tr></thead><tbody id="dur-rows"></tbody></table>
+        </div>
+        <div>
+          <h4 style="margin-top:0">Easing</h4>
+          <table class="tbl"><thead><tr><th>Curve</th><th>Shape</th><th>Use</th></tr></thead><tbody id="ease-rows"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" style="margin-top:60px">
+
+    <!-- COMPONENTS -->
+    <section class="section" id="components">
+      <div class="eyebrow">Library · 7</div>
+      <h2>Component inventory</h2>
+      <p>Every reusable composable, with its bundle data source, the tokens it consumes, and its full set of states + variants. Each maps to a redux-kotlin subscription so its recomposition stays isolated — noted in the badge on each card.</p>
+      <div id="component-list"></div>
+    </section>
+
+    <!-- NEXT -->
+    <section class="section" id="next">
+      <div class="eyebrow">After approval</div>
+      <h2>Phase 2 scope</h2>
+      <p>On token sign-off, Phase&nbsp;2 expands all seven screens — <strong>Login, Account switcher, Board list, Board (kanban), Card detail (view / edit / create), Profile, Settings</strong> — each rendered <strong>compact and expanded</strong>, inside real <strong>iOS / Android device frames and a browser window</strong>, with full redlines (dp spacing, 48&nbsp;dp targets, token names per element, component refs). Plus the complete motion choreography spec and the asset list (pravatar / dicebear / picsum URLs + bundled-Resources fallback).</p>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="panel tight"><h4 style="margin-top:0">Screens × states</h4><p style="font-size:13px">7 screens · 2 size classes · light primary, key screens in dark · 3 modes for card detail.</p></div>
+        <div class="panel tight"><h4 style="margin-top:0">Motion choreography</h4><p style="font-size:13px">Card move, WIP count-up, screen transitions, skeleton shimmer, account switch — timed against the spring tokens.</p></div>
+        <div class="panel tight"><h4 style="margin-top:0">Assets</h4><p style="font-size:13px">Avatar / image URLs per spec §6 + offline bundled-Resources fallback plan.</p></div>
+      </div>
+      <a class="inline" href="TaskFlow Screens Spec.html" style="display:inline-block;margin-top:22px;font-family:var(--mono);font-size:13px">→ Open the Phase 2 Screens Spec</a>
+    </section>
+
+    <footer class="docfoot">
+      <div>TaskFlow Hi-Fi Design Spec · Phase 1 (foundations) · <span class="mono">2026-05-29</span></div>
+      <div style="margin-top:4px">Material 3 Expressive · Compose Multiplatform 1.10.0 · seed <span class="mono">#4A3FB8</span> · awaiting token approval before Phase 2.</div>
+    </footer>
+
+  </div>
+  </main>
+</div>
+
+<script src="spec-assets/spec-data.js"></script>
+<script src="spec-assets/spec-render.js"></script>
+<script>
+  // inject the motion rationale text from data
+  document.addEventListener("DOMContentLoaded", function(){
+    var n = document.getElementById("motion-why");
+    if (n && window.SPEC) n.textContent = window.SPEC.motionNote;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<h2>Hi-fi — Board screen (M3 Expressive)</h2>
+<p class="subtitle">Adaptive: phone = bottom NavigationBar + horizontally-paged columns; wide (web/tablet) = NavigationRail + side-by-side. Annotations call out the Expressive features &amp; which bundle API feeds each region.</p>
+
+<div class="split">
+  <!-- PHONE -->
+  <div class="mockup">
+    <div class="mockup-header">Phone (compact)</div>
+    <div class="mockup-body" style="background:#f5f3fb;padding:0;border-radius:22px;overflow:hidden;font-family:system-ui">
+      <!-- top app bar -->
+      <div style="background:#e7e0ff;padding:14px 16px 12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font:800 22px system-ui;color:#21005d;letter-spacing:-.3px">Sprint 42</div><div style="font:12px system-ui;color:#5b528a">12 cards · ann + 1 online</div></div>
+          <div style="width:34px;height:34px;border-radius:50%;background:#7c5cff;color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px system-ui">A</div>
+        </div>
+        <!-- ButtonGroup toolbar -->
+        <div style="display:flex;gap:6px;margin-top:12px">
+          <div style="background:#fff;border-radius:18px 8px 8px 18px;padding:6px 12px;font:600 12px system-ui;color:#4a3fb8">🔍 api</div>
+          <div style="background:#fff;border-radius:8px;padding:6px 12px;font:600 12px system-ui;color:#4a3fb8">Filter ▾</div>
+          <div style="background:#4a3fb8;color:#fff;border-radius:8px 18px 18px 8px;padding:6px 12px;font:600 12px system-ui">↺ ↻</div>
+        </div>
+        <span class="label" style="color:#5b528a">↑ ButtonGroup · filter→FilterModel · undo/redo→UndoModel</span>
+      </div>
+      <!-- column (paged) -->
+      <div style="padding:14px 16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font:700 15px system-ui;color:#1c1b22">Doing</div>
+          <div style="background:#ffd8e4;color:#8c0032;border-radius:12px;padding:2px 10px;font:700 12px system-ui">2 / 3</div>
+        </div>
+        <!-- card -->
+        <div style="background:#fff;border-radius:20px;box-shadow:0 2px 8px rgba(33,0,93,.08);padding:14px;margin-bottom:10px">
+          <div style="font:600 15px system-ui;color:#1c1b22">Wire KSP codegen</div>
+          <div style="margin-top:6px;font:13px system-ui;color:#6b6680">Generate routed reducers from <b style="color:#1c1b22">@Reduce</b>…</div>
+          <div style="margin-top:10px;display:flex;gap:6px"><span style="background:#dcebff;color:#00468b;font:600 11px system-ui;border-radius:8px;padding:2px 9px">backend</span><span style="background:#ffe2ec;color:#b3003a;font:600 11px system-ui;border-radius:8px;padding:2px 9px">p1</span></div>
+          <div style="height:56px;border-radius:12px;background:linear-gradient(135deg,#cde,#eef);margin-top:10px;display:flex;align-items:center;justify-content:center;font:11px system-ui;color:#5b528a">🖼 image attachment</div>
+          <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;font:11px system-ui;color:#8b8698"><span>📎 2 · 🔗 1 · ✎ markdown</span><span style="width:22px;height:22px;border-radius:50%;background:#22b07d"></span></div>
+        </div>
+        <div style="background:#fff;border-radius:20px;box-shadow:0 2px 8px rgba(33,0,93,.08);padding:14px;opacity:.6">
+          <div style="font:600 15px system-ui;color:#1c1b22">Bundle BOM</div><div style="font:11px system-ui;color:#22b07d;margin-top:4px">⟳ saving… (optimistic)</div>
+        </div>
+        <span class="label" style="color:#5b528a">↑ cards = fieldStateOf(BoardModel){ column.cardIds } · only this column recomposes on move</span>
+      </div>
+      <!-- FAB menu + bottom nav -->
+      <div style="position:relative;height:64px;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;align-items:center;font:11px system-ui;color:#7a7590">
+        <span style="color:#4a3fb8;font-weight:700">▦ Boards</span><span>👤 Profile</span><span>⚙ Settings</span>
+        <div style="position:absolute;right:16px;top:-28px;width:56px;height:56px;border-radius:20px;background:#4a3fb8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 16px rgba(74,63,184,.4)">＋</div>
+      </div>
+    </div>
+    <p class="label">FloatingActionButtonMenu (add card/column) · NavigationBar · emphasized type on "Sprint 42"</p>
+  </div>
+
+  <!-- WIDE -->
+  <div class="mockup">
+    <div class="mockup-header">Wide (web / tablet)</div>
+    <div class="mockup-body" style="background:#f5f3fb;padding:0;border-radius:16px;overflow:hidden;font-family:system-ui">
+      <div style="display:flex;min-height:340px">
+        <!-- nav rail -->
+        <div style="width:64px;background:#e7e0ff;display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:16px;font-size:11px;color:#5b528a">
+          <div style="width:34px;height:34px;border-radius:50%;background:#7c5cff;color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px system-ui">A</div>
+          <div style="background:#4a3fb8;color:#fff;border-radius:14px;padding:6px 8px">▦</div><div>👤</div><div>⚙</div>
+          <div style="margin-top:auto;margin-bottom:14px;width:42px;height:42px;border-radius:16px;background:#4a3fb8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px">＋</div>
+        </div>
+        <div style="flex:1;padding:14px">
+          <div style="font:800 22px system-ui;color:#21005d">Sprint 42</div>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <div style="flex:1;background:#efeafc;border-radius:18px;padding:10px">
+              <div style="display:flex;justify-content:space-between;font:700 13px system-ui;color:#1c1b22">To Do <span style="color:#5b528a">3</span></div>
+              <div style="background:#fff;border-radius:14px;padding:9px;margin-top:8px;font:600 12px system-ui;box-shadow:0 1px 4px rgba(33,0,93,.07)">Doc the registry<div style="margin-top:5px"><span style="background:#dcebff;color:#00468b;font:600 10px system-ui;border-radius:7px;padding:1px 7px">docs</span></div></div>
+              <div style="background:#fff;border-radius:14px;padding:9px;margin-top:7px;font:600 12px system-ui;box-shadow:0 1px 4px rgba(33,0,93,.07)">Fix wasm target</div>
+            </div>
+            <div style="flex:1;background:#efeafc;border-radius:18px;padding:10px">
+              <div style="display:flex;justify-content:space-between;font:700 13px system-ui;color:#1c1b22">Doing <span style="background:#ffd8e4;color:#8c0032;border-radius:10px;padding:0 8px;font-size:11px">2/3</span></div>
+              <div style="background:#fff;border-radius:14px;padding:9px;margin-top:8px;font:600 12px system-ui;box-shadow:0 2px 8px rgba(33,0,93,.12);border:2px solid #4a3fb8">Wire KSP codegen <span style="color:#4a3fb8">◂ selected</span></div>
+              <div style="background:#fff;border-radius:14px;padding:9px;margin-top:7px;font:600 12px system-ui;opacity:.6">Bundle BOM ⟳</div>
+            </div>
+            <div style="flex:1;background:#efeafc;border-radius:18px;padding:10px">
+              <div style="display:flex;justify-content:space-between;font:700 13px system-ui;color:#1c1b22">Done <span style="color:#5b528a">5</span></div>
+              <div style="background:#fff;border-radius:14px;padding:9px;margin-top:8px;font:600 12px system-ui;opacity:.85">Routing PR ✓</div>
+            </div>
+            <!-- activity rail -->
+            <div style="width:120px;background:#fff;border-radius:18px;padding:10px;font:11px system-ui;color:#6b6680">
+              <div style="font-weight:700;color:#1c1b22;margin-bottom:6px">Activity</div>
+              <div>🤖 bot moved "Bundle BOM" → Doing</div>
+              <div style="margin-top:6px">ann added "Fix wasm"</div>
+            </div>
+          </div>
+          <span class="label" style="color:#5b528a">WIP badge = selectorState{…} · activity = ActivityModel · card-detail opens as side sheet on wide, full screen on phone</span>
+        </div>
+      </div>
+    </div>
+    <p class="label">NavigationRail · side-by-side columns · activity always visible on wide</p>
+  </div>
+</div>

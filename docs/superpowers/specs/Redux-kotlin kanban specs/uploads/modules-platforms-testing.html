@@ -1,0 +1,56 @@
+<h2>Design §3 — modules, platform entry points, testing</h2>
+<p class="subtitle">Last architecture section. Compose Multiplatform infra already exists in-repo (compose 1.10.0 + compose-compiler), so this is conventional wiring, not new ground.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Gradle module layout (under examples/, not published)</div>
+    <div class="mockup-body" style="font-size:12px">
+      <pre style="font-size:12px;line-height:1.5;margin:0">examples/taskflow/
+├── composeApp/        ← KMP + Compose MP, ALL code + UI
+│   plugins: convention.control,
+│            kotlin("multiplatform"),
+│            compose.multiplatform, compose.compiler
+│   deps: redux-kotlin-bundle-compose
+│   targets: androidTarget · jvm(desktop)
+│            iosX64/Arm64/SimulatorArm64 (framework)
+│            wasmJs { browser; executable }
+├── androidApp/        ← com.android.application host
+└── iosApp/            ← Xcode project embedding framework
+                         (web = composeApp wasmJs + index.html;
+                          desktop run for fast dev loop)</pre>
+      <p class="label" style="margin-top:6px">examples use <code>convention.control</code> → <b>not published</b>, <b>no apiDump/apiCheck</b>, and (no <code>explicitApi()</code>) <b>no mandatory KDoc</b> on every public. detekt formatting still applies tree-wide.</p>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">Platform entry points (thin — zero logic)</div>
+    <div class="mockup-body" style="font-size:12px">
+      <b>commonMain</b> — <code>App()</code> composable + all Redux (stores, models, reducers, middleware, fake backend) + all screens.<br><br>
+      <b>Android</b> — <code>MainActivity { App() }</code><br>
+      <b>iOS</b> — <code>MainViewController()</code> → SwiftUI <code>ComposeView</code> (mirrors counter/ios/Sources)<br>
+      <b>Web (wasmJs)</b> — <code>ComposeViewport(document.body){ App() }</code> + index.html<br>
+      <b>Desktop (jvm)</b> — <code>application { Window { App() } }</code> — dev-only, fastest iterate loop<br>
+      <p class="label" style="margin-top:6px">All real code is shared; entry points only host <code>App()</code>. Same store wiring everywhere → proves true multiplatform.</p>
+    </div>
+  </div>
+</div>
+
+<div class="mockup" style="margin-top:12px">
+  <div class="mockup-header">Testing strategy (matches repo: commonTest default, jvmTest for JVM-only)</div>
+  <div class="mockup-body" style="font-size:13px">
+    <div class="pros-cons">
+      <div class="pros"><h4>commonTest — the bulk (pure, fast, every target)</h4><ul style="font-size:13px">
+        <li>Routed reducers: each <code>on&lt;Action&gt;</code> transition</li>
+        <li>Undo/redo middleware: snapshot, undo, redo, cap, non-undoable ignored</li>
+        <li>Effects middleware: Request→Success/Failure with a fake backend + test dispatcher; optimistic revert on failure</li>
+        <li><b>Account isolation</b>: actions on account A never touch account B's store; logout disposes only that store</li>
+        <li>Model inject/eject: enter/leave board adds/removes models, memory bounded</li>
+      </ul></div>
+      <div class="pros"><h4>jvmTest — Compose UI (desktop, compose.uiTest)</h4><ul style="font-size:13px">
+        <li>Pattern already used by redux-kotlin-compose's jvmTest</li>
+        <li>A couple of high-value UI tests: the <b>render-isolation proof</b> (move a card → only 2 columns recompose), and account-switch restores each account's screen</li>
+        <li>Keep small — logic lives in commonTest</li>
+      </ul></div>
+    </div>
+    <p class="label" style="margin-top:6px">Native/iOS-sim tests trusted to CI per repo convention. Entry points have no logic → nothing to test there.</p>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-# TaskFlow Sample App — Implementation Plan (v2)
+# TaskFlow Sample App — Implementation Plan (v3)
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -6,7 +6,7 @@
 
 **Architecture:** Root `ConcurrentModelStore` (accounts, settings, auth) + `AccountRegistry: StoreRegistry<AccountId, ModelState>` (one isolated store per logged-in account). Per-account models are **fixed-slot** (declared up front; board slices start at a `NotLoaded` sentinel and reset on leave — no runtime model injection, which `ModelState` forbids). Reducers are authored in the **routing DSL** (`model{ on<Action>{} }`). Persistence and network are **two distinct layers**: a durable **LocalStore** (SQLDelight, no latency), a replaceable fake **RemoteApi** (latency/failure/offline toggle), and an offline-first **SyncEngine** between them (optimistic local write → persisted outbound queue → push/pull). All card mutations are optimistic + undoable + persisted-locally; a *rejected* remote push reverts via **per-op inverse** (never a whole-board snapshot); offline edits queue and drain on reconnect. Nav is Redux state. All collections are `kotlinx.collections.immutable`.
 
-**Tech Stack (pinned, verified May 2026):** Kotlin 2.3.20; Compose Multiplatform **1.11.0** (Expressive via `compose.material3`); `kotlinx-collections-immutable 0.5.0-beta01`; `kotlinx-datetime 0.6.2`; Coil `coil-compose`+`coil-network-ktor3` `3.2.0` + Ktor `3.1.0` engines; `multiplatform-markdown-renderer-m3/-coil3 0.39.0`; SQLDelight `2.3.2`.
+**Tech Stack (pinned, verified May 2026):** Kotlin 2.3.20; Compose Multiplatform **1.11.0** (Expressive via `compose.material3`); `kotlinx-collections-immutable 0.5.0-beta01`; `kotlinx-datetime 0.6.2`; Coil `coil-compose`+`coil-network-ktor3` `3.2.0` + Ktor `3.1.0` engines; `multiplatform-markdown-renderer-m3/-coil3 0.4x` (Compose-1.11 build); SQLDelight `2.3.2`.
 
 ---
 
@@ -33,7 +33,7 @@ Where a library/API is unavailable on web/iOS, **do not drop the feature on Andr
 
 These override anything below that conflicts. They were verified against source/release notes.
 
-**A. Compose 1.11.0 target removal (build).** Compose MP 1.11.0 **deleted `iosX64` + `macosX64`** from all Compose modules. Therefore: remove `iosX64()` + `macosX64()` from `convention.library-mpp-loved` (and from `convention.library-mpp-all` if declared there) repo-wide; the sample targets **`iosArm64` + `iosSimulatorArm64` only** (no `iosX64`). After the bump, run **root `./gradlew apiDump`** (every module's klib `// Targets:` header changes — not just the 3 compose modules) and commit all `*.api`. `compileSdk = 36` (both composeApp `android{}` and `androidApp`). Bump `multiplatform-markdown-renderer` to the **0.4x** release built for Compose 1.11.0 (verify in its release notes; 0.39.0 targets 1.10.x and trips 1.11's runtime compat check).
+**A. Compose 1.11.0 target removal (build).** Compose MP 1.11.0 **deleted `iosX64` + `macosX64`** from all Compose modules. Therefore: remove `iosX64()` + `macosX64()` from **`convention.mpp-loved.gradle.kts`** (lines ~48–49) repo-wide; the sample targets **`iosArm64` + `iosSimulatorArm64` only** (no `iosX64`). After the bump, run **root `./gradlew apiDump`** (every module's klib `// Targets:` header changes — not just the 3 compose modules) and commit all `*.api`. `compileSdk = 36` (both composeApp `android{}` and `androidApp`). Bump `multiplatform-markdown-renderer` to the **0.4x** release built for Compose 1.11.0 (verify in its release notes; 0.39.0 targets 1.10.x and trips 1.11's runtime compat check).
 
 **B. Real library-API names (verified — these break compile as previously written).**
 - `ModelState.models` is `@PublishedApi internal` → **read via the public `get(KClass)`** only. `inline fun <reified M> ModelState.getModel(): M = get(M::class)`. There is **no** nullable `peek`; fixed slots mean `get` always succeeds.
@@ -112,12 +112,12 @@ examples/taskflow/
 
 ### Task 0: Sync to master (bundle), bump Compose 1.11.0, drop x64 targets, regen ALL api dumps
 
-**Files:** merge from `origin/master`, `gradle/libs.versions.toml`, `build-conventions/src/main/kotlin/convention.library-mpp-loved.gradle.kts` (+ `convention.library-mpp-all` if it declares x64), regenerated `*.api` dumps for **all** modules.
+**Files:** merge from `origin/master`, `gradle/libs.versions.toml`, `build-conventions/src/main/kotlin/convention.mpp-loved.gradle.kts` (delete `iosX64()`/`macosX64()` — the actual target-declaration site), regenerated `*.api` dumps for **all** modules.
 
-- [ ] **Step 1: Sync onto master (the bundle is already there).** The bundle modules are merged into `origin/master`; this branch forked from a pre-bundle base and is ~14 commits behind. `git fetch origin && git merge origin/master` (per CLAUDE.md "branches from latest remote master"). Confirm `:redux-kotlin-bundle` + `:redux-kotlin-bundle-compose` are in `settings.gradle.kts` with `src/`. Verify `./gradlew :redux-kotlin-bundle-compose:jvmJar` → SUCCESS. (Do NOT merge `feat/redux-kotlin-bundle` — wrong/stale source.)
+- [ ] **Step 1: Sync onto master (DONE — bundle merged).** `origin/master` already merged into this branch; `:redux-kotlin-bundle` + `:redux-kotlin-bundle-compose` are in `settings.gradle.kts` with `src/` and `./gradlew :redux-kotlin-bundle-compose:jvmJar` passes. (Do NOT merge `feat/redux-kotlin-bundle` — stale.)
 - [ ] **Step 2: Bump Compose.** `compose-multiplatform = "1.11.0"` in the catalog.
-- [ ] **Step 3: Remove the x64 Compose targets repo-wide.** Compose 1.11.0 deleted `iosX64` + `macosX64` from all Compose modules. In `convention.library-mpp-loved.gradle.kts` delete the `iosX64()` and `macosX64()` target declarations (keep `iosArm64`, `iosSimulatorArm64`, `macosArm64`, `linuxX64`, `mingwX64`, etc.); check `convention.library-mpp-all.gradle.kts` and remove them there too if declared. This makes the whole graph's target set uniform.
-- [ ] **Step 4: Bump markdown-renderer to a 1.11-built release.** Set `markdown-renderer` to the latest `0.4x` whose release notes say Compose MP 1.11.0 (verify; NOT 0.39.0).
+- [ ] **Step 3: Remove the x64 Compose targets repo-wide.** Compose 1.11.0 deleted `iosX64` + `macosX64`. In **`build-conventions/src/main/kotlin/convention.mpp-loved.gradle.kts`** delete `iosX64()` (line ~48) and `macosX64()` (line ~49) (keep `iosArm64`, `iosSimulatorArm64`, `macosArm64`, `linuxX64`, `mingwX64`). `convention.mpp-all` only adds `linuxArm64()` — nothing to remove there. `convention.mpp-loved` is the base for ALL loved modules + (via mpp-all) the core, so this is the intended uniform repo-wide removal.
+- [ ] **Step 4: Add markdown-renderer to the catalog.** It is NOT yet a catalog key — ADD `markdown-renderer = "<0.4x>"` to `[versions]` (the latest `0.4x` whose release notes state Compose MP 1.11.0; NOT 0.39.0).
 - [ ] **Step 5: Regenerate EVERY module's API dump** (the target removal changes all klib `// Targets:` headers, not just compose): `./gradlew apiDump` (root). Then `./gradlew build` → must be green (incl. `apiCheck`). Commit all updated `*.api`.
 - [ ] **Step 6: Commit.** `git add -A && git commit -m "build: merge master(bundle); Compose 1.11.0; drop iosX64/macosX64; regen all api dumps"`
 
@@ -133,7 +133,7 @@ kotlinx-datetime = "0.6.2"
 kotlinx-serialization = "1.7.3"   # verify vs Kotlin 2.3.20; for pending_op payload codec
 coil = "3.2.0"
 ktor = "3.1.0"
-# markdown-renderer bumped in Task 0 Step 4 to the 0.4x release built for Compose 1.11.0
+markdown-renderer = "0.40.0"   # ADD: verify the exact 0.4x release built for Compose MP 1.11.0 (NOT 0.39.0)
 androidx-activity-compose = "1.11.0"   # dedicated; not coupled to androidx-activity (activity-ktx)
 sqldelight = "2.3.2"
 ```
@@ -191,6 +191,12 @@ if (hasAndroidSdk) include(":examples:taskflow:androidApp")
 ```kotlin
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
+val hasAndroidSdk: Boolean = run {
+    val p = rootProject.file("local.properties")
+    (p.exists() && p.readText().lineSequence().any { it.trim().startsWith("sdk.dir=") }) ||
+        !System.getenv("ANDROID_HOME").isNullOrBlank() || !System.getenv("ANDROID_SDK_ROOT").isNullOrBlank()
+}
+
 plugins {
     id("convention.control")
     kotlin("multiplatform")
@@ -198,13 +204,10 @@ plugins {
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.kotlin.serialization)
+    // NOTE: do NOT put the android plugin here — it can't be conditional in plugins{}.
 }
-
-val hasAndroidSdk: Boolean = run {
-    val p = rootProject.file("local.properties")
-    (p.exists() && p.readText().lineSequence().any { it.trim().startsWith("sdk.dir=") }) ||
-        !System.getenv("ANDROID_HOME").isNullOrBlank() || !System.getenv("ANDROID_SDK_ROOT").isNullOrBlank()
-}
+// The `kotlin { android { } }` block is provided ONLY by this plugin; apply it (gated) outside plugins{}.
+if (hasAndroidSdk) apply(plugin = "com.android.kotlin.multiplatform.library")
 
 sqldelight {
     databases.create("TaskFlowDb") {
@@ -256,10 +259,11 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.sqldelight.sqlite.driver); implementation(libs.ktor.client.java)
         }
-        val iosMain by creating { dependsOn(commonMain.get()) }
-        iosArm64Main.get().dependsOn(iosMain); iosSimulatorArm64Main.get().dependsOn(iosMain)
-        iosMain.dependencies {
-            implementation(libs.sqldelight.native.driver); implementation(libs.ktor.client.darwin)
+        // Kotlin's default hierarchy template already provides the iosMain intermediate
+        // (iosArm64 + iosSimulatorArm64) — use `by getting`, NOT `by creating` (creating one
+        // manually disables/collides with the template).
+        val iosMain by getting {
+            dependencies { implementation(libs.sqldelight.native.driver); implementation(libs.ktor.client.darwin) }
         }
         wasmJsMain.dependencies {
             implementation(libs.sqldelight.web.worker.driver)
@@ -329,8 +333,8 @@ import androidx.compose.material3.* ; import androidx.compose.runtime.Composable
 // androidApp/build.gradle.kts
 plugins { alias(libs.plugins.android.application); kotlin("android"); alias(libs.plugins.compose.compiler) }
 android {
-    namespace = "org.reduxkotlin.sample.taskflow.app"; compileSdk = 35
-    defaultConfig { applicationId = "org.reduxkotlin.sample.taskflow"; minSdk = 24; targetSdk = 35; versionCode = 1; versionName = "1.0" }
+    namespace = "org.reduxkotlin.sample.taskflow.app"; compileSdk = 36   // Compose 1.11 requires API 36
+    defaultConfig { applicationId = "org.reduxkotlin.sample.taskflow"; minSdk = 24; targetSdk = 36; versionCode = 1; versionName = "1.0" }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_21; targetCompatibility = JavaVersion.VERSION_21 }
     buildFeatures { compose = true }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
@@ -352,7 +356,7 @@ class MainActivity : ComponentActivity() {
 <!-- androidApp/src/main/AndroidManifest.xml -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.INTERNET"/>
-  <application android:label="TaskFlow" android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+  <application android:label="TaskFlow" android:theme="@style/Theme.TaskFlow">
     <activity android:name=".MainActivity" android:exported="true"
               android:enableOnBackInvokedCallback="true">
       <intent-filter><action android:name="android.intent.action.MAIN"/>
@@ -361,9 +365,9 @@ class MainActivity : ComponentActivity() {
   </application>
 </manifest>
 ```
-(Provide the `Theme.Material3.DayNight.NoActionBar` via a bundled `androidx.appcompat`/material theme dep or a minimal `themes.xml`.)
+A Compose-only app needs no Material XML theme — ship a **zero-dep framework theme** in `androidApp/src/main/res/values/themes.xml`: `<style name="Theme.TaskFlow" parent="android:Theme.Material.Light.NoActionBar"/>` (avoids pulling appcompat/material just for a theme; `@style/Theme.Material3.DayNight.NoActionBar` is unresolvable without those deps). Compose draws its own M3 Expressive surfaces.
 
-- [ ] **Step 7: iOS host (`iosApp/`)** — a real Xcode project (not "mirror counter"). `Info.plist` (bundle id, `UILaunchScreen`, orientations, `CADisableMinimumFrameDurationOnPhone=true`), and:
+- [ ] **Step 7: iOS host (`iosApp/`) — Swift sources + README only (no autogen `.xcodeproj`).** Commit the host Swift + an `iosApp/README.md`; the full Xcode project is a **documented manual follow-up** (do not author a `project.pbxproj` autonomously). Host:
 
 ```swift
 struct ComposeView: UIViewControllerRepresentable {
@@ -372,7 +376,7 @@ struct ComposeView: UIViewControllerRepresentable {
 }
 struct ContentView: View { var body: some View { ComposeView().ignoresSafeArea() } }
 ```
-Wire the framework via `embedAndSignAppleFrameworkForXcode` (Run Script build phase) **and** a Run Script that copies the compose-resources bundle into the app (static framework doesn't auto-bundle resources). Document the Xcode setup in `iosApp/README.md`. (iOS app build itself is not gated by Gradle — see Task 34.)
+README documents: wire the framework via **`embedAndSignAppleFrameworkForXcode`** (a Run Script phase) — which **auto-syncs the compose-resources bundle** (do NOT add a hand-rolled copy script); `Info.plist` keys (bundle id, `UILaunchScreen`, orientations, `CADisableMinimumFrameDurationOnPhone=true`); User Script Sandboxing OFF. Gradle gates only the framework link (Step 8) + a `swiftc` smoke compile — the Xcode app build is manual/Mac-only.
 
 - [ ] **Step 8: Link/build all targets:** `./gradlew :examples:taskflow:composeApp:jvmJar :examples:taskflow:composeApp:wasmJsBrowserDistribution :examples:taskflow:composeApp:linkDebugFrameworkIosSimulatorArm64` (last is environmental — trust CI if no Mac SDK). After `wasmJsBrowserDistribution`, inspect `build/dist/wasmJs/productionExecutable/` and confirm the emitted bootstrap JS matches `composeApp.js` in `index.html`; pin `wasmJs { browser { webpackTask { mainOutputFileName.set("composeApp.js") } } }` if it differs.
 - [ ] **Step 9: Commit.** `git add examples/taskflow && git commit -m "feat(taskflow): entry points + android/ios hosts; all targets link"`
@@ -425,7 +429,7 @@ expect fun newUuid(): String
 
 **Files:** `model/AccountModels.kt`, `model/BoardModels.kt`, `model/BoardSlice.kt`
 
-- [ ] **Step 1:** Author `SessionModel`, `AccountDetail`, `NavModel` (`route`, `openCardId`, `composing: ColumnId?`), `Route`, `BoardListModel`, `BoardSummary`, `CollaboratorsModel`, `BoardModel(board: Board? = null)` sentinel wrapper, `Board`, `Column`, `Card`, `Attachment`, `Label`, `FilterModel`, `UndoModel` (cap 15), `SyncModel(inFlight: PersistentSet<OpId>)`, `ActivityModel`, `ActivityEntry` — **exactly as design §5** (all collections `Persistent*`).
+- [ ] **Step 1:** Author `SessionModel(accountId: AccountId, bio: String? = null)` (NO name/email/avatar — those live once in `CollaboratorsModel`), `AccountDetail` (a seed/DTO type only, NOT a store model), `NavModel` (`route`, `openCardId`, `composing: ColumnId?`), `Route`, `BoardListModel`, `BoardSummary`, `CollaboratorsModel(byId: PersistentMap<AccountId, AccountSummary>)`, `BoardModel(board: Board? = null)` sentinel wrapper, `Board`, `Column`, `Card`, `Attachment`, `Label`, `FilterModel`, `UndoModel` (cap 15), `SyncModel(inFlight: PersistentSet<CardId>, pendingCount, online, lastSyncedAt, lastError)`, `ActivityModel`, `ActivityEntry` — **exactly as design §5** (all collections `Persistent*`).
 - [ ] **Step 2: Verify compile** (`compileKotlinJvm`). **Commit.** `git commit -m "feat(taskflow): immutable per-account + board models (fixed-slot, sentinel)"`
 
 ---
@@ -456,21 +460,64 @@ data class CardMoveRequested(val cardId: CardId, val from: ColumnId, val to: Col
 data class AddCard(val columnId: ColumnId, val cardId: CardId, val title: String, val description: String, val opId: OpId, val now: Instant) : Action, Undoable
 data class EditCard(val cardId: CardId, val title: String, val description: String, val opId: OpId, val now: Instant) : Action, Undoable
 data class DeleteCard(val cardId: CardId, val opId: OpId) : Action, Undoable
-data class CardOpSucceeded(val opId: OpId) : Action
-data class CardOpFailed(val opId: OpId, val error: String, val inverse: InverseOp) : Action
-sealed interface InverseOp { /* MoveBack / DeleteAdded / RestoreEdited(prev) / ReAddDeleted(card,col,idx) */ }
+// carry cardId so syncReducer can clear SyncModel.inFlight (a Set<CardId>)
+data class CardOpSucceeded(val opId: OpId, val cardId: CardId) : Action
+data class CardOpFailed(val opId: OpId, val cardId: CardId, val error: String, val inverse: InverseOp) : Action
+data class RetryOp(val opId: OpId) : Action     // re-pushes the still-queued op (SyncEngine resolves it)
+sealed interface InverseOp {
+    data class MoveBack(val cardId: CardId, val to: ColumnId, val index: Int) : InverseOp
+    data class DeleteAdded(val cardId: CardId) : InverseOp
+    data class RestoreEdited(val prev: Card) : InverseOp
+    data class ReAddDeleted(val card: Card, val column: ColumnId, val index: Int) : InverseOp
+}
 // bot (server-truth; NOT undoable, no revert)
 data class BotMovedCard(val cardId: CardId, val to: ColumnId, val toIndex: Int) : Action
 data class BotAddedCard(val columnId: ColumnId, val card: Card) : Action
-// board lifecycle / nav / undo / filter / columns / auth / settings / profile / activity — as design §4–§5
+// board lifecycle
 data object BoardClosed : Action
 data class BoardRestored(val board: Board) : Action
 data class StartCreateCard(val columnId: ColumnId) : Action
 data object CancelCreateCard : Action
 data class AddColumn(val id: ColumnId, val title: String) : Action
-// ... (Navigate, OpenCard, CloseCard, Load*Requested/Succeeded/Failed, CreateBoard,
-//      Undo, Redo, SetFilter*, EditProfile, StartLogin, LoginRequested, AccountLoggedIn,
-//      LoginFailed, SwitchAccount, LogoutAccount, SetTheme/Latency/FailureRate/BotEnabled, RecordActivity)
+data class CreateBoard(val boardId: BoardId, val name: String, val now: Instant) : Action
+// nav
+data class Navigate(val route: Route) : Action
+data class OpenCard(val cardId: CardId) : Action
+data object CloseCard : Action
+// undo / filter
+data object Undo : Action
+data object Redo : Action
+data class SetFilterQuery(val query: String) : Action
+data class SetFilterAssignee(val accountId: AccountId?) : Action
+data class ToggleFilterLabel(val labelId: LabelId) : Action
+// board/account loads (per-account)
+data class LoadBoardRequested(val boardId: BoardId) : Action
+data class LoadBoardSucceeded(val board: Board) : Action
+data class LoadBoardFailed(val boardId: BoardId, val error: String) : Action
+data object LoadBoardListRequested : Action
+data class LoadBoardListSucceeded(val summaries: PersistentList<BoardSummary>) : Action
+data class LoadBoardListFailed(val error: String) : Action
+// sync (per-account) — folded into SyncModel by syncReducer
+data class SyncStatusChanged(val online: Boolean, val pendingCount: Int, val inFlight: PersistentSet<CardId>, val lastSyncedAt: Instant?, val lastError: String?) : Action
+data object Refresh : Action
+// profile / activity (per-account)
+data class EditProfile(val displayName: String, val email: String, val avatarUrl: String, val bio: String?) : Action
+data class RecordActivity(val entry: ActivityEntry) : Action
+// auth / accounts / settings (root)
+data class StartLogin(val mode: AuthMode) : Action
+data object LoginRequested : Action
+data class AccountLoggedIn(val summary: AccountSummary) : Action   // (Succeeded-equivalent; documented deviation)
+data class LoginFailed(val error: String) : Action
+data object LoadAccountsRequested : Action
+data class LoadAccountsSucceeded(val accounts: PersistentList<AccountSummary>, val activeAccountId: AccountId?) : Action
+data class LoadAccountsFailed(val error: String) : Action
+data class SwitchAccount(val accountId: AccountId) : Action
+data class LogoutAccount(val accountId: AccountId) : Action
+data class SetTheme(val theme: Theme) : Action
+data class SetLatency(val minMs: Int, val maxMs: Int) : Action
+data class SetFailureRate(val rate: Float) : Action
+data class SetBotEnabled(val enabled: Boolean) : Action
+data class SetOnline(val online: Boolean) : Action               // writes AppSettingsModel.fakeService.online (root)
 ```
 
 - [ ] **Step 4: run PASS. Commit.** `git commit -m "feat(taskflow): action catalog (OpId, InverseOp, bot+lifecycle actions)"`
@@ -483,15 +530,15 @@ data class AddColumn(val id: ColumnId, val title: String) : Action
 
 ### Task 8: Root reducers — as v1 Task 7 (accounts/settings/auth), `Persistent*` collections. TDD; commit.
 
-### Task 9: Account reducers — nav (incl `composing` via `StartCreateCard`/`CancelCreateCard`/`Navigate` clears it), session, boardList (+ `BoardSummary` maintenance on `LoadBoardListSucceeded`/`CreateBoard`), collaborators. TDD; commit.
+### Task 9: Account reducers — nav (incl `composing` via `StartCreateCard`/`CancelCreateCard`/`Navigate` clears it), session (id+bio; `EditProfile`), boardList (counts cached from `LoadBoardListSucceeded`; `CreateBoard` appends — **no `Clock.now()`/recompute in the reducer**; open-board counts are selector-derived), collaborators (`EditProfile` updates self). TDD; commit.
 
 ### Task 10: Board reducers — the core
 
 **Files:** `reducer/BoardReducers.kt`; Test `commonTest/.../reducer/BoardReducersTest.kt`
 
-- [ ] **Step 1: Failing tests:** (a) move updates exactly two columns and is **integrity-preserving** (remove from ALL columns then insert once; stale `from` can't orphan); (b) `boardReducer(BoardModel(null), LoadBoardSucceeded(board))` loads; `BoardClosed` resets to `BoardModel(null)`; (c) `CardOpFailed` applies its `InverseOp` (move-back / delete-added / restore-edited / re-add-deleted) — **not** a whole-board snapshot; (d) `BotMovedCard` mutates the board like a move; (e) integrity invariant `cards.keys == ∪ column.cardIds`, no dups, after each op; (f) `undoReducer`/`pushUndo` stacks (push present, restore past, cap 15 drops oldest, redo, empty no-op); (g) `BoardRestored` replaces the board; (h) `syncReducer` add/remove by `OpId`; add/edit/delete each get an inFlight op id (consistent with move).
+- [ ] **Step 1: Failing tests:** (a) move updates exactly two columns and is **integrity-preserving** (remove from ALL columns then insert once; stale `from` can't orphan); (b) `boardReducer(BoardModel(null), LoadBoardSucceeded(board))` loads; `BoardClosed` resets to `BoardModel(null)`; (c) `CardOpFailed` applies its `InverseOp` (move-back / delete-added / restore-edited / re-add-deleted) — **not** a whole-board snapshot; (d) `BotMovedCard` mutates the board like a move; (e) integrity invariant `cards.keys == ∪ column.cardIds`, no dups, after each op; (f) `undoReducer`/`pushUndo` stacks (push present, restore past, cap 15 drops oldest, redo, empty no-op); (g) `BoardRestored` replaces the board; (h) `syncReducer` keys `inFlight` by **`CardId`**: add the card on every `*Requested`/`AddCard`/`EditCard`/`DeleteCard`, remove on `CardOpSucceeded`/`CardOpFailed` (both carry `cardId`); `SyncStatusChanged` folds online/pendingCount/lastSyncedAt/lastError.
 
-- [ ] **Step 2: run FAIL. Step 3: implement** `boardReducer(state: BoardModel, action): BoardModel` operating on `state.board` (null = NotLoaded), with integrity-preserving `moveCard` (remove id from every column, insert once at clamped index), `addCard` using the action's pre-minted `CardId`+`now` (no `cards.size`), `editCard`, `deleteCard`, `applyInverse(InverseOp)`, `BotMovedCard`/`BotAddedCard` (same paths, no undo/sync), `LoadBoardSucceeded`, `BoardClosed -> BoardModel(null)`, `BoardRestored`. Plus `filterReducer`, `syncReducer` (OpId set add on every `*Requested`/`AddCard`/`EditCard`/`DeleteCard`, remove on `CardOpSucceeded`/`Failed`), `activityReducer`, and undo helpers `pushUndo(model, snapshot)` + `undoReducer(model, action, present): UndoResult(model, restored: Board?)`.
+- [ ] **Step 2: run FAIL. Step 3: implement** `boardReducer(state: BoardModel, action): BoardModel` operating on `state.board` (null = NotLoaded), with integrity-preserving `moveCard` (remove id from every column, insert once at clamped index), `addCard` using the action's pre-minted `CardId`+`now` (no `cards.size`), `editCard`, `deleteCard`, `applyInverse(InverseOp)`, `BotMovedCard`/`BotAddedCard` (same paths, no undo/sync), `LoadBoardSucceeded`, `BoardClosed -> BoardModel(null)`, `BoardRestored`. Plus `filterReducer`, `syncReducer` (**`CardId`**-keyed `inFlight` add/remove + `SyncStatusChanged` fold), `activityReducer`, and undo helpers `pushUndo(model, snapshot)` + `undoReducer(model, action, present): UndoResult(model, restored: Board?)`.
 - [ ] **Step 4: run PASS. Commit.** `git commit -m "feat(taskflow): board reducers (integrity moves, inverse-op revert, undo, bot, sentinel)"`
 
 ---
@@ -552,7 +599,7 @@ data class AddColumn(val id: ColumnId, val title: String) : Action
 
 - [ ] **Step 2: run FAIL. Step 3: implement** with `middleware<ModelState> { store, next, action -> }`. On each card mutation: compute the `InverseOp` from current state, `next(action)` (optimistic store update), then `scope.launch { syncRepo.<mutate>(...) }` — `SyncRepository` writes LocalStore + enqueues (instant), and the `SyncEngine`'s `Rejected` callback dispatches `CardOpFailed(opId, reason, inverse)`. Map `SyncStatus` → dispatch `SyncStatusChanged(...)`. On `Load*Requested` → `local.load*` (instant) + dispatch succeeded; on `Refresh`/online-toggle → `engine.kick()`. **Guard:** drop late dispatches if the board was left (sentinel / boardId mismatch). **Step 4: run PASS. Commit.** `git commit -m "feat(taskflow): effects middleware over SyncRepository (local-first, inverse on reject)"`
 
-> Note: add `SyncStatusChanged(online, pendingCount, inFlight, lastSyncedAt, lastError)`, `Refresh`, and `SetOnline(Boolean)` to the action catalog (Task 7) and a `syncReducer` branch (Task 10) that folds them into `SyncModel`. `SetOnline` also writes `AppSettingsModel.fakeService.online` (root) via the Settings screen.
+> Note: `SyncStatusChanged`/`Refresh`/`SetOnline` are already in the Task 7 catalog and the Task 10 `syncReducer`. `SetOnline` writes `AppSettingsModel.fakeService.online` (root) via the Settings screen; the `SyncEngine` emits `SyncStatusChanged` into the account store.
 
 ### Task 16: UndoMiddleware + ActivityLogger
 
@@ -578,14 +625,16 @@ data class AddColumn(val id: ColumnId, val title: String) : Action
 - [ ] **Step 3: implement** with the routing DSL:
 
 ```kotlin
-fun createAppStore(): Store<ModelState> = createConcurrentModelStore(
-    enhancer = applyMiddleware(activityNoop /* root has no board */),
-) {
-    model(AccountsModel())   { on<AccountLoggedIn> { s, a -> accountsReducer(s, a) }; on<SwitchAccount> { s,a -> accountsReducer(s,a) }; on<LogoutAccount> { s,a -> accountsReducer(s,a) } }
-    model(AppSettingsModel()){ on<SetTheme> { s,a -> appSettingsReducer(s,a) }; on<SetLatency>{s,a->appSettingsReducer(s,a)}; on<SetFailureRate>{s,a->appSettingsReducer(s,a)}; on<SetBotEnabled>{s,a->appSettingsReducer(s,a)} }
-    model(AuthFlowModel())   { on<StartLogin>{s,a->authFlowReducer(s,a)}; on<LoginRequested>{s,_->authFlowReducer(s,LoginRequested)}; on<AccountLoggedIn>{s,a->authFlowReducer(s,a)}; on<LoginFailed>{s,a->authFlowReducer(s,a)} }
-}
+fun createAppStore(notificationContext: CoroutineContext = mainNotificationContext()): Store<ModelState> =
+    createConcurrentModelStore(
+        notificationContext = notificationContext,   // main-thread fan-out (Rule E); default Inline is wrong
+    ) {
+        model(AccountsModel())   { on<AccountLoggedIn> { s, a -> accountsReducer(s, a) }; on<SwitchAccount> { s,a -> accountsReducer(s,a) }; on<LogoutAccount> { s,a -> accountsReducer(s,a) }; on<LoadAccountsSucceeded> { s,a -> accountsReducer(s,a) }; on<EditProfile> { s,a -> accountsReducer(s,a) } }
+        model(AppSettingsModel()){ on<SetTheme> { s,a -> appSettingsReducer(s,a) }; on<SetLatency>{s,a->appSettingsReducer(s,a)}; on<SetFailureRate>{s,a->appSettingsReducer(s,a)}; on<SetBotEnabled>{s,a->appSettingsReducer(s,a)}; on<SetOnline>{s,a->appSettingsReducer(s,a)} }
+        model(AuthFlowModel())   { on<StartLogin>{s,a->authFlowReducer(s,a)}; on<LoginRequested>{s,_->authFlowReducer(s,LoginRequested)}; on<AccountLoggedIn>{s,a->authFlowReducer(s,a)}; on<LoginFailed>{s,a->authFlowReducer(s,a)} }
+    }
 ```
+> `createConcurrentModelStore` forwards `notificationContext` (per the bundle README). `mainNotificationContext()` is an `expect/actual` returning a main-dispatcher `CoroutineContext` (Dispatchers.Main on android/ios/jvm; the wasm main context). Tests pass an immediate/`UnconfinedTestDispatcher` context.
 `StoreExt.kt`: **`ModelState.models` is `@PublishedApi internal` — do NOT use it.** Only `inline fun <reified M : Any> ModelState.getModel(): M = get(M::class)` (public `get`; fixed slots mean it never throws). No nullable `peek`. **Step 4: PASS. Commit.**
 
 ### Task 19: AccountStore + AccountRegistry
@@ -593,7 +642,15 @@ fun createAppStore(): Store<ModelState> = createConcurrentModelStore(
 **Files:** `store/AccountStore.kt`, `store/AccountRegistry.kt`; Test `commonTest/.../store/AccountRegistryTest.kt`
 
 - [ ] **Step 1: Failing test (isolation + remove):** two accounts; `Navigate(Settings)` on A doesn't change B's `NavModel`; `registry.remove(A)` leaves B; the removed account's bot/effects scope is cancelled. **Step 2: run FAIL.**
-- [ ] **Step 3: implement.** `createAccountStore(detail, rootStore, localStore, remoteApi): AccountStoreHandle` — builds a per-account `CoroutineScope`; a `SyncEngine` + `SyncRepository(localStore, FakeRemoteApi(server, { rootStore.getModel<AppSettingsModel>().fakeService }, rng), scope)` (the **`online`/latency/failure** all read from root `AppSettingsModel`); and `createConcurrentModelStore(enhancer = applyMiddleware(activityLogger, undoMiddleware{boardOf(store)}, effectsMiddleware(syncRepo, scope))) { model(SessionModel(detail.toProfile())){…}; model(NavModel()){ on<Navigate>{…}; on<OpenCard>{…}; on<CloseCard>{…}; on<StartCreateCard>{…}; on<CancelCreateCard>{…} }; model(BoardListModel()){…}; model(CollaboratorsModel()){…}; model(BoardModel()){ on<LoadBoardSucceeded>{…}; on<CardMoveRequested>{…}; on<AddCard>{…}; on<EditCard>{…}; on<DeleteCard>{…}; on<CardOpFailed>{…}; on<BotMovedCard>{…}; on<BotAddedCard>{…}; on<BoardClosed>{…}; on<BoardRestored>{…} }; model(FilterModel()){…}; model(UndoModel()){…}; model(SyncModel()){…}; model(ActivityModel()){…} }`. `AccountRegistry` wraps `StoreRegistry<AccountId, ModelState>`: `getOrCreate(id, detail) { handle }`, `get(id)`, `remove(id) { handle.scope.cancel(); registry.remove(id) }`, `startBot(id)`/`stopBot(id)`. **Step 4: PASS. Commit.** `git commit -m "feat(taskflow): account store (fixed-slot routing DSL) + AccountRegistry isolation"`
+- [ ] **Step 3: implement.** `createAccountStore(detail: AccountDetail, rootStore, localStore, remoteApi): AccountStoreHandle` — builds a per-account `CoroutineScope` (whose store-dispatch path is on `Dispatchers.Main`; DB/net on IO/Default + `withContext(Main)` before dispatch — Rule E); a `SyncEngine` + `SyncRepository(localStore, FakeRemoteApi(server, { rootStore.getModel<AppSettingsModel>().fakeService }, rng), scope)` (online/latency/failure all read from root `AppSettingsModel`); and
+  `createConcurrentModelStore(notificationContext = mainNotificationContext(), enhancer = applyMiddleware(activityLogger, undoMiddleware{boardOf(store)}, effectsMiddleware(syncRepo, scope))) {`
+  `model(SessionModel(detail.accountId, detail.bio)){ on<EditProfile>{…} };`  ← id + bio only; identity lives in Collaborators
+  `model(NavModel()){ on<Navigate>{…}; on<OpenCard>{…}; on<CloseCard>{…}; on<StartCreateCard>{…}; on<CancelCreateCard>{…} };`
+  `model(BoardListModel()){ on<LoadBoardListSucceeded>{…}; on<CreateBoard>{…} };`
+  `model(CollaboratorsModel(seedCollaborators(detail))){ on<EditProfile>{…} };`  ← seeded with self + bot + assignees; display source
+  `model(BoardModel()){ on<LoadBoardSucceeded>; on<CardMoveRequested>; on<AddCard>; on<EditCard>; on<DeleteCard>; on<CardOpFailed>; on<BotMovedCard>; on<BotAddedCard>; on<BoardClosed>; on<BoardRestored> };`
+  `model(FilterModel()){…}; model(UndoModel()){…}; model(SyncModel()){ on<CardMoveRequested>; on<AddCard>; on<EditCard>; on<DeleteCard>; on<CardOpSucceeded>; on<CardOpFailed>; on<SyncStatusChanged> }; model(ActivityModel()){ on<RecordActivity>{…} } }`.
+  **`AccountRegistry`** wraps `StoreRegistry<AccountId, ModelState>` **plus a side `MutableMap<AccountId, AccountStoreHandle>`** (the registry stores only `Store<ModelState>`; scope/engine/bot live in the handle): `getOrCreate(id, detail)` → `registry.getOrCreate(id) { handle.store }` + record the handle; `get(id)` → `registry.get(id)`; `remove(id)` → `handles[id]?.scope?.cancel(); handles.remove(id); registry.remove(id)`; `startBot(id)`/`stopBot(id)` toggle the handle's bot `Job`. **Step 4: PASS. Commit.** `git commit -m "feat(taskflow): account store (fixed-slot routing DSL, main-thread notify) + AccountRegistry side-map isolation"`
 
 ---
 
@@ -613,7 +670,7 @@ fun createAppStore(): Store<ModelState> = createConcurrentModelStore(
 
 ### Task 21: Image loader + Avatar + LabelChip
 - [ ] `ui/image/ImageLoader.kt` — `setSingletonImageLoaderFactory { ImageLoader.Builder(ctx).components { add(KtorNetworkFetcherFactory(httpClient(ktorEngineOrNull()))) }.build() }`, with a fallback `ImageLoader` for tests (no network). Wire **bundled `composeResources` fallback** on error/empty.
-- [ ] `Avatar` (Coil `SubcomposeAsyncImage`, deterministic monogram fallback, sizes, presence dot) + `LabelChip` (semantic colors). Verify compile. Commit.
+- [ ] `Avatar` (Coil **`AsyncImage`** with explicit fixed size + deterministic monogram fallback (`error`/`placeholder`), presence dot — NOT `SubcomposeAsyncImage`, which is heavier for fixed-dim list items, Rule F) + `LabelChip` (semantic colors). `contentDescription` on both (a11y). Verify compile. Commit.
 
 ### Task 22: KanbanCard + ColumnHeader(WIP) — as v1 Task 19 (omit dead "dragging" state). Commit.
 ### Task 23: FilterBar + MoveToGroup + FabMenu — Expressive `ButtonGroup`/`FloatingActionButtonMenu` (fallbacks documented). Commit.
@@ -629,7 +686,7 @@ fun createAppStore(): Store<ModelState> = createConcurrentModelStore(
 - "Add column" → `AddColumn`.
 - Assignee/creator/bot avatars resolve from `CollaboratorsModel` (not the root store).
 - Empty states for board-list and empty board/columns.
-- Board screen: per-column `fieldStateOf(BoardModel::class){ it.board?.columns?.get(i)?.cardIds ?: persistentListOf() }`; WIP via `selectorState`; optimistic alpha when the card's op `OpId` ∈ `SyncModel.inFlight`; `SyncToast` Retry re-dispatches the original request (new `OpId`); a **`SyncIndicator`** in the header binds `selectorState{ SyncModel }` showing online/offline + `pendingCount` + a Refresh action (`dispatch(Refresh)`).
+- Board screen: each column composable wrapped in **`key(colId)`**, binding its own slice **by ColumnId** — `fieldStateOf(BoardModel::class){ it.board?.columnById(colId)?.cardIds ?: persistentListOf() }` (NOT by index — Rule C); WIP via `selectorState{ … }` returning an `Int`/value-equal type; optimistic alpha when **`cardId ∈ SyncModel.inFlight`** (a `Set<CardId>`); `SyncToast` Retry → `dispatch(RetryOp(opId))`; a **`SyncIndicator`** in the header binds `fieldStateOf(SyncModel::class){ it }` (NOT `selectorState{ SyncModel }` — that returns the class ref) showing online/offline + `pendingCount` + `dispatch(Refresh)`. Filtered/visible lists computed in `selectorState`, never in the composable body.
 - Settings screen: add an **Offline toggle** (`Switch` → `dispatch(SetOnline(false/true))`, writing `AppSettingsModel.fakeService.online`) alongside latency/failure/bot — flip offline, make edits, flip online, watch the queue drain.
 
 Each task: build the screen → verify desktop render → commit.
@@ -670,7 +727,7 @@ Each task: build the screen → verify desktop render → commit.
 
 ### Task 37: Bundled image fallbacks + README — bundled **PNG/JPEG** (no SVG) in `composeResources/files/{avatars,cards}/`; wire Coil error/empty → bundled; README maps each bundle API → usage, run commands per target, the M3-Expressive path taken, the persistence-vs-sync split, and the web IndexedDB-durability caveat. Commit.
 
-### Task 38: iOS host project — finalize `iosApp/` Xcode project + Info.plist + `UIViewControllerRepresentable` + the compose-resources copy Run Script (per Task 3 Step 7). Apply `WindowInsets.safeDrawing` in the app shell and `imePadding()` on `MarkdownEditor` (iOS + Android). Verify `linkDebugFrameworkIosSimulatorArm64` (environmental). Commit.
+### Task 38: iOS host + insets — commit the Swift host sources + `iosApp/README.md` (per Task 3 Step 7; embedAndSign auto-syncs resources, NO copy script; full `.xcodeproj` = manual follow-up). Apply `WindowInsets.safeDrawing` at the **app-shell/Scaffold root** (not per-screen, to avoid double-insets with the nav rail/bar) and `imePadding()` on the **CardDetail overlay** (where the keyboard occludes) + `MarkdownEditor` — on **iOS and Android**. Gate: `./gradlew :examples:taskflow:composeApp:linkDebugFrameworkIosSimulatorArm64` + a `swiftc` smoke compile of the host against the framework (Mac/CI; environmental). Commit.
 
 ### Task 39: Full build + detekt gate
 - [ ] `./gradlew detektAll` (hook also auto-corrects; re-stage if rewritten; never `--no-verify`).

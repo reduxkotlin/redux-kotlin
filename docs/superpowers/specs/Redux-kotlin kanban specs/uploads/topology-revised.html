@@ -1,0 +1,49 @@
+<h2>Design §1+§2 (revised) — accounts make A and B compose</h2>
+<p class="subtitle">Multi-account is the legitimate registry use. So: <b>B isolates accounts</b> (one store per logged-in account), and <b>A organizes each account's screens</b> (single store + model inject/eject). Each API now earns its place honestly — no contrived cameo.</p>
+
+<div class="mockup">
+  <div class="mockup-header">Two-layer topology</div>
+  <div class="mockup-body" style="font-size:12px">
+    <div class="mock-sidebar" style="border:2px solid #2980b9">
+      <b>Root AppStore</b> — one ConcurrentModelStore (app-global, always present)<br>
+      <span class="placeholder" style="display:inline-block;margin:4px 4px 0 0">AccountsModel · logged-in accounts + <b>activeAccountId</b></span>
+      <span class="placeholder" style="display:inline-block;margin:4px 0 0 0">AppSettingsModel · theme, language, + fake-service knobs (latency, failure %, bot on/off)</span>
+      <span class="placeholder" style="display:inline-block;margin:4px 0 0 0">AuthFlowModel · login form + loading (transient)</span>
+    </div>
+
+    <div style="text-align:center;margin:6px 0">▼ <b>AccountRegistry</b> = StoreRegistry&lt;AccountId, ModelState&gt; — one isolated store per account ▼</div>
+
+    <div style="display:flex;gap:8px">
+      <div class="mock-content" style="flex:1;border:2px solid #27ae60">
+        <b>Account store: "ann" (active)</b><br>
+        <span class="placeholder" style="display:block;margin-top:4px">NavModel · this account's current screen (remembered!)</span>
+        <span class="placeholder" style="display:block;margin-top:4px">SessionModel · profile</span>
+        <span class="placeholder" style="display:block;margin-top:4px">BoardListModel · ann's boards</span>
+        <span class="placeholder" style="display:block;margin-top:4px"><i>injected on open:</i> Board / Filter / Undo / Sync</span>
+        <span class="placeholder" style="display:block;margin-top:4px">ActivityModel</span>
+      </div>
+      <div class="mock-content" style="flex:1;border:2px dashed #95a5a6">
+        <b>Account store: "raj"</b> <span class="label">fully isolated</span><br>
+        <span class="placeholder" style="display:block;margin-top:4px">own Nav (on Settings) · own boards · own undo</span>
+        <span class="placeholder" style="display:block;margin-top:18px">switch accounts → each remembers its screen, like browser profiles</span>
+        <span class="placeholder" style="display:block;margin-top:8px">logout → dispose this store from registry; ann untouched</span>
+      </div>
+    </div>
+    <p class="label" style="margin-top:8px">Within an account: single store + dynamic model inject/eject bounds memory (A). Across accounts: registry gives true isolation + lifecycle (B). Switching = set <code>activeAccountId</code>; Compose binds <code>registry.store(activeAccountId)</code> via <code>rememberStableStore</code>.</p>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Screen map (all Compose Multiplatform, nav = Redux state)</span>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;font-size:12px">
+    <span class="placeholder">🔐 Login / Add account<br><span class="label">root: AuthFlow</span></span>
+    <span class="placeholder">👥 Account switcher<br><span class="label">root: Accounts</span></span>
+    <span class="placeholder">🗂 Board list<br><span class="label">account: BoardList</span></span>
+    <span class="placeholder">📋 Board (kanban)<br><span class="label">account: Board+Filter+Undo</span></span>
+    <span class="placeholder">🔎 Card detail<br><span class="label">account: Nav.openCardId</span></span>
+    <span class="placeholder">👤 Profile / User<br><span class="label">account: Session + logout</span></span>
+    <span class="placeholder">⚙️ Settings<br><span class="label">root: AppSettings + fake-service knobs</span></span>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:12px"><b>Auth is fake</b>: pick from a few seeded users (no real password); real/local auth can slot in behind the same actions later. <b>Settings</b> tunes the fake backend live (crank latency to 3s, set failure to 50%, pause the bot) — which doubles as a great way to <em>see</em> the loading/error/undo paths on demand.</p>

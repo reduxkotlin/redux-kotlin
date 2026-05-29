@@ -1,0 +1,71 @@
+<h2>Hi-fi — Login · Account switcher · Profile · Settings</h2>
+<p class="subtitle">The multi-account / isolation surfaces + the live fake-service knobs. Fake auth = pick a seeded user (no password); real auth slots behind the same actions later.</p>
+
+<div class="split">
+  <!-- LOGIN -->
+  <div class="mockup">
+    <div class="mockup-header">Login / Add account (root: AuthFlowModel)</div>
+    <div class="mockup-body" style="background:linear-gradient(160deg,#e7e0ff,#f5f3fb);border-radius:18px;padding:24px 18px;font-family:system-ui;min-height:300px;display:flex;flex-direction:column;justify-content:center">
+      <div style="font:800 26px system-ui;color:#21005d;text-align:center;letter-spacing:-.4px">TaskFlow</div>
+      <div style="font:13px system-ui;color:#5b528a;text-align:center;margin-top:4px">Sign in to continue</div>
+      <div style="background:#fff;border-radius:16px;padding:14px;margin-top:20px;box-shadow:0 4px 16px rgba(33,0,93,.10)">
+        <div style="font:600 12px system-ui;color:#6b6680;margin-bottom:8px">Pick a demo account</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px;background:#f4f1fb"><span style="width:30px;height:30px;border-radius:50%;background:#7c5cff;color:#fff;display:flex;align-items:center;justify-content:center;font:700 13px system-ui">A</span><div style="font:600 13px system-ui;color:#1c1b22">ann@taskflow.dev</div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px;margin-top:6px"><span style="width:30px;height:30px;border-radius:50%;background:#ff8a3d;color:#fff;display:flex;align-items:center;justify-content:center;font:700 13px system-ui">R</span><div style="font:600 13px system-ui;color:#1c1b22">raj@taskflow.dev</div></div>
+      </div>
+      <div style="background:#4a3fb8;color:#fff;border-radius:18px;padding:11px;text-align:center;font:700 14px system-ui;margin-top:16px">Continue ⟳</div>
+      <span class="label" style="color:#5b528a;text-align:center;margin-top:8px;display:block">Continue → inFlight (fake latency) → AccountLoggedIn → create account store in registry</span>
+    </div>
+  </div>
+
+  <!-- ACCOUNT SWITCHER -->
+  <div class="mockup">
+    <div class="mockup-header">Account switcher (root: AccountsModel)</div>
+    <div class="mockup-body" style="background:#fff;border-radius:18px;padding:16px;font-family:system-ui">
+      <div style="font:700 16px system-ui;color:#1c1b22">Switch account</div>
+      <div style="margin-top:12px">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:#e7e0ff;border:2px solid #4a3fb8"><span style="width:34px;height:34px;border-radius:50%;background:#7c5cff;color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px system-ui">A</span><div style="flex:1"><div style="font:600 14px system-ui;color:#1c1b22">ann</div><div style="font:11px system-ui;color:#5b528a">active · on Board "Sprint 42"</div></div>✓</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;margin-top:8px"><span style="width:34px;height:34px;border-radius:50%;background:#ff8a3d;color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px system-ui">R</span><div style="flex:1"><div style="font:600 14px system-ui;color:#1c1b22">raj</div><div style="font:11px system-ui;color:#8b8698">on Settings · 3 undo steps kept</div></div></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;margin-top:8px;color:#4a3fb8;font:600 13px system-ui"><span style="width:34px;height:34px;border-radius:50%;border:2px dashed #cabfe6;display:flex;align-items:center;justify-content:center">＋</span>Add account</div>
+      </div>
+      <span class="label" style="color:#5b528a;margin-top:10px;display:block">switch = set activeAccountId → Compose rebinds registry.store(id); each account keeps its own Nav + undo (true isolation). Logout disposes only that store.</span>
+    </div>
+  </div>
+</div>
+
+<div class="split" style="margin-top:12px">
+  <!-- PROFILE -->
+  <div class="mockup">
+    <div class="mockup-header">Profile / User (account: SessionModel)</div>
+    <div class="mockup-body" style="background:#f5f3fb;border-radius:18px;padding:0;overflow:hidden;font-family:system-ui">
+      <div style="background:#e7e0ff;height:70px"></div>
+      <div style="padding:0 16px 16px;margin-top:-26px">
+        <div style="width:56px;height:56px;border-radius:20px;background:#7c5cff;color:#fff;display:flex;align-items:center;justify-content:center;font:800 22px system-ui;border:3px solid #f5f3fb">A</div>
+        <div style="font:800 19px system-ui;color:#1c1b22;margin-top:8px">Ann Patterson</div>
+        <div style="font:13px system-ui;color:#6b6680">ann@taskflow.dev</div>
+        <div style="background:#fff;border-radius:14px;padding:12px;margin-top:14px;font:13px system-ui;color:#33303d">
+          <div style="display:flex;justify-content:space-between;padding:6px 0"><span style="color:#6b6680">Display name</span><span style="font-weight:600">Ann Patterson ✎</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid #f0edf8"><span style="color:#6b6680">Boards</span><span style="font-weight:600">2</span></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid #f0edf8"><span style="color:#6b6680">Cards created</span><span style="font-weight:600">18</span></div>
+        </div>
+        <div style="border:1.5px solid #b3261e;color:#b3261e;border-radius:18px;padding:9px;text-align:center;font:700 13px system-ui;margin-top:14px">Log out</div>
+        <span class="label" style="color:#5b528a;margin-top:8px;display:block">edits dispatch to this account's store only; Log out disposes it from registry</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="mockup">
+    <div class="mockup-header">Settings (root: AppSettingsModel)</div>
+    <div class="mockup-body" style="background:#fff;border-radius:18px;padding:16px;font-family:system-ui">
+      <div style="font:800 18px system-ui;color:#1c1b22">Settings</div>
+      <div style="font:700 11px system-ui;color:#8b8698;letter-spacing:.5px;margin-top:14px">APPEARANCE</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;font:13px system-ui;color:#33303d">Theme <span style="display:flex;gap:4px"><span style="background:#efeafc;color:#4a3fb8;border-radius:12px 6px 6px 12px;padding:4px 10px;font:600 11px system-ui">System</span><span style="background:#4a3fb8;color:#fff;padding:4px 10px;font:600 11px system-ui">Light</span><span style="background:#efeafc;color:#4a3fb8;border-radius:6px 12px 12px 6px;padding:4px 10px;font:600 11px system-ui">Dark</span></span></div>
+      <div style="font:700 11px system-ui;color:#8b8698;letter-spacing:.5px;margin-top:14px">FAKE BACKEND (demo knobs)</div>
+      <div style="padding:8px 0;font:13px system-ui;color:#33303d">Latency <span style="color:#8b8698">300–800ms</span><div style="height:5px;background:#eee;border-radius:4px;margin-top:6px"><div style="width:35%;height:5px;background:#4a3fb8;border-radius:4px"></div></div></div>
+      <div style="padding:8px 0;font:13px system-ui;color:#33303d">Failure rate <span style="color:#8b8698">10%</span><div style="height:5px;background:#eee;border-radius:4px;margin-top:6px"><div style="width:10%;height:5px;background:#b3261e;border-radius:4px"></div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;font:13px system-ui;color:#33303d">Bot collaborator <span style="width:42px;height:24px;background:#4a3fb8;border-radius:14px;position:relative"><span style="position:absolute;right:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%"></span></span></div>
+      <span class="label" style="color:#5b528a;margin-top:8px;display:block">these knobs mutate AppSettingsModel → fake backend reads them live → crank latency/failure to SEE loading/error/undo on demand</span>
+    </div>
+  </div>
+</div>

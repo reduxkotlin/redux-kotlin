@@ -1,0 +1,58 @@
+<h2>Design §1 (revisited) — store philosophy</h2>
+<p class="subtitle">You're right that this is unsettled. I researched Redux core guidance, mobile (ReKotlin/ReSwift), and micro-frontend practice. Three coherent topologies below, with the evidence. Your "broadcast to all stores" idea is option C — analyzed honestly.</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header" style="background:#27ae60;color:#fff">A — Single store + dynamic model injection ★ recommended default</div>
+    <div class="mockup-body" style="font-size:12px">
+      <div class="mock-sidebar"><b>One ConcurrentModelStore</b><br>
+        <span class="placeholder" style="display:block;margin-top:4px">always: Nav · Session · BoardList</span>
+        <span class="placeholder" style="display:block;margin-top:4px">enter board → <b>inject</b> Board/Filter/Undo/Sync models (keyed by id)</span>
+        <span class="placeholder" style="display:block;margin-top:4px">leave board → <b>eject</b> them → bounded memory</span>
+      </div>
+      <p class="label" style="margin-top:6px">Mechanism: <code>ModelState.with(...)</code> + <code>combineModelReducers</code> + <code>store.replaceReducer</code> (verified to exist). This is redux-kotlin's version of Redux's <code>injectReducer</code> code-splitting pattern.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul style="font-size:12px"><li>One action log, one subscribe — easiest to reason about</li><li><b>Directly fixes your memory con</b>: eject offscreen state</li><li>Redux-canonical &amp; mobile-canonical (ReKotlin = single store)</li><li>No "which store?" mental overhead</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul style="font-size:12px"><li>Under-uses <code>StoreRegistry</code> (a bundle API)</li><li>Inject/eject wiring is a bit advanced</li><li>No first-class model <code>remove</code> yet — rebuild via <code>of(...)</code></li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header" style="background:#2980b9;color:#fff">B — Multi-store via registry, selectively coordinated</div>
+    <div class="mockup-body" style="font-size:12px">
+      <div class="mock-sidebar"><b>Root store</b> + <b>StoreRegistry&lt;BoardId, ModelState&gt;</b><br>
+        <span class="placeholder" style="display:block;margin-top:4px">per-board store created on navigate; disposed on leave</span>
+        <span class="placeholder" style="display:block;margin-top:4px">cross-store = <b>forward specific actions</b> + read-only projection</span>
+        <span class="placeholder" style="display:block;margin-top:4px"><b>not</b> broadcast — explicit, like Microsoft's redux-micro-frontend</span>
+      </div>
+      <p class="label" style="margin-top:6px">Microsoft's production multi-store lib chose <b>selective routing</b> (register "global actions"), read-only cross-store views — explicitly NOT broadcast. That's the proven shape.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul style="font-size:12px"><li>Uses the registry for its real purpose (isolation)</li><li>Per-board undo/filter naturally isolated</li><li>Realistic for independent "documents"</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul style="font-size:12px"><li>"Which store owns this action?" overhead — your stated con</li><li>Cross-store coordination is manual</li><li>No single DevTools/action log across stores</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mockup" style="margin-top:12px">
+  <div class="mockup-header" style="background:#c0392b;color:#fff">C — Multi-store + broadcast every action to all registered stores (your hybrid) — analyzed</div>
+  <div class="mockup-body" style="font-size:13px">
+    <p>Tempting: keep the "every reducer sees every action" simplicity of one store, but physically split. The problem: it <b>inherits the cons of both</b>.</p>
+    <div class="pros-cons">
+      <div class="cons"><h4>Why it backfires</h4><ul style="font-size:13px">
+        <li><b>Kills the only reason to split.</b> Isolation is the payoff of multi-store; broadcasting makes every store process irrelevant actions again — you pay the split cost for none of the benefit.</li>
+        <li><b>Reintroduces ordering coupling</b> across stores (which store's reducer ran first?), the exact thing single-store avoids.</li>
+        <li><b>No major project does this.</b> Microsoft's multi-store lib deliberately chose selective global-action routing over broadcast.</li>
+        <li>Harder to trace cause→effect than EITHER pure approach.</li>
+      </ul></div>
+      <div class="pros"><h4>The legit version of the urge</h4><ul style="font-size:13px">
+        <li>If you want "every part sees every action" → that's <b>option A</b> (single store), and you bound memory with model ejection.</li>
+        <li>If you want isolation → that's <b>option B</b> with <b>selective</b> forwarding, not broadcast.</li>
+        <li>Broadcast is the unhappy middle; skip it.</li>
+      </ul></div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:12px"><b>My take:</b> Make <b>A</b> the sample's primary architecture — it's the correct default, solves your memory concern with model inject/eject, and is the clearest teaching artifact. Then demonstrate <b>B</b> honestly in one contained place where isolation is genuinely wanted (e.g. an independent "scratch" board or a second workspace), with a short ADR explaining when to reach for the registry. That way the flagship sample teaches the <em>decision</em>, exercises the registry truthfully, and never ships the broadcast anti-pattern.</p>
