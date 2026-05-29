@@ -26,4 +26,6 @@ dependencies {
     implementation(libs.kotlinpoet.ksp)
     testImplementation(kotlin("test"))
     testImplementation(libs.kctfork.ksp)
+    // Provides @Reduce/@ReduxInitial on the in-memory compilation classpath (inheritClassPath).
+    testImplementation(project(":redux-kotlin-routing"))
 }
