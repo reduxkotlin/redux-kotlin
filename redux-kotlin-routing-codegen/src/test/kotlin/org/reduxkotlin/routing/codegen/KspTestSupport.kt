@@ -10,6 +10,9 @@ fun compileWithProcessor(moduleName: String?, vararg sources: SourceFile): JvmCo
     val compilation = KotlinCompilation().apply {
         this.sources = sources.toList()
         inheritClassPath = true
+        // Routing runtime is compiled for JVM 17 with inline funs (model/on); the in-memory
+        // compilation must target 17 too, else "Cannot inline bytecode built with JVM target 17".
+        jvmTarget = "17"
         // kctfork 0.12.1: configureKsp{} takes NO useKsp2 arg (KSP2 invoked internally;
         // 0.10+ is KSP2-only). Receiver is KspTool with symbolProcessorProviders + processorOptions.
         configureKsp {
