@@ -24,7 +24,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":redux-kotlin-threadsafe"))
+                api(project(":redux-kotlin-concurrent"))
                 api(project(":redux-kotlin-registry"))
                 api(project(":redux-kotlin-routing"))
                 api(project(":redux-kotlin-multimodel-granular"))

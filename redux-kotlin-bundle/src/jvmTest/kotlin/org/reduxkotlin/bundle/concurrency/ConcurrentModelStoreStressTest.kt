@@ -3,18 +3,18 @@ package org.reduxkotlin.bundle.concurrency
 import org.reduxkotlin.bundle.CounterModel
 import org.reduxkotlin.bundle.Increment
 import org.reduxkotlin.bundle.counterInitial
-import org.reduxkotlin.bundle.createThreadSafeModelStore
+import org.reduxkotlin.bundle.createConcurrentModelStore
 import org.reduxkotlin.bundle.onIncrement
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-/** JVM concurrency stress: verifies the thread-safe model store serializes dispatch correctly. */
-class ThreadSafeModelStoreStressTest {
+/** JVM concurrency stress: verifies the concurrent model store serializes dispatch correctly. */
+class ConcurrentModelStoreStressTest {
     @Test
-    fun concurrent_dispatch_through_thread_safe_wrapper_does_not_lose_writes() {
-        val store = createThreadSafeModelStore {
+    fun concurrent_dispatch_does_not_lose_writes() {
+        val store = createConcurrentModelStore {
             model(counterInitial()) { on<Increment> { s, a -> onIncrement(s, a) } }
         }
         val threads = 8

@@ -2,6 +2,8 @@ package org.reduxkotlin.bundle
 
 import org.reduxkotlin.Reducer
 import org.reduxkotlin.Store
+import org.reduxkotlin.concurrent.ConcurrentStore
+import org.reduxkotlin.concurrent.asConcurrent
 import org.reduxkotlin.createStore
 import org.reduxkotlin.granular.subscribeTo
 import org.reduxkotlin.multimodel.ModelState
@@ -9,8 +11,6 @@ import org.reduxkotlin.multimodel.granular.subscribeToModel
 import org.reduxkotlin.registry.StoreRegistry
 import org.reduxkotlin.routing.RoutingBuilder
 import org.reduxkotlin.routing.createModelStore
-import org.reduxkotlin.threadsafe.ThreadSafeStore
-import org.reduxkotlin.threadsafe.createThreadSafeStore
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -21,7 +21,7 @@ class SurfaceReachableTest {
         // KClass references prove the type symbols are accessible from each module.
         val types = listOf(
             Store::class, // redux-kotlin core
-            ThreadSafeStore::class, // redux-kotlin-threadsafe
+            ConcurrentStore::class, // redux-kotlin-concurrent
             ModelState::class, // redux-kotlin-multimodel
             StoreRegistry::class, // redux-kotlin-registry
             RoutingBuilder::class, // redux-kotlin-routing
@@ -29,7 +29,7 @@ class SurfaceReachableTest {
         // Typed lambdas reference the factory functions so imports resolve + re-exports are proven.
         val fns = listOf<Any>(
             { r: Reducer<Int>, s: Int -> createStore(r, s) },
-            { r: Reducer<Int>, s: Int -> createThreadSafeStore(r, s) },
+            { s: Store<ModelState> -> s.asConcurrent() },
             { b: RoutingBuilder.() -> Unit -> createModelStore(block = b) },
         )
         // Extension function imports for granular modules: resolved via typed lambdas.
