@@ -6,6 +6,14 @@
 // - Show declarations: true
 
 // Library unique name: <org.reduxkotlin:redux-kotlin-routing>
+open annotation class org.reduxkotlin.routing/Reduce : kotlin/Annotation { // org.reduxkotlin.routing/Reduce|null[0]
+    constructor <init>() // org.reduxkotlin.routing/Reduce.<init>|<init>(){}[0]
+}
+
+open annotation class org.reduxkotlin.routing/ReduxInitial : kotlin/Annotation { // org.reduxkotlin.routing/ReduxInitial|null[0]
+    constructor <init>() // org.reduxkotlin.routing/ReduxInitial.<init>|<init>(){}[0]
+}
+
 abstract fun interface org.reduxkotlin.routing/ReduxModule { // org.reduxkotlin.routing/ReduxModule|null[0]
     abstract fun (org.reduxkotlin.routing/RoutingBuilder).contribute() // org.reduxkotlin.routing/ReduxModule.contribute|contribute@org.reduxkotlin.routing.RoutingBuilder(){}[0]
 }

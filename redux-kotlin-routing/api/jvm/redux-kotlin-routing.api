@@ -13,6 +13,12 @@ public abstract interface class org/reduxkotlin/routing/Reads {
 	public abstract fun get (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 }
 
+public abstract interface annotation class org/reduxkotlin/routing/Reduce : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class org/reduxkotlin/routing/ReduxInitial : java/lang/annotation/Annotation {
+}
+
 public abstract interface class org/reduxkotlin/routing/ReduxModule {
 	public abstract fun contribute (Lorg/reduxkotlin/routing/RoutingBuilder;)V
 }
