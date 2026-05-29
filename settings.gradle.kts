@@ -19,6 +19,7 @@ include(
     ":redux-kotlin-registry",
     ":redux-kotlin-granular",
     ":redux-kotlin-multimodel",
+    ":redux-kotlin-routing",
     ":redux-kotlin-compose",
     ":redux-kotlin-multimodel-granular",
     ":redux-kotlin-compose-multimodel",
