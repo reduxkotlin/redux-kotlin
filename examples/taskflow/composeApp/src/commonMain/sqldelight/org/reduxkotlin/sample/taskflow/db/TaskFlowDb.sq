@@ -1,0 +1,406 @@
+import kotlin.Boolean;
+import kotlin.Int;
+import kotlin.time.Instant;
+import org.reduxkotlin.sample.taskflow.model.AccountId;
+import org.reduxkotlin.sample.taskflow.model.BoardId;
+import org.reduxkotlin.sample.taskflow.model.CardId;
+import org.reduxkotlin.sample.taskflow.model.ColumnId;
+import org.reduxkotlin.sample.taskflow.model.LabelId;
+import org.reduxkotlin.sample.taskflow.model.OpId;
+
+-- ============================================================================
+-- TaskFlow durable LocalStore schema (design §13a, field shapes §5).
+-- Normalized: typed value-class ids -> TEXT (column adapters in Adapters.kt);
+-- kotlin.time.Instant -> INTEGER (epoch millis); bools/color -> INTEGER.
+-- Ephemeral (NEVER persisted): UndoModel, in-flight push set, AuthFlowModel,
+-- bot presence — no tables here.
+-- ============================================================================
+
+-- ---------------------------------------------------------------------------
+-- account: the locally-known accounts (the switcher / login list).
+-- ---------------------------------------------------------------------------
+CREATE TABLE account (
+    id TEXT AS AccountId NOT NULL PRIMARY KEY,
+    displayName TEXT NOT NULL,
+    email TEXT NOT NULL,
+    avatarUrl TEXT NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- app_settings: single-row root settings + the persisted active account id
+-- (process-death rehydration, §13e).
+-- ---------------------------------------------------------------------------
+CREATE TABLE app_settings (
+    id INTEGER NOT NULL PRIMARY KEY DEFAULT 0,
+    theme TEXT NOT NULL,
+    language TEXT NOT NULL,
+    latencyMinMs INTEGER AS Int NOT NULL,
+    latencyMaxMs INTEGER AS Int NOT NULL,
+    failureRate REAL NOT NULL,
+    botEnabled INTEGER AS Boolean NOT NULL,
+    botIntervalMs INTEGER AS Int NOT NULL,
+    online INTEGER AS Boolean NOT NULL,
+    syncIntervalMs INTEGER AS Int NOT NULL,
+    activeAccountId TEXT AS AccountId
+);
+
+-- ---------------------------------------------------------------------------
+-- account_nav: per-account last route (small string tag + optional ids) so a
+-- relaunch/web reload restores the screen (§13e).
+-- ---------------------------------------------------------------------------
+CREATE TABLE account_nav (
+    accountId TEXT AS AccountId NOT NULL PRIMARY KEY,
+    route TEXT NOT NULL,
+    boardId TEXT AS BoardId,
+    openCardId TEXT AS CardId
+);
+
+-- ---------------------------------------------------------------------------
+-- board: a board belongs to an account.
+-- ---------------------------------------------------------------------------
+CREATE TABLE board (
+    id TEXT AS BoardId NOT NULL PRIMARY KEY,
+    accountId TEXT AS AccountId NOT NULL,
+    name TEXT NOT NULL,
+    color INTEGER AS Int NOT NULL,
+    updatedAt INTEGER AS Instant NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- board_column: ordered columns of a board (sortIndex).
+-- ---------------------------------------------------------------------------
+CREATE TABLE board_column (
+    id TEXT AS ColumnId NOT NULL PRIMARY KEY,
+    boardId TEXT AS BoardId NOT NULL,
+    title TEXT NOT NULL,
+    wipLimit INTEGER AS Int,
+    sortIndex INTEGER AS Int NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- card: a card lives in a column at a sortIndex.
+-- ---------------------------------------------------------------------------
+CREATE TABLE card (
+    id TEXT AS CardId NOT NULL PRIMARY KEY,
+    boardId TEXT AS BoardId NOT NULL,
+    columnId TEXT AS ColumnId NOT NULL,
+    sortIndex INTEGER AS Int NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    assigneeId TEXT AS AccountId,
+    createdBy TEXT AS AccountId NOT NULL,
+    createdAt INTEGER AS Instant NOT NULL,
+    updatedAt INTEGER AS Instant NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- attachment: sealed Image/Link per card via `kind` ('image'|'link').
+-- ---------------------------------------------------------------------------
+CREATE TABLE attachment (
+    rowid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    cardId TEXT AS CardId NOT NULL,
+    kind TEXT NOT NULL,
+    url TEXT NOT NULL,
+    alt TEXT,
+    title TEXT,
+    description TEXT,
+    imageUrl TEXT,
+    width INTEGER AS Int,
+    height INTEGER AS Int,
+    sortIndex INTEGER AS Int NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- label: a board-scoped label.
+-- ---------------------------------------------------------------------------
+CREATE TABLE label (
+    id TEXT AS LabelId NOT NULL PRIMARY KEY,
+    boardId TEXT AS BoardId NOT NULL,
+    name TEXT NOT NULL,
+    color INTEGER AS Int NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- card_label: many-to-many card <-> label.
+-- ---------------------------------------------------------------------------
+CREATE TABLE card_label (
+    cardId TEXT AS CardId NOT NULL,
+    labelId TEXT AS LabelId NOT NULL,
+    PRIMARY KEY (cardId, labelId)
+);
+
+-- ---------------------------------------------------------------------------
+-- activity: per-account recent activity feed.
+-- ---------------------------------------------------------------------------
+CREATE TABLE activity (
+    id TEXT NOT NULL PRIMARY KEY,
+    accountId TEXT AS AccountId NOT NULL,
+    actorId TEXT AS AccountId NOT NULL,
+    summary TEXT NOT NULL,
+    timestamp INTEGER AS Instant NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- collaborator: per-account known collaborators (identity bag; includes self).
+-- ---------------------------------------------------------------------------
+CREATE TABLE collaborator (
+    accountId TEXT AS AccountId NOT NULL,
+    id TEXT AS AccountId NOT NULL,
+    displayName TEXT NOT NULL,
+    email TEXT NOT NULL,
+    avatarUrl TEXT NOT NULL,
+    PRIMARY KEY (accountId, id)
+);
+
+-- ---------------------------------------------------------------------------
+-- pending_op: outbound sync queue. payload = serialized SyncOp (carries the
+-- forward params, the OpId, and the InverseOp).
+-- ---------------------------------------------------------------------------
+CREATE TABLE pending_op (
+    opId TEXT AS OpId NOT NULL PRIMARY KEY,
+    accountId TEXT AS AccountId NOT NULL,
+    kind TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    createdAt INTEGER AS Instant NOT NULL,
+    attempts INTEGER AS Int NOT NULL
+);
+
+-- ---------------------------------------------------------------------------
+-- sync_meta: per-account pull cursor.
+-- ---------------------------------------------------------------------------
+CREATE TABLE sync_meta (
+    accountId TEXT AS AccountId NOT NULL PRIMARY KEY,
+    lastSyncedAt INTEGER AS Instant
+);
+
+-- Helpful indexes for the board-graph + queue + feed selects.
+CREATE INDEX board_accountId ON board(accountId);
+CREATE INDEX board_column_boardId ON board_column(boardId);
+CREATE INDEX card_boardId ON card(boardId);
+CREATE INDEX card_columnId ON card(columnId);
+CREATE INDEX attachment_cardId ON attachment(cardId);
+CREATE INDEX label_boardId ON label(boardId);
+CREATE INDEX card_label_cardId ON card_label(cardId);
+CREATE INDEX activity_accountId ON activity(accountId);
+CREATE INDEX pending_op_accountId ON pending_op(accountId);
+
+-- ============================================================================
+-- account queries
+-- ============================================================================
+
+-- Guard for ensureSeeded (seed only when zero accounts exist).
+countAccounts:
+SELECT count(*) FROM account;
+
+selectAccounts:
+SELECT * FROM account;
+
+upsertAccount:
+INSERT OR REPLACE INTO account(id, displayName, email, avatarUrl)
+VALUES (?, ?, ?, ?);
+
+-- ============================================================================
+-- app_settings queries (single-row, id = 0)
+-- ============================================================================
+
+selectSettings:
+SELECT * FROM app_settings WHERE id = 0;
+
+upsertSettings:
+INSERT OR REPLACE INTO app_settings(
+    id, theme, language, latencyMinMs, latencyMaxMs, failureRate,
+    botEnabled, botIntervalMs, online, syncIntervalMs, activeAccountId
+) VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+setActiveAccountId:
+UPDATE app_settings SET activeAccountId = ? WHERE id = 0;
+
+-- ============================================================================
+-- account_nav queries (per account)
+-- ============================================================================
+
+selectNav:
+SELECT * FROM account_nav WHERE accountId = ?;
+
+upsertNav:
+INSERT OR REPLACE INTO account_nav(accountId, route, boardId, openCardId)
+VALUES (?, ?, ?, ?);
+
+-- ============================================================================
+-- board queries
+-- ============================================================================
+
+-- Board list for an account with derived card/done aggregates.
+-- doneCount = cards in a column whose title = 'Done'.
+selectBoardList:
+SELECT
+    b.id,
+    b.name,
+    b.color,
+    b.updatedAt,
+    count(c.id) AS cardCount,
+    count(CASE WHEN col.title = 'Done' THEN 1 END) AS doneCount
+FROM board b
+LEFT JOIN card c ON c.boardId = b.id
+LEFT JOIN board_column col ON col.id = c.columnId
+WHERE b.accountId = ?
+GROUP BY b.id, b.name, b.color, b.updatedAt
+ORDER BY b.updatedAt DESC;
+
+selectBoard:
+SELECT * FROM board WHERE id = ?;
+
+upsertBoard:
+INSERT OR REPLACE INTO board(id, accountId, name, color, updatedAt)
+VALUES (?, ?, ?, ?, ?);
+
+deleteBoard:
+DELETE FROM board WHERE id = ?;
+
+-- ============================================================================
+-- board_column queries
+-- ============================================================================
+
+selectColumnsByBoard:
+SELECT * FROM board_column WHERE boardId = ? ORDER BY sortIndex ASC;
+
+upsertColumn:
+INSERT OR REPLACE INTO board_column(id, boardId, title, wipLimit, sortIndex)
+VALUES (?, ?, ?, ?, ?);
+
+deleteColumn:
+DELETE FROM board_column WHERE id = ?;
+
+-- ============================================================================
+-- card queries
+-- ============================================================================
+
+selectCardsByBoard:
+SELECT * FROM card WHERE boardId = ? ORDER BY columnId ASC, sortIndex ASC;
+
+selectCard:
+SELECT * FROM card WHERE id = ?;
+
+insertCard:
+INSERT INTO card(
+    id, boardId, columnId, sortIndex, title, description,
+    assigneeId, createdBy, createdAt, updatedAt
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateCard:
+UPDATE card SET title = ?, description = ?, assigneeId = ?, updatedAt = ?
+WHERE id = ?;
+
+-- Move = relocate to a column + sortIndex.
+moveCard:
+UPDATE card SET columnId = ?, sortIndex = ?, updatedAt = ? WHERE id = ?;
+
+deleteCard:
+DELETE FROM card WHERE id = ?;
+
+-- Upsert for applyRemote (insert-or-replace remote truth).
+upsertCard:
+INSERT OR REPLACE INTO card(
+    id, boardId, columnId, sortIndex, title, description,
+    assigneeId, createdBy, createdAt, updatedAt
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- ============================================================================
+-- attachment queries
+-- ============================================================================
+
+selectAttachmentsByCard:
+SELECT * FROM attachment WHERE cardId = ? ORDER BY sortIndex ASC;
+
+insertAttachment:
+INSERT INTO attachment(
+    cardId, kind, url, alt, title, description, imageUrl, width, height, sortIndex
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteAttachmentsByCard:
+DELETE FROM attachment WHERE cardId = ?;
+
+-- ============================================================================
+-- label queries
+-- ============================================================================
+
+selectLabelsByBoard:
+SELECT * FROM label WHERE boardId = ?;
+
+upsertLabel:
+INSERT OR REPLACE INTO label(id, boardId, name, color)
+VALUES (?, ?, ?, ?);
+
+-- ============================================================================
+-- card_label queries
+-- ============================================================================
+
+selectCardLabelsByBoard:
+SELECT cl.cardId, cl.labelId
+FROM card_label cl
+JOIN card c ON c.id = cl.cardId
+WHERE c.boardId = ?;
+
+selectCardLabelsByCard:
+SELECT cardId, labelId FROM card_label WHERE cardId = ?;
+
+insertCardLabel:
+INSERT OR REPLACE INTO card_label(cardId, labelId)
+VALUES (?, ?);
+
+deleteCardLabelsByCard:
+DELETE FROM card_label WHERE cardId = ?;
+
+-- ============================================================================
+-- activity queries (per account)
+-- ============================================================================
+
+insertActivity:
+INSERT OR REPLACE INTO activity(id, accountId, actorId, summary, timestamp)
+VALUES (?, ?, ?, ?, ?);
+
+selectRecentActivity:
+SELECT * FROM activity WHERE accountId = ? ORDER BY timestamp DESC LIMIT ?;
+
+-- ============================================================================
+-- collaborator queries (per account)
+-- ============================================================================
+
+selectCollaborators:
+SELECT * FROM collaborator WHERE accountId = ?;
+
+upsertCollaborator:
+INSERT OR REPLACE INTO collaborator(accountId, id, displayName, email, avatarUrl)
+VALUES (?, ?, ?, ?, ?);
+
+-- ============================================================================
+-- pending_op queue queries (per account)
+-- ============================================================================
+
+enqueueOp:
+INSERT OR REPLACE INTO pending_op(opId, accountId, kind, payload, createdAt, attempts)
+VALUES (?, ?, ?, ?, ?, ?);
+
+selectPendingOps:
+SELECT * FROM pending_op WHERE accountId = ? ORDER BY createdAt ASC;
+
+countPendingOps:
+SELECT count(*) FROM pending_op WHERE accountId = ?;
+
+updateOpAttempts:
+UPDATE pending_op SET attempts = ? WHERE opId = ?;
+
+-- markSynced / clearOp.
+deleteOp:
+DELETE FROM pending_op WHERE opId = ?;
+
+-- ============================================================================
+-- sync_meta queries (per account)
+-- ============================================================================
+
+selectSyncMeta:
+SELECT * FROM sync_meta WHERE accountId = ?;
+
+upsertSyncMeta:
+INSERT OR REPLACE INTO sync_meta(accountId, lastSyncedAt)
+VALUES (?, ?);
