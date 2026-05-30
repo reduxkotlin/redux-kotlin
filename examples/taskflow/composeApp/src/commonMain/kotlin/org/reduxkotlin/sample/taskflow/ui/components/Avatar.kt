@@ -22,13 +22,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import org.reduxkotlin.sample.taskflow.ui.image.rememberBundledAvatarBytes
 import org.reduxkotlin.sample.taskflow.ui.theme.LocalSemanticColors
 
 /**
- * A circular account avatar: a Coil async image over a deterministic, colored monogram
- * fallback. The monogram (initials of [name] on a tonal background hashed from [seedId])
- * is also the loading and error state, so an offline / no-network loader degrades cleanly
- * to it (Rule F: plain [AsyncImage], never `SubcomposeAsyncImage`).
+ * A circular account avatar with a three-tier fallback chain (Rule F: plain [AsyncImage], never
+ * `SubcomposeAsyncImage`):
+ *
+ * 1. the remote [avatarUrl] (Coil async image);
+ * 2. on remote error/empty, a **bundled offline placeholder** PNG (shipped in `composeResources`,
+ *    chosen deterministically from [seedId] via [rememberBundledAvatarBytes]) drawn as an
+ *    `AsyncImage(model = bytes)`;
+ * 3. if even the bundled load fails, the deterministic colored **monogram** (initials of [name] on a
+ *    tonal background hashed from [seedId]) — always present underneath, and the loading state too.
  *
  * Pure presentational: it takes only immutable data + primitives and reads no store.
  *
@@ -75,41 +81,68 @@ public fun Avatar(
             )
         }
 
-        if (avatarUrl != null) {
-            // Track success so the monogram stays visible while loading / on error.
-            var loaded by remember(avatarUrl) { mutableStateOf(false) }
-            AsyncImage(
-                model = avatarUrl,
-                contentDescription = name,
-                modifier = Modifier
-                    .size(size)
-                    .clip(CircleShape),
-                onSuccess = { loaded = true },
-                onError = { loaded = false },
-            )
-        }
+        AvatarImage(name = name, avatarUrl = avatarUrl, seedId = seedId, size = size)
 
         if (presenceOnline != null) {
-            val dot = (size / 4).coerceAtLeast(8.dp)
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .size(dot)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
-                contentAlignment = Alignment.Center,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(dot - 2.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (presenceOnline) semantic.online else MaterialTheme.colorScheme.outline,
-                        ),
-                )
-            }
+            PresenceDot(
+                online = presenceOnline,
+                size = size,
+                onlineColor = semantic.online,
+                modifier = Modifier.align(Alignment.BottomEnd),
+            )
         }
+    }
+}
+
+/**
+ * The avatar image tiers, drawn over the monogram (Rule F: plain [AsyncImage]): the remote
+ * [avatarUrl] first, then — only once the remote has errored — a bundled offline placeholder picked
+ * deterministically from [seedId]. When both fail the monogram beneath shows through.
+ */
+@Composable
+private fun AvatarImage(name: String, avatarUrl: String?, seedId: String, size: Dp) {
+    var remoteFailed by remember(avatarUrl) { mutableStateOf(avatarUrl == null) }
+    if (avatarUrl != null) {
+        AsyncImage(
+            model = avatarUrl,
+            contentDescription = name,
+            modifier = Modifier.size(size).clip(CircleShape),
+            onError = { remoteFailed = true },
+        )
+    }
+    if (remoteFailed) {
+        val bundled = rememberBundledAvatarBytes(seedId)
+        if (bundled != null) {
+            AsyncImage(
+                model = bundled,
+                contentDescription = name,
+                modifier = Modifier.size(size).clip(CircleShape),
+            )
+        }
+    }
+}
+
+/**
+ * The corner presence dot: a small filled circle on a [surface][MaterialTheme.colorScheme.surface]
+ * ring, [onlineColor] when [online], otherwise the theme outline. Sized relative to the avatar [size].
+ */
+@Composable
+private fun PresenceDot(online: Boolean, size: Dp, onlineColor: Color, modifier: Modifier = Modifier) {
+    val dot = (size / 4).coerceAtLeast(8.dp)
+    Box(
+        modifier = modifier
+            .size(dot)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(dot - 2.dp)
+                .clip(CircleShape)
+                .background(if (online) onlineColor else MaterialTheme.colorScheme.outline),
+        )
     }
 }
 
