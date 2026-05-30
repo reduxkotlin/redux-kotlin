@@ -114,6 +114,9 @@ public class AccountStoreHandle(
  * @param localStore the durable offline cache (shared across accounts; queue/cursor are per-account).
  * @param notificationContext where subscriber callbacks run (default: platform main thread).
  * @param rngSeed seeds the account's [FakeRemoteApi] RNG for reproducible latency/failure rolls.
+ * @param scope the per-account background scope effects/sync/bot launch on (default: a fresh
+ *   [SupervisorJob] on [Dispatchers.Default]). Tests inject a test-scheduler scope so the whole
+ *   effect/sync chain runs under virtual time.
  * @return the [AccountStoreHandle] owning the store + its per-account lifetime resources.
  */
 public fun createAccountStore(
@@ -122,8 +125,8 @@ public fun createAccountStore(
     localStore: LocalStore,
     notificationContext: NotificationContext = mainNotificationContext(),
     rngSeed: Long = 0L,
+    scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
 ): AccountStoreHandle {
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val remoteApi = FakeRemoteApi(
         seededAccounts = SeedData.seededAccounts(),
         config = { rootStore.getModel<AppSettingsModel>().fakeService },
