@@ -35,14 +35,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import org.reduxkotlin.sample.taskflow.model.Attachment
+import org.reduxkotlin.sample.taskflow.ui.image.rememberBundledCardBytes
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**
  * Renders one card [Attachment] (spec-data.js -> `AttachmentChip`) as a Medium (12 dp) chip:
  *
  * - [Attachment.Image] — a fixed-size Coil [AsyncImage] thumbnail (Level 1) using the image's
- *   `alt` as its `contentDescription`. A shimmer placeholder shows while loading and a
- *   broken-link glyph on error (Rule F: plain [AsyncImage], never `SubcomposeAsyncImage`).
+ *   `alt` as its `contentDescription`. A shimmer placeholder shows while loading; on error it falls
+ *   back first to a **bundled offline placeholder** PNG (from `composeResources`, chosen
+ *   deterministically from the image url), and only to the broken-link glyph if that load also fails
+ *   (Rule F: plain [AsyncImage], never `SubcomposeAsyncImage`).
  * - [Attachment.Link] — a preview card: the link title (or the host parsed from its URL), the
  *   host as a Label Small subtitle, and an optional `imageUrl` thumbnail.
  *
@@ -81,7 +84,11 @@ public fun AttachmentChip(attachment: Attachment, onRemove: (() -> Unit)? = null
     }
 }
 
-/** Image variant: a Coil thumbnail (Level 1) over a shimmer; broken-link glyph on error. */
+/**
+ * Image variant: a Coil thumbnail (Level 1) over a shimmer. On remote error it tries a bundled
+ * offline placeholder (chosen from the image url); only if that also fails does the broken-link glyph
+ * show.
+ */
 @Composable
 private fun ImageAttachment(image: Attachment.Image) {
     Surface(
@@ -93,12 +100,10 @@ private fun ImageAttachment(image: Attachment.Image) {
     ) {
         Box(contentAlignment = Alignment.Center) {
             var state by remember(image.url) { mutableStateOf(ImageState.LOADING) }
+            var fallbackFailed by remember(image.url) { mutableStateOf(false) }
 
             if (state == ImageState.LOADING) {
                 ShimmerBox(modifier = Modifier.fillMaxSize())
-            }
-            if (state == ImageState.ERROR) {
-                BrokenLinkGlyph()
             }
             AsyncImage(
                 model = image.url,
@@ -108,6 +113,20 @@ private fun ImageAttachment(image: Attachment.Image) {
                 onSuccess = { state = ImageState.LOADED },
                 onError = { state = ImageState.ERROR },
             )
+            if (state == ImageState.ERROR) {
+                val bundled = rememberBundledCardBytes(image.url)
+                when {
+                    bundled != null && !fallbackFailed -> AsyncImage(
+                        model = bundled,
+                        contentDescription = image.alt,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize().clip(MaterialTheme.shapes.medium),
+                        onError = { fallbackFailed = true },
+                    )
+
+                    else -> BrokenLinkGlyph()
+                }
+            }
         }
     }
 }
