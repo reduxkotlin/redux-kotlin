@@ -2,8 +2,10 @@ package org.reduxkotlin.sample.taskflow.data
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
+import org.reduxkotlin.sample.taskflow.model.AccountDetail
 import org.reduxkotlin.sample.taskflow.model.AccountId
 import org.reduxkotlin.sample.taskflow.model.AccountSummary
 import org.reduxkotlin.sample.taskflow.model.Attachment
@@ -98,6 +100,22 @@ public object SeedData {
 
     /** The board accent color for [accountId] (indigo family; falls back to the indigo seed). */
     public fun boardColor(accountId: AccountId): Long = boardColors[accountId.v] ?: 0xFF4A3FB8
+
+    /**
+     * The seed [AccountDetail] for [accountId]: the account's own summary plus the collaborators
+     * referenceable on its board (self + bot). Used to construct a per-account store.
+     *
+     * Falls back to a synthesized summary when [accountId] is not one of the seeded login accounts,
+     * so a freshly added account still yields a usable detail (self + bot).
+     *
+     * @param accountId the account to build a detail for.
+     * @return the [AccountDetail] carrying the self summary and collaborator directory.
+     */
+    public fun accountDetail(accountId: AccountId): AccountDetail {
+        val self = accounts.firstOrNull { it.id == accountId } ?: account(accountId.v, accountId.v)
+        val collaborators = persistentMapOf(self.id to self, bot.id to bot)
+        return AccountDetail(accountId = accountId, self = self, collaborators = collaborators)
+    }
 
     private fun account(id: String, name: String): AccountSummary = AccountSummary(
         id = AccountId(id),
