@@ -146,7 +146,6 @@ private fun BoardGrid(
     }
 }
 
-
 /** The "boards" screen title — Headline Medium, onPrimaryContainer tint (board-list redline 1). */
 @Composable
 private fun BoardListTitle() {
