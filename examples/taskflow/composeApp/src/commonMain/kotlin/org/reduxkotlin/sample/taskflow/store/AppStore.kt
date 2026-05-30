@@ -1,0 +1,62 @@
+package org.reduxkotlin.sample.taskflow.store
+
+import org.reduxkotlin.Store
+import org.reduxkotlin.bundle.createConcurrentModelStore
+import org.reduxkotlin.concurrent.NotificationContext
+import org.reduxkotlin.multimodel.ModelState
+import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
+import org.reduxkotlin.sample.taskflow.action.EditProfile
+import org.reduxkotlin.sample.taskflow.action.LoadAccountsSucceeded
+import org.reduxkotlin.sample.taskflow.action.LoginFailed
+import org.reduxkotlin.sample.taskflow.action.LoginRequested
+import org.reduxkotlin.sample.taskflow.action.LogoutAccount
+import org.reduxkotlin.sample.taskflow.action.SetBotEnabled
+import org.reduxkotlin.sample.taskflow.action.SetFailureRate
+import org.reduxkotlin.sample.taskflow.action.SetLatency
+import org.reduxkotlin.sample.taskflow.action.SetOnline
+import org.reduxkotlin.sample.taskflow.action.SetTheme
+import org.reduxkotlin.sample.taskflow.action.StartLogin
+import org.reduxkotlin.sample.taskflow.action.SwitchAccount
+import org.reduxkotlin.sample.taskflow.model.AccountsModel
+import org.reduxkotlin.sample.taskflow.model.AppSettingsModel
+import org.reduxkotlin.sample.taskflow.model.AuthFlowModel
+import org.reduxkotlin.sample.taskflow.platform.mainNotificationContext
+import org.reduxkotlin.sample.taskflow.reducer.accountsReducer
+import org.reduxkotlin.sample.taskflow.reducer.appSettingsReducer
+import org.reduxkotlin.sample.taskflow.reducer.authFlowReducer
+
+/**
+ * Builds the root application store: a concurrent [ModelState] store holding the account directory
+ * ([AccountsModel]), app settings ([AppSettingsModel]) and login/add-account flow ([AuthFlowModel]).
+ *
+ * Each model slot routes its handled actions to the matching pure reducer; actions a slot does not
+ * handle are not registered on it (and unhandled handlers return the model unchanged). The
+ * [notificationContext] decides where subscriber callbacks run — defaulting to the platform main
+ * thread so Compose state reads stay on-main even when dispatches originate from background effects.
+ *
+ * @param notificationContext where subscriber callbacks are invoked (default: platform main thread).
+ * @return the root [Store] over [ModelState].
+ */
+public fun createAppStore(notificationContext: NotificationContext = mainNotificationContext()): Store<ModelState> =
+    createConcurrentModelStore(notificationContext = notificationContext) {
+        model(AccountsModel()) {
+            on<AccountLoggedIn> { s, a -> accountsReducer(s, a) }
+            on<SwitchAccount> { s, a -> accountsReducer(s, a) }
+            on<LogoutAccount> { s, a -> accountsReducer(s, a) }
+            on<LoadAccountsSucceeded> { s, a -> accountsReducer(s, a) }
+            on<EditProfile> { s, a -> accountsReducer(s, a) }
+        }
+        model(AppSettingsModel()) {
+            on<SetTheme> { s, a -> appSettingsReducer(s, a) }
+            on<SetLatency> { s, a -> appSettingsReducer(s, a) }
+            on<SetFailureRate> { s, a -> appSettingsReducer(s, a) }
+            on<SetBotEnabled> { s, a -> appSettingsReducer(s, a) }
+            on<SetOnline> { s, a -> appSettingsReducer(s, a) }
+        }
+        model(AuthFlowModel()) {
+            on<StartLogin> { s, a -> authFlowReducer(s, a) }
+            on<LoginRequested> { s, _ -> authFlowReducer(s, LoginRequested) }
+            on<AccountLoggedIn> { s, a -> authFlowReducer(s, a) }
+            on<LoginFailed> { s, a -> authFlowReducer(s, a) }
+        }
+    }
