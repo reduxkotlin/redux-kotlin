@@ -64,6 +64,45 @@ public fun deriveVisibleCardIds(
     }
 }
 
+/**
+ * A value-equal snapshot of one card's column position, used by the card-detail [MoveToGroup] (Rule
+ * C — all column-walking lives here, never in the composable body). Holds the card's current column,
+ * the adjacent columns (or `null` at an edge), and a human overline (`COLUMN · BOARD`-style label).
+ * Returned from a `selectorState` so the move controls only recompose when the card's column position
+ * (or the overline) actually changes.
+ *
+ * @property from the card's current [ColumnId], or `null` when the card / board is absent.
+ * @property prev the previous column's [ColumnId], or `null` at the left edge.
+ * @property next the next column's [ColumnId], or `null` at the right edge.
+ * @property overline the Label-Small overline shown in the card-detail header (the column title).
+ */
+public data class CardColumnNav(val from: ColumnId?, val prev: ColumnId?, val next: ColumnId?, val overline: String)
+
+/**
+ * Pure derivation of a card's column position for the card-detail overlay (Rule C). Finds the column
+ * whose `cardIds` contain [cardId], then reports the previous / next column ids (null at the edges)
+ * and an overline built from the owning column's title. The result is value-equal, so the move
+ * controls recompose only when the card's column position genuinely changes.
+ *
+ * @param boardModel the bound [BoardModel] holding the board (or the not-loaded sentinel).
+ * @param cardId the card whose column position to derive.
+ * @return a [CardColumnNav] describing the card's column and its neighbours.
+ */
+public fun cardColumnNav(boardModel: BoardModel, cardId: CardId): CardColumnNav {
+    val columns = boardModel.board?.columns
+    val index = columns?.indexOfFirst { cardId in it.cardIds } ?: -1
+    return if (columns == null || index < 0) {
+        CardColumnNav(null, null, null, "")
+    } else {
+        CardColumnNav(
+            from = columns[index].id,
+            prev = if (index > 0) columns[index - 1].id else null,
+            next = if (index < columns.lastIndex) columns[index + 1].id else null,
+            overline = columns[index].title.uppercase(),
+        )
+    }
+}
+
 /** Keeps only the [cardIds] whose resolved [Card] matches [filter], as a stable [PersistentList]. */
 private fun Board.filtered(cardIds: PersistentList<CardId>, filter: FilterModel): PersistentList<CardId> =
     cardIds.filter { cardId -> cards[cardId]?.let { filter.matches(it) } == true }.toPersistentList()
