@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -114,12 +115,17 @@ public fun CardDetailScreen(store: Store<ModelState>, modifier: Modifier = Modif
  */
 @Composable
 private fun CardDetailContainer(compact: Boolean, content: @Composable () -> Unit) {
+    // imePadding() so the soft keyboard never occludes the title field / MarkdownEditor
+    // (effective on iOS and Android).
     if (compact) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
+        Surface(
+            modifier = Modifier.fillMaxSize().imePadding(),
+            color = MaterialTheme.colorScheme.surface,
+        ) {
             content()
         }
     } else {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopEnd) {
+        Box(modifier = Modifier.fillMaxSize().imePadding(), contentAlignment = Alignment.TopEnd) {
             Surface(
                 modifier = Modifier.width(SIDE_SHEET_WIDTH).fillMaxHeight(),
                 color = MaterialTheme.colorScheme.surfaceContainerLowest,
