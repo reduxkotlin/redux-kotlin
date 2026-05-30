@@ -16,6 +16,7 @@ import org.reduxkotlin.sample.taskflow.model.LabelId
 import org.reduxkotlin.sample.taskflow.model.OpId
 import org.reduxkotlin.sample.taskflow.model.Route
 import org.reduxkotlin.sample.taskflow.model.Theme
+import org.reduxkotlin.sample.taskflow.model.UndoModel
 import kotlin.time.Instant
 
 // User card mutations only — drives the undo/redo stack.
@@ -97,6 +98,13 @@ data object CloseCard : Action
 data object Undo : Action
 
 data object Redo : Action
+
+// Internal undo plumbing — dispatched by undoMiddleware; folded by the UndoModel slot reducer.
+// snapshot the present board before an undoable mutation
+data class PushUndo(val snapshot: Board) : Action
+
+// commit the next undo stacks after an Undo/Redo step
+data class SetUndoModel(val model: UndoModel) : Action
 
 data class SetFilterQuery(val query: String) : Action
 

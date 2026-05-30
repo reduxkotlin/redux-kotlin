@@ -16,12 +16,10 @@ import org.reduxkotlin.sample.taskflow.action.EditCard
 import org.reduxkotlin.sample.taskflow.action.InverseOp
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.RecordActivity
-import org.reduxkotlin.sample.taskflow.action.Redo
 import org.reduxkotlin.sample.taskflow.action.SetFilterAssignee
 import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
 import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
 import org.reduxkotlin.sample.taskflow.action.ToggleFilterLabel
-import org.reduxkotlin.sample.taskflow.action.Undo
 import org.reduxkotlin.sample.taskflow.model.AccountId
 import org.reduxkotlin.sample.taskflow.model.ActivityModel
 import org.reduxkotlin.sample.taskflow.model.Board
@@ -32,7 +30,6 @@ import org.reduxkotlin.sample.taskflow.model.Column
 import org.reduxkotlin.sample.taskflow.model.ColumnId
 import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
-import org.reduxkotlin.sample.taskflow.model.UndoModel
 
 /** Maximum activity entries retained per account (oldest dropped). */
 public const val ACTIVITY_CAP: Int = 50
@@ -254,76 +251,4 @@ public fun activityReducer(model: ActivityModel, action: Action): ActivityModel 
     }
 
     else -> model
-}
-
-/** Outcome of an [undoReducer] step: the next [UndoModel] plus the board snapshot to restore (if any). */
-public data class UndoResult(
-    /** The next undo stacks. */
-    val model: UndoModel,
-    /** The board snapshot to apply, or `null` when nothing was restored (empty stack / no-op). */
-    val restored: Board?,
-)
-
-/**
- * Pushes [snapshot] (the present board, captured before an undoable mutation) onto the undo `past`,
- * dropping the oldest entry beyond `model.cap`, and clears `future` (a new edit invalidates redo).
- *
- * @param model the current undo stacks.
- * @param snapshot the present board to snapshot.
- * @return the updated undo stacks.
- */
-public fun pushUndo(model: UndoModel, snapshot: Board): UndoModel {
-    val pushed = model.past.add(snapshot)
-    val capped = if (pushed.size > model.cap) {
-        pushed.subList(pushed.size - model.cap, pushed.size).toPersistentList()
-    } else {
-        pushed
-    }
-    return model.copy(past = capped, future = persistentListOf())
-}
-
-/**
- * Pure undo/redo step over the [UndoModel] stacks, returning the next stacks and the board to restore.
- *
- * [Undo] pops the newest `past` snapshot (pushing the [present] onto `future`); [Redo] is symmetric
- * over `future`. An empty stack is a no-op (`restored == null`, same [model]). [BoardClosed] clears
- * both stacks. Returns `null` `restored` with the same [model] for actions it does not handle.
- *
- * @param model the current undo stacks.
- * @param action the dispatched action.
- * @param present the current board (pushed to the opposite stack so the move is reversible), or `null`.
- * @return the next stacks and the board snapshot to apply (if any).
- */
-public fun undoReducer(model: UndoModel, action: Action, present: Board?): UndoResult = when (action) {
-    is Undo ->
-        if (model.past.isEmpty()) {
-            UndoResult(model, null)
-        } else {
-            val restored = model.past.last()
-            UndoResult(
-                model.copy(
-                    past = model.past.removeAt(model.past.size - 1),
-                    future = present?.let { model.future.add(it) } ?: model.future,
-                ),
-                restored,
-            )
-        }
-
-    is Redo ->
-        if (model.future.isEmpty()) {
-            UndoResult(model, null)
-        } else {
-            val restored = model.future.last()
-            UndoResult(
-                model.copy(
-                    future = model.future.removeAt(model.future.size - 1),
-                    past = present?.let { model.past.add(it) } ?: model.past,
-                ),
-                restored,
-            )
-        }
-
-    is BoardClosed -> UndoResult(UndoModel(), null)
-
-    else -> UndoResult(model, null)
 }
