@@ -131,10 +131,12 @@ public fun BoardScreen(store: Store<ModelState>, modifier: Modifier = Modifier) 
                 pendingCount = sync.pendingCount,
                 onRefresh = onRefresh,
             )
-            if (boardLoaded) {
-                BoardBody(store = store, s = s)
-            } else {
-                BoardSkeleton(modifier = Modifier.fillMaxSize())
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                if (boardLoaded) {
+                    BoardBody(store = store, s = s)
+                } else {
+                    BoardSkeleton(modifier = Modifier.fillMaxSize())
+                }
             }
         }
 
