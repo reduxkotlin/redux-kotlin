@@ -15,11 +15,13 @@ import org.reduxkotlin.sample.taskflow.action.DeleteCard
 import org.reduxkotlin.sample.taskflow.action.EditCard
 import org.reduxkotlin.sample.taskflow.action.InverseOp
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
+import org.reduxkotlin.sample.taskflow.action.PushUndo
 import org.reduxkotlin.sample.taskflow.action.RecordActivity
 import org.reduxkotlin.sample.taskflow.action.Redo
 import org.reduxkotlin.sample.taskflow.action.Refresh
 import org.reduxkotlin.sample.taskflow.action.SetFilterAssignee
 import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
+import org.reduxkotlin.sample.taskflow.action.SetUndoModel
 import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
 import org.reduxkotlin.sample.taskflow.action.ToggleFilterLabel
 import org.reduxkotlin.sample.taskflow.action.Undo
@@ -530,5 +532,36 @@ class BoardReducersTest {
         val result = undoReducer(model, Refresh, board())
         assertNull(result.restored)
         assertSame(model, result.model)
+    }
+
+    // --- (f') UndoModel slot reducer (PushUndo / SetUndoModel / BoardClosed) ---
+
+    @Test
+    fun undoModelReducerPushUndoSnapshotsPresent() {
+        val snapshot = board().copy(boardId = BoardId("snap"))
+        val next = undoModelReducer(UndoModel(), PushUndo(snapshot))
+        assertEquals(persistentListOf(snapshot), next.past)
+        assertTrue(next.future.isEmpty())
+    }
+
+    @Test
+    fun undoModelReducerSetUndoModelReplacesStacks() {
+        val replacement = UndoModel(past = persistentListOf(board()), future = persistentListOf(board()))
+        val next = undoModelReducer(UndoModel(), SetUndoModel(replacement))
+        assertEquals(replacement, next)
+    }
+
+    @Test
+    fun undoModelReducerBoardClosedResets() {
+        val start = UndoModel(past = persistentListOf(board()), future = persistentListOf(board()))
+        val next = undoModelReducer(start, BoardClosed)
+        assertEquals(UndoModel(), next)
+    }
+
+    @Test
+    fun undoModelReducerReturnsSameModelForUnhandled() {
+        val start = UndoModel(past = persistentListOf(board()))
+        val next = undoModelReducer(start, Refresh)
+        assertSame(start, next)
     }
 }
