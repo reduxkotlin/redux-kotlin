@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
@@ -52,7 +53,8 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 public fun MarkdownEditor(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
     var preview by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(Dimens.space2)) {
+    // imePadding() keeps the active write field above the soft keyboard (iOS + Android).
+    Column(modifier = modifier.imePadding(), verticalArrangement = Arrangement.spacedBy(Dimens.space2)) {
         WritePreviewToggle(preview = preview, onPreviewChange = { preview = it })
 
         if (preview) {

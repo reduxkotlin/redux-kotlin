@@ -2,7 +2,10 @@ package org.reduxkotlin.sample.taskflow
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -129,7 +132,11 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
             LocalIdGenerator provides DefaultIdGenerator(),
             LocalClock provides { Clock.System.now() },
         ) {
-            Surface(modifier = Modifier.fillMaxSize()) {
+            // Single safe-area application point (Rule H): the shell root pads for the
+            // system insets so the nav rail/bar and routed content both respect the safe
+            // area. Screens (and the AdaptiveNav Scaffold) must NOT reapply safeDrawing,
+            // which would double the insets.
+            Surface(modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
                 val id = activeId
                 if (id == null) {
                     LoginScreen(appStore)

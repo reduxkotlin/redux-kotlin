@@ -2,6 +2,7 @@ package org.reduxkotlin.sample.taskflow.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -67,6 +68,9 @@ public fun AdaptiveNav(
     if (sizeClass == WindowSizeClass.Compact) {
         Scaffold(
             modifier = modifier,
+            // Safe-area insets are owned once at the app-shell root (App.kt, Rule H); this
+            // Scaffold must not reapply them or the bottom bar would be double-inset.
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = { BottomBar(currentRoute = currentRoute, onNavigate = onNavigate) },
         ) { innerPadding ->
             Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
