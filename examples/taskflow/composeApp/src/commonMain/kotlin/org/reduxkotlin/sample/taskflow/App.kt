@@ -225,7 +225,7 @@ private fun BoxWithConstraintsRouting(
     showCardDetail: Boolean,
     onOpenSwitcher: () -> Unit,
 ) {
-    BoxWithConstraints {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val wsc = widthSizeClass(maxWidth)
         AdaptiveNav(
             sizeClass = wsc,
@@ -233,7 +233,7 @@ private fun BoxWithConstraintsRouting(
             onNavigate = { accountStore.dispatch(Navigate(it)) },
             header = { SwitcherAvatarButton(appStore = appStore, onOpenSwitcher = onOpenSwitcher) },
         ) {
-            Box {
+            Box(modifier = Modifier.fillMaxSize()) {
                 when (route) {
                     is Route.BoardList -> BoardListScreen(accountStore)
                     is Route.Board -> BoardScreen(accountStore)

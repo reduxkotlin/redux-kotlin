@@ -131,7 +131,7 @@ private fun BoardGrid(
             horizontalArrangement = Arrangement.spacedBy(Dimens.space4),
             verticalArrangement = Arrangement.spacedBy(Dimens.space3),
         ) {
-            item(span = { GridItemSpanFull }) { BoardListTitle() }
+            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) { BoardListTitle() }
             items(boardList.order, key = { it.v }) { id ->
                 val summary = boardList.boards[id]
                 if (summary != null) {
@@ -146,9 +146,6 @@ private fun BoardGrid(
     }
 }
 
-/** Full-row grid span for the screen title that sits above the cards. */
-private val GridItemSpanFull
-    get() = androidx.compose.foundation.lazy.grid.GridItemSpan(currentLineSpan = Int.MAX_VALUE)
 
 /** The "boards" screen title — Headline Medium, onPrimaryContainer tint (board-list redline 1). */
 @Composable
