@@ -38,3 +38,10 @@ data class Label(val id: LabelId, val name: String, val color: Long)
 
 // Pure helper used by the Board screen (Rule C) to bind per-column lists by ColumnId.
 fun Board.columnById(id: ColumnId): Column? = columns.firstOrNull { it.id == id }
+
+// The default empty columns (To Do / Doing / Done) a freshly created board starts with.
+fun newBoardColumns(boardId: BoardId): PersistentList<Column> = persistentListOf(
+    Column(ColumnId("${boardId.v}-todo"), "To Do", persistentListOf()),
+    Column(ColumnId("${boardId.v}-doing"), "Doing", persistentListOf()),
+    Column(ColumnId("${boardId.v}-done"), "Done", persistentListOf()),
+)

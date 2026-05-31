@@ -4,6 +4,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import org.reduxkotlin.sample.taskflow.action.Action
 import org.reduxkotlin.sample.taskflow.action.AddCard
+import org.reduxkotlin.sample.taskflow.action.AddColumn
 import org.reduxkotlin.sample.taskflow.action.BoardClosed
 import org.reduxkotlin.sample.taskflow.action.BoardRestored
 import org.reduxkotlin.sample.taskflow.action.BotAddedCard
@@ -91,6 +92,8 @@ private fun mutateBoard(board: Board, action: Action, selfId: AccountId): Board 
     )
 
     is BotAddedCard -> insertCard(board, action.columnId, action.card)
+
+    is AddColumn -> board.copy(columns = board.columns.add(Column(action.id, action.title, persistentListOf())))
 
     is EditCard -> board.cards[action.cardId]?.let { existing ->
         board.copy(

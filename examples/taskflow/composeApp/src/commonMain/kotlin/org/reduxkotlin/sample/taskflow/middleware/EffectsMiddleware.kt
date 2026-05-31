@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions") // one private effect handler per action kind, by design
+
 package org.reduxkotlin.sample.taskflow.middleware
 
 import kotlinx.coroutines.CoroutineScope
@@ -7,7 +9,9 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.middleware
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.AddCard
+import org.reduxkotlin.sample.taskflow.action.AddColumn
 import org.reduxkotlin.sample.taskflow.action.CardMoveRequested
+import org.reduxkotlin.sample.taskflow.action.CreateBoard
 import org.reduxkotlin.sample.taskflow.action.DeleteCard
 import org.reduxkotlin.sample.taskflow.action.EditCard
 import org.reduxkotlin.sample.taskflow.action.InverseOp
@@ -25,6 +29,8 @@ import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.NavModel
 import org.reduxkotlin.sample.taskflow.model.Route
 import org.reduxkotlin.sample.taskflow.model.columnById
+import org.reduxkotlin.sample.taskflow.model.newBoardColumns
+import org.reduxkotlin.sample.taskflow.reducer.DEFAULT_BOARD_COLOR
 
 private const val DEFAULT_INDEX = 0
 
@@ -92,6 +98,8 @@ private fun handle(
     is DeleteCard -> onDelete(syncRepo, scope, store, next, action)
     is LoadBoardRequested -> onLoadBoard(syncRepo, scope, store, next, action)
     is LoadBoardListRequested -> onLoadBoardList(syncRepo, scope, store, next, action)
+    is CreateBoard -> onCreateBoard(syncRepo, scope, next, action)
+    is AddColumn -> onAddColumn(syncRepo, scope, store, next, action)
     is Refresh -> next(action).also { scope.launch { syncRepo.refresh() } }
     is SetOnline -> next(action).also { if (action.online) scope.launch { syncRepo.refresh() } }
     else -> next(action)
@@ -220,6 +228,51 @@ private fun onLoadBoardList(
 ): Any {
     val result = next(action)
     scope.launch { store.dispatch(LoadBoardListSucceeded(syncRepo.loadBoardList(syncRepo.accountId))) }
+    return result
+}
+
+/**
+ * Persists a newly-created board (the reducer added only the list tile): writes the board row plus its
+ * default To Do / Doing / Done columns so that navigating into it loads a real, non-empty board.
+ */
+private fun onCreateBoard(
+    syncRepo: SyncRepository,
+    scope: CoroutineScope,
+    next: (Any) -> Any,
+    action: CreateBoard,
+): Any {
+    val result = next(action)
+    scope.launch {
+        syncRepo.local.createBoard(
+            accountId = syncRepo.accountId,
+            boardId = action.boardId,
+            name = action.name,
+            color = DEFAULT_BOARD_COLOR,
+            updatedAt = action.now,
+            columns = newBoardColumns(action.boardId),
+        )
+    }
+    return result
+}
+
+/**
+ * Persists a column appended to the open board. The reducer has already added it to [BoardModel];
+ * this reads it back (with its committed sort index) and writes it to the durable store.
+ */
+private fun onAddColumn(
+    syncRepo: SyncRepository,
+    scope: CoroutineScope,
+    store: Store<ModelState>,
+    next: (Any) -> Any,
+    action: AddColumn,
+): Any {
+    val result = next(action)
+    val board = store.state.get<BoardModel>().board
+    val sortIndex = board?.columns?.indexOfFirst { it.id == action.id } ?: -1
+    val column = board?.columns?.getOrNull(sortIndex)
+    if (board != null && column != null) {
+        scope.launch { syncRepo.local.addColumn(board.boardId, column, sortIndex) }
+    }
     return result
 }
 

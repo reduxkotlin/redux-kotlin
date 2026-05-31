@@ -13,6 +13,7 @@ import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.routing.RoutingBuilder
 import org.reduxkotlin.sample.taskflow.action.AddCard
+import org.reduxkotlin.sample.taskflow.action.AddColumn
 import org.reduxkotlin.sample.taskflow.action.BoardClosed
 import org.reduxkotlin.sample.taskflow.action.BoardRestored
 import org.reduxkotlin.sample.taskflow.action.BotAddedCard
@@ -182,6 +183,7 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
         on<LoadBoardSucceeded> { s, a -> boardReducer(s, a, selfId) }
         on<CardMoveRequested> { s, a -> boardReducer(s, a, selfId) }
         on<AddCard> { s, a -> boardReducer(s, a, selfId) }
+        on<AddColumn> { s, a -> boardReducer(s, a, selfId) }
         on<EditCard> { s, a -> boardReducer(s, a, selfId) }
         on<DeleteCard> { s, a -> boardReducer(s, a, selfId) }
         on<CardOpFailed> { s, a -> boardReducer(s, a, selfId) }

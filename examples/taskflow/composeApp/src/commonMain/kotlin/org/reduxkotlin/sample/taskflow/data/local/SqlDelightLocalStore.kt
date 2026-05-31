@@ -231,6 +231,30 @@ public class SqlDelightLocalStore(private val db: TaskFlowDb) : LocalStore {
         }
     }
 
+    override suspend fun createBoard(
+        accountId: AccountId,
+        boardId: BoardId,
+        name: String,
+        color: Long,
+        updatedAt: Instant,
+        columns: List<Column>,
+    ) {
+        db.transaction {
+            q.upsertBoard(
+                id = boardId,
+                accountId = accountId,
+                name = name,
+                color = (color and ARGB_MASK).toInt(),
+                updatedAt = updatedAt,
+            )
+            columns.forEachIndexed { i, col -> q.upsertColumn(col.id, boardId, col.title, col.wipLimit, i) }
+        }
+    }
+
+    override suspend fun addColumn(boardId: BoardId, column: Column, sortIndex: Int) {
+        q.upsertColumn(column.id, boardId, column.title, column.wipLimit, sortIndex)
+    }
+
     override suspend fun editCard(cardId: CardId, title: String, description: String, updatedAt: Instant) {
         val existing = q.selectCard(cardId).awaitAsOneOrNull() ?: return
         q.updateCard(

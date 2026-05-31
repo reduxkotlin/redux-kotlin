@@ -4,6 +4,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.persistentSetOf
 import org.reduxkotlin.sample.taskflow.action.AddCard
+import org.reduxkotlin.sample.taskflow.action.AddColumn
 import org.reduxkotlin.sample.taskflow.action.BoardClosed
 import org.reduxkotlin.sample.taskflow.action.BoardRestored
 import org.reduxkotlin.sample.taskflow.action.BotAddedCard
@@ -180,6 +181,27 @@ class BoardReducersTest {
         assertTrue(created.labels.isEmpty())
         assertEquals(persistentListOf(CardId("c9")), b.column(done).cardIds)
         assertIntegrity(b)
+    }
+
+    // --- addColumn ---
+
+    @Test
+    fun addColumnAppendsNewEmptyColumn() {
+        val start = BoardModel(board())
+        val next = boardReducer(start, AddColumn(ColumnId("backlog"), "Backlog"), ann)
+        val b = next.board!!
+        assertEquals(4, b.columns.size)
+        val added = b.column(ColumnId("backlog"))
+        assertEquals("Backlog", added.title)
+        assertTrue(added.cardIds.isEmpty())
+        assertNull(added.wipLimit)
+        assertIntegrity(b)
+    }
+
+    @Test
+    fun addColumnOnNotLoadedBoardIsNoOp() {
+        val start = BoardModel(null)
+        assertSame(start, boardReducer(start, AddColumn(ColumnId("backlog"), "Backlog"), ann))
     }
 
     // --- editCard ---
