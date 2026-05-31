@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.reduxkotlin.sample.taskflow.action.AddCard
 import org.reduxkotlin.sample.taskflow.action.CardMoveRequested
 import org.reduxkotlin.sample.taskflow.action.CardOpFailed
+import org.reduxkotlin.sample.taskflow.action.CardOpSucceeded
 import org.reduxkotlin.sample.taskflow.action.DeleteCard
 import org.reduxkotlin.sample.taskflow.action.EditCard
 import org.reduxkotlin.sample.taskflow.action.InverseOp
@@ -60,12 +61,19 @@ public class SyncRepository(
     scope: CoroutineScope,
     public val accountId: AccountId,
 ) {
+    // Accept events: a replaying hot flow mirroring rejectFlow so a success emitted before the collector
+    // attaches is not lost — otherwise the card would stay in `inFlight` ("Saving…") forever.
+    private val acceptFlow: MutableSharedFlow<CardOpSucceeded> = MutableSharedFlow(replay = EVENT_BUFFER)
+
     // Reject events: a replaying hot flow so a reject emitted before the collector attaches is not
     // lost — the effects middleware subscribes lazily, and a drain can reject before it does.
-    private val rejectFlow: MutableSharedFlow<CardOpFailed> = MutableSharedFlow(replay = REJECT_BUFFER)
+    private val rejectFlow: MutableSharedFlow<CardOpFailed> = MutableSharedFlow(replay = EVENT_BUFFER)
 
     // Latest projected sync status; effects collects this and dispatches SyncStatusChanged.
     private val statusFlow: MutableStateFlow<SyncStatus> = MutableStateFlow(IDLE_STATUS)
+
+    /** Server-acceptance events: clear the card from `SyncModel.inFlight` once its op is acked. */
+    public val acceptEvents: Flow<CardOpSucceeded> = acceptFlow.asSharedFlow()
 
     /** Server-rejection events carrying the per-op [InverseOp] the store applies to revert. */
     public val rejectEvents: Flow<CardOpFailed> = rejectFlow.asSharedFlow()
@@ -73,11 +81,12 @@ public class SyncRepository(
     /** The latest projected [SyncStatus] the effects layer folds into `SyncModel`. */
     public val status: StateFlow<SyncStatus> = statusFlow.asStateFlow()
 
-    // The repository owns the engine; its callbacks fan straight into the two flows above.
+    // The repository owns the engine; its callbacks fan straight into the flows above.
     private val engine: SyncEngine = SyncEngine(
         local = local,
         remote = remote,
         scope = scope,
+        onAccept = { acceptFlow.tryEmit(it) },
         onReject = { rejectFlow.tryEmit(it) },
         onStatus = { statusFlow.value = it },
     )
@@ -200,8 +209,9 @@ public class SyncRepository(
     public suspend fun loadSettings(): AppSettingsModel = local.loadSettings()
 
     private companion object {
-        // Holds rejects emitted before the effects collector attaches (Rule E: never drop a revert).
-        private const val REJECT_BUFFER = 16
+        // Holds accept/reject events emitted before the effects collector attaches (Rule E: never drop
+        // a revert, and never strand a card in "Saving…").
+        private const val EVENT_BUFFER = 16
 
         // The pre-drain status: online, nothing pending, never synced. Replaced on the first drain.
         private val IDLE_STATUS = SyncStatus(

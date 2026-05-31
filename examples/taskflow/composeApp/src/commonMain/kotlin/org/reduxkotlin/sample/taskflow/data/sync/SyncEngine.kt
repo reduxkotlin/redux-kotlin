@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.reduxkotlin.sample.taskflow.action.CardOpFailed
+import org.reduxkotlin.sample.taskflow.action.CardOpSucceeded
 import org.reduxkotlin.sample.taskflow.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.data.remote.OfflineException
 import org.reduxkotlin.sample.taskflow.data.remote.PushResult
@@ -34,6 +35,8 @@ import kotlin.time.Instant
  * @property remote the network seam (real or [org.reduxkotlin.sample.taskflow.data.remote.FakeRemoteApi]).
  * @property scope the background scope drains run on (its dispatch path is off-main; the effects layer
  *   hops to Main before dispatching — Rule E).
+ * @property onAccept invoked once per accepted op with a [CardOpSucceeded] so the store can clear the
+ *   card from `SyncModel.inFlight` (the per-card "Saving…" / optimistic state).
  * @property onReject invoked once per rejected op with the reconstructed [CardOpFailed] so the store can
  *   apply the per-op inverse.
  * @property onStatus invoked with the current [SyncStatus] only on a real delta (Rule F).
@@ -42,6 +45,7 @@ public class SyncEngine(
     private val local: LocalStore,
     private val remote: RemoteApi,
     private val scope: CoroutineScope,
+    private val onAccept: (CardOpSucceeded) -> Unit,
     private val onReject: (CardOpFailed) -> Unit,
     private val onStatus: (SyncStatus) -> Unit,
 ) {
@@ -54,7 +58,8 @@ public class SyncEngine(
     /**
      * Drains every pending op for [accountId] to the remote, then pulls remote changes back.
      *
-     * Push outcomes per op: [PushResult.Accepted] marks the op synced (dropped from the queue);
+     * Push outcomes per op: [PushResult.Accepted] marks the op synced (dropped from the queue) and
+     * reports a [CardOpSucceeded] via [onAccept] (the store clears the card from `inFlight`);
      * [PushResult.Rejected] reconstructs the op's inverse and reports a [CardOpFailed] via [onReject]
      * then drops the op (the store reverts it); an [OfflineException] stops the drain with the queue
      * intact; a [TransientNetworkException] increments the op's attempt counter and moves on. After a
@@ -74,6 +79,7 @@ public class SyncEngine(
                 when (val result = remote.push(listOf(op))) {
                     is PushResult.Accepted -> {
                         local.markSynced(OpId(op.opId))
+                        onAccept(CardOpSucceeded(opId = OpId(op.opId), cardId = CardId(op.cardId)))
                         pushedAnything = true
                     }
 
