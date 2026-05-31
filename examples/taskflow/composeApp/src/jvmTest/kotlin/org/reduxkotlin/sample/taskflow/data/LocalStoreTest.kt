@@ -16,8 +16,10 @@ import org.reduxkotlin.sample.taskflow.model.Attachment
 import org.reduxkotlin.sample.taskflow.model.BoardId
 import org.reduxkotlin.sample.taskflow.model.Card
 import org.reduxkotlin.sample.taskflow.model.CardId
+import org.reduxkotlin.sample.taskflow.model.Column
 import org.reduxkotlin.sample.taskflow.model.ColumnId
 import org.reduxkotlin.sample.taskflow.model.OpId
+import org.reduxkotlin.sample.taskflow.model.newBoardColumns
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -133,6 +135,68 @@ class LocalStoreTest {
         assertEquals(CardId("ann-new"), board.columns.single { it.id == todo }.cardIds.first())
         assertEquals("Fresh card", board.cards.getValue(CardId("ann-new")).title)
         assertTrue(board.cards.getValue(CardId("ann-new")).attachments.any { it is Attachment.Image })
+    }
+
+    @Test
+    fun createBoardPersistsBoardWithColumns() = runTest {
+        val store = newStore()
+        store.ensureSeeded()
+        val newId = BoardId("ann-release")
+        val now = Instant.fromEpochMilliseconds(1_716_600_000_000L)
+        store.createBoard(
+            accountId = annId,
+            boardId = newId,
+            name = "Release Plan",
+            color = 0xFF4A3FB8L,
+            updatedAt = now,
+            columns = newBoardColumns(newId),
+        )
+
+        val board = store.loadBoard(newId)
+        assertNotNull(board)
+        assertEquals(listOf("To Do", "Doing", "Done"), board.columns.map { it.title })
+        assertTrue(board.cards.isEmpty())
+        // Surfaces in the owner's board list alongside the seeded board.
+        val list = store.loadBoardList(annId)
+        assertEquals(2, list.size)
+        assertTrue(list.any { it.id == newId && it.name == "Release Plan" })
+    }
+
+    @Test
+    fun createBoardThenAddCardLoadsCardInColumn() = runTest {
+        val store = newStore()
+        store.ensureSeeded()
+        val newId = BoardId("ann-release")
+        val now = Instant.fromEpochMilliseconds(1_716_600_000_000L)
+        store.createBoard(annId, newId, "Release Plan", 0xFF4A3FB8L, now, newBoardColumns(newId))
+        val todoCol = newBoardColumns(newId).first { it.title == "To Do" }
+        val card = Card(
+            id = CardId("rel-1"),
+            title = "Cut the release",
+            description = "",
+            assigneeId = null,
+            createdBy = annId,
+            createdAt = now,
+            updatedAt = now,
+        )
+        store.addCard(newId, card, todoCol.id, 0)
+
+        val board = store.loadBoard(newId)!!
+        val todo = board.columns.first { it.title == "To Do" }
+        assertTrue(todo.cardIds.contains(CardId("rel-1")), "To Do column should contain the added card")
+        assertEquals("Cut the release", board.cards.getValue(CardId("rel-1")).title)
+    }
+
+    @Test
+    fun addColumnAppendsColumn() = runTest {
+        val store = newStore()
+        store.ensureSeeded()
+        store.addColumn(annBoardId, Column(ColumnId("ann-backlog"), "Backlog", persistentListOf()), sortIndex = 3)
+
+        val board = store.loadBoard(annBoardId)!!
+        // Columns are ordered by sortIndex; the appended one lands last.
+        assertEquals(ColumnId("ann-backlog"), board.columns.last().id)
+        assertEquals("Backlog", board.columns.last().title)
     }
 
     @Test

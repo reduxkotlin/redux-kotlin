@@ -13,6 +13,7 @@ import org.reduxkotlin.sample.taskflow.model.BoardId
 import org.reduxkotlin.sample.taskflow.model.BoardSummary
 import org.reduxkotlin.sample.taskflow.model.Card
 import org.reduxkotlin.sample.taskflow.model.CardId
+import org.reduxkotlin.sample.taskflow.model.Column
 import org.reduxkotlin.sample.taskflow.model.ColumnId
 import org.reduxkotlin.sample.taskflow.model.NavModel
 import org.reduxkotlin.sample.taskflow.model.OpId
@@ -69,6 +70,19 @@ public interface LocalStore {
 
     /** Adds [card] to [boardId] in [columnId] at [index], re-sequencing the column. */
     public suspend fun addCard(boardId: BoardId, card: Card, columnId: ColumnId, index: Int)
+
+    /** Creates [boardId] for [accountId] with [name]/[color]/[updatedAt] and its initial [columns]. */
+    public suspend fun createBoard(
+        accountId: AccountId,
+        boardId: BoardId,
+        name: String,
+        color: Long,
+        updatedAt: Instant,
+        columns: List<Column>,
+    )
+
+    /** Appends [column] to [boardId] at [sortIndex]. */
+    public suspend fun addColumn(boardId: BoardId, column: Column, sortIndex: Int)
 
     /** Edits the [title]/[description]/[updatedAt] of [cardId]. */
     public suspend fun editCard(cardId: CardId, title: String, description: String, updatedAt: Instant)
