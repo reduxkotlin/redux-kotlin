@@ -232,4 +232,33 @@ class OfflineSyncE2ETest {
         )
         assertNotNull(boardOf(wiring.accountStore)!!.cards[CardId("ann-1")], "the reverted card is still on the board")
     }
+
+    // ---- (4) accepted op clears the card from inFlight (the per-card "Saving…" state) ----
+
+    @Test
+    fun acceptedMoveClearsInFlightOnSuccess() = runTest {
+        val local = newLocal()
+        val wiring = wire(local, backgroundScope)
+        // Online, zero latency, no transient failures: the move is deterministically accepted.
+        wiring.rootStore.dispatch(SetOnline(true))
+
+        openBoard(wiring)
+
+        // Move ann-1 To Do -> Done (no WIP limit) — the server accepts it.
+        wiring.accountStore.dispatch(CardMoveRequested(CardId("ann-1"), todo, done, 0, OpId("op-ok")))
+        settle()
+
+        assertEquals(0, wiring.local.pendingOps(annId).size, "the accepted op drained from the outbox")
+        assertEquals(
+            done,
+            cardColumn(wiring.accountStore, CardId("ann-1")),
+            "the accepted move stuck (no revert)",
+        )
+        // The fix: a CardOpSucceeded from the accepted push clears the card from inFlight so the
+        // "Saving…" chip stops. Before the fix this stays true forever (success never cleared it).
+        assertTrue(
+            !syncOf(wiring.accountStore).inFlight.contains(CardId("ann-1")),
+            "ann-1 cleared from inFlight after the op was accepted",
+        )
+    }
 }

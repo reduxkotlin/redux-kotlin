@@ -5,6 +5,7 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.reduxkotlin.sample.taskflow.action.CardOpFailed
+import org.reduxkotlin.sample.taskflow.action.CardOpSucceeded
 import org.reduxkotlin.sample.taskflow.action.InverseOp
 import org.reduxkotlin.sample.taskflow.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.data.local.SqlDelightLocalStore
@@ -59,10 +60,12 @@ class SyncEngineTest {
         scope: CoroutineScope,
         rejects: MutableList<CardOpFailed>,
         statuses: MutableList<SyncStatus>,
+        accepts: MutableList<CardOpSucceeded> = mutableListOf(),
     ): SyncEngine = SyncEngine(
         local = local,
         remote = remote,
         scope = scope,
+        onAccept = { accepts += it },
         onReject = { rejects += it },
         onStatus = { statuses += it },
     )
@@ -117,6 +120,30 @@ class SyncEngineTest {
         assertEquals(0, last.pendingCount)
         assertTrue(last.online)
         assertNotNull(last.lastSyncedAt)
+    }
+
+    // ---- (1b) accepted drain reports a per-op CardOpSucceeded (clears inFlight / "Saving…") ----
+
+    @Test
+    fun acceptedDrainEmitsCardOpSucceeded() = runTest {
+        val local = newLocal()
+        var cfg = zeroLatency(online = true)
+        val remote = newRemote { cfg }
+        val rejects = mutableListOf<CardOpFailed>()
+        val statuses = mutableListOf<SyncStatus>()
+        val accepts = mutableListOf<CardOpSucceeded>()
+        val eng = engine(local, remote, backgroundScope, rejects, statuses, accepts)
+
+        local.ensureSeeded()
+        local.enqueue(annId, acceptedMove("op-accept"))
+
+        eng.drain(annId)
+
+        assertEquals(1, accepts.size, "an accepted op reports exactly one CardOpSucceeded; got $accepts")
+        val ok = accepts.single()
+        assertEquals(OpId("op-accept"), ok.opId, "the ack carries the queued op's id")
+        assertEquals(CardId("ann-1"), ok.cardId, "the ack carries the op's card id")
+        assertTrue(rejects.isEmpty(), "an accepted op is not a rejection")
     }
 
     // ---- (2) offline: queue grows, no revert ----

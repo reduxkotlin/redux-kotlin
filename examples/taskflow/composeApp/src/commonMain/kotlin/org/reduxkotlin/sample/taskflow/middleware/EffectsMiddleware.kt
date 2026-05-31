@@ -65,8 +65,9 @@ public fun effectsMiddleware(syncRepo: SyncRepository, scope: CoroutineScope): M
     }
 }
 
-/** Launches the long-lived reject/status collectors that fold the sync layer back into the store. */
+/** Launches the long-lived accept/reject/status collectors that fold the sync layer back into the store. */
 private fun startCollectors(syncRepo: SyncRepository, scope: CoroutineScope, store: Store<ModelState>) {
+    scope.launch { syncRepo.acceptEvents.collect { store.dispatch(it) } }
     scope.launch { syncRepo.rejectEvents.collect { store.dispatch(it) } }
     scope.launch {
         syncRepo.status.collect { s ->
