@@ -39,8 +39,13 @@ private fun <State> enhancedCreator(config: DevToolsConfig, storeCreator: StoreC
         val origDispatch = store.dispatch
         store.dispatch = { action ->
             val result = origDispatch(action)
-            if (shouldSend(action, denyRegex, allowRegex)) {
-                relay(serializer, recorder, session, ctx, store, action)
+            @Suppress("TooGenericExceptionCaught") // devtools must never break the host store
+            try {
+                if (shouldSend(action, denyRegex, allowRegex)) {
+                    relay(serializer, recorder, session, ctx, store, action)
+                }
+            } catch (t: Throwable) {
+                config.logger("devtools: failed to relay action: ${t.message}")
             }
             result
         }

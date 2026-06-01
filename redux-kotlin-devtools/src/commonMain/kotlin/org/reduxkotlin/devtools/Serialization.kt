@@ -14,7 +14,8 @@ public interface ValueSerializer {
 
 /** A [ValueSerializer] that renders any value as its `toString()` — the universal fallback tier. */
 public object ToStringValueSerializer : ValueSerializer {
-    override fun toJson(value: Any?): JsonElement = JsonPrimitive(value?.toString() ?: "null")
+    override fun toJson(value: Any?): JsonElement =
+        JsonPrimitive(runCatching { value?.toString() }.getOrNull() ?: "null")
 }
 
 /**
