@@ -58,9 +58,6 @@ data class CardOpSucceeded(val opId: OpId, val cardId: CardId) : Action
 
 data class CardOpFailed(val opId: OpId, val cardId: CardId, val error: String, val inverse: InverseOp) : Action
 
-// re-pushes the still-queued op (SyncEngine resolves it)
-data class RetryOp(val opId: OpId) : Action
-
 // Per-op inverse — rides the queued SyncOp; reconstructed on Rejected (no middleware-side map).
 sealed interface InverseOp {
     data class MoveBack(val cardId: CardId, val to: ColumnId, val index: Int) : InverseOp
