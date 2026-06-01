@@ -11,8 +11,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class LiftedStateRecorderTest {
-    private fun recorder(maxAge: Int = 50) =
-        LiftedStateRecorder(maxAge = maxAge, clock = { 1000L })
+    private fun recorder(maxAge: Int = 50) = LiftedStateRecorder(maxAge = maxAge, clock = { 1000L })
 
     private fun stagedIds(r: LiftedStateRecorder): List<Int> =
         r.liftedState()["stagedActionIds"]!!.jsonArray.map { it.jsonPrimitive.int }
@@ -58,5 +57,7 @@ class LiftedStateRecorderTest {
         r.record(JsonPrimitive("b"), JsonPrimitive(2))
         r.record(JsonPrimitive("c"), JsonPrimitive(3))
         assertEquals(2, stagedIds(r).size)
+        assertEquals(listOf(2, 3), stagedIds(r))
+        assertEquals(JsonPrimitive(1), r.liftedState()["committedState"])
     }
 }

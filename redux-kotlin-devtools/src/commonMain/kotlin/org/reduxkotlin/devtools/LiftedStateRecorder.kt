@@ -19,10 +19,7 @@ internal data class RecordedAction(
  * ring buffer of the last [maxAge] actions, and builds the lifted-state JSON the monitor renders.
  * No time-travel recomputation — that is phase 2.
  */
-internal class LiftedStateRecorder(
-    private val maxAge: Int,
-    private val clock: EpochMillis,
-) {
+internal class LiftedStateRecorder(private val maxAge: Int, private val clock: EpochMillis) {
     private data class Entry(val id: Int, val actionJson: JsonElement, val timestamp: Long, val state: JsonElement)
 
     private var nextActionId = 1
