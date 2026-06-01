@@ -74,4 +74,20 @@ class ScFrameTest {
     fun decodesUnknownFrameAsOther() {
         assertIs<ScInbound.Other>(ScFrame.decode("""{"event":"#removeAuthToken"}"""))
     }
+
+    @Test
+    fun decodePublishWithNonObjectDataReturnsOther() {
+        assertIs<ScInbound.Other>(ScFrame.decode("""{"event":"#publish","data":"oops"}"""))
+        assertIs<ScInbound.Other>(ScFrame.decode("""{"event":"#publish","data":[1,2,3]}"""))
+    }
+
+    @Test
+    fun decodeWithNonPrimitiveEventReturnsOther() {
+        assertIs<ScInbound.Other>(ScFrame.decode("""{"event":{"foo":"bar"}}"""))
+    }
+
+    @Test
+    fun decodeWithNonPrimitiveRidReturnsOther() {
+        assertIs<ScInbound.Other>(ScFrame.decode("""{"rid":{}}"""))
+    }
 }

@@ -5,8 +5,6 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 
 /** A decoded inbound SocketCluster frame. */
 internal sealed interface ScInbound {
@@ -65,6 +63,7 @@ internal object ScFrame {
     }
 
     fun decode(raw: String): ScInbound = when {
+        // SC v2 server-side ping token (legacy), treated like the empty-string heartbeat
         raw.isEmpty() || raw == "#1" -> ScInbound.Ping
         else -> decodeJson(raw)
     }
@@ -76,17 +75,18 @@ internal object ScFrame {
     }
 
     private fun decodeObject(obj: JsonObject, raw: String): ScInbound {
-        val rid = obj["rid"]?.jsonPrimitive?.intOrNull
+        val rid = (obj["rid"] as? JsonPrimitive)?.intOrNull
         return when {
             rid != null -> ScInbound.RpcResponse(rid = rid, data = obj["data"], error = obj["error"])
-            obj["event"]?.jsonPrimitive?.content == "#publish" -> decodePublish(obj, raw)
+            (obj["event"] as? JsonPrimitive)?.content == "#publish" -> decodePublish(obj, raw)
             else -> ScInbound.Other(raw)
         }
     }
 
+    /** Decodes a `#publish` frame: `{event:#publish, data:{channel, data}}` → [ScInbound.ChannelMessage]. */
     private fun decodePublish(obj: JsonObject, raw: String): ScInbound {
-        val payload = obj["data"]?.jsonObject
-        val channel = payload?.get("channel")?.jsonPrimitive?.content
+        val payload = obj["data"] as? JsonObject
+        val channel = (payload?.get("channel") as? JsonPrimitive)?.content
         return if (payload != null && channel != null) {
             ScInbound.ChannelMessage(channel = channel, data = payload["data"] ?: JsonObject(emptyMap()))
         } else {
