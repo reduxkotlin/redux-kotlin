@@ -9,16 +9,19 @@ class MessagesTest {
     private val ctx = MessageContext(socketId = "sock1", name = "MyStore", instanceId = "inst1")
 
     @Test
-    fun actionMessageHasTypeAndDoubleEncodedAction() {
+    fun actionMessageHasTypeDoubleEncodedActionAndStatePayload() {
         val performAction = JsonObject(mapOf("type" to JsonPrimitive("PERFORM_ACTION")))
-        val msg = actionMessage(ctx, performAction = performAction, nextActionId = 2, isExcess = false)
+        val state = JsonObject(mapOf("count" to JsonPrimitive(7)))
+        val msg = actionMessage(ctx, performAction = performAction, state = state, nextActionId = 2, isExcess = false)
         assertEquals(JsonPrimitive("ACTION"), msg["type"])
         assertEquals(JsonPrimitive("sock1"), msg["id"])
         assertEquals(JsonPrimitive("MyStore"), msg["name"])
         assertEquals(JsonPrimitive(2), msg["nextActionId"])
         assertEquals(JsonPrimitive(false), msg["isExcess"])
-        // action must be a STRING containing JSON, not a nested object
+        // action and payload must be STRINGS containing JSON, not nested objects
         assertEquals(JsonPrimitive(performAction.toString()), msg["action"])
+        // payload carries the new state so the monitor's State/Diff panels update per action
+        assertEquals(JsonPrimitive(state.toString()), msg["payload"])
     }
 
     @Test
