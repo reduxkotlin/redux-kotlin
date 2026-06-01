@@ -11,20 +11,34 @@ import kotlin.reflect.jvm.isAccessible
 internal actual fun platformDefaultSerializer(): ValueSerializer = ReflectionValueSerializer
 
 private object ReflectionValueSerializer : ValueSerializer {
-    override fun toJson(value: Any?): JsonElement = convert(value, depth = 0)
+    @Suppress("TooGenericExceptionCaught") // Serializer contract: must never throw; degrade to string primitive.
+    override fun toJson(value: Any?): JsonElement = try {
+        convert(value, depth = 0)
+    } catch (_: Throwable) {
+        JsonPrimitive(runCatching { value?.toString() }.getOrNull() ?: "null")
+    }
 
     private fun convert(value: Any?, depth: Int): JsonElement = when {
         value == null -> JsonNull
+
         depth > MAX_DEPTH -> JsonPrimitive(value.toString())
+
         value is Number -> JsonPrimitive(value)
+
         value is Boolean -> JsonPrimitive(value)
+
         value is String -> JsonPrimitive(value)
+
         value is Enum<*> -> JsonPrimitive(value.name)
+
         value is Map<*, *> -> JsonObject(
             value.entries.associate { (k, v) -> k.toString() to convert(v, depth + 1) },
         )
+
         value is Iterable<*> -> JsonArray(value.map { convert(it, depth + 1) })
+
         value is Array<*> -> JsonArray(value.map { convert(it, depth + 1) })
+
         else -> reflectObject(value, depth)
     }
 
