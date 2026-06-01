@@ -70,6 +70,7 @@ private fun <State> relay(
         actionMessage(
             ctx = ctx,
             performAction = performAction,
+            state = stateJson,
             nextActionId = recorded.actionId + 1,
             isExcess = recorded.isExcess,
         ),

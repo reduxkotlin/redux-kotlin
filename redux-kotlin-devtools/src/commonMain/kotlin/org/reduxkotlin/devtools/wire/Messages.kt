@@ -15,15 +15,21 @@ private fun MessageContext.envelope(type: String): MutableMap<String, JsonElemen
     "instanceId" to JsonPrimitive(instanceId),
 )
 
-/** Builds an `ACTION` message; [performAction] is double-encoded into the `action` string field. */
+/**
+ * Builds an `ACTION` message. [performAction] is double-encoded into the `action` string field,
+ * and [state] (the new store state after the action) is double-encoded into `payload` — the
+ * monitor needs both: `action` drives the log entry, `payload` drives the State/Diff panels.
+ */
 internal fun actionMessage(
     ctx: MessageContext,
     performAction: JsonElement,
+    state: JsonElement,
     nextActionId: Int,
     isExcess: Boolean,
 ): JsonObject {
     val map = ctx.envelope("ACTION")
     map["action"] = JsonPrimitive(performAction.toString())
+    map["payload"] = JsonPrimitive(state.toString())
     map["nextActionId"] = JsonPrimitive(nextActionId)
     map["isExcess"] = JsonPrimitive(isExcess)
     return JsonObject(map)
