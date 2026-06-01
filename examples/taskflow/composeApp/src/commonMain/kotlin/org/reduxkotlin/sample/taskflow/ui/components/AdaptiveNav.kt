@@ -3,8 +3,14 @@ package org.reduxkotlin.sample.taskflow.ui.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -66,21 +72,46 @@ public fun AdaptiveNav(
     content: @Composable () -> Unit,
 ) {
     if (sizeClass == WindowSizeClass.Compact) {
+        // Edge-to-edge (Rule H): the Scaffold spans the full window so the system bars show the
+        // theme colour. `contentWindowInsets = systemBars` tells the Scaffold to pad the content
+        // slot for the status bar AND for the portion of the bottom bar that overlaps the
+        // gesture/3-button navigation bar — the [NavigationBar] already pads its own buttons via
+        // its default `windowInsets`, so this is not double-padding.
         Scaffold(
             modifier = modifier,
-            // Safe-area insets are owned once at the app-shell root (App.kt, Rule H); this
-            // Scaffold must not reapply them or the bottom bar would be double-inset.
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            contentWindowInsets = WindowInsets.systemBars,
             bottomBar = { BottomBar(currentRoute = currentRoute, onNavigate = onNavigate) },
         ) { innerPadding ->
-            Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            // `consumeWindowInsets` tells nested composables those insets are already handled, so
+            // a stray `Modifier.statusBarsPadding()` inside a screen would return zero instead of
+            // double-padding for the status bar.
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding),
+            ) {
                 content()
             }
         }
     } else {
+        // Medium / Expanded (Rule H): the [NavigationRail] handles its own start + vertical
+        // insets (so the rail extends top-to-bottom of the screen with items inset from the
+        // status / nav bars). The content area beside it explicitly pads for the remaining
+        // sides — top (status bar), end (a side-cutout, if any) and bottom (a bottom system
+        // nav bar, if any) — via `safeDrawing` so cutouts and the IME are also respected.
         Row(modifier = modifier.fillMaxSize()) {
             Rail(currentRoute = currentRoute, onNavigate = onNavigate, header = header)
-            Box(modifier = Modifier.weight(1f).fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(
+                            WindowInsetsSides.Top + WindowInsetsSides.End + WindowInsetsSides.Bottom,
+                        ),
+                    ),
+            ) {
                 content()
             }
         }

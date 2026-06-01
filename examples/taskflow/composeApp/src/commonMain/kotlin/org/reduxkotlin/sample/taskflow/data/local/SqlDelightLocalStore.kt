@@ -5,6 +5,7 @@ import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 import org.reduxkotlin.sample.taskflow.data.SeedData
@@ -133,13 +134,27 @@ public class SqlDelightLocalStore(private val db: TaskFlowDb) : LocalStore {
 
     override suspend fun loadNav(accountId: AccountId): NavModel {
         val row = q.selectNav(accountId).awaitAsOneOrNull() ?: return NavModel()
-        val route = when (row.route) {
-            ROUTE_BOARD -> row.boardId?.let { Route.Board(it) } ?: Route.BoardList
-            ROUTE_PROFILE -> Route.Profile
-            ROUTE_SETTINGS -> Route.Settings
-            else -> Route.BoardList
+        // Reconstruct the stack from the persisted (route_tag, boardId, openCardId) triple.
+        // Board(id) sits on top of BoardList so back from a board returns to the list (matches the
+        // in-memory navReducer's Navigate(Board) rule). An open card pushes a CardDetail(View) frame.
+        // We do not persist edit mode (always restore to view) or the transient ComposeCard state.
+        val base: PersistentList<Route> = when (row.route) {
+            ROUTE_BOARD ->
+                row.boardId
+                    ?.let { persistentListOf<Route>(Route.BoardList, Route.Board(it)) }
+                    ?: persistentListOf<Route>(Route.BoardList)
+
+            ROUTE_PROFILE -> persistentListOf<Route>(Route.Profile)
+
+            ROUTE_SETTINGS -> persistentListOf<Route>(Route.Settings)
+
+            else -> persistentListOf<Route>(Route.BoardList)
         }
-        return NavModel(route = route, openCardId = row.openCardId, composing = null)
+        val stack = row.openCardId
+            ?.takeIf { row.route == ROUTE_BOARD && row.boardId != null }
+            ?.let { base.add(Route.CardDetail(it)) }
+            ?: base
+        return NavModel(stack)
     }
 
     override suspend fun loadCollaborators(accountId: AccountId): PersistentMap<AccountId, AccountSummary> =
@@ -177,12 +192,16 @@ public class SqlDelightLocalStore(private val db: TaskFlowDb) : LocalStore {
     }
 
     override suspend fun saveNav(accountId: AccountId, nav: NavModel) {
+        // Persist the lowest-level destination (the most-recent TopLevel) + the active board id +
+        // any open card. Card-detail edit mode and the transient ComposeCard are intentionally
+        // dropped — those are session state, not durable nav.
+        val baseTopLevel = nav.stack.last { it is Route.TopLevel } as Route.TopLevel
         val tag: String
         val boardId: BoardId?
-        when (val r = nav.route) {
+        when (baseTopLevel) {
             is Route.Board -> {
                 tag = ROUTE_BOARD
-                boardId = r.boardId
+                boardId = baseTopLevel.boardId
             }
 
             Route.BoardList -> {

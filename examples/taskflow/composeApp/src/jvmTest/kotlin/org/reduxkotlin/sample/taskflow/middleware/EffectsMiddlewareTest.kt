@@ -2,6 +2,7 @@ package org.reduxkotlin.sample.taskflow.middleware
 
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -83,8 +84,12 @@ class EffectsMiddlewareTest {
         return local.loadBoard(annBoardId)!!
     }
 
-    private fun storeFor(board: Board): RecordingStore =
-        RecordingStore(ModelState.of(BoardModel(board), NavModel(route = Route.Board(annBoardId))))
+    private fun storeFor(board: Board): RecordingStore = RecordingStore(
+        ModelState.of(
+            BoardModel(board),
+            NavModel(persistentListOf(Route.BoardList, Route.Board(annBoardId))),
+        ),
+    )
 
     // ---- (1) rejected move -> CardOpFailed with matching opId + MoveBack inverse ----
 
