@@ -33,7 +33,7 @@ val store = createThreadSafeStore(
     devTools(
         DevToolsConfig(
             name = "Counter",
-            host = "10.0.2.2",
+            host = "localhost",
             logger = { Log.d("DevTools", it) },
         ),
     ),
