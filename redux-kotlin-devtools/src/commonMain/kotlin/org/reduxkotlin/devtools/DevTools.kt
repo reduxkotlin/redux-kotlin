@@ -4,6 +4,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
 import org.reduxkotlin.Store
 import org.reduxkotlin.StoreCreator
 import org.reduxkotlin.StoreEnhancer
@@ -61,7 +62,7 @@ private fun <State> relay(
     action: Any,
 ) {
     // Serialization runs synchronously on the dispatch thread; debug-only, keep it cheap.
-    val actionJson: JsonElement = serializer.toJson(action)
+    val actionJson: JsonElement = serializer.toActionJson(action)
     val stateJson = serializer.toJson(store.getState())
     val recorded = recorder.record(actionJson, stateJson)
     val performAction = performActionJson(actionJson, recorded.timestamp)
@@ -83,6 +84,40 @@ private fun performActionJson(actionJson: JsonElement, timestamp: Long): JsonObj
         "stack" to JsonNull,
     ),
 )
+
+/**
+ * Serializes [action] into a JSON object carrying a `type` field, mirroring the JS Redux
+ * convention `{ type, ...payload }` that the DevTools monitor uses as each entry's label.
+ *
+ * Kotlin actions have no `type` string — their identity is the class — so the class
+ * [simpleName][kotlin.reflect.KClass.simpleName] is injected as `type`. An existing non-empty
+ * string `type` (hand-rolled JS-style or Redux-Toolkit-style actions) is respected as-is.
+ * Field-less actions, or values from the `toString` serializer tier, become
+ * `{ "type": <name>, "value": <serialized> }` so the label still resolves.
+ */
+internal fun ValueSerializer.toActionJson(action: Any): JsonObject {
+    val typeName = action::class.simpleName ?: action.toString()
+    return when (val json = toJson(action)) {
+        is JsonObject -> {
+            val existing = json["type"]
+            if (existing is JsonPrimitive && existing.isString && existing.content.isNotEmpty()) {
+                json
+            } else {
+                buildJsonObject {
+                    put("type", JsonPrimitive(typeName))
+                    json.forEach { (key, value) -> if (key != "type") put(key, value) }
+                }
+            }
+        }
+
+        JsonNull -> JsonObject(mapOf("type" to JsonPrimitive(typeName)))
+
+        else -> buildJsonObject {
+            put("type", JsonPrimitive(typeName))
+            put("value", json)
+        }
+    }
+}
 
 /** Returns true if [action] passes the [denylist]/[allowlist] regex filters. */
 internal fun shouldSend(action: Any, denylist: List<Regex>, allowlist: List<Regex>): Boolean {
