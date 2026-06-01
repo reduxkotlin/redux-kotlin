@@ -38,9 +38,10 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
-        // jvmCommonMain contains JVM-only APIs (kotlin.reflect.full, CIO engine).
-        // The convention plugin would normally also add these files to androidMain via srcDir;
-        // androidMain instead has its own actuals in src/androidMain/ below.
+        // jvmCommonMain holds the shared reflection serializer (kotlin.reflect.full) and the
+        // CIO-based WebSocket engine. The convention plugin srcDir-shares this source into both
+        // jvmMain and androidMain, but does NOT propagate its dependencies — so each consuming
+        // source set must declare kotlin-reflect + the Ktor CIO engine itself (see androidMain).
         named("jvmCommonMain") {
             dependencies {
                 implementation(libs.kotlin.reflect)
@@ -49,12 +50,11 @@ kotlin {
         }
         if (hasAndroidSdk) {
             named("androidMain") {
-                // Override the convention plugin's srcDir injection: androidMain provides its own
-                // actuals (src/androidMain/) and must NOT compile jvmCommonMain files that depend
-                // on kotlin.reflect.full or the CIO engine, neither of which is available on Android.
-                kotlin.setSrcDirs(listOf("src/androidMain/kotlin"))
+                // androidMain compiles the shared jvmCommonMain source (reflection serializer +
+                // CIO engine), so it needs those same deps declared here — they are not inherited.
                 dependencies {
-                    implementation(libs.ktor.client.okhttp)
+                    implementation(libs.kotlin.reflect)
+                    implementation(libs.ktor.client.cio)
                 }
             }
         }
