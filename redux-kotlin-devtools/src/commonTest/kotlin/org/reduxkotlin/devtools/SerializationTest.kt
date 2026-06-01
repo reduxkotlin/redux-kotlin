@@ -15,7 +15,9 @@ class SerializationTest {
     @Test
     fun defaultSerializerNeverThrowsOnArbitraryObject() {
         // platformDefaultSerializer must always return *some* JsonElement
-        val result = platformDefaultSerializer().toJson(object { override fun toString() = "x" })
+        val result = platformDefaultSerializer().toJson(object {
+            override fun toString() = "x"
+        })
         assertEquals(JsonPrimitive("x"), result)
     }
 }
