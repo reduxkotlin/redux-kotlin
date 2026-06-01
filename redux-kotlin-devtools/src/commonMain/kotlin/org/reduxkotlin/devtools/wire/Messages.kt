@@ -6,11 +6,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
 /** Identity fields stamped on every app→monitor message. */
-internal data class MessageContext(
-    val socketId: String?,
-    val name: String,
-    val instanceId: String,
-)
+internal data class MessageContext(val socketId: String?, val name: String, val instanceId: String)
 
 private fun MessageContext.envelope(type: String): MutableMap<String, JsonElement> = mutableMapOf(
     "type" to JsonPrimitive(type),
