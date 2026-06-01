@@ -2,10 +2,8 @@ package org.reduxkotlin.devtools
 
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.server.application.install
-import io.ktor.server.cio.CIO as ServerCIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.routing.routing
-import io.ktor.server.websocket.WebSockets as ServerWebSockets
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
@@ -22,6 +20,8 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import io.ktor.server.cio.CIO as ServerCIO
+import io.ktor.server.websocket.WebSockets as ServerWebSockets
 
 /** Fixed port unlikely to collide in CI. */
 private const val TEST_PORT = 18769
@@ -32,20 +32,24 @@ class ScClientIntegrationTest {
         install(ServerWebSockets)
         routing {
             webSocket("/socketcluster/") {
+                send("") // SC v2 heartbeat — client must tolerate + reply PONG without breaking
                 for (frame in incoming) {
                     if (frame !is Frame.Text) continue
                     val text = frame.readText()
                     when {
                         text.contains("#handshake") ->
                             send("""{"rid":1,"data":{"id":"sock-test","isAuthenticated":false}}""")
+
                         text.contains("\"login\"") -> {
                             val cid = Regex("\"cid\":(\\d+)").find(text)!!.groupValues[1]
                             send("""{"rid":$cid,"data":"chan-test"}""")
                         }
+
                         text.contains("#subscribe") -> {
                             val cid = Regex("\"cid\":(\\d+)").find(text)!!.groupValues[1]
                             send("""{"rid":$cid}""")
                         }
+
                         text.contains("\"event\":\"log\"") -> logReceived.complete(text)
                     }
                 }
@@ -77,6 +81,7 @@ class ScClientIntegrationTest {
             sc.transmitLog(JsonObject(mapOf("type" to JsonPrimitive("START"))))
             val received = withTimeout(5_000) { logReceived.await() }
             assertTrue(received.contains("\"event\":\"log\""))
+            assertTrue(received.contains("START"))
         }
         client.close()
     }
