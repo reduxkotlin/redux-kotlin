@@ -21,7 +21,7 @@ private object ReflectionValueSerializer : ValueSerializer {
     private fun convert(value: Any?, depth: Int): JsonElement = when {
         value == null -> JsonNull
 
-        depth > MAX_DEPTH -> JsonPrimitive(value.toString())
+        depth > MAX_DEPTH -> JsonPrimitive(runCatching { value.toString() }.getOrElse { "<?>" })
 
         value is Number -> JsonPrimitive(value)
 
@@ -45,7 +45,7 @@ private object ReflectionValueSerializer : ValueSerializer {
     private fun reflectObject(value: Any, depth: Int): JsonElement = try {
         val props = value::class.memberProperties
         if (props.isEmpty()) {
-            JsonPrimitive(value.toString())
+            JsonPrimitive(runCatching { value.toString() }.getOrElse { "<error>" })
         } else {
             JsonObject(
                 props.associate { prop ->
@@ -58,8 +58,9 @@ private object ReflectionValueSerializer : ValueSerializer {
         }
     } catch (_: Throwable) {
         // Serializer must never throw; fall back to toString representation.
-        JsonPrimitive(value.toString())
+        JsonPrimitive(runCatching { value.toString() }.getOrElse { "<error>" })
     }
 
+    // Generous for typical Redux state trees; caps runaway recursion on cyclic graphs.
     private const val MAX_DEPTH = 12
 }
