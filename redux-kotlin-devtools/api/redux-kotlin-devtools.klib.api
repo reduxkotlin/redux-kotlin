@@ -1,0 +1,57 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, linuxX64, macosArm64, macosX64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-devtools>
+abstract interface org.reduxkotlin.devtools/ValueSerializer { // org.reduxkotlin.devtools/ValueSerializer|null[0]
+    abstract fun toJson(kotlin/Any?): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/ValueSerializer.toJson|toJson(kotlin.Any?){}[0]
+}
+
+final class org.reduxkotlin.devtools/DevToolsConfig { // org.reduxkotlin.devtools/DevToolsConfig|null[0]
+    constructor <init>(kotlin/String = ..., kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Int = ..., kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., org.reduxkotlin.devtools/ValueSerializer? = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...) // org.reduxkotlin.devtools/DevToolsConfig.<init>|<init>(kotlin.String;kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Int;kotlin.String?;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;org.reduxkotlin.devtools.ValueSerializer?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+
+    final val allowlist // org.reduxkotlin.devtools/DevToolsConfig.allowlist|{}allowlist[0]
+        final fun <get-allowlist>(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.allowlist.<get-allowlist>|<get-allowlist>(){}[0]
+    final val denylist // org.reduxkotlin.devtools/DevToolsConfig.denylist|{}denylist[0]
+        final fun <get-denylist>(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.denylist.<get-denylist>|<get-denylist>(){}[0]
+    final val host // org.reduxkotlin.devtools/DevToolsConfig.host|{}host[0]
+        final fun <get-host>(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.host.<get-host>|<get-host>(){}[0]
+    final val instanceId // org.reduxkotlin.devtools/DevToolsConfig.instanceId|{}instanceId[0]
+        final fun <get-instanceId>(): kotlin/String? // org.reduxkotlin.devtools/DevToolsConfig.instanceId.<get-instanceId>|<get-instanceId>(){}[0]
+    final val logger // org.reduxkotlin.devtools/DevToolsConfig.logger|{}logger[0]
+        final fun <get-logger>(): kotlin/Function1<kotlin/String, kotlin/Unit> // org.reduxkotlin.devtools/DevToolsConfig.logger.<get-logger>|<get-logger>(){}[0]
+    final val maxAge // org.reduxkotlin.devtools/DevToolsConfig.maxAge|{}maxAge[0]
+        final fun <get-maxAge>(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.maxAge.<get-maxAge>|<get-maxAge>(){}[0]
+    final val name // org.reduxkotlin.devtools/DevToolsConfig.name|{}name[0]
+        final fun <get-name>(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.name.<get-name>|<get-name>(){}[0]
+    final val port // org.reduxkotlin.devtools/DevToolsConfig.port|{}port[0]
+        final fun <get-port>(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.port.<get-port>|<get-port>(){}[0]
+    final val secure // org.reduxkotlin.devtools/DevToolsConfig.secure|{}secure[0]
+        final fun <get-secure>(): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsConfig.secure.<get-secure>|<get-secure>(){}[0]
+    final val serializer // org.reduxkotlin.devtools/DevToolsConfig.serializer|{}serializer[0]
+        final fun <get-serializer>(): org.reduxkotlin.devtools/ValueSerializer? // org.reduxkotlin.devtools/DevToolsConfig.serializer.<get-serializer>|<get-serializer>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.component1|component1(){}[0]
+    final fun component10(): kotlin/Function1<kotlin/String, kotlin/Unit> // org.reduxkotlin.devtools/DevToolsConfig.component10|component10(){}[0]
+    final fun component2(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.component2|component2(){}[0]
+    final fun component3(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsConfig.component4|component4(){}[0]
+    final fun component5(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.component5|component5(){}[0]
+    final fun component6(): kotlin/String? // org.reduxkotlin.devtools/DevToolsConfig.component6|component6(){}[0]
+    final fun component7(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.component7|component7(){}[0]
+    final fun component8(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.component8|component8(){}[0]
+    final fun component9(): org.reduxkotlin.devtools/ValueSerializer? // org.reduxkotlin.devtools/DevToolsConfig.component9|component9(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Int = ..., kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., org.reduxkotlin.devtools/ValueSerializer? = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...): org.reduxkotlin.devtools/DevToolsConfig // org.reduxkotlin.devtools/DevToolsConfig.copy|copy(kotlin.String;kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Int;kotlin.String?;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;org.reduxkotlin.devtools.ValueSerializer?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.toString|toString(){}[0]
+}
+
+final object org.reduxkotlin.devtools/ToStringValueSerializer : org.reduxkotlin.devtools/ValueSerializer { // org.reduxkotlin.devtools/ToStringValueSerializer|null[0]
+    final fun toJson(kotlin/Any?): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/ToStringValueSerializer.toJson|toJson(kotlin.Any?){}[0]
+}
+
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/devTools(org.reduxkotlin.devtools/DevToolsConfig = ...): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.devtools/devTools|devTools(org.reduxkotlin.devtools.DevToolsConfig){0§<kotlin.Any?>}[0]

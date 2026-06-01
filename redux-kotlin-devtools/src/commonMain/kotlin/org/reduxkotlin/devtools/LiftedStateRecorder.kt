@@ -1,11 +1,11 @@
 package org.reduxkotlin.devtools
 
-import kotlin.concurrent.Volatile
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlin.concurrent.Volatile
 
 /** The result of recording one dispatched action — the data needed to relay an ACTION message. */
 internal data class RecordedAction(

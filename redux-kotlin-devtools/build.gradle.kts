@@ -38,10 +38,24 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
+        // jvmCommonMain contains JVM-only APIs (kotlin.reflect.full, CIO engine).
+        // The convention plugin would normally also add these files to androidMain via srcDir;
+        // androidMain instead has its own actuals in src/androidMain/ below.
         named("jvmCommonMain") {
             dependencies {
                 implementation(libs.kotlin.reflect)
                 implementation(libs.ktor.client.cio)
+            }
+        }
+        if (hasAndroidSdk) {
+            named("androidMain") {
+                // Override the convention plugin's srcDir injection: androidMain provides its own
+                // actuals (src/androidMain/) and must NOT compile jvmCommonMain files that depend
+                // on kotlin.reflect.full or the CIO engine, neither of which is available on Android.
+                kotlin.setSrcDirs(listOf("src/androidMain/kotlin"))
+                dependencies {
+                    implementation(libs.ktor.client.okhttp)
+                }
             }
         }
         named("nativeMain") {
