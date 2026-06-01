@@ -11,6 +11,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidContextHolder.appContext = applicationContext
+        // Debug builds attach Redux DevTools (no-op in release). Must run before the first
+        // per-account store is created.
+        installDebugTooling()
         enableEdgeToEdge()
         setContent { App() }
     }

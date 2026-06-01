@@ -9,6 +9,7 @@ import kotlinx.coroutines.SupervisorJob
 import org.reduxkotlin.Store
 import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.bundle.createConcurrentModelStore
+import org.reduxkotlin.compose
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.routing.RoutingBuilder
@@ -138,9 +139,15 @@ public fun createAccountStore(
     val syncRepo = SyncRepository(localStore, remoteApi, scope, detail.accountId)
     val effects = effectsMiddleware(syncRepo, scope)
 
+    // A debug build may install [debugStoreEnhancer] (Redux DevTools) — see the androidApp's
+    // debug source set. When present it is composed INNERMOST (closest to the base store) so it
+    // records the plain actions that reach the reducers, after the middleware chain runs. Release
+    // builds never set it, so neither the devtools wiring nor its dependency is linked.
+    val baseEnhancer = applyMiddleware(activityLoggerMiddleware(), undoMiddleware(), effects)
+    val devEnhancer = debugStoreEnhancer?.invoke()
     val store = createConcurrentModelStore(
         notificationContext = notificationContext,
-        enhancer = applyMiddleware(activityLoggerMiddleware(), undoMiddleware(), effects),
+        enhancer = if (devEnhancer != null) compose(baseEnhancer, devEnhancer) else baseEnhancer,
     ) { declareAccountModels(detail) }
 
     // Eagerly trigger the effects middleware's first invocation so its reject/status collectors are
