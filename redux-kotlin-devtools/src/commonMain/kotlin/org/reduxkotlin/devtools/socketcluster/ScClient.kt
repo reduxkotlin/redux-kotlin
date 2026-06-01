@@ -4,6 +4,7 @@ import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import io.ktor.websocket.send
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.sync.Mutex
@@ -29,12 +30,13 @@ internal class ScClient(
     /** The socket id assigned by the server during the handshake, if any. */
     val id: String? get() = socketId
 
-    private suspend fun nextCid(): Int = pendingLock.withLock { ++cid }
-
     private suspend fun invoke(encode: (Int) -> String): ScInbound.RpcResponse {
-        val id = nextCid()
         val deferred = CompletableDeferred<ScInbound.RpcResponse>()
-        pendingLock.withLock { pending[id] = deferred }
+        val id = pendingLock.withLock {
+            val next = ++cid
+            pending[next] = deferred
+            next
+        }
         session.send(encode(id))
         return deferred.await()
     }
@@ -66,14 +68,32 @@ internal class ScClient(
 
     /** Reads inbound frames until the socket closes. Call once, after constructing the client. */
     suspend fun readLoop() {
-        session.incoming.consumeEach { frame ->
-            if (frame !is Frame.Text) return@consumeEach
-            when (val inbound = ScFrame.decode(frame.readText())) {
-                is ScInbound.Ping -> session.send(ScFrame.PONG)
-                is ScInbound.RpcResponse -> completePending(inbound)
-                is ScInbound.ChannelMessage -> onChannelMessage(inbound.channel, inbound.data)
-                is ScInbound.Other -> { /* ignored */ }
+        try {
+            session.incoming.consumeEach { frame ->
+                if (frame !is Frame.Text) return@consumeEach
+                when (val inbound = ScFrame.decode(frame.readText())) {
+                    is ScInbound.Ping -> session.send(ScFrame.PONG)
+                    is ScInbound.RpcResponse -> completePending(inbound)
+                    is ScInbound.ChannelMessage -> dispatchChannel(inbound)
+                    is ScInbound.Other -> Unit
+                }
             }
+        } finally {
+            pendingLock.withLock {
+                pending.values.forEach { it.cancel(CancellationException("devtools: socket closed")) }
+                pending.clear()
+            }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun dispatchChannel(msg: ScInbound.ChannelMessage) {
+        try {
+            onChannelMessage(msg.channel, msg.data)
+        } catch (c: CancellationException) {
+            throw c
+        } catch (t: Throwable) {
+            log("devtools: onChannelMessage error: ${t.message}")
         }
     }
 
