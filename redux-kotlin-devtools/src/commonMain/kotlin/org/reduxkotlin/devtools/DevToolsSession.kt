@@ -37,9 +37,13 @@ internal class DevToolsSession(private val config: DevToolsConfig, private val r
         if (result.isFailure) config.logger("devtools: outbound buffer full, dropping message")
     }
 
+    /**
+     * Stops the session. Normally unnecessary — a debug session lives for the app's lifetime —
+     * but provided for tests and explicit teardown.
+     */
     fun stop() {
-        outbound.close()
         scope.cancel()
+        outbound.close()
         client.close()
     }
 
@@ -55,11 +59,13 @@ internal class DevToolsSession(private val config: DevToolsConfig, private val r
                     path = "/socketcluster/",
                 ) {
                     var ctx = MessageContext(socketId = null, name = config.name, instanceId = instanceId)
+                    var scRef: ScClient? = null
                     val sc = ScClient(
                         session = this,
-                        onChannelMessage = { _, data -> handleInbound(data) { enqueue(it) } },
+                        onChannelMessage = { _, data -> handleInbound(data, scRef?.id) { enqueue(it) } },
                         log = config.logger,
                     )
+                    scRef = sc
                     launch { sc.readLoop() }
                     sc.handshake()
                     ctx = ctx.copy(socketId = sc.id)
@@ -83,11 +89,11 @@ internal class DevToolsSession(private val config: DevToolsConfig, private val r
         }
     }
 
-    private inline fun handleInbound(data: JsonElement, send: (JsonObject) -> Unit) {
+    private inline fun handleInbound(data: JsonElement, socketId: String?, send: (JsonObject) -> Unit) {
         val type = (data as? JsonObject)?.get("type")?.let { (it as? JsonPrimitive)?.content } ?: return
         when (type) {
             "START", "UPDATE" -> {
-                val ctx = MessageContext(socketId = null, name = config.name, instanceId = instanceId)
+                val ctx = MessageContext(socketId = socketId, name = config.name, instanceId = instanceId)
                 send(stateMessage(ctx, recorder.liftedState()))
             }
 
