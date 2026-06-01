@@ -1,5 +1,6 @@
 package org.reduxkotlin.devtools
 
+import kotlinx.serialization.json.JsonPrimitive
 import org.reduxkotlin.createStore
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,15 +34,23 @@ class DevToolsEnhancerTest {
 
     @Test
     fun shouldSendRespectsDenylist() {
-        val config = DevToolsConfig(denylist = listOf("Noisy"))
-        assertFalse(shouldSend(Noisy(1), config))
-        assertTrue(shouldSend(Increment(1), config))
+        assertFalse(shouldSend(Noisy(1), denylist = listOf(Regex("Noisy")), allowlist = emptyList()))
+        assertTrue(shouldSend(Increment(1), denylist = listOf(Regex("Noisy")), allowlist = emptyList()))
     }
 
     @Test
     fun shouldSendRespectsAllowlist() {
-        val config = DevToolsConfig(allowlist = listOf("Increment"))
-        assertTrue(shouldSend(Increment(1), config))
-        assertFalse(shouldSend(Noisy(1), config))
+        assertTrue(shouldSend(Increment(1), denylist = emptyList(), allowlist = listOf(Regex("Increment"))))
+        assertFalse(shouldSend(Noisy(1), denylist = emptyList(), allowlist = listOf(Regex("Increment"))))
+    }
+
+    @Test
+    fun recorderSnapshotReflectsDispatchedActions() {
+        val r = LiftedStateRecorder(maxAge = 50, clock = { 1L })
+        r.init(JsonPrimitive(0))
+        r.record(JsonPrimitive("INC"), JsonPrimitive(1))
+        r.record(JsonPrimitive("INC"), JsonPrimitive(2))
+        val lifted = r.liftedState()
+        assertEquals(3, (lifted["nextActionId"] as JsonPrimitive).content.toInt())
     }
 }

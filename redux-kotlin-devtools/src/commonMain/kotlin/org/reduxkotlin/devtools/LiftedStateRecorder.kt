@@ -1,5 +1,6 @@
 package org.reduxkotlin.devtools
 
+import kotlin.concurrent.Volatile
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
@@ -26,12 +27,20 @@ internal class LiftedStateRecorder(private val maxAge: Int, private val clock: E
     private val staged = ArrayDeque<Entry>()
     private var committedState: JsonElement = JsonPrimitive(0)
 
+    /**
+     * Immutable snapshot of lifted state, published by the writer (dispatch thread) and consumed
+     * by readers on other threads. One action behind is acceptable for a debug tool.
+     */
+    @Volatile
+    private var snapshot: JsonObject? = null
+
     /** Seeds the history with the @@INIT action (id 0) and the initial [state]. */
     fun init(state: JsonElement) {
         committedState = state
         staged.clear()
         staged.addLast(Entry(id = 0, actionJson = initActionJson(), timestamp = clock(), state = state))
         nextActionId = 1
+        snapshot = buildSnapshot()
     }
 
     /** Records a dispatched [action] and the resulting [state]; returns the relay payload. */
@@ -44,11 +53,15 @@ internal class LiftedStateRecorder(private val maxAge: Int, private val clock: E
             val dropped = staged.removeFirst()
             committedState = dropped.state
         }
+        snapshot = buildSnapshot()
         return RecordedAction(actionId = id, actionJson = action, timestamp = ts, isExcess = excess)
     }
 
+    /** Returns the last published lifted-state snapshot; safe to call from any thread. */
+    fun liftedState(): JsonObject = snapshot ?: buildSnapshot()
+
     /** Builds the full lifted-state JSON object (the STATE message payload). */
-    fun liftedState(): JsonObject {
+    private fun buildSnapshot(): JsonObject {
         val ids = staged.map { it.id }
         val actionsById = JsonObject(
             staged.associate { entry ->
