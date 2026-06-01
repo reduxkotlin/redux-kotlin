@@ -63,6 +63,7 @@ kotlin {
                 implementation(libs.ktor.client.cio)
             }
         }
+        // Ktor CIO has no JS/Wasm target — the JS engine is required on these targets.
         named("jsMain") {
             dependencies {
                 implementation(libs.ktor.client.js)

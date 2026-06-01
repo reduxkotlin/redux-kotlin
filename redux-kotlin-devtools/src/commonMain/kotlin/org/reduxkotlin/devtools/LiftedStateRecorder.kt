@@ -8,12 +8,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlin.concurrent.Volatile
 
 /** The result of recording one dispatched action — the data needed to relay an ACTION message. */
-internal data class RecordedAction(
-    val actionId: Int,
-    val actionJson: JsonElement,
-    val timestamp: Long,
-    val isExcess: Boolean,
-)
+internal data class RecordedAction(val actionId: Int, val timestamp: Long, val isExcess: Boolean)
 
 /**
  * Maintains the Redux DevTools "lifted state" for monitoring only: assigns action ids, keeps a
@@ -54,7 +49,7 @@ internal class LiftedStateRecorder(private val maxAge: Int, private val clock: E
             committedState = dropped.state
         }
         snapshot = buildSnapshot()
-        return RecordedAction(actionId = id, actionJson = action, timestamp = ts, isExcess = excess)
+        return RecordedAction(actionId = id, timestamp = ts, isExcess = excess)
     }
 
     /** Returns the last published lifted-state snapshot; safe to call from any thread. */

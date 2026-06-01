@@ -38,6 +38,3 @@ internal fun stateMessage(ctx: MessageContext, liftedState: JsonElement): JsonOb
 
 /** Builds a `START` message (sent on connect). */
 internal fun startMessage(ctx: MessageContext): JsonObject = JsonObject(ctx.envelope("START"))
-
-/** Builds a `STOP` message. */
-internal fun stopMessage(ctx: MessageContext): JsonObject = JsonObject(ctx.envelope("STOP"))
