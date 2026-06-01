@@ -37,7 +37,7 @@ import org.reduxkotlin.sample.taskflow.ui.image.fakeNoNetworkImageLoader
  * last left — Nav state is isolated per account and is *remembered*, never reset on switch.
  *
  * The harness binds `store = rememberStableStore(registry.store(activeId)).value` and renders a tag
- * of `store.fieldStateOf(NavModel::class){ it.route::class.simpleName }`. A test-controlled
+ * of `store.fieldStateOf(NavModel::class){ it.current::class.simpleName }`. A test-controlled
  * `mutableStateOf` for the active account drives the switch. Each account's store was independently
  * navigated (A → Settings, B → Profile) before the first frame; the test then drives A → B → A and
  * asserts the rendered route follows the per-account store and that returning to A restores its
@@ -119,6 +119,6 @@ class AccountSwitchTest {
  */
 @Composable
 private fun RouteTag(store: Store<ModelState>) {
-    val routeName: String by store.fieldStateOf(NavModel::class) { it.route::class.simpleName ?: "?" }
+    val routeName: String by store.fieldStateOf(NavModel::class) { it.current::class.simpleName ?: "?" }
     Text(text = "route:$routeName")
 }

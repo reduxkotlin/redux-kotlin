@@ -27,7 +27,6 @@ import org.reduxkotlin.sample.taskflow.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.model.Board
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.NavModel
-import org.reduxkotlin.sample.taskflow.model.Route
 import org.reduxkotlin.sample.taskflow.model.columnById
 import org.reduxkotlin.sample.taskflow.model.newBoardColumns
 import org.reduxkotlin.sample.taskflow.reducer.DEFAULT_BOARD_COLOR
@@ -212,8 +211,10 @@ private fun onLoadBoard(
         when {
             board == null -> store.dispatch(LoadBoardFailed(action.boardId, "not found"))
 
-            // Drop a late load if the user already navigated away (Rule: drop on board-left).
-            store.state.get<NavModel>().route == Route.Board(action.boardId) ->
+            // Drop a late load if the user already navigated away (Rule: drop on board-left). Use
+            // activeBoardId so a card-detail / compose overlay above the board still counts as "on
+            // this board" — those overlays don't leave the board.
+            store.state.get<NavModel>().activeBoardId == action.boardId ->
                 store.dispatch(LoadBoardSucceeded(board))
         }
     }

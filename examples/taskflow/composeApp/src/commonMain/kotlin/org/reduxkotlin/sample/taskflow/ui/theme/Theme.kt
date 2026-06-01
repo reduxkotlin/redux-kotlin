@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import org.reduxkotlin.sample.taskflow.model.Theme
 import org.reduxkotlin.sample.taskflow.platform.dynamicColorScheme
+import org.reduxkotlin.sample.taskflow.ui.ApplySystemBarAppearance
 
 /**
  * Root theme for the TaskFlow sample. Resolves the dark/light mode from the
@@ -36,6 +37,16 @@ fun TaskFlowTheme(theme: Theme = Theme.System, dynamic: Boolean = true, content:
     val colorScheme = (if (dynamic) dynamicColorScheme(dark) else null)
         ?: (if (dark) DarkColors else LightColors)
     val semanticColors = if (dark) DarkSemanticColors else LightSemanticColors
+
+    // Edge-to-edge: with the root Surface drawing the theme colour all the way under the
+    // status / navigation bars, the system foreground (clock, battery, gesture pill) needs
+    // its contrast picked from the THEME — `enableEdgeToEdge()`'s one-shot read at activity
+    // creation can be wrong (Theme.Light forced over a dark-mode system, or a runtime toggle).
+    // Light theme → light bars → ask the system for dark icons; dark theme → light icons.
+    ApplySystemBarAppearance(
+        lightStatusBarBackground = !dark,
+        lightNavigationBarBackground = !dark,
+    )
 
     CompositionLocalProvider(LocalSemanticColors provides semanticColors) {
         MaterialTheme(

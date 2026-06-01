@@ -38,7 +38,7 @@ class AccountRegistryTest {
         return AccountRegistry(rootStore, local, NotificationContext.Inline)
     }
 
-    private fun Store<ModelState>.route(): Route = state.getModel<NavModel>().route
+    private fun Store<ModelState>.route(): Route = state.getModel<NavModel>().current
 
     @Test
     fun accounts_are_isolated_and_removable() {

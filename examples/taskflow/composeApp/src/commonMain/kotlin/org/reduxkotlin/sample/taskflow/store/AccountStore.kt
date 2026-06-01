@@ -14,6 +14,7 @@ import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.routing.RoutingBuilder
 import org.reduxkotlin.sample.taskflow.action.AddCard
 import org.reduxkotlin.sample.taskflow.action.AddColumn
+import org.reduxkotlin.sample.taskflow.action.Back
 import org.reduxkotlin.sample.taskflow.action.BoardClosed
 import org.reduxkotlin.sample.taskflow.action.BoardRestored
 import org.reduxkotlin.sample.taskflow.action.BotAddedCard
@@ -27,6 +28,7 @@ import org.reduxkotlin.sample.taskflow.action.CreateBoard
 import org.reduxkotlin.sample.taskflow.action.DeleteCard
 import org.reduxkotlin.sample.taskflow.action.EditCard
 import org.reduxkotlin.sample.taskflow.action.EditProfile
+import org.reduxkotlin.sample.taskflow.action.EnterEditMode
 import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
@@ -167,6 +169,8 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
     }
     model(NavModel()) {
         on<Navigate> { s, a -> navReducer(s, a) }
+        on<Back> { s, a -> navReducer(s, a) }
+        on<EnterEditMode> { s, a -> navReducer(s, a) }
         on<OpenCard> { s, a -> navReducer(s, a) }
         on<CloseCard> { s, a -> navReducer(s, a) }
         on<StartCreateCard> { s, a -> navReducer(s, a) }

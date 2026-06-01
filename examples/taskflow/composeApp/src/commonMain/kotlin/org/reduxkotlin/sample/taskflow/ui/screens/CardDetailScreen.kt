@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -43,10 +44,12 @@ import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.compose.selectorState
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.AddCard
+import org.reduxkotlin.sample.taskflow.action.Back
 import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CardMoveRequested
 import org.reduxkotlin.sample.taskflow.action.CloseCard
 import org.reduxkotlin.sample.taskflow.action.EditCard
+import org.reduxkotlin.sample.taskflow.action.EnterEditMode
 import org.reduxkotlin.sample.taskflow.model.AccountSummary
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.Card
@@ -54,7 +57,9 @@ import org.reduxkotlin.sample.taskflow.model.CardId
 import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.model.ColumnId
 import org.reduxkotlin.sample.taskflow.model.NavModel
+import org.reduxkotlin.sample.taskflow.model.Route
 import org.reduxkotlin.sample.taskflow.model.SyncModel
+import org.reduxkotlin.sample.taskflow.ui.BackHandler
 import org.reduxkotlin.sample.taskflow.ui.LocalClock
 import org.reduxkotlin.sample.taskflow.ui.LocalIdGenerator
 import org.reduxkotlin.sample.taskflow.ui.adaptive.WindowSizeClass
@@ -69,20 +74,25 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**
  * The card-detail overlay (Screen 5): one surface, three modes — **view**, **edit**, **create** —
- * with no extra route. Create mode is driven by [NavModel.composing] (a target [ColumnId]); view/edit
- * by [NavModel.openCardId]. The App decides when to mount this overlay, but it also guards internally:
- * when both nav fields are `null` it renders nothing.
+ * driven by the top of [NavModel.stack]. A [Route.ComposeCard] selects create mode; a
+ * [Route.CardDetail] selects view or edit by its [Route.CardDetail.Mode]. The App routes this
+ * overlay when the top is a non-top-level route, but the composable also guards internally and
+ * renders nothing for stale frames during pop animations.
+ *
+ * Edit ↔ view is a mode flip on the same stack frame (handled by [navReducer]); the App's
+ * `key(overlay)` resets local UI state across the flip, and back from edit returns to view via the
+ * reducer's Edit→View special case (no pop).
  *
  * Adaptive (spec): a 330-dp **side sheet** on Medium / Expanded (board stays behind it) and a
  * **full-screen** surface on Compact, switched purely by the window size class.
  *
- * Binding discipline (Rule C): the overlay reads only `openCardId` / `composing` from [NavModel];
- * the view/edit body is wrapped in `key(openCardId)` and binds *just* that one
- * [org.reduxkotlin.sample.taskflow.model.Card] via `fieldStateOf(BoardModel::class){ …cards[id] }`,
- * never the whole board. The card's column position (for [MoveToGroup]'s edge state) is derived in a
- * value-equal [CardColumnNav] `selectorState`, and the assignee is an O(1) lookup against the bound
- * [CollaboratorsModel.byId]. Transient editor text is the only thing in local `remember` — every
- * commit dispatches an action, minting ids/clock at the dispatch site (Rule G).
+ * Binding discipline (Rule C): the overlay reads only `current` from [NavModel]; the view/edit
+ * body binds *just* that one [org.reduxkotlin.sample.taskflow.model.Card] via
+ * `fieldStateOf(BoardModel::class){ …cards[id] }`, never the whole board. The card's column
+ * position (for [MoveToGroup]'s edge state) is derived in a value-equal [CardColumnNav]
+ * `selectorState`, and the assignee is an O(1) lookup against the bound [CollaboratorsModel.byId].
+ * Transient editor text is the only thing in local `remember` — every commit dispatches an action,
+ * minting ids/clock at the dispatch site (Rule G).
  *
  * @param store the active account store holding [NavModel] / [BoardModel] / [CollaboratorsModel].
  * @param modifier the [Modifier] for the overlay root.
@@ -90,19 +100,32 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 @Composable
 public fun CardDetailScreen(store: Store<ModelState>, modifier: Modifier = Modifier) {
     val s = rememberStableStore(store).value
-    val openCardId by s.fieldStateOf(NavModel::class) { it.openCardId }
-    val composing by s.fieldStateOf(NavModel::class) { it.composing }
+    val current by s.fieldStateOf(NavModel::class) { it.current }
+    CardDetailScreen(store = store, route = current, modifier = modifier)
+}
 
-    if (openCardId == null && composing == null) return
+/**
+ * Explicit-route overload of [CardDetailScreen]. Renders [route] regardless of what
+ * [NavModel.current] currently says — used by the App shell when it needs to render a phantom
+ * `CardDetail(View)` backdrop beneath a live `CardDetail(Edit)` so a predictive-back gesture
+ * reveals the same card in view mode (rather than the board beneath the whole stack).
+ *
+ * @param store the active account store (read for the card slice + the active mode of [route]).
+ * @param route the route to render — defensively no-ops for [Route.TopLevel].
+ * @param modifier the [Modifier] for the overlay root.
+ */
+@Composable
+public fun CardDetailScreen(store: Store<ModelState>, route: Route, modifier: Modifier = Modifier) {
+    if (route !is Route.CardDetail && route !is Route.ComposeCard) return
+    val s = rememberStableStore(store).value
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val compact = widthSizeClass(maxWidth) == WindowSizeClass.Compact
         CardDetailContainer(compact = compact) {
-            val column = composing
-            val cardId = openCardId
-            when {
-                column != null -> CreateMode(store = store, columnId = column)
-                cardId != null -> key(cardId) { ViewEditMode(store = store, s = s, openCardId = cardId) }
+            when (route) {
+                is Route.ComposeCard -> CreateMode(store = store, columnId = route.columnId)
+                is Route.CardDetail -> ViewEditMode(store = store, s = s, cardId = route.cardId, mode = route.mode)
+                is Route.TopLevel -> Unit // unreachable per the guard above
             }
         }
     }
@@ -183,28 +206,31 @@ private fun CreateMode(store: Store<ModelState>, columnId: ColumnId) {
 }
 
 /**
- * View / edit mode for one card. Binds *only* this card (by [openCardId]) and a local edit flag; the
- * card body renders read-only by default and swaps to an inline [MarkdownEditor] when editing. When
- * the card is absent (just closed / removed) it renders nothing.
+ * View / edit mode for one card. Binds *only* this card (by [cardId]); the body renders read-only
+ * by default and swaps to an inline [MarkdownEditor] when [mode] is [Route.CardDetail.Mode.Edit].
+ * When the card is absent (just closed / removed) it renders nothing.
+ *
+ * Mode lives in the route, not in local Compose state — so back from edit (the system back, or
+ * any [Back] dispatch) returns to view via the reducer's Edit→View special case, and the App
+ * level `key(overlay)` resets local UI state across the flip.
  */
 @Composable
-private fun ViewEditMode(store: Store<ModelState>, s: Store<ModelState>, openCardId: CardId) {
-    val card by s.fieldStateOf(BoardModel::class) { it.board?.cards?.get(openCardId) }
-    var editing by remember { mutableStateOf(false) }
+private fun ViewEditMode(store: Store<ModelState>, s: Store<ModelState>, cardId: CardId, mode: Route.CardDetail.Mode) {
+    val card by s.fieldStateOf(BoardModel::class) { it.board?.cards?.get(cardId) }
     val current = card ?: return
 
-    if (editing) {
-        EditCardBody(
+    when (mode) {
+        Route.CardDetail.Mode.Edit -> EditCardBody(
             store = store,
             card = current,
-            onDone = { editing = false },
+            onDone = { store.dispatch(Back) },
         )
-    } else {
-        ViewCardBody(
+
+        Route.CardDetail.Mode.View -> ViewCardBody(
             store = store,
             s = s,
             card = current,
-            onEdit = { editing = true },
+            onEdit = { store.dispatch(EnterEditMode) },
         )
     }
 }
@@ -322,6 +348,12 @@ private fun AssigneeAndMoveRow(
  * The inline edit body: a title field + a [MarkdownEditor] seeded from the bound [card] into local
  * `remember` (keystrokes stay local, Rule C). Save dispatches [EditCard] with a fresh op id + clock
  * and leaves edit mode; Cancel just leaves edit mode without dispatching.
+ *
+ * Unsaved-edits guard: while [dirty] is true the system back press (or the in-screen Cancel
+ * button) opens a "Discard changes?" [AlertDialog] instead of immediately leaving edit mode.
+ * Confirming **Discard** invokes [onDone] (back to view); **Keep editing** dismisses the dialog
+ * and leaves the buffer intact. The [BackHandler] is gated on [dirty] so the App-level
+ * predictive-back / ModeFlip animation still works when there's nothing to lose.
  */
 @Composable
 private fun EditCardBody(store: Store<ModelState>, card: Card, onDone: () -> Unit) {
@@ -329,6 +361,31 @@ private fun EditCardBody(store: Store<ModelState>, card: Card, onDone: () -> Uni
     var description by remember(card.id) { mutableStateOf(card.description) }
     val idGen = LocalIdGenerator.current
     val clock = LocalClock.current
+    val dirty = title != card.title || description != card.description
+    var showDiscard by remember(card.id) { mutableStateOf(false) }
+
+    // While the buffer is dirty, intercept system back to confirm — wins over the App-level
+    // PredictiveBackHandler because this is more deeply composed.
+    BackHandler(enabled = dirty) { showDiscard = true }
+
+    if (showDiscard) {
+        AlertDialog(
+            onDismissRequest = { showDiscard = false },
+            title = { Text(text = "Discard changes?", style = MaterialTheme.typography.titleLarge) },
+            text = { Text(text = "Your edits to this card won't be saved.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDiscard = false
+                    onDone()
+                }) {
+                    Text(text = "Discard", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDiscard = false }) { Text(text = "Keep editing") }
+            },
+        )
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(Dimens.space4).verticalScroll(rememberScrollState()),
@@ -338,7 +395,7 @@ private fun EditCardBody(store: Store<ModelState>, card: Card, onDone: () -> Uni
             overline = "EDIT CARD",
             trailingLabel = "Cancel",
             isCreate = true,
-            onTrailing = onDone,
+            onTrailing = { if (dirty) showDiscard = true else onDone() },
         )
         OutlinedTextField(
             value = title,

@@ -2,10 +2,12 @@ package org.reduxkotlin.sample.taskflow.reducer
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
+import org.reduxkotlin.sample.taskflow.action.Back
 import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
 import org.reduxkotlin.sample.taskflow.action.CreateBoard
 import org.reduxkotlin.sample.taskflow.action.EditProfile
+import org.reduxkotlin.sample.taskflow.action.EnterEditMode
 import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
@@ -24,8 +26,10 @@ import org.reduxkotlin.sample.taskflow.model.Route
 import org.reduxkotlin.sample.taskflow.model.SessionModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 import kotlin.time.Instant
 
 class AccountReducersTest {
@@ -33,43 +37,137 @@ class AccountReducersTest {
 
     // --- navReducer ---
 
+    private val b1 = BoardId("b1")
+    private val c1 = CardId("c1")
+    private val col1 = ColumnId("col1")
+
+    /** Stack with a board open, a card detail above it, in view mode. */
+    private fun viewingCard() = NavModel(
+        persistentListOf(Route.BoardList, Route.Board(b1), Route.CardDetail(c1, Route.CardDetail.Mode.View)),
+    )
+
     @Test
-    fun navigateSetsRouteAndClearsCardAndComposing() {
-        val start = NavModel(
-            route = Route.BoardList,
-            openCardId = CardId("c1"),
-            composing = ColumnId("col1"),
-        )
+    fun navigateToProfileResetsStackAndClearsOverlays() {
+        val start = viewingCard()
         val next = navReducer(start, Navigate(Route.Profile))
-        assertEquals(Route.Profile, next.route)
+        assertEquals(persistentListOf<Route>(Route.Profile), next.stack)
         assertNull(next.openCardId)
         assertNull(next.composing)
     }
 
     @Test
-    fun openCardSetsOpenCardId() {
-        val next = navReducer(NavModel(), OpenCard(CardId("c1")))
-        assertEquals(CardId("c1"), next.openCardId)
+    fun navigateToBoardPushesOntoBoardList() {
+        val next = navReducer(NavModel(), Navigate(Route.Board(b1)))
+        assertEquals(persistentListOf<Route>(Route.BoardList, Route.Board(b1)), next.stack)
     }
 
     @Test
-    fun closeCardClearsOpenCardId() {
-        val start = NavModel(openCardId = CardId("c1"))
-        val next = navReducer(start, CloseCard)
+    fun navigateToBoardListResetsStack() {
+        val next = navReducer(viewingCard(), Navigate(Route.BoardList))
+        assertEquals(persistentListOf<Route>(Route.BoardList), next.stack)
+    }
+
+    @Test
+    fun navigateToCurrentTopLevelIsIdempotent() {
+        val start = NavModel(persistentListOf(Route.BoardList, Route.Board(b1)))
+        assertSame(start, navReducer(start, Navigate(Route.Board(b1))))
+    }
+
+    @Test
+    fun openCardPushesCardDetailInViewMode() {
+        val start = NavModel(persistentListOf(Route.BoardList, Route.Board(b1)))
+        val next = navReducer(start, OpenCard(c1))
+        assertEquals(Route.CardDetail(c1, Route.CardDetail.Mode.View), next.current)
+        assertEquals(c1, next.openCardId)
+        assertEquals(3, next.stack.size)
+    }
+
+    @Test
+    fun openCardSameCardIsIdempotent() {
+        val start = viewingCard()
+        assertSame(start, navReducer(start, OpenCard(c1)))
+    }
+
+    @Test
+    fun closeCardPopsCardDetail() {
+        val next = navReducer(viewingCard(), CloseCard)
+        assertEquals(Route.Board(b1), next.current)
         assertNull(next.openCardId)
     }
 
     @Test
-    fun startCreateCardSetsComposing() {
-        val next = navReducer(NavModel(), StartCreateCard(ColumnId("col1")))
-        assertEquals(ColumnId("col1"), next.composing)
+    fun enterEditModeFlipsTopCardDetailToEdit() {
+        val next = navReducer(viewingCard(), EnterEditMode)
+        assertEquals(Route.CardDetail(c1, Route.CardDetail.Mode.Edit), next.current)
+        // The flip is in place: the stack depth stays the same.
+        assertEquals(3, next.stack.size)
     }
 
     @Test
-    fun cancelCreateCardClearsComposing() {
-        val start = NavModel(composing = ColumnId("col1"))
+    fun enterEditModeIsNoOpWhenNotOnCardDetail() {
+        val start = NavModel(persistentListOf(Route.BoardList, Route.Board(b1)))
+        assertSame(start, navReducer(start, EnterEditMode))
+    }
+
+    @Test
+    fun backFromEditModeReturnsToViewModeWithoutPopping() {
+        val editing = NavModel(
+            persistentListOf(Route.BoardList, Route.Board(b1), Route.CardDetail(c1, Route.CardDetail.Mode.Edit)),
+        )
+        val next = navReducer(editing, Back)
+        assertEquals(Route.CardDetail(c1, Route.CardDetail.Mode.View), next.current)
+        assertEquals(3, next.stack.size)
+    }
+
+    @Test
+    fun backFromCardDetailPopsToBoard() {
+        val next = navReducer(viewingCard(), Back)
+        assertEquals(Route.Board(b1), next.current)
+        assertEquals(2, next.stack.size)
+    }
+
+    @Test
+    fun backFromBoardReturnsToBoardList() {
+        val start = NavModel(persistentListOf(Route.BoardList, Route.Board(b1)))
+        val next = navReducer(start, Back)
+        assertEquals(Route.BoardList, next.current)
+    }
+
+    @Test
+    fun backAtRootIsNoOp() {
+        val start = NavModel(persistentListOf(Route.BoardList))
+        assertSame(start, navReducer(start, Back))
+    }
+
+    @Test
+    fun startCreateCardPushesComposeCard() {
+        val start = NavModel(persistentListOf(Route.BoardList, Route.Board(b1)))
+        val next = navReducer(start, StartCreateCard(col1))
+        assertEquals(Route.ComposeCard(col1), next.current)
+        assertEquals(col1, next.composing)
+    }
+
+    @Test
+    fun cancelCreateCardPopsComposeCard() {
+        val start = NavModel(persistentListOf(Route.BoardList, Route.Board(b1), Route.ComposeCard(col1)))
         val next = navReducer(start, CancelCreateCard)
+        assertEquals(Route.Board(b1), next.current)
         assertNull(next.composing)
+    }
+
+    @Test
+    fun activeBoardIdIsLowestBoardInStack() {
+        // Even with a card detail at the top, the board lifecycle stays active.
+        assertEquals(b1, viewingCard().activeBoardId)
+        // No board on the stack -> null.
+        assertNull(NavModel().activeBoardId)
+    }
+
+    @Test
+    fun isEmptyStackEdgeCases() {
+        val root = NavModel()
+        assertTrue(root.stack.size == 1)
+        assertFalse(root.stack.isEmpty())
     }
 
     @Test
