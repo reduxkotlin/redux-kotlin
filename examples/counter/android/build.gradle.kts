@@ -33,4 +33,5 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(project(":examples:counter:common"))
     implementation(project(":redux-kotlin-threadsafe"))
+    implementation(project(":redux-kotlin-devtools"))
 }

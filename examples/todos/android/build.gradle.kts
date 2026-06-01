@@ -36,4 +36,5 @@ dependencies {
 
     implementation(project(":examples:todos:common"))
     implementation(project(":redux-kotlin-threadsafe"))
+    implementation(project(":redux-kotlin-devtools"))
 }
