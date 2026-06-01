@@ -32,4 +32,14 @@ class ReflectionSerializationTest {
     fun fallsBackToStringForNonReflectableValue() {
         assertEquals(JsonPrimitive("plain"), serializer.toJson("plain"))
     }
+
+    @Test
+    fun neverThrowsWhenAnElementToStringThrows() {
+        val hostile = object {
+            override fun toString(): String = throw IllegalStateException("boom")
+        }
+        // A list containing a value whose reflection/toString may blow up must still yield JSON.
+        val result = serializer.toJson(listOf(hostile))
+        assertTrue(result is kotlinx.serialization.json.JsonArray || result is JsonPrimitive)
+    }
 }
