@@ -65,6 +65,7 @@ internal object ScFrame {
     fun decode(raw: String): ScInbound = when {
         // SC v2 server-side ping token (legacy), treated like the empty-string heartbeat
         raw.isEmpty() || raw == "#1" -> ScInbound.Ping
+
         else -> decodeJson(raw)
     }
 
