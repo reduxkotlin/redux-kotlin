@@ -1,8 +1,7 @@
 package org.reduxkotlin.devtools.wire
 
-import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
