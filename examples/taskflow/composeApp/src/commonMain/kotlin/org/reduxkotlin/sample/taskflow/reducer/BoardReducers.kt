@@ -198,9 +198,13 @@ public fun filterReducer(model: FilterModel, action: Action): FilterModel = when
  * Pure per-account reducer for the [SyncModel] slice (in-flight set + sync status projection).
  *
  * Keys `inFlight` by [CardId]: a card enters on every optimistic mutation request and leaves on its
- * op result (both [CardOpSucceeded] and [CardOpFailed] carry the `cardId`). [SyncStatusChanged] folds
- * only `online`/`pendingCount`/`lastSyncedAt`/`lastError`; `inFlight` stays reducer-maintained and is
- * never overwritten from the action. [BoardClosed] resets the slice. Returns the same [model] instance
+ * op result (both [CardOpSucceeded] and [CardOpFailed] carry the `cardId`). Invariant: these mutation
+ * actions are only ever dispatched while a board is open, so the effects layer always enqueues a
+ * matching op and a result is guaranteed (the add is paired with a later removal); a card cannot strand
+ * here. [BoardClosed] resets the slice as a backstop. If a no-board card-op path is ever added, drive
+ * the `inFlight` add from the effect (when the op is actually enqueued) instead of from the raw action.
+ * [SyncStatusChanged] folds only `online`/`pendingCount`/`lastSyncedAt`/`lastError`; `inFlight` stays
+ * reducer-maintained and is never overwritten from the action. Returns the same [model] instance
  * unchanged for actions it does not handle.
  *
  * @param model the current sync slice.
