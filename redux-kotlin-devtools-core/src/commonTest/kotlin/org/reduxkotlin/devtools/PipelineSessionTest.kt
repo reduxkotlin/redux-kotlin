@@ -1,7 +1,7 @@
 package org.reduxkotlin.devtools
 
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -23,7 +23,8 @@ class PipelineSessionTest {
         session.submitTrace(listOf(PipelineNodeTrace("mw_logger", 5, forwarded = true, changed = false)))
         session.record("Inc", St(1), session.takePendingTrace())
         testScheduler.advanceUntilIdle()
-        session.close(); job.cancel()
+        session.close();
+        job.cancel()
 
         val action = received.filterIsInstance<DevToolsEvent.ActionRecorded>().single()
         val traced = received.filterIsInstance<DevToolsEvent.PipelineTraced>().single()
