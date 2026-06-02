@@ -33,12 +33,15 @@ class BridgeRoundTripTest {
             webSocket("/bridge") {
                 for (frame in incoming) {
                     val msg = (frame as? Frame.Text)?.let { f ->
-                        runCatching { bridgeJson.decodeFromString<BridgeMessage>(f.readText()) }.getOrNull()
+                        runCatching {
+                            bridgeJson.decodeFromString(BridgeMessage.serializer(), f.readText())
+                        }.getOrNull()
                     } ?: continue
                     received.add(msg)
                     if (msg is BridgeMessage.Hello) {
                         send(
-                            bridgeJson.encodeToString<BridgeMessage>(
+                            bridgeJson.encodeToString(
+                                BridgeMessage.serializer(),
                                 BridgeMessage.HelloAck(PROTOCOL_VERSION, accepted = true),
                             ),
                         )
