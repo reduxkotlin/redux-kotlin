@@ -1,5 +1,5 @@
 plugins {
-    id("convention.library-mpp-loved")
+    id("convention.library-mpp-all")
     id("convention.publishing-mpp")
     alias(libs.plugins.kotlin.serialization)
 }
@@ -16,6 +16,7 @@ val hasAndroidSdk: Boolean = run {
 }
 
 kotlin {
+    // iosX64/macosX64 omitted: base redux-kotlin does not target them; add when the base does.
     if (hasAndroidSdk) {
         android {
             namespace = "org.reduxkotlin.devtools"
