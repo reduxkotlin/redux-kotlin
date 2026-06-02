@@ -19,9 +19,9 @@ import org.reduxkotlin.devtools.remote.wire.stateMessage
 /**
  * Streams a [DevToolsSession]'s feed to the external Redux DevTools monitor over WebSocket.
  *
- * Off by default — it carries connection overhead — and started either by [RemoteConfig.startEnabled]
- * at registration time or by the in-app Outputs toggle. The integrator (or the in-app module)
- * registers it with the hub.
+ * Off by default — it carries connection overhead. Whoever binds this output to a session — the
+ * in-app Outputs panel, or your own setup code — calls [start]; it should consult [startEnabled]
+ * to decide whether to connect immediately.
  *
  * Late-start correctness: because the monitor expects a full STATE snapshot on (re)connect and the
  * session's flow only replays its single most recent event, [start] seeds the connection with the
@@ -42,6 +42,17 @@ public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
     /** Whether the output is currently subscribed/connected. */
     public val isRunning: Boolean get() = scope != null
 
+    /**
+     * Whether this output should connect as soon as it is bound to a session
+     * (mirrors [RemoteConfig.startEnabled]).
+     */
+    public val startEnabled: Boolean get() = config.startEnabled
+
+    /**
+     * Subscribes to [session] and opens the WebSocket connection.
+     *
+     * Not thread-safe; call [start]/[stop] from a single thread (e.g. the UI thread).
+     */
     override fun start(session: DevToolsSession) {
         if (isRunning) return
         val s = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -54,6 +65,11 @@ public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
             .launchIn(s)
     }
 
+    /**
+     * Cancels the subscription and closes the WebSocket connection.
+     *
+     * Not thread-safe; call [start]/[stop] from a single thread (e.g. the UI thread).
+     */
     override fun stop() {
         connection?.stop()
         connection = null

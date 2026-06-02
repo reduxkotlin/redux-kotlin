@@ -37,6 +37,8 @@ final class org.reduxkotlin.devtools.remote/RemoteOutput : org.reduxkotlin.devto
         final fun <get-isRunning>(): kotlin/Boolean // org.reduxkotlin.devtools.remote/RemoteOutput.isRunning.<get-isRunning>|<get-isRunning>(){}[0]
     final val label // org.reduxkotlin.devtools.remote/RemoteOutput.label|{}label[0]
         final fun <get-label>(): kotlin/String // org.reduxkotlin.devtools.remote/RemoteOutput.label.<get-label>|<get-label>(){}[0]
+    final val startEnabled // org.reduxkotlin.devtools.remote/RemoteOutput.startEnabled|{}startEnabled[0]
+        final fun <get-startEnabled>(): kotlin/Boolean // org.reduxkotlin.devtools.remote/RemoteOutput.startEnabled.<get-startEnabled>|<get-startEnabled>(){}[0]
 
     final fun start(org.reduxkotlin.devtools/DevToolsSession) // org.reduxkotlin.devtools.remote/RemoteOutput.start|start(org.reduxkotlin.devtools.DevToolsSession){}[0]
     final fun stop() // org.reduxkotlin.devtools.remote/RemoteOutput.stop|stop(){}[0]

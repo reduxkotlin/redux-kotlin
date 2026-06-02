@@ -6,7 +6,8 @@ package org.reduxkotlin.devtools.remote
  * @property host server host (use `10.0.2.2` from an Android emulator, or `localhost` with `adb reverse`).
  * @property port server port; the `@redux-devtools/cli` default is 8000.
  * @property secure use `wss` instead of `ws`.
- * @property startEnabled if `true`, connect at startup; otherwise stay off until enabled (default).
+ * @property startEnabled if `true`, a binder should connect this output immediately upon wiring it
+ *   to a session; if `false` (default) it stays off until explicitly started.
  */
 public data class RemoteConfig(
     public val host: String = "localhost",
