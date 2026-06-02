@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: var(--md-surface-container-low); color: var(--fg-1); }
+  .wrap { padding: 22px 26px; display:flex; gap: 16px; }
+  .card { flex:1; background: var(--md-surface); border-radius: var(--radius-lg); padding: 18px; border: 1px solid var(--md-outline-variant); }
+  .card.elev { box-shadow: var(--elev-2); border: none; }
+  .eyebrow { font: var(--w-bold) 11px var(--font-mono); letter-spacing: 1.3px; text-transform: uppercase; color: var(--rk-magenta); }
+  .ct { font: var(--w-semibold) 18px var(--font-display); margin: 8px 0 6px; letter-spacing:-.2px; }
+  .cb { font: 13px/1.5 var(--font-sans); color: var(--fg-2); }
+  .arrow { margin-top: 12px; font: var(--w-medium) 13px var(--font-sans); color: var(--md-primary); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="eyebrow">Outlined</div>
+      <div class="ct">Multiplatform</div>
+      <div class="cb">Written with multiplatform as the top priority — JVM, Native, JS, WASM.</div>
+      <div class="arrow">Learn more →</div>
+    </div>
+    <div class="card elev">
+      <div class="eyebrow">Elevated</div>
+      <div class="ct">Predictable</div>
+      <div class="cb">Write applications that behave consistently and are easy to test.</div>
+      <div class="arrow">Learn more →</div>
+    </div>
+  </div>
+</body>
+</html>
