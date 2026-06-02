@@ -90,6 +90,7 @@ public final class org/reduxkotlin/devtools/DevToolsEvent$PipelineTraced : org/r
 public final class org/reduxkotlin/devtools/DevToolsHub {
 	public static final field INSTANCE Lorg/reduxkotlin/devtools/DevToolsHub;
 	public final fun createSession (Lorg/reduxkotlin/devtools/DevToolsConfig;)Lorg/reduxkotlin/devtools/DevToolsSession;
+	public final fun getSessionsFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun outputs ()Ljava/util/List;
 	public final fun registerOutput (Lorg/reduxkotlin/devtools/DevToolsOutput;)V
 	public final fun removeSession (Ljava/lang/String;)V

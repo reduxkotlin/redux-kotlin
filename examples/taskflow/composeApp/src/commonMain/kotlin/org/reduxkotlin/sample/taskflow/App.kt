@@ -86,9 +86,11 @@ import kotlin.time.Clock
  */
 @Composable
 public fun App() {
-    // Mount the in-app DevTools drawer (edge-swipe + floating bubble). It targets the per-account
-    // store's rich "TaskFlow" hub session (actions, state, diff, middleware pipeline).
-    ReduxDevToolsHost(InAppConfig(instanceId = "TaskFlow")) {
+    // Mount the in-app DevTools drawer (edge-swipe + floating bubble). No instanceId = multi-session:
+    // the drawer builds a registry over every hub session, so the always-present root store
+    // ("TaskFlow-root") drives the trigger from launch and the store picker surfaces each account
+    // store as it logs in. (Pinning instanceId to "TaskFlow" hid the bubble until an account existed.)
+    ReduxDevToolsHost(InAppConfig()) {
         // Wire the singleton Coil ImageLoader before any AsyncImage composes.
         initCoil()
 

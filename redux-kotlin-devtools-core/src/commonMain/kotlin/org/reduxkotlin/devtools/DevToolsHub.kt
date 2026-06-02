@@ -3,6 +3,9 @@ package org.reduxkotlin.devtools
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Process-global, debug-only registry that rendezvous the [devTools] enhancer with its outputs.
@@ -17,6 +20,14 @@ public object DevToolsHub {
     private val sessionsById = LinkedHashMap<String, DevToolsSession>()
     private val configsById = LinkedHashMap<String, DevToolsConfig>()
     private val registeredOutputs = ArrayList<DevToolsOutput>()
+    private val sessionsFlowState = MutableStateFlow<List<DevToolsSession>>(emptyList())
+
+    /**
+     * Observable view of the active sessions. The in-app drawer's multi-store picker collects this so
+     * a store registered *after* the drawer first composed — e.g. a per-account store created on login —
+     * shows up without recreating the drawer. Emits a new snapshot on every create/remove/reset.
+     */
+    public val sessionsFlow: StateFlow<List<DevToolsSession>> = sessionsFlowState.asStateFlow()
 
     /**
      * Returns the existing session for the config's id, or creates and registers a new one.
@@ -43,6 +54,7 @@ public object DevToolsHub {
         val created = DevToolsSession.create(config)
         sessionsById[id] = created
         configsById[id] = config
+        publishSessions()
         created
     }
 
@@ -56,6 +68,7 @@ public object DevToolsHub {
             val created = DevToolsSession.create(config, dispatcher)
             sessionsById[id] = created
             configsById[id] = config
+            publishSessions()
             created
         }
 
@@ -69,6 +82,7 @@ public object DevToolsHub {
     public fun removeSession(id: String): Unit = synchronized(lock) {
         sessionsById.remove(id)?.close()
         configsById.remove(id)
+        publishSessions()
     }
 
     /** Registers a [DevToolsOutput]. Outputs decide for themselves whether to start (off by default). */
@@ -85,5 +99,11 @@ public object DevToolsHub {
         sessionsById.clear()
         configsById.clear()
         registeredOutputs.clear()
+        publishSessions()
+    }
+
+    /** Re-publishes the session snapshot to [sessionsFlow]. Callers must hold [lock]. */
+    private fun publishSessions() {
+        sessionsFlowState.value = sessionsById.values.toList()
     }
 }
