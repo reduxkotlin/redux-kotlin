@@ -4,6 +4,9 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.bundle.createConcurrentModelStore
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.devtools.DevToolsConfig
+import org.reduxkotlin.devtools.DevToolsHub
+import org.reduxkotlin.devtools.bridge.BridgeConfig
+import org.reduxkotlin.devtools.bridge.BridgeOutput
 import org.reduxkotlin.devtools.devTools
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
@@ -39,10 +42,11 @@ import org.reduxkotlin.sample.taskflow.reducer.authFlowReducer
  * @param notificationContext where subscriber callbacks are invoked (default: platform main thread).
  * @return the root [Store] over [ModelState].
  */
-public fun createAppStore(notificationContext: NotificationContext = mainNotificationContext()): Store<ModelState> =
-    createConcurrentModelStore(
+public fun createAppStore(notificationContext: NotificationContext = mainNotificationContext()): Store<ModelState> {
+    val rootCfg = DevToolsConfig(name = "TaskFlow-root")
+    val store = createConcurrentModelStore(
         notificationContext = notificationContext,
-        enhancer = devTools(DevToolsConfig(name = "TaskFlow-root")),
+        enhancer = devTools(rootCfg),
     ) {
         model(AccountsModel()) {
             on<AccountLoggedIn> { s, a -> accountsReducer(s, a) }
@@ -65,3 +69,8 @@ public fun createAppStore(notificationContext: NotificationContext = mainNotific
             on<LoginFailed> { s, a -> authFlowReducer(s, a) }
         }
     }
+    DevToolsHub.session(rootCfg.instanceId ?: rootCfg.name)?.let { session ->
+        BridgeOutput(BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow")).start(session)
+    }
+    return store
+}
