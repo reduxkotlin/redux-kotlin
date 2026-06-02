@@ -32,7 +32,9 @@ public class MonitorIngest {
                     model = m
                     registry.put(StoreRef(k, message.storeName), m)
                 }
+
                 is BridgeMessage.Init -> emit(DevToolsEvent.Initialized(message.state))
+
                 is BridgeMessage.Action -> emit(
                     DevToolsEvent.ActionRecorded(
                         message.actionId,
@@ -43,8 +45,11 @@ public class MonitorIngest {
                         message.isExcess,
                     ),
                 )
+
                 is BridgeMessage.PipelineRegistered -> emit(DevToolsEvent.PipelineRegistered(message.structure))
+
                 is BridgeMessage.PipelineTraced -> emit(DevToolsEvent.PipelineTraced(message.trace))
+
                 is BridgeMessage.HelloAck -> Unit
             }
         }
