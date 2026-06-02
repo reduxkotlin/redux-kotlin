@@ -47,11 +47,11 @@ class MonitorIngestTest {
     fun two_stores_from_one_client_group_under_it() {
         val ingest = MonitorIngest()
         ingest.openConnection().apply {
-            accept(hello("tf", "TaskFlow-root"));
+            accept(hello("tf", "TaskFlow-root"))
             accept(action(1, "A", 10))
         }
         ingest.openConnection().apply {
-            accept(hello("tf", "Account-2"));
+            accept(hello("tf", "Account-2"))
             accept(action(1, "B", 20))
         }
         assertEquals(listOf("tf::TaskFlow-root", "tf::Account-2"), ingest.registry.state.value.stores.map { it.ref.id })
