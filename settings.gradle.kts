@@ -34,6 +34,7 @@ include(
     ":redux-kotlin-devtools-core",
     ":redux-kotlin-devtools-remote",
     ":redux-kotlin-devtools-inapp",
+    ":redux-kotlin-devtools-inapp-noop",
     ":examples:counter:common",
     ":examples:counter:android",
     ":examples:todos:common",
