@@ -10,6 +10,11 @@
 
 **Scope note:** This plan delivers the engine only. Pipeline combinators (`devToolsMiddleware`/`devToolsCombineReducers`/`PipelineModel`) are **Plan 2**; the Compose `-inapp` UI + `-inapp-noop` are **Plan 3**. `DevToolsEvent` is sealed so Plan 2 can add pipeline events without breaking subscribers. Source spec: `docs/superpowers/specs/2026-06-01-redux-kotlin-inapp-devtools-design.md`.
 
+**Hard preconditions & invariants (read before coding):**
+- **State & actions must be deeply immutable.** This engine captures the state reference on the dispatch thread and serializes it *later* on a background coroutine. redux-kotlin does **not** enforce immutability — a reducer that mutates state in place would let the background thread serialize a torn/newer snapshot and produce a wrong diff. The synchronous predecessor was immune; we trade that for never blocking dispatch. Document this in the module README and KDoc; recommend immutable `data class` state.
+- **Recorder is single-threaded by design.** `LiftedStateRecorder` mutates an `ArrayDeque` with no locking and publishes a `@Volatile snapshot`. All `init`/`record` calls MUST happen on the one session consumer coroutine (never concurrently). `liftedState()` reads the volatile snapshot and is safe from any thread **after** the first `init` (its `?: buildSnapshot()` fallback touches `staged`, so never call it before init).
+- **Composition order.** Compose as `compose(devTools(config), applyMiddleware(...))` so async middleware (thunk) is innermost and devTools records the *resolved* plain actions its inner re-dispatches produce. `applyMiddleware`'s own KDoc says it "should be the first store enhancer in the composition chain" (innermost). Recording happens *after* `base(action)` returns, i.e. post-reducer state. The Task 7 test pins behavior, not a specific order — keep it that way.
+
 **Conventions to obey (repo CLAUDE.md):**
 - Every `public` declaration needs an explicit `public` modifier **and** a KDoc comment (detekt `UndocumentedPublic*`, `warningsAsErrors: true`). Document as you write — KDoc does not auto-correct.
 - After any public-API change run `./gradlew apiDump` and commit the `*.api` files. `apiCheck` runs in `build`.
@@ -421,7 +426,9 @@ public sealed interface DevToolsEvent {
      * @property action the serialized action.
      * @property state the serialized state after the action.
      * @property diff leaf-level changes versus the previous state.
-     * @property timestampMillis epoch-millis capture time.
+     * @property timestampMillis epoch-millis capture time (dispatch-thread capture, not serialize time).
+     * @property isExcess `true` if this action pushed the history past `maxAge` and the oldest was
+     *   committed/evicted; the remote wire protocol forwards this flag to the monitor.
      */
     public data class ActionRecorded(
         public val actionId: Int,
@@ -429,6 +436,7 @@ public sealed interface DevToolsEvent {
         public val state: JsonElement,
         public val diff: List<DiffEntry>,
         public val timestampMillis: Long,
+        public val isExcess: Boolean,
     ) : DevToolsEvent
 }
 ```
@@ -564,9 +572,12 @@ import kotlinx.serialization.json.JsonObject
 
 /**
  * One observed store. Captures `(action, state)` cheaply on the dispatch thread and serializes,
- * diffs, and records lifted state on a background coroutine, emitting [DevToolsEvent]s on [events].
+ * diffs, and records lifted state on a single background coroutine, emitting [DevToolsEvent]s on
+ * [events]. Construct via [create]; the [DevToolsHub] owns sessions in normal use.
  *
- * Construct via [create]; the [DevToolsHub] owns sessions in normal use.
+ * Concurrency contract: only the consumer coroutine touches [recorder] and [lastStateJson], so the
+ * recorder's single-threaded invariant holds without locks. Producers (`init`/`record`) hand off via
+ * a non-blocking [Channel.trySend] from the dispatch thread — recording never blocks dispatch.
  */
 public class DevToolsSession private constructor(
     /** Stable id for this session (the config's `instanceId` or `name`). */
@@ -579,7 +590,12 @@ public class DevToolsSession private constructor(
     private val denyRegex = config.denylist.map(::Regex)
     private val allowRegex = config.allowlist.map(::Regex)
 
+    // DROP_OLDEST: under sustained burst we drop the oldest pending capture rather than block
+    // dispatch. We count drops and warn (throttled) so silent history gaps are visible.
     private val captures = Channel<Capture>(capacity = 256, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private var dropped = 0L
+    private val recentLock = kotlinx.atomicfu.locks.SynchronizedObject()
+    private val recent = ArrayDeque<DevToolsEvent.ActionRecorded>()
 
     private val _events = MutableSharedFlow<DevToolsEvent>(
         replay = 1,
@@ -587,10 +603,14 @@ public class DevToolsSession private constructor(
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
-    /** Hot stream of recorder events. Replays the most recent event to new subscribers. */
+    /**
+     * Hot stream of recorder events. Replays only the most recent event to new subscribers — a late
+     * subscriber MUST seed from [history] / [liftedState] first to backfill (see the backfill note in
+     * the plan). Do not rely on `replay` for full history.
+     */
     public val events: SharedFlow<DevToolsEvent> = _events
 
-    @Volatile
+    // Consumer-coroutine-confined: only [process] reads/writes it. No @Volatile needed.
     private var lastStateJson: JsonElement? = null
 
     private sealed interface Capture {
@@ -600,35 +620,44 @@ public class DevToolsSession private constructor(
 
     init {
         scope.launch {
-            for (capture in captures) runCatching { process(capture) }.onFailure { config.logger("devtools process: ${it.message}") }
+            for (capture in captures) {
+                runCatching { process(capture) }.onFailure { config.logger("devtools process: ${it.message}") }
+            }
         }
     }
 
-    /** Records the store's initial state. Safe to call once at store creation. */
+    /** Records the store's initial state. Call once at store creation, before any reader. */
     public fun init(state: Any?) {
         captures.trySend(Capture.Init(state))
     }
 
     /** Records a dispatched [action] and the resulting [state]. Cheap; heavy work runs off-thread. */
     public fun record(action: Any, state: Any?) {
-        if (!shouldRecord(action)) return
-        captures.trySend(Capture.Action(action, state, currentEpochMillis()))
+        if (!shouldSend(action, denyRegex, allowRegex)) return
+        // systemClock() is the dispatch-time capture timestamp (more accurate than the recorder's
+        // own clock read on the background thread); the small skew between the two is acceptable.
+        val result = captures.trySend(Capture.Action(action, state, systemClock()))
+        if (result.isFailure) {
+            dropped++
+            if (dropped == 1L || dropped % 100L == 0L) config.logger("devtools: dropped $dropped captures (dispatch outpacing recorder)")
+        }
     }
 
-    /** The current lifted-state snapshot (Redux DevTools shape), for outputs that need the full history. */
+    /** The current lifted-state snapshot (Redux DevTools shape). Safe from any thread after [init]. */
     public fun liftedState(): JsonObject = recorder.liftedState()
+
+    /**
+     * A snapshot of recently recorded actions (bounded by `maxAge`), newest last. A subscriber should
+     * call this immediately after subscribing to [events], then dedupe by [DevToolsEvent.ActionRecorded.actionId]
+     * to backfill the actions it missed before subscribing.
+     */
+    public fun history(): List<DevToolsEvent.ActionRecorded> =
+        kotlinx.atomicfu.locks.synchronized(recentLock) { recent.toList() }
 
     /** Stops background processing. Idempotent. */
     public fun close() {
         captures.close()
         scope.cancel()
-    }
-
-    private fun shouldRecord(action: Any): Boolean {
-        val name = action::class.simpleName ?: action.toString()
-        if (denyRegex.any { it.containsMatchIn(name) }) return false
-        if (allowRegex.isNotEmpty() && allowRegex.none { it.containsMatchIn(name) }) return false
-        return true
     }
 
     private fun process(capture: Capture) {
@@ -637,6 +666,7 @@ public class DevToolsSession private constructor(
                 val stateJson = serializer.toJson(capture.state)
                 recorder.init(stateJson)
                 lastStateJson = stateJson
+                kotlinx.atomicfu.locks.synchronized(recentLock) { recent.clear() }
                 _events.tryEmit(DevToolsEvent.Initialized(stateJson))
             }
             is Capture.Action -> {
@@ -646,28 +676,32 @@ public class DevToolsSession private constructor(
                 val diff = diffJson(before, stateJson)
                 val recorded = recorder.record(actionJson, stateJson)
                 lastStateJson = stateJson
-                _events.tryEmit(
-                    DevToolsEvent.ActionRecorded(
-                        actionId = recorded.actionId,
-                        action = actionJson,
-                        state = stateJson,
-                        diff = diff,
-                        timestampMillis = capture.timestampMillis,
-                    ),
+                val event = DevToolsEvent.ActionRecorded(
+                    actionId = recorded.actionId,
+                    action = actionJson,
+                    state = stateJson,
+                    diff = diff,
+                    timestampMillis = capture.timestampMillis,
+                    isExcess = recorded.isExcess,
                 )
+                kotlinx.atomicfu.locks.synchronized(recentLock) {
+                    recent.addLast(event)
+                    while (recent.size > config.maxAge) recent.removeFirst()
+                }
+                _events.tryEmit(event)
             }
         }
     }
 
     /** Factory used by [DevToolsHub] and tests. [dispatcher] defaults to [Dispatchers.Default]. */
     public companion object {
-        /** Creates a session running its background work on [dispatcher]. */
+        /** Creates a session running its single background consumer on [dispatcher]. */
         public fun create(
             config: DevToolsConfig,
             dispatcher: CoroutineDispatcher = Dispatchers.Default,
         ): DevToolsSession {
             val serializer = config.serializer ?: platformDefaultSerializer()
-            val recorder = LiftedStateRecorder(maxAge = config.maxAge, clock = ::currentEpochMillis)
+            val recorder = LiftedStateRecorder(maxAge = config.maxAge, clock = systemClock)
             val scope = CoroutineScope(SupervisorJob() + dispatcher)
             return DevToolsSession(config.instanceId ?: config.name, config, serializer, recorder, scope)
         }
@@ -675,7 +709,27 @@ public class DevToolsSession private constructor(
 }
 ```
 
-> **Note on `currentEpochMillis` / `LiftedStateRecorder` clock type:** `Clock.kt` defines the epoch-millis source moved in Task 2. If it exposes a `typealias EpochMillis = () -> Long` and a `currentEpochMillis()` function, the above compiles as written. If the moved API differs (e.g. an `expect fun epochMillis(): Long`), adjust the two call sites (`recorder` construction and `Capture.Action` timestamp) to match — open `Clock.kt` and use its actual symbol. Do not invent a new clock.
+- [ ] **Step 3a: Extract `shouldSend` into its own file first (the session and the Task 7 enhancer both use it)**
+
+Create `redux-kotlin-devtools-core/src/commonMain/kotlin/org/reduxkotlin/devtools/Filtering.kt` with the function copied verbatim from the old `DevTools.kt`:
+
+```kotlin
+package org.reduxkotlin.devtools
+
+/**
+ * Returns `true` if [action] should be recorded given the [denylist]/[allowlist] regexes. An action
+ * is identified by its class `simpleName` (falling back to `toString()`); denied matches win, and a
+ * non-empty allowlist must match.
+ */
+internal fun shouldSend(action: Any, denylist: List<Regex>, allowlist: List<Regex>): Boolean {
+    val key = action::class.simpleName ?: action.toString()
+    val denied = denylist.any { it.containsMatchIn(key) }
+    val allowed = allowlist.isEmpty() || allowlist.any { it.containsMatchIn(key) }
+    return !denied && allowed
+}
+```
+
+> **Grounded against source:** `Clock.kt` provides `internal typealias EpochMillis = () -> Long` and `internal val systemClock: EpochMillis` — use `systemClock` for the recorder clock and `systemClock()` for the capture timestamp (both shown in the session code). `shouldSend` is the verbatim body from the old `DevTools.kt` (don't reimplement). `kotlinx.atomicfu.locks.synchronized(recentLock)` guards only the small `recent` deque (written by the consumer coroutine, read by `history()` on the UI thread); `recentLock` is a `kotlinx.atomicfu.locks.SynchronizedObject` — same primitives as `DevToolsHub`.
 
 - [ ] **Step 4: Run test to verify it passes**
 
@@ -686,6 +740,7 @@ Expected: PASS (2 tests). If a clock symbol mismatch appears, fix per the note a
 
 ```bash
 git add redux-kotlin-devtools-core/src/commonMain/kotlin/org/reduxkotlin/devtools/DevToolsSession.kt \
+        redux-kotlin-devtools-core/src/commonMain/kotlin/org/reduxkotlin/devtools/Filtering.kt \
         redux-kotlin-devtools-core/src/commonTest/kotlin/org/reduxkotlin/devtools/DevToolsSessionTest.kt
 git commit -m "feat(devtools-core): transport-agnostic DevToolsSession with off-thread serialize/diff"
 ```
@@ -742,6 +797,24 @@ class DevToolsHubTest {
         DevToolsHub.registerOutput(out)
         assertTrue(DevToolsHub.outputs().any { it.id == "remote" })
     }
+
+    @Test
+    fun colliding_id_with_different_config_logs_a_warning() {
+        val warnings = mutableListOf<String>()
+        val logger: (String) -> Unit = { warnings.add(it) }
+        // Same id ("dup"), different config (different maxAge) => collision warning, one session.
+        DevToolsHub.createSession(DevToolsConfig(name = "dup", maxAge = 50, logger = logger))
+        DevToolsHub.createSession(DevToolsConfig(name = "dup", maxAge = 10, logger = logger))
+        assertEquals(1, DevToolsHub.sessions().size)
+        assertTrue(warnings.any { it.contains("share devtools id") })
+    }
+
+    @Test
+    fun removeSession_closes_and_drops_it() {
+        DevToolsHub.createSession(DevToolsConfig(name = "gone"))
+        DevToolsHub.removeSession("gone")
+        assertTrue(DevToolsHub.sessions().isEmpty())
+    }
 }
 ```
 
@@ -769,12 +842,35 @@ import kotlinx.atomicfu.locks.synchronized
 public object DevToolsHub {
     private val lock = SynchronizedObject()
     private val sessionsById = LinkedHashMap<String, DevToolsSession>()
+    private val configsById = LinkedHashMap<String, DevToolsConfig>()
     private val registeredOutputs = ArrayList<DevToolsOutput>()
 
-    /** Returns the existing session for the config's id, or creates and registers a new one. */
+    /**
+     * Returns the existing session for the config's id, or creates and registers a new one.
+     *
+     * Sessions are keyed by `instanceId ?: name`. **Footgun guard:** if a session already exists for
+     * the id but was created from a *different* config, two distinct stores have collided on one id
+     * (most often two stores both left at the default `name = "redux-kotlin"`). Their actions would
+     * interleave into one session. We log a warning so the integrator gives each store a distinct
+     * `name`/`instanceId`; we still return the existing session (re-enhancing the same store with the
+     * same config is the legitimate idempotent case and stays silent).
+     */
     public fun createSession(config: DevToolsConfig): DevToolsSession = synchronized(lock) {
         val id = config.instanceId ?: config.name
-        sessionsById.getOrPut(id) { DevToolsSession.create(config) }
+        val existing = sessionsById[id]
+        if (existing != null) {
+            if (configsById[id] != config) {
+                config.logger(
+                    "devtools: two stores share devtools id \"$id\" — give each store a distinct " +
+                        "DevToolsConfig.name or instanceId, or their actions will interleave.",
+                )
+            }
+            return@synchronized existing
+        }
+        val created = DevToolsSession.create(config)
+        sessionsById[id] = created
+        configsById[id] = config
+        created
     }
 
     /** The session registered under [id], or `null`. */
@@ -782,6 +878,12 @@ public object DevToolsHub {
 
     /** A snapshot of all active sessions (the drawer's store-picker source). */
     public fun sessions(): List<DevToolsSession> = synchronized(lock) { sessionsById.values.toList() }
+
+    /** Closes and removes the session under [id]. Call when a store is torn down to avoid leaks. */
+    public fun removeSession(id: String): Unit = synchronized(lock) {
+        sessionsById.remove(id)?.close()
+        configsById.remove(id)
+    }
 
     /** Registers a [DevToolsOutput]. Outputs decide for themselves whether to start (off by default). */
     public fun registerOutput(output: DevToolsOutput): Unit = synchronized(lock) {
@@ -795,6 +897,7 @@ public object DevToolsHub {
     public fun reset(): Unit = synchronized(lock) {
         sessionsById.values.forEach { it.close() }
         sessionsById.clear()
+        configsById.clear()
         registeredOutputs.clear()
     }
 }
@@ -879,7 +982,6 @@ Expected: FAIL — `devTools` unresolved.
 ```kotlin
 package org.reduxkotlin.devtools
 
-import org.reduxkotlin.Dispatcher
 import org.reduxkotlin.Store
 import org.reduxkotlin.StoreCreator
 import org.reduxkotlin.StoreEnhancer
@@ -892,50 +994,83 @@ import org.reduxkotlin.StoreEnhancer
  * @param config recording configuration (name, filters, serializer, logger).
  */
 public fun <State> devTools(config: DevToolsConfig = DevToolsConfig()): StoreEnhancer<State> =
-    StoreEnhancer { next: StoreCreator<State> ->
-        StoreCreator { reducer, initialState, enhancer ->
-            val store: Store<State> = next(reducer, initialState, enhancer)
+    { storeCreator: StoreCreator<State> ->
+        { reducer, initialState, enhancer ->
+            val store: Store<State> = storeCreator(reducer, initialState, enhancer)
             val session = runCatching { DevToolsHub.createSession(config) }
-                .onFailure { config.logger("devtools init: ${it.message}") }
+                .onFailure { config.logger("devtools: init failed: ${it.message}") }
                 .getOrNull()
 
-            if (session == null) {
-                store
-            } else {
+            if (session != null) {
                 runCatching { session.init(store.getState()) }
-                    .onFailure { config.logger("devtools init-state: ${it.message}") }
+                    .onFailure { config.logger("devtools: init-state failed: ${it.message}") }
 
-                val base: Dispatcher = store.dispatch
-                store.dispatch = Dispatcher { action ->
-                    val result = base(action)
-                    runCatching { session.record(action, store.getState()) }
-                        .onFailure { config.logger("devtools record: ${it.message}") }
+                val origDispatch = store.dispatch
+                store.dispatch = { action ->
+                    val result = origDispatch(action)
+                    @Suppress("TooGenericExceptionCaught") // devtools must never break the host store
+                    try {
+                        session.record(action, store.getState())
+                    } catch (t: Throwable) {
+                        config.logger("devtools: record failed: ${t.message}")
+                    }
                     result
                 }
-                store
             }
+            store
         }
     }
 ```
 
-> **Type-shape note:** `StoreEnhancer<State>` / `StoreCreator<State>` / `Dispatcher` are function-type typealiases (see the spec's signature appendix). If the Kotlin compiler rejects `StoreEnhancer { ... }` SAM-style construction for a `typealias` to a function type, replace each with a plain lambda of the aliased type, e.g. `{ next: StoreCreator<State> -> { reducer, initialState, enhancer -> ... } }` and `store.dispatch = { action -> ... }`. The logic is identical; only the lambda syntax changes. Match whatever the existing `applyMiddleware`/`devTools` source used.
+> **Grounded against source:** this mirrors the existing `DevTools.kt` idiom verbatim — `StoreEnhancer`/`StoreCreator`/`Dispatcher` are function-type typealiases, so use **plain lambdas** (`{ storeCreator -> { reducer, initialState, enhancer -> ... } }`) and assign `store.dispatch = { action -> ... }` (it is a `var`). Wrap the record path in `try/catch(Throwable)` with the `@Suppress("TooGenericExceptionCaught")` comment exactly as the original did — `runCatching` also works but match the house style. The `@@INIT` action is dispatched *inside* `createStore` before this wrapper is installed, so it is never double-recorded; the initial state is captured via `session.init(store.getState())`.
 
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `./gradlew :redux-kotlin-devtools-core:jvmTest --tests '*DevToolsEnhancerTest*' --console=plain`
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Run the whole core module green**
+- [ ] **Step 5: Add the safety-contract test (instrumentation never breaks the host)**
+
+Append to `DevToolsEnhancerTest.kt`:
+
+```kotlin
+    @Test
+    fun throwing_serializer_never_breaks_dispatch_or_state() {
+        val boom = object : ValueSerializer {
+            override fun toJson(value: Any?): kotlinx.serialization.json.JsonElement =
+                throw IllegalStateException("serializer boom")
+        }
+        val logged = mutableListOf<String>()
+        val config = DevToolsConfig(name = "safe", serializer = boom, logger = { logged.add(it) })
+
+        val store = createStore(reducer, St(), devTools(config))
+        // Dispatch must succeed and the reducer's state must be correct even though the serializer
+        // throws on the background coroutine. The host is never affected.
+        store.dispatch(Inc)
+        store.dispatch(Inc)
+
+        assertEquals(2, store.state.n)
+    }
+```
+
+This proves two protection layers: the enhancer's `try/catch` around `record(...)` on the dispatch thread, and the session consumer's `runCatching` around `process(...)` on the background coroutine (where `toJson` actually throws). The serializer error is swallowed and logged; `store.state` stays correct. (Background logging is async, so this test asserts only the host-side guarantee — `state == 2` — not the log contents, to stay non-flaky.)
+
+- [ ] **Step 6: Run the safety test**
+
+Run: `./gradlew :redux-kotlin-devtools-core:jvmTest --tests '*DevToolsEnhancerTest*' --console=plain`
+Expected: PASS (3 tests).
+
+- [ ] **Step 7: Run the whole core module green**
 
 Run: `./gradlew :redux-kotlin-devtools-core:jvmTest --console=plain`
 Expected: PASS (JsonDiff, Session, Hub, Enhancer suites).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add redux-kotlin-devtools-core/src/commonMain/kotlin/org/reduxkotlin/devtools/DevTools.kt \
         redux-kotlin-devtools-core/src/commonTest/kotlin/org/reduxkotlin/devtools/DevToolsEnhancerTest.kt
-git commit -m "feat(devtools-core): transport-agnostic devTools() enhancer"
+git commit -m "feat(devtools-core): transport-agnostic devTools() enhancer + safety-contract test"
 ```
 
 ---
@@ -1192,22 +1327,26 @@ package org.reduxkotlin.devtools.remote
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import org.reduxkotlin.devtools.DevToolsEvent
-import org.reduxkotlin.devtools.DevToolsSession
 import org.reduxkotlin.devtools.DevToolsOutput
+import org.reduxkotlin.devtools.DevToolsSession
 
 /**
  * Streams a [DevToolsSession]'s feed to the external Redux DevTools monitor over WebSocket.
  *
  * Off by default — it carries connection overhead — and started either by [RemoteConfig.startEnabled]
- * at construction-driven registration or by the in-app Outputs toggle. Self-registers nothing; the
- * integrator (or the in-app module) registers it with the hub.
+ * at registration time or by the in-app Outputs toggle. The integrator (or the in-app module)
+ * registers it with the hub.
+ *
+ * Late-start correctness: because the monitor expects a full STATE snapshot on (re)connect and the
+ * session's flow only replays its single most recent event, [start] seeds the connection with the
+ * current [DevToolsSession.liftedState] before following [DevToolsSession.events]. Events are handed
+ * to the connection's bounded outbound buffer (`enqueue`), which the connect loop drains once the WS
+ * handshake completes — so events captured before the socket is up are buffered, not lost.
  *
  * @param config connection settings.
  */
@@ -1227,14 +1366,16 @@ public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
         val s = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         scope = s
         val conn = RemoteConnection(config, session).also { connection = it }
-        s.launch { conn.connect() }
+        conn.start()                                   // begins connect-and-drain loop on its own scope
+        // Seed the monitor with the full current history, then follow live events.
+        runCatching { conn.enqueueState(session.liftedState()) }
         session.events
-            .onEach { event -> runCatching { conn.send(event) } }
+            .onEach { event -> runCatching { conn.enqueue(toWireMessage(it = event, session = session)) } }
             .launchIn(s)
     }
 
     override fun stop() {
-        connection?.close()
+        connection?.stop()
         connection = null
         scope?.cancel()
         scope = null
@@ -1242,7 +1383,7 @@ public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
 }
 ```
 
-> **Adapter note:** `RemoteConnection` (the relocated Ktor session) exposes the connect loop and message sending. Wire `RemoteOutput` to whatever its actual public methods are after Task 9's move — the explorer found a `start()/enqueue(JsonObject)/stop()` shape on the old `DevToolsSession`. If so, rename the calls accordingly (`conn.start()`, `conn.enqueue(toWireMessage(event))`, `conn.stop()`), and add a small `toWireMessage(event: DevToolsEvent): JsonObject` mapping `ActionRecorded` → the existing `actionMessage(...)` and `Initialized` → `startMessage(...)`/`stateMessage(...)` using the relocated `wire/Messages.kt` helpers. Reuse those helpers — do not reinvent the SocketCluster framing.
+> **Adapter note (wire to the relocated `RemoteConnection`):** the old Ktor `DevToolsSession` exposed `start()` / `enqueue(JsonObject)` / `stop()` with an internal `Channel(256)` outbound buffer drained by its connect loop — keep that shape and rename the class to `RemoteConnection`. Give it a `RemoteConfig` (host/port/secure) + the recording `DevToolsConfig` (for `name`/`instanceId` in `MessageContext`), and add a thin `enqueueState(lifted: JsonObject)` that wraps the existing `stateMessage(ctx, lifted)` helper. Implement `toWireMessage(it: DevToolsEvent, session): JsonObject` mapping `DevToolsEvent.ActionRecorded` → the existing `actionMessage(ctx, performAction, state, nextActionId, isExcess)` and `DevToolsEvent.Initialized` → `startMessage(ctx)` followed by `stateMessage(ctx, session.liftedState())`, all from the relocated `wire/Messages.kt`. **Reuse those helpers — do not reinvent the SocketCluster framing.** `actionMessage` needs `nextActionId` and `isExcess`: `isExcess` is now carried on `DevToolsEvent.ActionRecorded` (added in Task 4) and `nextActionId = actionId + 1`, so no extra plumbing is required.
 
 - [ ] **Step 6: Run test to verify it passes**
 
@@ -1354,4 +1495,27 @@ git commit -m "chore(devtools): apiDump + detekt fixups"
 
 **Placeholder scan:** No "TBD"/"handle errors"/"similar to". Three explicit *adapter notes* (clock symbol, enhancer lambda syntax, `RemoteConnection` method names) are present because they depend on exact moved-code shapes the executor will see; each gives the concrete fallback and forbids reinvention. These are verification instructions, not unfinished steps.
 
-**Type consistency:** `DevToolsConfig`, `DevToolsSession.create(config, dispatcher)`, `DevToolsEvent.{Initialized,ActionRecorded}`, `DevToolsOutput.{id,label,start,stop}`, `DiffEntry/DiffOp/diffJson`, `RemoteConfig.{host,port,secure,startEnabled}`, `RemoteOutput(config).{id,label,isRunning,start,stop}` are used identically across Tasks 4–10.
+**Type consistency:** `DevToolsConfig`, `DevToolsSession.create(config, dispatcher)`, `DevToolsSession.{init,record,liftedState,history,close}`, `DevToolsEvent.{Initialized,ActionRecorded(+isExcess)}`, `DevToolsOutput.{id,label,start,stop}`, `DiffEntry/DiffOp/diffJson`, `DevToolsHub.{createSession,session,sessions,removeSession,registerOutput,outputs,reset}`, `RemoteConfig.{host,port,secure,startEnabled}`, `RemoteOutput(config).{id,label,isRunning,start,stop}` are used identically across Tasks 4–10.
+
+---
+
+## Review-driven revisions (correctness / threading / performance / gaps)
+
+This plan was reviewed against the real source before finalizing. Changes applied:
+
+- **C1 (compile):** Task 7 enhancer rewritten from illegal SAM syntax to the confirmed plain-lambda idiom (`{ storeCreator -> { reducer, initialState, enhancer -> ... } }`, `store.dispatch = { action -> ... }`, `try/catch(Throwable)` + `@Suppress("TooGenericExceptionCaught")`), matching the existing `DevTools.kt`.
+- **C2 (compile):** Task 5 uses the real clock — `LiftedStateRecorder(maxAge, clock = systemClock)` and `systemClock()` for the capture timestamp (`Clock.kt` exposes `EpochMillis`/`systemClock`, not a `currentEpochMillis()`).
+- **C3 (dedupe):** Task 5 reuses the existing `shouldSend(action, denyRegex, allowRegex)` (moved into `-core`) instead of a forked filter.
+- **T1 (threading, documented):** added the immutability precondition — off-thread serialization is only correct if state/actions are deeply immutable.
+- **T2 (threading, verified):** `liftedState()` returns the recorder's `@Volatile snapshot`; safe from any thread after the first `init`. Precondition documents "never read before init."
+- **T3 (threading, simplified):** dropped the needless `@Volatile` on `lastStateJson` — it is confined to the single consumer coroutine.
+- **G1 (gap, mandated test):** added the safety-contract test (throwing serializer → dispatch + state unaffected) to Task 7.
+- **G2 (gap, footgun):** `DevToolsHub.createSession` now warns on id collision with a differing config (two un-named stores) + a test.
+- **G3 (gap, backfill):** added `DevToolsSession.history()` and documented the subscribe-then-seed-then-dedupe contract for late subscribers (the UI in Plan 3 and the remote snapshot-on-connect both depend on it).
+- **G4 (gap, remote):** `RemoteOutput` now seeds `liftedState()` on connect and routes events through the connection's bounded `enqueue` buffer (drain-after-handshake), not a direct send racing the WS handshake.
+- **G5 (gap, leak):** added `DevToolsHub.removeSession(id)` + test.
+- **P1/P2 (perf):** `record()` counts and throttle-logs dropped captures under burst (`DROP_OLDEST` is intentional — never block dispatch). `shouldSend`'s `simpleName ?: toString()` name derivation runs on the dispatch path; acceptable, noted.
+
+**Carried to Plan 2 (pipeline):** the combinator↔session wiring (how wrapped middleware/reducers find the active session to write traces) is an open design point flagged in the spec — resolve with a short design spike before Plan 2; `DevToolsEvent` is sealed to accept `PipelineRegistered`/`PipelineTraced` cases then.
+
+**Carried to Plan 3 (in-app UI):** the UI must seed from `DevToolsSession.history()` (backfill) then follow `events`, deduping by `actionId`. The release no-op artifact must reproduce the full app-facing surface (`devTools`, `DevToolsHub`, `ReduxDevToolsHost`, config types) with empty bodies and **no hub** so no static state leaks into release.
