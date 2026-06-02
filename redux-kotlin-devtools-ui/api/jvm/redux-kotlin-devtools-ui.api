@@ -131,6 +131,7 @@ public final class org/reduxkotlin/devtools/inapp/model/StoreRegistryModel {
 	public fun <init> ()V
 	public final fun focus (Ljava/lang/String;)V
 	public final fun getState ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun modelFor (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/model/InAppModel;
 	public final fun put (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppModel;)V
 	public final fun refresh ()V
 	public final fun remove (Ljava/lang/String;)V

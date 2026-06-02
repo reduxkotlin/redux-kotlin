@@ -89,6 +89,9 @@ public class StoreRegistryModel {
     /** Selects all registered stores ("view all"). */
     public fun selectAll(): Unit = select(slots.keys.toSet())
 
+    /** Returns the [InAppModel] for [id], or `null` if not registered. */
+    public fun modelFor(id: String): InAppModel? = slots[id]?.model
+
     /** Re-reads child models' current state into the aggregate (host calls on any child change). */
     public fun refresh(): Unit = recompute()
 

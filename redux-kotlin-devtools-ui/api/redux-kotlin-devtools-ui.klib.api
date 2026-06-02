@@ -161,6 +161,7 @@ final class org.reduxkotlin.devtools.inapp.model/StoreRegistryModel { // org.red
         final fun <get-state>(): kotlinx.coroutines.flow/StateFlow<org.reduxkotlin.devtools.inapp.model/StoreRegistryState> // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.state.<get-state>|<get-state>(){}[0]
 
     final fun focus(kotlin/String) // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.focus|focus(kotlin.String){}[0]
+    final fun modelFor(kotlin/String): org.reduxkotlin.devtools.inapp.model/InAppModel? // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.modelFor|modelFor(kotlin.String){}[0]
     final fun put(org.reduxkotlin.devtools.inapp.model/StoreRef, org.reduxkotlin.devtools.inapp.model/InAppModel) // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.put|put(org.reduxkotlin.devtools.inapp.model.StoreRef;org.reduxkotlin.devtools.inapp.model.InAppModel){}[0]
     final fun refresh() // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.refresh|refresh(){}[0]
     final fun remove(kotlin/String) // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.remove|remove(kotlin.String){}[0]
