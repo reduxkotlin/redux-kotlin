@@ -44,6 +44,8 @@ internal class BridgeConnection(
 
     /** Backfills a (re)connected monitor with the recent recorded actions (no clearing Init). */
     fun reseed() {
+        // Contract: the monitor MUST dedupe by actionId — this history replay can duplicate and
+        // interleave with the live stream, so the same actionId may arrive more than once / out of order.
         runCatching { session.history().forEach { enqueue(toWire(it)) } }
     }
 
