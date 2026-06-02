@@ -11,6 +11,9 @@ import org.reduxkotlin.bundle.createConcurrentModelStore
 import org.reduxkotlin.compose
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.devtools.DevToolsConfig
+import org.reduxkotlin.devtools.DevToolsHub
+import org.reduxkotlin.devtools.bridge.BridgeConfig
+import org.reduxkotlin.devtools.bridge.BridgeOutput
 import org.reduxkotlin.devtools.devTools
 import org.reduxkotlin.devtools.devToolsMiddleware
 import org.reduxkotlin.devtools.named
@@ -161,6 +164,10 @@ public fun createAccountStore(
     // Eagerly trigger the effects middleware's first invocation so its reject/status collectors are
     // attached before any real mutation; the warm-up action matches no handler (a routing no-op).
     store.dispatch(EffectsWarmUp)
+
+    DevToolsHub.session(devCfg.instanceId ?: devCfg.name)?.let { session ->
+        BridgeOutput(BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow")).start(session)
+    }
 
     return AccountStoreHandle(
         store = store,
