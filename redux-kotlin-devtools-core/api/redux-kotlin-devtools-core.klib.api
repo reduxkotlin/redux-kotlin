@@ -349,6 +349,9 @@ final class org.reduxkotlin.devtools/PipelineTrace { // org.reduxkotlin.devtools
 }
 
 final object org.reduxkotlin.devtools/DevToolsHub { // org.reduxkotlin.devtools/DevToolsHub|null[0]
+    final val sessionsFlow // org.reduxkotlin.devtools/DevToolsHub.sessionsFlow|{}sessionsFlow[0]
+        final fun <get-sessionsFlow>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<org.reduxkotlin.devtools/DevToolsSession>> // org.reduxkotlin.devtools/DevToolsHub.sessionsFlow.<get-sessionsFlow>|<get-sessionsFlow>(){}[0]
+
     final fun createSession(org.reduxkotlin.devtools/DevToolsConfig): org.reduxkotlin.devtools/DevToolsSession // org.reduxkotlin.devtools/DevToolsHub.createSession|createSession(org.reduxkotlin.devtools.DevToolsConfig){}[0]
     final fun outputs(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsOutput> // org.reduxkotlin.devtools/DevToolsHub.outputs|outputs(){}[0]
     final fun registerOutput(org.reduxkotlin.devtools/DevToolsOutput) // org.reduxkotlin.devtools/DevToolsHub.registerOutput|registerOutput(org.reduxkotlin.devtools.DevToolsOutput){}[0]

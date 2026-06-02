@@ -1,7 +1,11 @@
 package org.reduxkotlin.devtools.inapp
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import org.reduxkotlin.devtools.DevToolsHub
 import org.reduxkotlin.devtools.DevToolsSession
@@ -36,18 +40,24 @@ internal fun rememberDevToolsController(session: DevToolsSession): InAppModel {
  * Builds a [StoreRegistryModel] over every session in the hub (one [InAppModel] per store), seeding
  * and following each. Drives the drawer's store-picker and "All stores" merged view.
  *
- * The session list is snapshotted once at composition time; the session set is effectively fixed
- * for the lifetime of a drawer open.
+ * The session set is collected reactively from [DevToolsHub.sessionsFlow], so a store registered
+ * after the drawer first composed (e.g. a per-account store created on login) is added to the
+ * registry and a torn-down store is removed — the picker stays in sync without recreating the drawer.
  */
 @Composable
 internal fun rememberStoreRegistry(): StoreRegistryModel {
     val registry = remember { StoreRegistryModel() }
-    val sessions = remember { DevToolsHub.sessions() }
+    val sessions by DevToolsHub.sessionsFlow.collectAsState()
     sessions.forEach { session ->
-        val model = rememberDevToolsController(session)
-        LaunchedEffect(session.id) {
-            registry.put(StoreRef(session.id, session.id), model)
-            model.state.collect { registry.refresh() }
+        key(session.id) {
+            val model = rememberDevToolsController(session)
+            DisposableEffect(session.id) {
+                registry.put(StoreRef(session.id, session.id), model)
+                onDispose { registry.remove(session.id) }
+            }
+            LaunchedEffect(session.id, model) {
+                model.state.collect { registry.refresh() }
+            }
         }
     }
     return registry
