@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; }
+  .row { display: flex; gap: 0; border-radius: var(--radius-md); overflow: hidden; border:1px solid var(--md-outline-variant); }
+  .sw { flex: 1; height: 64px; display: flex; align-items: flex-end; padding: 6px; box-sizing: border-box; }
+  .sw span { font: var(--w-medium) 10px var(--font-mono); }
+  .cap { margin-top: 13px; font: 12px var(--font-mono); color: var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <div class="sw" style="background:#0e1726;color:#fff"><span>ink</span></div>
+      <div class="sw" style="background:#283145;color:#fff"><span>800</span></div>
+      <div class="sw" style="background:#515a70;color:#fff"><span>600</span></div>
+      <div class="sw" style="background:#939bad;color:#fff"><span>400</span></div>
+      <div class="sw" style="background:#c2c8d4;color:#0e1726"><span>300</span></div>
+      <div class="sw" style="background:#eef1f6;color:#0e1726"><span>100</span></div>
+      <div class="sw" style="background:#f7f9fc;color:#0e1726;border-left:1px solid #eef1f6"><span>50</span></div>
+    </div>
+    <div class="cap">Neutrals — cool blue-tinted slate ramp (--rk-slate-*) · surfaces & text</div>
+  </div>
+</body>
+</html>

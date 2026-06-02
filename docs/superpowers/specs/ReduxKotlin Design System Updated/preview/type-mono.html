@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 20px 26px; }
+  .eyebrow { font: var(--w-bold) 12px var(--font-mono); letter-spacing: 1.5px; text-transform: uppercase; color: var(--rk-magenta); }
+  .code { margin-top: 12px; background: #0e1726; border-radius: var(--radius-md); padding: 14px 16px; font: 13px/1.6 var(--font-mono); color: #e6e8ef; overflow:hidden; }
+  .k { color: #c858bc; } .f { color: #62a8fb; } .s { color: #f9a857; } .c { color: #6b7488; }
+  .cap { margin-top: 13px; font:11px var(--font-mono); color:var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">JetBrains Mono · eyebrow</div>
+    <div class="code"><span class="k">val</span> <span class="f">store</span> = createStore(reducer, <span class="f">AppState</span>(), applyMiddleware(logger))<br><span class="f">store</span>.dispatch(<span class="f">AddTodo</span>(<span class="s">"Write my awesome app"</span>)) <span class="c">// no magic</span></div>
+    <div class="cap">Mono — code blocks &amp; tracked uppercase eyebrows · the system's signature dev accent</div>
+  </div>
+</body>
+</html>

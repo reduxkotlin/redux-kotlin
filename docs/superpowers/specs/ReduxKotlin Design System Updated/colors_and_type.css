@@ -1,0 +1,246 @@
+/* =========================================================================
+   ReduxKotlin Design System — Foundations
+   Colors + Type tokens. Material 3 (expressive) role model, anchored on the
+   real reduxkotlin.org brand: web primary blue #137AF9, the orange→magenta
+   logo gradient (#F98909 → #C858BC), and heritage Redux purple #764ABC.
+
+   Load this once, globally:  <link rel="stylesheet" href="colors_and_type.css">
+   Fonts (Roboto Flex + JetBrains Mono) are loaded from Google Fonts — see the
+   @import at the top. These are SUBSTITUTIONS (the live site uses the system
+   font stack); they were chosen to satisfy the "Material 3 + developer" brief.
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ---------------------------------------------------------------------
+     1. RAW BRAND PALETTE  (the source-of-truth hexes)
+     --------------------------------------------------------------------- */
+  --rk-blue:            #137af9;   /* web primary (siteConfig #137AF9) */
+  --rk-blue-dark:       #0464d6;
+  --rk-blue-darker:     #045eca;
+  --rk-blue-darkest:    #044da6;
+  --rk-blue-light:      #2d8afa;
+  --rk-blue-lighter:    #3a92fa;
+  --rk-blue-lightest:   #62a8fb;
+
+  --rk-orange:          #f98909;   /* logo gradient — warm end */
+  --rk-magenta:         #c858bc;   /* logo gradient — cool end */
+  --rk-purple:          #764abc;   /* heritage Redux mark */
+
+  /* The signature ReduxKotlin gradient (logo runs bottom-left → top-right) */
+  --rk-gradient:        linear-gradient(60deg, #c858bc 0%, #f98909 100%);
+  --rk-gradient-soft:   linear-gradient(60deg, #e7b6e3 0%, #fcd6a6 100%);
+  --rk-gradient-text:   linear-gradient(90deg, #f98909 0%, #c858bc 100%);
+
+  /* ---------------------------------------------------------------------
+     2. NEUTRALS  (cool-tinted slate, developer surfaces)
+     --------------------------------------------------------------------- */
+  --rk-ink:             #0e1726;   /* near-black text */
+  --rk-slate-900:       #1b2435;
+  --rk-slate-800:       #283145;
+  --rk-slate-700:       #3a4358;
+  --rk-slate-600:       #515a70;
+  --rk-slate-500:       #6b7488;
+  --rk-slate-400:       #939bad;
+  --rk-slate-300:       #c2c8d4;
+  --rk-slate-200:       #dee2ea;
+  --rk-slate-100:       #eef1f6;
+  --rk-slate-50:        #f7f9fc;
+  --rk-white:           #ffffff;
+
+  /* ---------------------------------------------------------------------
+     3. MATERIAL 3 ROLE TOKENS — LIGHT (default scheme)
+        primary = blue · secondary = magenta · tertiary = orange
+     --------------------------------------------------------------------- */
+  --md-primary:                 #137af9;
+  --md-on-primary:              #ffffff;
+  --md-primary-container:       #d7e8ff;
+  --md-on-primary-container:    #00305f;
+
+  --md-secondary:               #b8419f;   /* magenta family */
+  --md-on-secondary:            #ffffff;
+  --md-secondary-container:     #ffd7f2;
+  --md-on-secondary-container:  #43003a;
+
+  --md-tertiary:                #9a5400;   /* orange family (a11y-safe text) */
+  --md-on-tertiary:             #ffffff;
+  --md-tertiary-container:      #ffdcbc;
+  --md-on-tertiary-container:   #311300;
+
+  --md-error:                   #ba1a1a;
+  --md-on-error:                #ffffff;
+  --md-error-container:         #ffdad6;
+  --md-on-error-container:      #410002;
+
+  --md-success:                 #1f8a4c;
+  --md-on-success:              #ffffff;
+  --md-success-container:       #b9f0c8;
+
+  /* Surfaces — M3 tonal surface containers */
+  --md-background:              #fbfcff;
+  --md-on-background:           #0e1726;
+  --md-surface:                 #fbfcff;
+  --md-on-surface:              #0e1726;
+  --md-surface-variant:         #dfe2eb;
+  --md-on-surface-variant:      #43474f;
+  --md-surface-dim:             #d9dae0;
+  --md-surface-bright:          #fbfcff;
+  --md-surface-container-lowest:#ffffff;
+  --md-surface-container-low:   #f3f4fa;
+  --md-surface-container:       #eef0f6;
+  --md-surface-container-high:  #e8eaf1;
+  --md-surface-container-highest:#e2e4eb;
+
+  --md-outline:                 #73777f;
+  --md-outline-variant:         #c3c6cf;
+  --md-inverse-surface:         #2e3038;
+  --md-inverse-on-surface:      #f0f0f7;
+  --md-scrim:                   rgba(14, 23, 38, 0.45);
+
+  /* ---------------------------------------------------------------------
+     4. SEMANTIC COLOR ALIASES  (use these in app code)
+     --------------------------------------------------------------------- */
+  --fg-1: var(--rk-ink);          /* primary text */
+  --fg-2: #41485a;                /* secondary text */
+  --fg-3: #6b7488;                /* muted / captions */
+  --fg-on-accent: #ffffff;
+  --bg-1: var(--md-surface);      /* page background */
+  --bg-2: var(--md-surface-container-low);
+  --bg-3: var(--md-surface-container);
+  --link: var(--rk-blue);
+  --link-hover: var(--rk-blue-darker);
+  --border-1: var(--md-outline-variant);
+  --border-2: var(--md-surface-variant);
+  --accent: var(--rk-blue);
+
+  /* ---------------------------------------------------------------------
+     5. TYPE — families
+     --------------------------------------------------------------------- */
+  --font-sans: 'Roboto Flex', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  --font-display: 'Roboto Flex', system-ui, sans-serif;
+
+  /* M3 expressive type scale (px) — display / headline / title / body / label */
+  --type-display-lg: 57px;  --lh-display-lg: 64px;
+  --type-display-md: 45px;  --lh-display-md: 52px;
+  --type-display-sm: 36px;  --lh-display-sm: 44px;
+  --type-headline-lg: 32px; --lh-headline-lg: 40px;
+  --type-headline-md: 28px; --lh-headline-md: 36px;
+  --type-headline-sm: 24px; --lh-headline-sm: 32px;
+  --type-title-lg: 22px;    --lh-title-lg: 28px;
+  --type-title-md: 16px;    --lh-title-md: 24px;
+  --type-title-sm: 14px;    --lh-title-sm: 20px;
+  --type-body-lg: 16px;     --lh-body-lg: 24px;
+  --type-body-md: 14px;     --lh-body-md: 20px;
+  --type-body-sm: 12px;     --lh-body-sm: 16px;
+  --type-label-lg: 14px;    --lh-label-lg: 20px;
+  --type-label-md: 12px;    --lh-label-md: 16px;
+  --type-label-sm: 11px;    --lh-label-sm: 16px;
+
+  /* Weights */
+  --w-light: 300; --w-regular: 400; --w-medium: 500; --w-semibold: 600; --w-bold: 700;
+
+  /* ---------------------------------------------------------------------
+     6. SHAPE — M3 expressive corner scale + elevation
+     --------------------------------------------------------------------- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 28px;     /* M3 large containers */
+  --radius-2xl: 36px;
+  --radius-full: 999px;
+
+  /* Spacing (4px base grid) */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px; --space-20: 80px;
+
+  /* M3 elevation (tonal + soft shadow) */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(14,23,38,.10), 0 1px 3px 1px rgba(14,23,38,.06);
+  --elev-2: 0 1px 2px rgba(14,23,38,.10), 0 2px 6px 2px rgba(14,23,38,.08);
+  --elev-3: 0 4px 8px 3px rgba(14,23,38,.08), 0 1px 3px rgba(14,23,38,.12);
+  --elev-4: 0 6px 10px 4px rgba(14,23,38,.08), 0 2px 3px rgba(14,23,38,.12);
+  --elev-5: 0 8px 12px 6px rgba(14,23,38,.10), 0 4px 4px rgba(14,23,38,.14);
+
+  /* Motion — M3 expressive easing */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0.1, 1);
+  --ease-spatial: cubic-bezier(0.34, 1.36, 0.64, 1);   /* gentle overshoot */
+  --dur-short: 150ms; --dur-medium: 250ms; --dur-long: 400ms;
+}
+
+/* =========================================================================
+   DARK SCHEME  (M3) — applies on [data-theme="dark"]
+   ========================================================================= */
+[data-theme="dark"] {
+  --md-primary:                 #a9c7ff;
+  --md-on-primary:              #00315f;
+  --md-primary-container:       #004787;
+  --md-on-primary-container:    #d5e3ff;
+
+  --md-secondary:               #ffacef;
+  --md-on-secondary:            #5e1153;
+  --md-secondary-container:     #7b2b6b;
+  --md-on-secondary-container:  #ffd7f2;
+
+  --md-tertiary:                #ffb877;
+  --md-on-tertiary:             #4f2500;
+  --md-tertiary-container:      #713800;
+  --md-on-tertiary-container:   #ffdcbc;
+
+  --md-error:                   #ffb4ab;
+  --md-on-error:                #690005;
+  --md-error-container:         #93000a;
+
+  --md-background:              #111318;
+  --md-on-background:           #e2e2e9;
+  --md-surface:                 #111318;
+  --md-on-surface:              #e2e2e9;
+  --md-surface-variant:         #43474f;
+  --md-on-surface-variant:      #c3c6cf;
+  --md-surface-dim:             #111318;
+  --md-surface-bright:          #37393f;
+  --md-surface-container-lowest:#0c0e13;
+  --md-surface-container-low:   #191c20;
+  --md-surface-container:       #1d2024;
+  --md-surface-container-high:  #282a2f;
+  --md-surface-container-highest:#33353a;
+
+  --md-outline:                 #8d9199;
+  --md-outline-variant:         #43474f;
+  --md-inverse-surface:         #e2e2e9;
+  --md-inverse-on-surface:      #2e3036;
+
+  --fg-1: #e6e8ef;
+  --fg-2: #b6bcc9;
+  --fg-3: #8a93a5;
+  --bg-1: var(--md-surface);
+  --bg-2: var(--md-surface-container-low);
+  --bg-3: var(--md-surface-container);
+  --link: #6baafc;
+  --link-hover: #9cc4fe;
+  --border-1: var(--md-outline-variant);
+}
+
+/* =========================================================================
+   SEMANTIC TYPE CLASSES  (optional helpers)
+   ========================================================================= */
+.rk-display-lg { font: var(--w-medium) var(--type-display-lg)/var(--lh-display-lg) var(--font-display); letter-spacing: -1px; }
+.rk-display-sm { font: var(--w-medium) var(--type-display-sm)/var(--lh-display-sm) var(--font-display); letter-spacing: -0.5px; }
+.rk-headline   { font: var(--w-semibold) var(--type-headline-md)/var(--lh-headline-md) var(--font-display); letter-spacing: -0.25px; }
+.rk-title      { font: var(--w-semibold) var(--type-title-lg)/var(--lh-title-lg) var(--font-sans); }
+.rk-body       { font: var(--w-regular) var(--type-body-lg)/var(--lh-body-lg) var(--font-sans); }
+.rk-label      { font: var(--w-medium) var(--type-label-lg)/var(--lh-label-lg) var(--font-sans); letter-spacing: 0.1px; }
+.rk-eyebrow    { font: var(--w-bold) var(--type-label-md)/var(--lh-label-md) var(--font-mono); letter-spacing: 1.5px; text-transform: uppercase; }
+.rk-code       { font: var(--w-regular) var(--type-body-md)/var(--lh-body-md) var(--font-mono); }
+
+.rk-gradient-text {
+  background: var(--rk-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

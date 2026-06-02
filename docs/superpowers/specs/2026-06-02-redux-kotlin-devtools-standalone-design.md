@@ -5,7 +5,7 @@
 **Branch:** `feat/redux-kotlin-inapp-devtools`
 **Related:**
 - `2026-06-01-redux-kotlin-inapp-devtools-design.md` — the in-app drawer + the `-core`/`-remote`/`-inapp` modules this builds on.
-- `ReduxKotlin Design System/` — brand foundations + the in-app UI kit (visual source of truth, reused here).
+- `ReduxKotlin Design System Updated/` — brand foundations + the in-app UI kit, **and the new `monitor/` hi-fi UI kit + `Standalone DevTools - Desktop Monitor.html`** which are the **visual source of truth** for this standalone design (the spec below matches them).
 
 ## Summary
 
@@ -142,6 +142,18 @@ The standalone is the **server**; the debugged app dials out (mirrors `RemoteOut
 
 **P1:** timing/frequency charts (per-node pipeline timing over time, action frequency, state-size growth); multi-session **side-by-side** (two rails' inspectors at once); command palette + full keyboard nav.
 
+**Realized details (from the `monitor/` hi-fi UI kit — the build target):**
+- **Window chrome:** native desktop window titled `{clientLabel} · {storeName} — Redux DevTools Monitor`; an in-app **light/dark theme toggle** (sun/moon), dark default.
+- **Top bar (~56px):** logo + a gradient **"MONITOR"** badge; a **store picker dropdown** (grouped Clients → Stores, with status dots / a *frozen* snow icon) that complements the rail; centered **global search** ("Search actions, payloads, serialized state…", regex `.*` toggle, live match count); connection status showing the live-client count / "paused" **and the bound URL `ws://127.0.0.1:9090`** (localhost default, concrete default port `9090`); controls: **pause/resume · reconnect · save (.jsonl) · clear · theme**.
+- **Store rail (~208px):** an **"All stores"** entry (with total count) atop per-Client groups; each store row has a **checkbox** to include it in the merged view (multi-select = filter/subset), an accent dot or a **snow icon when frozen**, and a per-store action count; footer stats: actions-retained · clients · stores · **history cap (default 5,000, configurable)**.
+- **Action log (~312px, resizable 250–480):** header shows count or `shown/total` when filtering, a **"merged by time"** indicator in multi-store mode, a **"read-only"** lock when the store is frozen; rows = id · **store chip (merged mode)** · type · payload preview · timestamp · a **"NΔ"** diff-count badge.
+- **Center:** State over Diff, resizable horizontal splitter (State ~56% default); the State panel header surfaces the active **serializer tier** ("kotlinx.serialization") — a visible nudge toward the structured-state setup.
+- **Pipeline (~312px, right-docked):** per-node µs timing + "changed" slice flags, lit by the selected action's trace.
+- **Timeline (~92px):** prev/next stepping, `#NN / #NN`, ticks (orange+glow where a diff occurred, blue traversed, faint future), gradient playhead, **"time-travel · read-only"** label.
+- **Feedback:** toasts for save / reconnect ("reseeded {store} from {instance}") / **clear-with-Undo** (clearing retains `@@INIT`/state and is undoable).
+- **Save schema (confirmed):** first line is a header `{ kind: "rk-devtools-recording", protocolVersion, serializer, client: {id,label}, store: {name,instanceId} }`, then one JSON line per event — matching the versioned-header design.
+- **Cross-platform demo baked into the kit:** the sample data includes a headless **`linuxX64 · headless` client ("ingest-worker", store `jobQueue`)** beside the JVM TaskFlow client — concretely demonstrating the headline that the monitor serves targets the in-app drawer cannot.
+
 ## Native vs web specifics
 
 - **Native desktop = JVM Compose Desktop** (Skia/JVM), packaged as a native installer with a bundled JRE — there is no Kotlin/Native Compose-desktop path; do not imply a native binary. Embedded `ktor-server-cio` runs inside the app (already used in `-remote` jvmTest). Watch: bind to `127.0.0.1`, handle port-in-use on relaunch, expect a firewall prompt.
@@ -183,6 +195,8 @@ The only artifact that ever touches the debugged app is `-bridge`, wired `debugI
 
 ## Appendix — Hi-fi mockup prompt (hand to the design-system skill)
 
+> **Status: realized.** These mockups now exist under `ReduxKotlin Design System Updated/monitor/` + `Standalone DevTools - Desktop Monitor.html`; the implementation should match them. The prompt is kept for regeneration/reference.
+>
 > Use the **ReduxKotlin Design System** skill (`docs/superpowers/specs/ReduxKotlin Design System/`) to produce high-fidelity HTML mockups of the **Standalone Redux DevTools — desktop monitor**, per `docs/superpowers/specs/2026-06-02-redux-kotlin-devtools-standalone-design.md`. Brand: Material 3 Expressive, **dark default** (sheet/surface `#0E1726`), primary blue `#137AF9`, secondary magenta `#C858BC`, tertiary orange `#F98909`, success green `#5FD39A`, diff amber `#F9B357`, error red `#FF7A8A`; **JetBrains Mono** for all log/JSON/diff/timing text, **Roboto Flex** for UI; the magenta→orange gradient used sparingly (active tab/indicator, logo, accents). Reuse the visual language of the existing in-app DevTools UI kit (`ui_kits/devtools/`) — same row styles, JSON-tree leaf colors (string=green, number=orange, bool=magenta), diff +/~/− rows, lit pipeline nodes — but recomposed for a **wide desktop window**, not a phone sheet.
 >
 > Produce a wide (≥1440px) desktop window mockup of the **IDE-dock layout**: a top bar (app/store picker, global search field, connection status "● N clients", capture controls ⏸/⟲/💾/🗑); a narrow left **store rail** grouped by Client → Stores (e.g. Client "TaskFlow · desktop" containing stores "TaskFlow-root" and "Account-2", each store with a live dot, plus an **"All stores"** entry at top and multi-select for filtering); an **action log** column (id · type in mono · payload preview · timestamp, selected row highlighted with a left gradient bar + count badge; in **All/multi mode** each row also shows a small **store-name chip**); a center area with **State** (recursive JSON tree) above **Diff** (added/changed/removed rows) split by a resizable divider; a right-docked **Pipeline** panel (vertical `dispatch → logger → thunk → effects → rootReducer{todos✓ filter·}` with lit nodes, per-node µs timing, "changed" chips, and a legend); and a full-width **time-travel timeline** along the bottom (scrubber with action ticks, selected marker, ◀/▶, "#40 / #42"). Use the redux-kotlin Todo/TaskFlow domain for realistic content (AddCard, MoveCard, SetFilter, @@INIT). Render light and dark, dark as the hero.

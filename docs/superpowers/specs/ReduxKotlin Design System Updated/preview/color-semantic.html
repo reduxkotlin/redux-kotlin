@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; }
+  .grid { display:grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  .item { border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--elev-1); }
+  .item .bar { height: 40px; display:flex; align-items:center; padding:0 11px; font:var(--w-semibold) 12px var(--font-sans); }
+  .item .c { height: 22px; display:flex; align-items:center; padding:0 11px; font:10px var(--font-mono); }
+  .cap { margin-top: 13px; font: 12px var(--font-mono); color: var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grid">
+      <div class="item"><div class="bar" style="background:#ba1a1a;color:#fff">Error</div><div class="c" style="background:#ffdad6;color:#410002">#BA1A1A</div></div>
+      <div class="item"><div class="bar" style="background:#1f8a4c;color:#fff">Success</div><div class="c" style="background:#b9f0c8;color:#002111">#1F8A4C</div></div>
+      <div class="item"><div class="bar" style="background:#137af9;color:#fff">Link</div><div class="c" style="background:#d7e8ff;color:#00305f">#137AF9</div></div>
+      <div class="item"><div class="bar" style="background:#9a5400;color:#fff">Warning</div><div class="c" style="background:#ffdcbc;color:#311300">#9A5400</div></div>
+    </div>
+    <div class="cap">Semantic status colors — feedback, validation, links</div>
+  </div>
+</body>
+</html>
