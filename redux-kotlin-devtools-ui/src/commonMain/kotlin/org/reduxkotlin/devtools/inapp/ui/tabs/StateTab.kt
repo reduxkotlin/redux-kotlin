@@ -23,7 +23,7 @@ import org.reduxkotlin.devtools.inapp.theme.RkTokens
 
 /** The State tab: a recursive, expandable tree of the selected action's serialized state. */
 @Composable
-internal fun StateTab(state: JsonElement?) {
+public fun StateTab(state: JsonElement?) {
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp)) {
         if (state == null) {
             Text("No state yet.", color = RkTokens.InkDim)

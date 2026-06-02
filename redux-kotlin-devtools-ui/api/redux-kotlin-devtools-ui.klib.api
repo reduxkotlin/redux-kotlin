@@ -1,0 +1,154 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-devtools-ui>
+final enum class org.reduxkotlin.devtools.inapp/DevToolsTab : kotlin/Enum<org.reduxkotlin.devtools.inapp/DevToolsTab> { // org.reduxkotlin.devtools.inapp/DevToolsTab|null[0]
+    enum entry ACTIONS // org.reduxkotlin.devtools.inapp/DevToolsTab.ACTIONS|null[0]
+    enum entry DIFF // org.reduxkotlin.devtools.inapp/DevToolsTab.DIFF|null[0]
+    enum entry OUTPUTS // org.reduxkotlin.devtools.inapp/DevToolsTab.OUTPUTS|null[0]
+    enum entry PIPELINE // org.reduxkotlin.devtools.inapp/DevToolsTab.PIPELINE|null[0]
+    enum entry STATE // org.reduxkotlin.devtools.inapp/DevToolsTab.STATE|null[0]
+
+    final val entries // org.reduxkotlin.devtools.inapp/DevToolsTab.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<org.reduxkotlin.devtools.inapp/DevToolsTab> // org.reduxkotlin.devtools.inapp/DevToolsTab.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): org.reduxkotlin.devtools.inapp/DevToolsTab // org.reduxkotlin.devtools.inapp/DevToolsTab.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<org.reduxkotlin.devtools.inapp/DevToolsTab> // org.reduxkotlin.devtools.inapp/DevToolsTab.values|values#static(){}[0]
+}
+
+final enum class org.reduxkotlin.devtools.inapp/DevToolsThemeMode : kotlin/Enum<org.reduxkotlin.devtools.inapp/DevToolsThemeMode> { // org.reduxkotlin.devtools.inapp/DevToolsThemeMode|null[0]
+    enum entry DARK // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.DARK|null[0]
+    enum entry LIGHT // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.LIGHT|null[0]
+    enum entry SYSTEM // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.SYSTEM|null[0]
+
+    final val entries // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<org.reduxkotlin.devtools.inapp/DevToolsThemeMode> // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): org.reduxkotlin.devtools.inapp/DevToolsThemeMode // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<org.reduxkotlin.devtools.inapp/DevToolsThemeMode> // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.values|values#static(){}[0]
+}
+
+final class org.reduxkotlin.devtools.inapp.model/InAppModel { // org.reduxkotlin.devtools.inapp.model/InAppModel|null[0]
+    constructor <init>(kotlin/Int = ...) // org.reduxkotlin.devtools.inapp.model/InAppModel.<init>|<init>(kotlin.Int){}[0]
+
+    final val state // org.reduxkotlin.devtools.inapp.model/InAppModel.state|{}state[0]
+        final fun <get-state>(): kotlinx.coroutines.flow/StateFlow<org.reduxkotlin.devtools.inapp.model/InAppState> // org.reduxkotlin.devtools.inapp.model/InAppModel.state.<get-state>|<get-state>(){}[0]
+
+    final fun seed(kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded>) // org.reduxkotlin.devtools.inapp.model/InAppModel.seed|seed(kotlin.collections.List<org.reduxkotlin.devtools.DevToolsEvent.ActionRecorded>){}[0]
+    final fun select(kotlin/Int) // org.reduxkotlin.devtools.inapp.model/InAppModel.select|select(kotlin.Int){}[0]
+    final fun setFilter(kotlin/String) // org.reduxkotlin.devtools.inapp.model/InAppModel.setFilter|setFilter(kotlin.String){}[0]
+    final fun setOutputs(kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/OutputRow>) // org.reduxkotlin.devtools.inapp.model/InAppModel.setOutputs|setOutputs(kotlin.collections.List<org.reduxkotlin.devtools.inapp.model.OutputRow>){}[0]
+    final fun setTab(org.reduxkotlin.devtools.inapp/DevToolsTab) // org.reduxkotlin.devtools.inapp.model/InAppModel.setTab|setTab(org.reduxkotlin.devtools.inapp.DevToolsTab){}[0]
+    final fun submit(org.reduxkotlin.devtools/DevToolsEvent) // org.reduxkotlin.devtools.inapp.model/InAppModel.submit|submit(org.reduxkotlin.devtools.DevToolsEvent){}[0]
+}
+
+final class org.reduxkotlin.devtools.inapp.model/InAppState { // org.reduxkotlin.devtools.inapp.model/InAppState|null[0]
+    constructor <init>(kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded> = ..., kotlin/Int? = ..., kotlin/String = ..., org.reduxkotlin.devtools.inapp/DevToolsTab = ..., org.reduxkotlin.devtools/PipelineStructure? = ..., kotlin.collections/Map<kotlin/Int, org.reduxkotlin.devtools/PipelineTrace> = ..., kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/OutputRow> = ...) // org.reduxkotlin.devtools.inapp.model/InAppState.<init>|<init>(kotlin.collections.List<org.reduxkotlin.devtools.DevToolsEvent.ActionRecorded>;kotlin.Int?;kotlin.String;org.reduxkotlin.devtools.inapp.DevToolsTab;org.reduxkotlin.devtools.PipelineStructure?;kotlin.collections.Map<kotlin.Int,org.reduxkotlin.devtools.PipelineTrace>;kotlin.collections.List<org.reduxkotlin.devtools.inapp.model.OutputRow>){}[0]
+
+    final val actions // org.reduxkotlin.devtools.inapp.model/InAppState.actions|{}actions[0]
+        final fun <get-actions>(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded> // org.reduxkotlin.devtools.inapp.model/InAppState.actions.<get-actions>|<get-actions>(){}[0]
+    final val activeTab // org.reduxkotlin.devtools.inapp.model/InAppState.activeTab|{}activeTab[0]
+        final fun <get-activeTab>(): org.reduxkotlin.devtools.inapp/DevToolsTab // org.reduxkotlin.devtools.inapp.model/InAppState.activeTab.<get-activeTab>|<get-activeTab>(){}[0]
+    final val filter // org.reduxkotlin.devtools.inapp.model/InAppState.filter|{}filter[0]
+        final fun <get-filter>(): kotlin/String // org.reduxkotlin.devtools.inapp.model/InAppState.filter.<get-filter>|<get-filter>(){}[0]
+    final val filteredActions // org.reduxkotlin.devtools.inapp.model/InAppState.filteredActions|{}filteredActions[0]
+        final fun <get-filteredActions>(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded> // org.reduxkotlin.devtools.inapp.model/InAppState.filteredActions.<get-filteredActions>|<get-filteredActions>(){}[0]
+    final val outputs // org.reduxkotlin.devtools.inapp.model/InAppState.outputs|{}outputs[0]
+        final fun <get-outputs>(): kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/OutputRow> // org.reduxkotlin.devtools.inapp.model/InAppState.outputs.<get-outputs>|<get-outputs>(){}[0]
+    final val selected // org.reduxkotlin.devtools.inapp.model/InAppState.selected|{}selected[0]
+        final fun <get-selected>(): org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded? // org.reduxkotlin.devtools.inapp.model/InAppState.selected.<get-selected>|<get-selected>(){}[0]
+    final val selectedId // org.reduxkotlin.devtools.inapp.model/InAppState.selectedId|{}selectedId[0]
+        final fun <get-selectedId>(): kotlin/Int? // org.reduxkotlin.devtools.inapp.model/InAppState.selectedId.<get-selectedId>|<get-selectedId>(){}[0]
+    final val structure // org.reduxkotlin.devtools.inapp.model/InAppState.structure|{}structure[0]
+        final fun <get-structure>(): org.reduxkotlin.devtools/PipelineStructure? // org.reduxkotlin.devtools.inapp.model/InAppState.structure.<get-structure>|<get-structure>(){}[0]
+    final val tracesById // org.reduxkotlin.devtools.inapp.model/InAppState.tracesById|{}tracesById[0]
+        final fun <get-tracesById>(): kotlin.collections/Map<kotlin/Int, org.reduxkotlin.devtools/PipelineTrace> // org.reduxkotlin.devtools.inapp.model/InAppState.tracesById.<get-tracesById>|<get-tracesById>(){}[0]
+
+    final fun component1(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded> // org.reduxkotlin.devtools.inapp.model/InAppState.component1|component1(){}[0]
+    final fun component2(): kotlin/Int? // org.reduxkotlin.devtools.inapp.model/InAppState.component2|component2(){}[0]
+    final fun component3(): kotlin/String // org.reduxkotlin.devtools.inapp.model/InAppState.component3|component3(){}[0]
+    final fun component4(): org.reduxkotlin.devtools.inapp/DevToolsTab // org.reduxkotlin.devtools.inapp.model/InAppState.component4|component4(){}[0]
+    final fun component5(): org.reduxkotlin.devtools/PipelineStructure? // org.reduxkotlin.devtools.inapp.model/InAppState.component5|component5(){}[0]
+    final fun component6(): kotlin.collections/Map<kotlin/Int, org.reduxkotlin.devtools/PipelineTrace> // org.reduxkotlin.devtools.inapp.model/InAppState.component6|component6(){}[0]
+    final fun component7(): kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/OutputRow> // org.reduxkotlin.devtools.inapp.model/InAppState.component7|component7(){}[0]
+    final fun copy(kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded> = ..., kotlin/Int? = ..., kotlin/String = ..., org.reduxkotlin.devtools.inapp/DevToolsTab = ..., org.reduxkotlin.devtools/PipelineStructure? = ..., kotlin.collections/Map<kotlin/Int, org.reduxkotlin.devtools/PipelineTrace> = ..., kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/OutputRow> = ...): org.reduxkotlin.devtools.inapp.model/InAppState // org.reduxkotlin.devtools.inapp.model/InAppState.copy|copy(kotlin.collections.List<org.reduxkotlin.devtools.DevToolsEvent.ActionRecorded>;kotlin.Int?;kotlin.String;org.reduxkotlin.devtools.inapp.DevToolsTab;org.reduxkotlin.devtools.PipelineStructure?;kotlin.collections.Map<kotlin.Int,org.reduxkotlin.devtools.PipelineTrace>;kotlin.collections.List<org.reduxkotlin.devtools.inapp.model.OutputRow>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/InAppState.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/InAppState.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp.model/InAppState.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools.inapp.model/OutputRow { // org.reduxkotlin.devtools.inapp.model/OutputRow|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/Boolean, kotlin/Boolean) // org.reduxkotlin.devtools.inapp.model/OutputRow.<init>|<init>(kotlin.String;kotlin.String;kotlin.Boolean;kotlin.Boolean){}[0]
+
+    final val enabled // org.reduxkotlin.devtools.inapp.model/OutputRow.enabled|{}enabled[0]
+        final fun <get-enabled>(): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/OutputRow.enabled.<get-enabled>|<get-enabled>(){}[0]
+    final val id // org.reduxkotlin.devtools.inapp.model/OutputRow.id|{}id[0]
+        final fun <get-id>(): kotlin/String // org.reduxkotlin.devtools.inapp.model/OutputRow.id.<get-id>|<get-id>(){}[0]
+    final val label // org.reduxkotlin.devtools.inapp.model/OutputRow.label|{}label[0]
+        final fun <get-label>(): kotlin/String // org.reduxkotlin.devtools.inapp.model/OutputRow.label.<get-label>|<get-label>(){}[0]
+    final val locked // org.reduxkotlin.devtools.inapp.model/OutputRow.locked|{}locked[0]
+        final fun <get-locked>(): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/OutputRow.locked.<get-locked>|<get-locked>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools.inapp.model/OutputRow.component1|component1(){}[0]
+    final fun component2(): kotlin/String // org.reduxkotlin.devtools.inapp.model/OutputRow.component2|component2(){}[0]
+    final fun component3(): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/OutputRow.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/OutputRow.component4|component4(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ..., kotlin/Boolean = ...): org.reduxkotlin.devtools.inapp.model/OutputRow // org.reduxkotlin.devtools.inapp.model/OutputRow.copy|copy(kotlin.String;kotlin.String;kotlin.Boolean;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/OutputRow.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/OutputRow.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp.model/OutputRow.toString|toString(){}[0]
+}
+
+final object org.reduxkotlin.devtools.inapp.theme/RkTokens { // org.reduxkotlin.devtools.inapp.theme/RkTokens|null[0]
+    final val Amber // org.reduxkotlin.devtools.inapp.theme/RkTokens.Amber|{}Amber[0]
+        final fun <get-Amber>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.Amber.<get-Amber>|<get-Amber>(){}[0]
+    final val Blue // org.reduxkotlin.devtools.inapp.theme/RkTokens.Blue|{}Blue[0]
+        final fun <get-Blue>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.Blue.<get-Blue>|<get-Blue>(){}[0]
+    final val BlueLight // org.reduxkotlin.devtools.inapp.theme/RkTokens.BlueLight|{}BlueLight[0]
+        final fun <get-BlueLight>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.BlueLight.<get-BlueLight>|<get-BlueLight>(){}[0]
+    final val Green // org.reduxkotlin.devtools.inapp.theme/RkTokens.Green|{}Green[0]
+        final fun <get-Green>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.Green.<get-Green>|<get-Green>(){}[0]
+    final val InkDim // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkDim|{}InkDim[0]
+        final fun <get-InkDim>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkDim.<get-InkDim>|<get-InkDim>(){}[0]
+    final val InkFaint // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkFaint|{}InkFaint[0]
+        final fun <get-InkFaint>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkFaint.<get-InkFaint>|<get-InkFaint>(){}[0]
+    final val InkOn // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkOn|{}InkOn[0]
+        final fun <get-InkOn>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkOn.<get-InkOn>|<get-InkOn>(){}[0]
+    final val InkSurface // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkSurface|{}InkSurface[0]
+        final fun <get-InkSurface>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkSurface.<get-InkSurface>|<get-InkSurface>(){}[0]
+    final val InkSurfaceHigh // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkSurfaceHigh|{}InkSurfaceHigh[0]
+        final fun <get-InkSurfaceHigh>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.InkSurfaceHigh.<get-InkSurfaceHigh>|<get-InkSurfaceHigh>(){}[0]
+    final val Magenta // org.reduxkotlin.devtools.inapp.theme/RkTokens.Magenta|{}Magenta[0]
+        final fun <get-Magenta>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.Magenta.<get-Magenta>|<get-Magenta>(){}[0]
+    final val Orange // org.reduxkotlin.devtools.inapp.theme/RkTokens.Orange|{}Orange[0]
+        final fun <get-Orange>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.Orange.<get-Orange>|<get-Orange>(){}[0]
+    final val Purple // org.reduxkotlin.devtools.inapp.theme/RkTokens.Purple|{}Purple[0]
+        final fun <get-Purple>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.Purple.<get-Purple>|<get-Purple>(){}[0]
+    final val Red // org.reduxkotlin.devtools.inapp.theme/RkTokens.Red|{}Red[0]
+        final fun <get-Red>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.Red.<get-Red>|<get-Red>(){}[0]
+    final val SheetCorner // org.reduxkotlin.devtools.inapp.theme/RkTokens.SheetCorner|{}SheetCorner[0]
+        final fun <get-SheetCorner>(): androidx.compose.ui.unit/Dp // org.reduxkotlin.devtools.inapp.theme/RkTokens.SheetCorner.<get-SheetCorner>|<get-SheetCorner>(){}[0]
+    final val gradient // org.reduxkotlin.devtools.inapp.theme/RkTokens.gradient|{}gradient[0]
+        final fun <get-gradient>(): androidx.compose.ui.graphics/Brush // org.reduxkotlin.devtools.inapp.theme/RkTokens.gradient.<get-gradient>|<get-gradient>(){}[0]
+}
+
+final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop[0]
+final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppState$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppState$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_InAppState$stableprop[0]
+final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop[0]
+final val org.reduxkotlin.devtools.inapp.theme/org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop // org.reduxkotlin.devtools.inapp.theme/org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop|#static{}org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop[0]
+
+final fun org.reduxkotlin.devtools.inapp.model/actionType(kotlinx.serialization.json/JsonElement): kotlin/String // org.reduxkotlin.devtools.inapp.model/actionType|actionType(kotlinx.serialization.json.JsonElement){}[0]
+final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop_getter|org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppState$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppState$stableprop_getter|org_reduxkotlin_devtools_inapp_model_InAppState$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop_getter|org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.theme/ReduxKotlinDevToolsTheme(org.reduxkotlin.devtools.inapp/DevToolsThemeMode, kotlin/Boolean, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // org.reduxkotlin.devtools.inapp.theme/ReduxKotlinDevToolsTheme|ReduxKotlinDevToolsTheme(org.reduxkotlin.devtools.inapp.DevToolsThemeMode;kotlin.Boolean;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun org.reduxkotlin.devtools.inapp.theme/org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.theme/org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop_getter|org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.ui.tabs/ActionsTab(org.reduxkotlin.devtools.inapp.model/InAppState, kotlin/Function1<kotlin/String, kotlin/Unit>, kotlin/Function1<kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // org.reduxkotlin.devtools.inapp.ui.tabs/ActionsTab|ActionsTab(org.reduxkotlin.devtools.inapp.model.InAppState;kotlin.Function1<kotlin.String,kotlin.Unit>;kotlin.Function1<kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun org.reduxkotlin.devtools.inapp.ui.tabs/DiffTab(kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry>, androidx.compose.runtime/Composer?, kotlin/Int) // org.reduxkotlin.devtools.inapp.ui.tabs/DiffTab|DiffTab(kotlin.collections.List<org.reduxkotlin.devtools.DiffEntry>;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun org.reduxkotlin.devtools.inapp.ui.tabs/OutputsTab(kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/OutputRow>, kotlin/Function2<kotlin/String, kotlin/Boolean, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // org.reduxkotlin.devtools.inapp.ui.tabs/OutputsTab|OutputsTab(kotlin.collections.List<org.reduxkotlin.devtools.inapp.model.OutputRow>;kotlin.Function2<kotlin.String,kotlin.Boolean,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun org.reduxkotlin.devtools.inapp.ui.tabs/PipelineTab(org.reduxkotlin.devtools/PipelineStructure?, org.reduxkotlin.devtools/PipelineTrace?, androidx.compose.runtime/Composer?, kotlin/Int) // org.reduxkotlin.devtools.inapp.ui.tabs/PipelineTab|PipelineTab(org.reduxkotlin.devtools.PipelineStructure?;org.reduxkotlin.devtools.PipelineTrace?;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun org.reduxkotlin.devtools.inapp.ui.tabs/StateTab(kotlinx.serialization.json/JsonElement?, androidx.compose.runtime/Composer?, kotlin/Int) // org.reduxkotlin.devtools.inapp.ui.tabs/StateTab|StateTab(kotlinx.serialization.json.JsonElement?;androidx.compose.runtime.Composer?;kotlin.Int){}[0]

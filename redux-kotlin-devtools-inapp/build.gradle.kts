@@ -32,7 +32,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":redux-kotlin-devtools-core"))
+                api(project(":redux-kotlin-devtools-ui"))
                 implementation(libs.kotlinx.serialization.json)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
