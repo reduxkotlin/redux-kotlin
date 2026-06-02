@@ -16,6 +16,11 @@ final enum class org.reduxkotlin.devtools/DiffOp : kotlin/Enum<org.reduxkotlin.d
 
     final fun valueOf(kotlin/String): org.reduxkotlin.devtools/DiffOp // org.reduxkotlin.devtools/DiffOp.valueOf|valueOf#static(kotlin.String){}[0]
     final fun values(): kotlin/Array<org.reduxkotlin.devtools/DiffOp> // org.reduxkotlin.devtools/DiffOp.values|values#static(){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // org.reduxkotlin.devtools/DiffOp.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools/DiffOp> // org.reduxkotlin.devtools/DiffOp.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // org.reduxkotlin.devtools/DiffOp.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
 }
 
 final enum class org.reduxkotlin.devtools/PipelineNodeKind : kotlin/Enum<org.reduxkotlin.devtools/PipelineNodeKind> { // org.reduxkotlin.devtools/PipelineNodeKind|null[0]
@@ -29,6 +34,11 @@ final enum class org.reduxkotlin.devtools/PipelineNodeKind : kotlin/Enum<org.red
 
     final fun valueOf(kotlin/String): org.reduxkotlin.devtools/PipelineNodeKind // org.reduxkotlin.devtools/PipelineNodeKind.valueOf|valueOf#static(kotlin.String){}[0]
     final fun values(): kotlin/Array<org.reduxkotlin.devtools/PipelineNodeKind> // org.reduxkotlin.devtools/PipelineNodeKind.values|values#static(){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // org.reduxkotlin.devtools/PipelineNodeKind.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools/PipelineNodeKind> // org.reduxkotlin.devtools/PipelineNodeKind.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // org.reduxkotlin.devtools/PipelineNodeKind.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
 }
 
 abstract interface org.reduxkotlin.devtools/DevToolsOutput { // org.reduxkotlin.devtools/DevToolsOutput|null[0]
@@ -187,6 +197,21 @@ final class org.reduxkotlin.devtools/DiffEntry { // org.reduxkotlin.devtools/Dif
     final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DiffEntry.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DiffEntry.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.devtools/DiffEntry.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools/DiffEntry> { // org.reduxkotlin.devtools/DiffEntry.$serializer|null[0]
+        final val descriptor // org.reduxkotlin.devtools/DiffEntry.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools/DiffEntry.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools/DiffEntry.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools/DiffEntry // org.reduxkotlin.devtools/DiffEntry.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools/DiffEntry) // org.reduxkotlin.devtools/DiffEntry.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.DiffEntry){}[0]
+    }
+
+    final object Companion { // org.reduxkotlin.devtools/DiffEntry.Companion|null[0]
+        final val $childSerializers // org.reduxkotlin.devtools/DiffEntry.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools/DiffEntry> // org.reduxkotlin.devtools/DiffEntry.Companion.serializer|serializer(){}[0]
+    }
 }
 
 final class org.reduxkotlin.devtools/KotlinxValueSerializer : org.reduxkotlin.devtools/ValueSerializer { // org.reduxkotlin.devtools/KotlinxValueSerializer|null[0]
@@ -212,6 +237,21 @@ final class org.reduxkotlin.devtools/PipelineNode { // org.reduxkotlin.devtools/
     final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/PipelineNode.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/PipelineNode.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.devtools/PipelineNode.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools/PipelineNode> { // org.reduxkotlin.devtools/PipelineNode.$serializer|null[0]
+        final val descriptor // org.reduxkotlin.devtools/PipelineNode.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools/PipelineNode.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools/PipelineNode.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools/PipelineNode // org.reduxkotlin.devtools/PipelineNode.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools/PipelineNode) // org.reduxkotlin.devtools/PipelineNode.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.PipelineNode){}[0]
+    }
+
+    final object Companion { // org.reduxkotlin.devtools/PipelineNode.Companion|null[0]
+        final val $childSerializers // org.reduxkotlin.devtools/PipelineNode.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools/PipelineNode> // org.reduxkotlin.devtools/PipelineNode.Companion.serializer|serializer(){}[0]
+    }
 }
 
 final class org.reduxkotlin.devtools/PipelineNodeTrace { // org.reduxkotlin.devtools/PipelineNodeTrace|null[0]
@@ -234,6 +274,19 @@ final class org.reduxkotlin.devtools/PipelineNodeTrace { // org.reduxkotlin.devt
     final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/PipelineNodeTrace.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/PipelineNodeTrace.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.devtools/PipelineNodeTrace.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools/PipelineNodeTrace> { // org.reduxkotlin.devtools/PipelineNodeTrace.$serializer|null[0]
+        final val descriptor // org.reduxkotlin.devtools/PipelineNodeTrace.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools/PipelineNodeTrace.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools/PipelineNodeTrace.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools/PipelineNodeTrace // org.reduxkotlin.devtools/PipelineNodeTrace.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools/PipelineNodeTrace) // org.reduxkotlin.devtools/PipelineNodeTrace.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.PipelineNodeTrace){}[0]
+    }
+
+    final object Companion { // org.reduxkotlin.devtools/PipelineNodeTrace.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools/PipelineNodeTrace> // org.reduxkotlin.devtools/PipelineNodeTrace.Companion.serializer|serializer(){}[0]
+    }
 }
 
 final class org.reduxkotlin.devtools/PipelineStructure { // org.reduxkotlin.devtools/PipelineStructure|null[0]
@@ -247,6 +300,21 @@ final class org.reduxkotlin.devtools/PipelineStructure { // org.reduxkotlin.devt
     final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/PipelineStructure.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/PipelineStructure.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.devtools/PipelineStructure.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools/PipelineStructure> { // org.reduxkotlin.devtools/PipelineStructure.$serializer|null[0]
+        final val descriptor // org.reduxkotlin.devtools/PipelineStructure.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools/PipelineStructure.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools/PipelineStructure.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools/PipelineStructure // org.reduxkotlin.devtools/PipelineStructure.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools/PipelineStructure) // org.reduxkotlin.devtools/PipelineStructure.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.PipelineStructure){}[0]
+    }
+
+    final object Companion { // org.reduxkotlin.devtools/PipelineStructure.Companion|null[0]
+        final val $childSerializers // org.reduxkotlin.devtools/PipelineStructure.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools/PipelineStructure> // org.reduxkotlin.devtools/PipelineStructure.Companion.serializer|serializer(){}[0]
+    }
 }
 
 final class org.reduxkotlin.devtools/PipelineTrace { // org.reduxkotlin.devtools/PipelineTrace|null[0]
@@ -263,6 +331,21 @@ final class org.reduxkotlin.devtools/PipelineTrace { // org.reduxkotlin.devtools
     final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/PipelineTrace.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/PipelineTrace.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.devtools/PipelineTrace.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools/PipelineTrace> { // org.reduxkotlin.devtools/PipelineTrace.$serializer|null[0]
+        final val descriptor // org.reduxkotlin.devtools/PipelineTrace.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools/PipelineTrace.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools/PipelineTrace.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools/PipelineTrace // org.reduxkotlin.devtools/PipelineTrace.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools/PipelineTrace) // org.reduxkotlin.devtools/PipelineTrace.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.PipelineTrace){}[0]
+    }
+
+    final object Companion { // org.reduxkotlin.devtools/PipelineTrace.Companion|null[0]
+        final val $childSerializers // org.reduxkotlin.devtools/PipelineTrace.Companion.$childSerializers|{}$childSerializers[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools/PipelineTrace> // org.reduxkotlin.devtools/PipelineTrace.Companion.serializer|serializer(){}[0]
+    }
 }
 
 final object org.reduxkotlin.devtools/DevToolsHub { // org.reduxkotlin.devtools/DevToolsHub|null[0]

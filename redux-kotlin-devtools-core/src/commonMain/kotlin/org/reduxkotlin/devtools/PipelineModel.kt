@@ -1,6 +1,9 @@
 package org.reduxkotlin.devtools
 
+import kotlinx.serialization.Serializable
+
 /** The role a [PipelineNode] plays in the dispatch pipeline. */
+@Serializable
 public enum class PipelineNodeKind {
     /** The dispatch entry point (`dispatch(action)`). */
     ENTRY,
@@ -22,6 +25,7 @@ public enum class PipelineNodeKind {
  * @property label human-readable label (the middleware/reducer name).
  * @property kind the node's role.
  */
+@Serializable
 public data class PipelineNode(public val id: String, public val label: String, public val kind: PipelineNodeKind)
 
 /**
@@ -30,6 +34,7 @@ public data class PipelineNode(public val id: String, public val label: String, 
  *
  * @property nodes ordered nodes: `ENTRY`, then `MIDDLEWARE`s in chain order, then `REDUCER`, then `SLICE`s.
  */
+@Serializable
 public data class PipelineStructure(public val nodes: List<PipelineNode>)
 
 /**
@@ -40,6 +45,7 @@ public data class PipelineStructure(public val nodes: List<PipelineNode>)
  * @property forwarded for middleware: whether it called `next` (forwarded the action). `true` for reducers/slices.
  * @property changed for reducers/slices: whether the node produced a new state reference. `false` for middleware.
  */
+@Serializable
 public data class PipelineNodeTrace(
     public val nodeId: String,
     public val durationNanos: Long,
@@ -53,4 +59,5 @@ public data class PipelineNodeTrace(
  * @property actionId the matching [DevToolsEvent.ActionRecorded.actionId]; correlates the trace to its action.
  * @property nodes per-node traces, in traversal order.
  */
+@Serializable
 public data class PipelineTrace(public val actionId: Int, public val nodes: List<PipelineNodeTrace>)
