@@ -20,7 +20,7 @@ val hasAndroidSdk: Boolean = run {
 kotlin {
     if (hasAndroidSdk) {
         android {
-            namespace = "org.reduxkotlin.devtools.inapp"
+            namespace = "org.reduxkotlin.devtools.ui"
         }
     }
 

@@ -1,4 +1,6 @@
 *.iml
+# DevTools monitor recordings saved via :run into the module dir
+redux-kotlin-devtools-standalone/*.jsonl
 .gradle/
 .kotlin/
 /gradle/gradle-daemon-jvm.properties
