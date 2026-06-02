@@ -6,11 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.reduxkotlin.devtools.DevToolsHub
 import org.reduxkotlin.devtools.inapp.model.StoreRegistryModel
+import org.reduxkotlin.devtools.inapp.model.actionLogRows
 import org.reduxkotlin.devtools.inapp.theme.ReduxKotlinDevToolsTheme
 import org.reduxkotlin.devtools.inapp.ui.DevToolsBubble
 import org.reduxkotlin.devtools.inapp.ui.Drawer
@@ -63,12 +65,17 @@ private fun SingleSessionOverlay(config: InAppConfig) {
         val model = rememberDevToolsController(session)
         val state by model.state.collectAsState()
         DevToolsTriggers(config, state.actions.size)
+        val rows = state.actionLogRows(session.id, session.id)
         ReduxKotlinDevToolsTheme(mode = config.theme, systemDark = true) {
             Drawer(
                 open = DrawerState.open,
                 state = state,
                 model = model,
                 registry = null,
+                rows = rows,
+                selectedStoreId = session.id,
+                selectedActionId = state.selected?.actionId,
+                onSelect = { _, actionId -> model.select(actionId) },
                 onClose = { DrawerState.open = false },
                 onToggleOutput = { id, on ->
                     val output = DevToolsHub.outputs().firstOrNull { it.id == id }
@@ -88,13 +95,18 @@ private fun SingleSessionOverlay(config: InAppConfig) {
 private fun MultiSessionOverlay(config: InAppConfig) {
     val registry = rememberStoreRegistry()
     val registryState by registry.state.collectAsState()
-    val activeEntry = registryState.stores.firstOrNull { it.ref.id in registryState.selectedIds }
+    var activeStoreId by remember { mutableStateOf<String?>(null) }
+    val activeEntry = registryState.stores.firstOrNull {
+        it.ref.id == activeStoreId && it.ref.id in registryState.selectedIds
+    }
+        ?: registryState.stores.firstOrNull { it.ref.id in registryState.selectedIds }
         ?: registryState.stores.firstOrNull()
     val activeModel = activeEntry?.let { registry.modelFor(it.ref.id) }
     if (activeEntry != null && activeModel != null) {
         val state = activeEntry.state
         val activeSession = DevToolsHub.session(activeEntry.ref.id)
         val badgeCount = if (registryState.merged) registryState.mergedRows.size else state.actions.size
+        val rows = registryState.actionLogRows(activeStoreId)
         DevToolsTriggers(config, badgeCount)
         ReduxKotlinDevToolsTheme(mode = config.theme, systemDark = true) {
             Drawer(
@@ -102,6 +114,14 @@ private fun MultiSessionOverlay(config: InAppConfig) {
                 state = state,
                 model = activeModel,
                 registry = registry,
+                rows = rows,
+                selectedStoreId = activeEntry.ref.id,
+                selectedActionId = activeEntry.state.selected?.actionId,
+                onSelect = { sid, aid ->
+                    activeStoreId = sid
+                    registry.modelFor(sid)?.select(aid)
+                    registry.refresh()
+                },
                 onClose = { DrawerState.open = false },
                 onToggleOutput = { id, on ->
                     val output = DevToolsHub.outputs().firstOrNull { it.id == id }

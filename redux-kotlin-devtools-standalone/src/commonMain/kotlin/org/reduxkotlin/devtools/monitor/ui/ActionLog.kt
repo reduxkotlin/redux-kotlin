@@ -23,50 +23,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.serialization.json.JsonObject
 import org.reduxkotlin.devtools.DevToolsEvent
-import org.reduxkotlin.devtools.inapp.model.StoreActionRow
+import org.reduxkotlin.devtools.inapp.model.ActionLogRow
+import org.reduxkotlin.devtools.inapp.model.actionLogRows
 import org.reduxkotlin.devtools.inapp.model.actionType
+import org.reduxkotlin.devtools.inapp.model.matches
+import org.reduxkotlin.devtools.inapp.model.payloadPreview
 import org.reduxkotlin.devtools.monitor.MonitorState
-
-/** A flattened log row, store-tagged so single + merged modes share one renderer. */
-private data class LogRow(
-    val storeId: String,
-    val storeName: String,
-    val merged: Boolean,
-    val event: DevToolsEvent.ActionRecorded,
-)
-
-/** Best-effort payload preview from an action's JSON object (keys other than `type`). */
-internal fun payloadPreview(event: DevToolsEvent.ActionRecorded): String {
-    val obj = event.action as? JsonObject ?: return ""
-    val entries = obj.filterKeys { it != "type" && it != "__name" }
-    return if (entries.isEmpty()) "" else "{ " + entries.entries.joinToString(", ") { "${it.key}: ${it.value}" } + " }"
-}
-
-private fun LogRow.matches(query: String, regex: Boolean): Boolean {
-    if (query.isBlank()) return true
-    val hay = "${event.actionId} ${actionType(event.action)} ${payloadPreview(event)} ${event.state} $storeName"
-    return if (regex) {
-        runCatching { Regex(query, RegexOption.IGNORE_CASE).containsMatchIn(hay) }.getOrDefault(false)
-    } else {
-        hay.contains(query, ignoreCase = true)
-    }
-}
 
 /** Visible (post-filter) rows for the current selection — used for the header count + match count. */
 internal fun visibleRows(state: MonitorState): List<Pair<String, DevToolsEvent.ActionRecorded>> =
-    rowsFor(state).filter { it.matches(state.query, state.regex) }.map { it.storeId to it.event }
-
-private fun rowsFor(state: MonitorState): List<LogRow> {
-    val reg = state.state
-    return if (reg.merged) {
-        reg.mergedRows.map { r: StoreActionRow -> LogRow(r.storeId, r.storeName, true, r.event) }
-    } else {
-        val store = state.activeStore ?: return emptyList()
-        store.state.filteredActions.map { LogRow(store.ref.id, store.ref.name, false, it) }
-    }
-}
+    state.state.actionLogRows(state.activeStore?.ref?.id)
+        .filter { it.matches(state.query, state.regex) }
+        .map { it.storeId to it.event }
 
 /**
  * The action log: header (count + "merged by time" / "read-only") and a scrolling list of rows.
@@ -74,7 +43,7 @@ private fun rowsFor(state: MonitorState): List<LogRow> {
  */
 @Composable
 public fun ActionLog(state: MonitorState, colors: MonitorColors, onSelect: (storeId: String, actionId: Int) -> Unit) {
-    val rows = rowsFor(state).filter { it.matches(state.query, state.regex) }
+    val rows = state.state.actionLogRows(state.activeStore?.ref?.id).filter { it.matches(state.query, state.regex) }
     Column(Modifier.fillMaxSize().background(colors.logBg)) {
         LogHeader(state, rows.size, colors)
         LazyColumn(Modifier.weight(1f).padding(horizontal = 7.dp, vertical = 6.dp)) {
@@ -111,7 +80,7 @@ private fun LogHeader(state: MonitorState, shown: Int, colors: MonitorColors) {
 }
 
 @Composable
-private fun ActionRow(row: LogRow, state: MonitorState, colors: MonitorColors, onSelect: (String, Int) -> Unit) {
+private fun ActionRow(row: ActionLogRow, state: MonitorState, colors: MonitorColors, onSelect: (String, Int) -> Unit) {
     val selected = state.activeStore?.ref?.id == row.storeId &&
         state.activeStore?.state?.selectedId == row.event.actionId
     val type = actionType(row.event.action)

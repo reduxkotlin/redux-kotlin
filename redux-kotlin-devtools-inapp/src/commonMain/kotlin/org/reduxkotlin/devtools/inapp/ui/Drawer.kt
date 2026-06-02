@@ -34,11 +34,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.devtools.inapp.DevToolsTab
+import org.reduxkotlin.devtools.inapp.model.ActionLogRow
 import org.reduxkotlin.devtools.inapp.model.InAppModel
 import org.reduxkotlin.devtools.inapp.model.InAppState
 import org.reduxkotlin.devtools.inapp.model.StoreRegistryModel
 import org.reduxkotlin.devtools.inapp.theme.RkTokens
-import org.reduxkotlin.devtools.inapp.ui.tabs.ActionsTab
 import org.reduxkotlin.devtools.inapp.ui.tabs.DiffTab
 import org.reduxkotlin.devtools.inapp.ui.tabs.OutputsTab
 import org.reduxkotlin.devtools.inapp.ui.tabs.PipelineTab
@@ -53,6 +53,10 @@ internal fun Drawer(
     registry: StoreRegistryModel?,
     onClose: () -> Unit,
     onToggleOutput: (String, Boolean) -> Unit,
+    rows: List<ActionLogRow> = emptyList(),
+    selectedStoreId: String? = null,
+    selectedActionId: Int? = state.selected?.actionId,
+    onSelect: (storeId: String, actionId: Int) -> Unit = { _, actionId -> model.select(actionId) },
 ) {
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val wide = maxWidth >= 600.dp
@@ -81,7 +85,14 @@ internal fun Drawer(
                 }
                 Box(Modifier.fillMaxWidth().weight(1f)) {
                     when (state.activeTab) {
-                        DevToolsTab.ACTIONS -> ActionsTab(state, model::setFilter) { model.select(it) }
+                        DevToolsTab.ACTIONS -> DrawerActionLog(
+                            rows = rows,
+                            filter = state.filter,
+                            onFilter = model::setFilter,
+                            selectedStoreId = selectedStoreId,
+                            selectedActionId = selectedActionId,
+                            onSelect = onSelect,
+                        )
 
                         DevToolsTab.STATE -> StateTab(state.selected?.state)
 
