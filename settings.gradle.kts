@@ -33,6 +33,7 @@ include(
     ":redux-kotlin-compose-multimodel",
     ":redux-kotlin-devtools-core",
     ":redux-kotlin-devtools-remote",
+    ":redux-kotlin-devtools-inapp",
     ":examples:counter:common",
     ":examples:counter:android",
     ":examples:todos:common",
