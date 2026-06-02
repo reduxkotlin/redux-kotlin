@@ -1,10 +1,12 @@
 package org.reduxkotlin.devtools
 
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 /** The kind of change a [DiffEntry] represents between two states. */
+@Serializable
 public enum class DiffOp {
     /** A path present in the new state but absent in the previous one. */
     ADDED,
@@ -24,6 +26,7 @@ public enum class DiffOp {
  * @property before the previous value, or `null` for [DiffOp.ADDED].
  * @property after the new value, or `null` for [DiffOp.REMOVED].
  */
+@Serializable
 public data class DiffEntry(
     public val op: DiffOp,
     public val path: String,

@@ -130,6 +130,7 @@ public final class org/reduxkotlin/devtools/DevToolsSession$Companion {
 }
 
 public final class org/reduxkotlin/devtools/DiffEntry {
+	public static final field Companion Lorg/reduxkotlin/devtools/DiffEntry$Companion;
 	public fun <init> (Lorg/reduxkotlin/devtools/DiffOp;Ljava/lang/String;Lkotlinx/serialization/json/JsonElement;Lkotlinx/serialization/json/JsonElement;)V
 	public final fun component1 ()Lorg/reduxkotlin/devtools/DiffOp;
 	public final fun component2 ()Ljava/lang/String;
@@ -146,13 +147,33 @@ public final class org/reduxkotlin/devtools/DiffEntry {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final synthetic class org/reduxkotlin/devtools/DiffEntry$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/DiffEntry$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/DiffEntry;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/DiffEntry;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/DiffEntry$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class org/reduxkotlin/devtools/DiffOp : java/lang/Enum {
 	public static final field ADDED Lorg/reduxkotlin/devtools/DiffOp;
 	public static final field CHANGED Lorg/reduxkotlin/devtools/DiffOp;
+	public static final field Companion Lorg/reduxkotlin/devtools/DiffOp$Companion;
 	public static final field REMOVED Lorg/reduxkotlin/devtools/DiffOp;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/DiffOp;
 	public static fun values ()[Lorg/reduxkotlin/devtools/DiffOp;
+}
+
+public final class org/reduxkotlin/devtools/DiffOp$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/reduxkotlin/devtools/JsonDiffKt {
@@ -171,6 +192,7 @@ public final class org/reduxkotlin/devtools/NamedReducer {
 }
 
 public final class org/reduxkotlin/devtools/PipelineNode {
+	public static final field Companion Lorg/reduxkotlin/devtools/PipelineNode$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/PipelineNodeKind;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
@@ -185,7 +207,23 @@ public final class org/reduxkotlin/devtools/PipelineNode {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final synthetic class org/reduxkotlin/devtools/PipelineNode$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/PipelineNode$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/PipelineNode;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/PipelineNode;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/PipelineNode$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class org/reduxkotlin/devtools/PipelineNodeKind : java/lang/Enum {
+	public static final field Companion Lorg/reduxkotlin/devtools/PipelineNodeKind$Companion;
 	public static final field ENTRY Lorg/reduxkotlin/devtools/PipelineNodeKind;
 	public static final field MIDDLEWARE Lorg/reduxkotlin/devtools/PipelineNodeKind;
 	public static final field REDUCER Lorg/reduxkotlin/devtools/PipelineNodeKind;
@@ -195,7 +233,12 @@ public final class org/reduxkotlin/devtools/PipelineNodeKind : java/lang/Enum {
 	public static fun values ()[Lorg/reduxkotlin/devtools/PipelineNodeKind;
 }
 
+public final class org/reduxkotlin/devtools/PipelineNodeKind$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class org/reduxkotlin/devtools/PipelineNodeTrace {
+	public static final field Companion Lorg/reduxkotlin/devtools/PipelineNodeTrace$Companion;
 	public fun <init> (Ljava/lang/String;JZZ)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()J
@@ -212,7 +255,23 @@ public final class org/reduxkotlin/devtools/PipelineNodeTrace {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final synthetic class org/reduxkotlin/devtools/PipelineNodeTrace$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/PipelineNodeTrace$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/PipelineNodeTrace;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/PipelineNodeTrace;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/PipelineNodeTrace$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class org/reduxkotlin/devtools/PipelineStructure {
+	public static final field Companion Lorg/reduxkotlin/devtools/PipelineStructure$Companion;
 	public fun <init> (Ljava/util/List;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun copy (Ljava/util/List;)Lorg/reduxkotlin/devtools/PipelineStructure;
@@ -223,7 +282,23 @@ public final class org/reduxkotlin/devtools/PipelineStructure {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final synthetic class org/reduxkotlin/devtools/PipelineStructure$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/PipelineStructure$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/PipelineStructure;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/PipelineStructure;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/PipelineStructure$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class org/reduxkotlin/devtools/PipelineTrace {
+	public static final field Companion Lorg/reduxkotlin/devtools/PipelineTrace$Companion;
 	public fun <init> (ILjava/util/List;)V
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
@@ -234,6 +309,21 @@ public final class org/reduxkotlin/devtools/PipelineTrace {
 	public final fun getNodes ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class org/reduxkotlin/devtools/PipelineTrace$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/PipelineTrace$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/PipelineTrace;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/PipelineTrace;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/PipelineTrace$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/reduxkotlin/devtools/ToStringValueSerializer : org/reduxkotlin/devtools/ValueSerializer {
