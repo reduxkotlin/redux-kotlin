@@ -53,13 +53,19 @@ public class MonitorServer(
                     for (frame in incoming) {
                         val msg = (frame as? Frame.Text)
                             ?.readText()
-                            ?.let {
+                            ?.let { text ->
                                 runCatching {
                                     bridgeJson.decodeFromString(
                                         BridgeMessage.serializer(),
-                                        it,
+                                        text,
                                     )
-                                }.getOrNull()
+                                }.getOrElse { e ->
+                                    println(
+                                        "MonitorServer: dropped undecodable frame " +
+                                            "(${e::class.simpleName}): ${text.take(200)}",
+                                    )
+                                    null
+                                }
                             }
                             ?: continue
                         if (msg is BridgeMessage.Hello) {

@@ -33,7 +33,10 @@ private fun connectBridge(ingest: MonitorIngest) {
     ws.onmessage = { event: MessageEvent ->
         (event.data as? JsString)?.toString()?.let { text ->
             runCatching { bridgeJson.decodeFromString(BridgeMessage.serializer(), text) }
-                .getOrNull()
+                .getOrElse { e ->
+                    println("connectBridge: dropped undecodable frame (${e::class.simpleName}): ${text.take(200)}")
+                    null
+                }
                 ?.let { conn.accept(it) }
         }
     }

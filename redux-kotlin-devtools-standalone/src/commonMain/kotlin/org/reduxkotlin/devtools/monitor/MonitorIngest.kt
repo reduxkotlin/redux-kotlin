@@ -1,5 +1,7 @@
 package org.reduxkotlin.devtools.monitor
 
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import org.reduxkotlin.devtools.DevToolsEvent
 import org.reduxkotlin.devtools.bridge.BridgeMessage
 import org.reduxkotlin.devtools.inapp.model.InAppModel
@@ -19,6 +21,13 @@ public class MonitorIngest {
     /** Per-store capture: Hello metadata + the accepted post-Hello messages, keyed by store id. */
     private val captures = mutableMapOf<String, Capture>()
 
+    /**
+     * Guards [captures] and every [Capture.messages] against concurrent access. Bridge clients run
+     * on a multi-threaded IO dispatcher (root + account stores connect at once) and the Compose UI
+     * thread reads via [recordingFor], so all access is serialized. No-op on single-threaded wasmJs.
+     */
+    private val lock = SynchronizedObject()
+
     /** A store's recording source: its [BridgeMessage.Hello] + bounded list of later messages. */
     private class Capture(val hello: BridgeMessage.Hello) {
         val messages: ArrayDeque<BridgeMessage> = ArrayDeque()
@@ -31,8 +40,8 @@ public class MonitorIngest {
      * Builds a recording for store [storeId] (`clientId::storeInstanceId`) from its captured Hello
      * metadata + post-Hello messages, or `null` if the store has never sent a Hello.
      */
-    public fun recordingFor(storeId: String): Pair<RecordingHeader, List<BridgeMessage>>? {
-        val cap = captures[storeId] ?: return null
+    public fun recordingFor(storeId: String): Pair<RecordingHeader, List<BridgeMessage>>? = synchronized(lock) {
+        val cap = captures[storeId] ?: return@synchronized null
         val h = cap.hello
         val header = RecordingHeader(
             protocolVersion = h.protocolVersion,
@@ -42,7 +51,7 @@ public class MonitorIngest {
             storeName = h.storeName,
             storeInstanceId = h.storeInstanceId,
         )
-        return header to cap.messages.toList()
+        header to cap.messages.toList()
     }
 
     /** One connection's decode state: the first [BridgeMessage.Hello] binds it to a store. */
@@ -54,14 +63,16 @@ public class MonitorIngest {
         public fun accept(message: BridgeMessage) {
             val key = storeKey
             if (message !is BridgeMessage.Hello && key != null) {
-                val cap = captures[key]
-                if (cap != null && cap.messages.size < MAX_CAPTURED) cap.messages.addLast(message)
+                synchronized(lock) {
+                    val cap = captures[key]
+                    if (cap != null && cap.messages.size < MAX_CAPTURED) cap.messages.addLast(message)
+                }
             }
             when (message) {
                 is BridgeMessage.Hello -> {
                     val k = "${message.clientId}::${message.storeInstanceId}"
                     storeKey = k
-                    captures[k] = Capture(message)
+                    synchronized(lock) { captures[k] = Capture(message) }
                     val m = InAppModel()
                     model = m
                     registry.put(StoreRef(k, message.storeName), m)

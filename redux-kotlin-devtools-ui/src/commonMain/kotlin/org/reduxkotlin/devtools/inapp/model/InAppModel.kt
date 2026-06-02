@@ -56,7 +56,9 @@ public class InAppModel(private val maxActions: Int = 50) {
             if (s.actions.any { it.actionId == event.actionId }) {
                 s
             } else {
-                s.copy(actions = (s.actions + event).takeLast(maxActions))
+                // Keep ordered by actionId: reseed (history replay) can interleave with the live
+                // stream, so frames may arrive out of order. Sort so the log/timeline isn't scrambled.
+                s.copy(actions = (s.actions + event).sortedBy { it.actionId }.takeLast(maxActions))
             }
 
         is DevToolsEvent.PipelineRegistered -> s.copy(structure = event.structure)

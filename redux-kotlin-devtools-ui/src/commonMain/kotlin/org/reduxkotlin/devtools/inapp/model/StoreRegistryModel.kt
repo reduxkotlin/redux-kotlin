@@ -1,5 +1,7 @@
 package org.reduxkotlin.devtools.inapp.model
 
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.reduxkotlin.devtools.DevToolsEvent
@@ -60,40 +62,50 @@ public class StoreRegistryModel {
     private val slots = LinkedHashMap<String, Slot>()
     private val _state = MutableStateFlow(StoreRegistryState())
 
+    /**
+     * Guards [slots] and the read-modify-write of [_state] so concurrent mutations from different
+     * IO threads (standalone monitor) can't corrupt the map or lose a `copy(...)` update. Uncontended
+     * for the single-threaded in-app drawer; no-op on wasmJs.
+     */
+    private val lock = SynchronizedObject()
+
     /** Observable aggregate view. */
     public val state: StateFlow<StoreRegistryState> = _state
 
     /** Registers (or replaces) the store [ref] backed by [model]; auto-selects the first store. */
-    public fun put(ref: StoreRef, model: InAppModel) {
+    public fun put(ref: StoreRef, model: InAppModel): Unit = synchronized(lock) {
         slots[ref.id] = Slot(ref, model)
         if (_state.value.selectedIds.isEmpty()) _state.value = _state.value.copy(selectedIds = setOf(ref.id))
         recompute()
     }
 
     /** Removes a store. */
-    public fun remove(id: String) {
+    public fun remove(id: String): Unit = synchronized(lock) {
         slots.remove(id)
         _state.value = _state.value.copy(selectedIds = _state.value.selectedIds - id)
-        if (_state.value.selectedIds.isEmpty()) slots.keys.firstOrNull()?.let { focus(it) }
+        if (_state.value.selectedIds.isEmpty()) slots.keys.firstOrNull()?.let { selectLocked(setOf(it)) }
         recompute()
     }
 
     /** Selects exactly the given store ids (filter to a subset). */
-    public fun select(ids: Set<String>) {
-        _state.value = _state.value.copy(selectedIds = ids.ifEmpty { slots.keys.take(1).toSet() })
-    }
+    public fun select(ids: Set<String>): Unit = synchronized(lock) { selectLocked(ids) }
 
     /** Selects exactly one store (solo view). */
     public fun focus(id: String): Unit = select(setOf(id))
 
     /** Selects all registered stores ("view all"). */
-    public fun selectAll(): Unit = select(slots.keys.toSet())
+    public fun selectAll(): Unit = synchronized(lock) { selectLocked(slots.keys.toSet()) }
 
     /** Returns the [InAppModel] for [id], or `null` if not registered. */
-    public fun modelFor(id: String): InAppModel? = slots[id]?.model
+    public fun modelFor(id: String): InAppModel? = synchronized(lock) { slots[id]?.model }
 
     /** Re-reads child models' current state into the aggregate (host calls on any child change). */
-    public fun refresh(): Unit = recompute()
+    public fun refresh(): Unit = synchronized(lock) { recompute() }
+
+    /** [select] body; caller must hold [lock]. */
+    private fun selectLocked(ids: Set<String>) {
+        _state.value = _state.value.copy(selectedIds = ids.ifEmpty { slots.keys.take(1).toSet() })
+    }
 
     private fun recompute() {
         _state.value = _state.value.copy(
