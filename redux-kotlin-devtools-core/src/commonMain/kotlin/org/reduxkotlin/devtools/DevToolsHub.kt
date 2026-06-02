@@ -2,6 +2,7 @@ package org.reduxkotlin.devtools
 
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Process-global, debug-only registry that rendezvous the [devTools] enhancer with its outputs.
@@ -44,6 +45,19 @@ public object DevToolsHub {
         configsById[id] = config
         created
     }
+
+    /** Test-only: create+register a session bound to [dispatcher] so emissions drain deterministically. */
+    internal fun createSessionForTest(config: DevToolsConfig, dispatcher: CoroutineDispatcher): DevToolsSession =
+        synchronized(
+            lock,
+        ) {
+            val id = config.instanceId ?: config.name
+            sessionsById[id]?.let { return@synchronized it }
+            val created = DevToolsSession.create(config, dispatcher)
+            sessionsById[id] = created
+            configsById[id] = config
+            created
+        }
 
     /** The session registered under [id], or `null`. */
     public fun session(id: String): DevToolsSession? = synchronized(lock) { sessionsById[id] }

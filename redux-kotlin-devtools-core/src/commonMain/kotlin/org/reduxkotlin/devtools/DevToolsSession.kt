@@ -88,13 +88,15 @@ public class DevToolsSession private constructor(
     // Dispatch-thread confined (set during the chain, read by record() right after it returns).
     private var pendingTrace: List<PipelineNodeTrace>? = null
 
-    private var structureRegistered = false
+    private val structureNodes = LinkedHashMap<String, PipelineNode>()
 
-    /** Registers the static pipeline [structure] once and emits [DevToolsEvent.PipelineRegistered]. */
+    /** Registers/merges static pipeline nodes and (re)emits [DevToolsEvent.PipelineRegistered] when it grows. */
     public fun registerPipeline(structure: PipelineStructure) {
-        if (structureRegistered) return
-        structureRegistered = true
-        _events.tryEmit(DevToolsEvent.PipelineRegistered(structure))
+        var grew = false
+        for (node in structure.nodes) if (structureNodes.put(node.id, node) == null) grew = true
+        if (!grew) return
+        val ordered = structureNodes.values.sortedBy { it.kind.ordinal }
+        _events.tryEmit(DevToolsEvent.PipelineRegistered(PipelineStructure(ordered)))
     }
 
     /** Called by a combinator wrapper when it commits a completed trace frame for the current dispatch. */
