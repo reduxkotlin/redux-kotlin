@@ -1,13 +1,12 @@
-package org.reduxkotlin.devtools.inapp
+package org.reduxkotlin.devtools
 
-import androidx.compose.runtime.Composable
 import org.reduxkotlin.Middleware
 import org.reduxkotlin.Reducer
 import org.reduxkotlin.StoreEnhancer
 import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.combineReducers
 
-/** No-op replacement of `DevToolsConfig` for release builds. All fields inert. */
+/** No-op replacement of the core `DevToolsConfig` for release builds. All fields inert. */
 public data class DevToolsConfig(
     /** Inert. */
     public val name: String = "redux-kotlin",
@@ -36,9 +35,8 @@ public class NamedReducer<State> internal constructor(internal val reducer: Redu
 
 /** Labels a middleware (label ignored in release). */
 @Suppress("UnusedParameter")
-public fun <State> named(label: String, middleware: Middleware<State>): NamedMiddleware<State> = NamedMiddleware(
-    middleware,
-)
+public fun <State> named(label: String, middleware: Middleware<State>): NamedMiddleware<State> =
+    NamedMiddleware(middleware)
 
 /** Labels a reducer (label ignored in release). */
 @Suppress("UnusedParameter")
@@ -57,70 +55,3 @@ public fun <State> devToolsCombineReducers(
     config: DevToolsConfig,
     vararg reducers: NamedReducer<State>,
 ): Reducer<State> = combineReducers(*reducers.map { it.reducer }.toTypedArray())
-
-/** No-op trigger enum (kept for API parity). */
-public enum class DevToolsTrigger {
-    /** Inert. */
-    BUBBLE,
-
-    /** Inert. */
-    EDGE_SWIPE,
-}
-
-/** No-op theme mode (kept for API parity). */
-public enum class DevToolsThemeMode {
-    /** Inert. */
-    SYSTEM,
-
-    /** Inert. */
-    DARK,
-
-    /** Inert. */
-    LIGHT,
-}
-
-/** No-op start tab (kept for API parity). */
-public enum class DevToolsTab {
-    /** Inert. */
-    ACTIONS,
-
-    /** Inert. */
-    STATE,
-
-    /** Inert. */
-    DIFF,
-
-    /** Inert. */
-    PIPELINE,
-
-    /** Inert. */
-    OUTPUTS,
-}
-
-/** No-op replacement of `InAppConfig`. */
-public data class InAppConfig(
-    /** Inert. */
-    public val triggers: Set<DevToolsTrigger> = setOf(DevToolsTrigger.BUBBLE, DevToolsTrigger.EDGE_SWIPE),
-    /** Inert. */
-    public val startTab: DevToolsTab = DevToolsTab.ACTIONS,
-    /** Inert. */
-    public val theme: DevToolsThemeMode = DevToolsThemeMode.DARK,
-    /** Inert. */
-    public val instanceId: String? = null,
-)
-
-/** No-op programmatic control (does nothing in release). */
-public object ReduxDevTools {
-    /** No-op. */
-    public fun open() { /* no-op */ }
-
-    /** No-op. */
-    public fun close() { /* no-op */ }
-}
-
-/** No-op host: renders [content] directly, with no overlay, no hub, no Compose-material3. */
-@Suppress("UnusedParameter")
-@Composable
-public fun ReduxDevToolsHost(config: InAppConfig = InAppConfig(), content: @Composable () -> Unit) {
-    content()
-}
