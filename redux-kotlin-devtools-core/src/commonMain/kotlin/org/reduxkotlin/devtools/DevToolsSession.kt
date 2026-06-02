@@ -59,7 +59,13 @@ public class DevToolsSession private constructor(
 
     private sealed interface Capture {
         data class Init(val state: Any?) : Capture
-        data class Action(val action: Any, val state: Any?, val timestampMillis: Long) : Capture
+
+        data class Action(
+            val action: Any,
+            val state: Any?,
+            val timestampMillis: Long,
+            val traceNodes: List<PipelineNodeTrace>?,
+        ) : Capture
     }
 
     init {
@@ -75,12 +81,36 @@ public class DevToolsSession private constructor(
         captures.trySend(Capture.Init(state))
     }
 
-    /** Records a dispatched [action] and the resulting [state]. Cheap; heavy work runs off-thread. */
-    public fun record(action: Any, state: Any?) {
+    /** Per-session pipeline trace accumulator, used by the combinators. Dispatch-thread confined. */
+    internal val pipeline: PipelineRecorder = PipelineRecorder()
+
+    // The id-less trace committed by the last-returning dispatch wrapper, awaiting pickup by record().
+    // Dispatch-thread confined (set during the chain, read by record() right after it returns).
+    private var pendingTrace: List<PipelineNodeTrace>? = null
+
+    private var structureRegistered = false
+
+    /** Registers the static pipeline [structure] once and emits [DevToolsEvent.PipelineRegistered]. */
+    public fun registerPipeline(structure: PipelineStructure) {
+        if (structureRegistered) return
+        structureRegistered = true
+        _events.tryEmit(DevToolsEvent.PipelineRegistered(structure))
+    }
+
+    /** Called by a combinator wrapper when it commits a completed trace frame for the current dispatch. */
+    internal fun submitTrace(nodes: List<PipelineNodeTrace>) {
+        pendingTrace = nodes
+    }
+
+    /** Removes and returns the pending trace nodes (called by the enhancer right after the chain returns). */
+    internal fun takePendingTrace(): List<PipelineNodeTrace>? = pendingTrace.also { pendingTrace = null }
+
+    /** Records a dispatched [action] + resulting [state], plus an optional pipeline [traceNodes]. */
+    public fun record(action: Any, state: Any?, traceNodes: List<PipelineNodeTrace>? = null) {
         if (!shouldSend(action, denyRegex, allowRegex)) return
         // systemClock() is the dispatch-time capture timestamp (more accurate than the recorder's
         // own clock read on the background thread); the small skew between the two is acceptable.
-        val result = captures.trySend(Capture.Action(action, state, systemClock()))
+        val result = captures.trySend(Capture.Action(action, state, systemClock(), traceNodes))
         if (result.isFailure) {
             dropped++
             if (dropped == 1L || dropped % 100L == 0L) {
@@ -138,6 +168,9 @@ public class DevToolsSession private constructor(
                     while (recent.size > config.maxAge) recent.removeFirst()
                 }
                 _events.tryEmit(event)
+                capture.traceNodes?.let { nodes ->
+                    _events.tryEmit(DevToolsEvent.PipelineTraced(PipelineTrace(recorded.actionId, nodes)))
+                }
             }
         }
     }
