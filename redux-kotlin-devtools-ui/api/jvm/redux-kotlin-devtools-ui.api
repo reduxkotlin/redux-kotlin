@@ -82,6 +82,80 @@ public final class org/reduxkotlin/devtools/inapp/model/OutputRow {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class org/reduxkotlin/devtools/inapp/model/StoreActionRow {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Lorg/reduxkotlin/devtools/inapp/model/StoreActionRow;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/StoreActionRow;Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/StoreActionRow;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEvent ()Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;
+	public final fun getStoreId ()Ljava/lang/String;
+	public final fun getStoreName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/inapp/model/StoreEntry {
+	public static final field $stable I
+	public fun <init> (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppState;)V
+	public final fun component1 ()Lorg/reduxkotlin/devtools/inapp/model/StoreRef;
+	public final fun component2 ()Lorg/reduxkotlin/devtools/inapp/model/InAppState;
+	public final fun copy (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppState;)Lorg/reduxkotlin/devtools/inapp/model/StoreEntry;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/StoreEntry;Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppState;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/StoreEntry;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRef ()Lorg/reduxkotlin/devtools/inapp/model/StoreRef;
+	public final fun getState ()Lorg/reduxkotlin/devtools/inapp/model/InAppState;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/inapp/model/StoreRef {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/model/StoreRef;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/StoreRef;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/inapp/model/StoreRegistryModel {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun focus (Ljava/lang/String;)V
+	public final fun getState ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun put (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppModel;)V
+	public final fun refresh ()V
+	public final fun remove (Ljava/lang/String;)V
+	public final fun select (Ljava/util/Set;)V
+	public final fun selectAll ()V
+}
+
+public final class org/reduxkotlin/devtools/inapp/model/StoreRegistryState {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;Ljava/util/Set;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/List;Ljava/util/Set;)Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;Ljava/util/List;Ljava/util/Set;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMerged ()Z
+	public final fun getMergedRows ()Ljava/util/List;
+	public final fun getSelectedIds ()Ljava/util/Set;
+	public final fun getStores ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class org/reduxkotlin/devtools/inapp/theme/ReduxKotlinDevToolsThemeKt {
 	public static final fun ReduxKotlinDevToolsTheme (Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
 }

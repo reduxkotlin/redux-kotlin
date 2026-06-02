@@ -103,6 +103,91 @@ final class org.reduxkotlin.devtools.inapp.model/OutputRow { // org.reduxkotlin.
     final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp.model/OutputRow.toString|toString(){}[0]
 }
 
+final class org.reduxkotlin.devtools.inapp.model/StoreActionRow { // org.reduxkotlin.devtools.inapp.model/StoreActionRow|null[0]
+    constructor <init>(kotlin/String, kotlin/String, org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded) // org.reduxkotlin.devtools.inapp.model/StoreActionRow.<init>|<init>(kotlin.String;kotlin.String;org.reduxkotlin.devtools.DevToolsEvent.ActionRecorded){}[0]
+
+    final val event // org.reduxkotlin.devtools.inapp.model/StoreActionRow.event|{}event[0]
+        final fun <get-event>(): org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded // org.reduxkotlin.devtools.inapp.model/StoreActionRow.event.<get-event>|<get-event>(){}[0]
+    final val storeId // org.reduxkotlin.devtools.inapp.model/StoreActionRow.storeId|{}storeId[0]
+        final fun <get-storeId>(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreActionRow.storeId.<get-storeId>|<get-storeId>(){}[0]
+    final val storeName // org.reduxkotlin.devtools.inapp.model/StoreActionRow.storeName|{}storeName[0]
+        final fun <get-storeName>(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreActionRow.storeName.<get-storeName>|<get-storeName>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreActionRow.component1|component1(){}[0]
+    final fun component2(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreActionRow.component2|component2(){}[0]
+    final fun component3(): org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded // org.reduxkotlin.devtools.inapp.model/StoreActionRow.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded = ...): org.reduxkotlin.devtools.inapp.model/StoreActionRow // org.reduxkotlin.devtools.inapp.model/StoreActionRow.copy|copy(kotlin.String;kotlin.String;org.reduxkotlin.devtools.DevToolsEvent.ActionRecorded){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/StoreActionRow.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/StoreActionRow.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreActionRow.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools.inapp.model/StoreEntry { // org.reduxkotlin.devtools.inapp.model/StoreEntry|null[0]
+    constructor <init>(org.reduxkotlin.devtools.inapp.model/StoreRef, org.reduxkotlin.devtools.inapp.model/InAppState) // org.reduxkotlin.devtools.inapp.model/StoreEntry.<init>|<init>(org.reduxkotlin.devtools.inapp.model.StoreRef;org.reduxkotlin.devtools.inapp.model.InAppState){}[0]
+
+    final val ref // org.reduxkotlin.devtools.inapp.model/StoreEntry.ref|{}ref[0]
+        final fun <get-ref>(): org.reduxkotlin.devtools.inapp.model/StoreRef // org.reduxkotlin.devtools.inapp.model/StoreEntry.ref.<get-ref>|<get-ref>(){}[0]
+    final val state // org.reduxkotlin.devtools.inapp.model/StoreEntry.state|{}state[0]
+        final fun <get-state>(): org.reduxkotlin.devtools.inapp.model/InAppState // org.reduxkotlin.devtools.inapp.model/StoreEntry.state.<get-state>|<get-state>(){}[0]
+
+    final fun component1(): org.reduxkotlin.devtools.inapp.model/StoreRef // org.reduxkotlin.devtools.inapp.model/StoreEntry.component1|component1(){}[0]
+    final fun component2(): org.reduxkotlin.devtools.inapp.model/InAppState // org.reduxkotlin.devtools.inapp.model/StoreEntry.component2|component2(){}[0]
+    final fun copy(org.reduxkotlin.devtools.inapp.model/StoreRef = ..., org.reduxkotlin.devtools.inapp.model/InAppState = ...): org.reduxkotlin.devtools.inapp.model/StoreEntry // org.reduxkotlin.devtools.inapp.model/StoreEntry.copy|copy(org.reduxkotlin.devtools.inapp.model.StoreRef;org.reduxkotlin.devtools.inapp.model.InAppState){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/StoreEntry.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/StoreEntry.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreEntry.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools.inapp.model/StoreRef { // org.reduxkotlin.devtools.inapp.model/StoreRef|null[0]
+    constructor <init>(kotlin/String, kotlin/String) // org.reduxkotlin.devtools.inapp.model/StoreRef.<init>|<init>(kotlin.String;kotlin.String){}[0]
+
+    final val id // org.reduxkotlin.devtools.inapp.model/StoreRef.id|{}id[0]
+        final fun <get-id>(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreRef.id.<get-id>|<get-id>(){}[0]
+    final val name // org.reduxkotlin.devtools.inapp.model/StoreRef.name|{}name[0]
+        final fun <get-name>(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreRef.name.<get-name>|<get-name>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreRef.component1|component1(){}[0]
+    final fun component2(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreRef.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ...): org.reduxkotlin.devtools.inapp.model/StoreRef // org.reduxkotlin.devtools.inapp.model/StoreRef.copy|copy(kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/StoreRef.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/StoreRef.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreRef.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools.inapp.model/StoreRegistryModel { // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel|null[0]
+    constructor <init>() // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.<init>|<init>(){}[0]
+
+    final val state // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.state|{}state[0]
+        final fun <get-state>(): kotlinx.coroutines.flow/StateFlow<org.reduxkotlin.devtools.inapp.model/StoreRegistryState> // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.state.<get-state>|<get-state>(){}[0]
+
+    final fun focus(kotlin/String) // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.focus|focus(kotlin.String){}[0]
+    final fun put(org.reduxkotlin.devtools.inapp.model/StoreRef, org.reduxkotlin.devtools.inapp.model/InAppModel) // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.put|put(org.reduxkotlin.devtools.inapp.model.StoreRef;org.reduxkotlin.devtools.inapp.model.InAppModel){}[0]
+    final fun refresh() // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.refresh|refresh(){}[0]
+    final fun remove(kotlin/String) // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.remove|remove(kotlin.String){}[0]
+    final fun select(kotlin.collections/Set<kotlin/String>) // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.select|select(kotlin.collections.Set<kotlin.String>){}[0]
+    final fun selectAll() // org.reduxkotlin.devtools.inapp.model/StoreRegistryModel.selectAll|selectAll(){}[0]
+}
+
+final class org.reduxkotlin.devtools.inapp.model/StoreRegistryState { // org.reduxkotlin.devtools.inapp.model/StoreRegistryState|null[0]
+    constructor <init>(kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/StoreEntry> = ..., kotlin.collections/Set<kotlin/String> = ...) // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.<init>|<init>(kotlin.collections.List<org.reduxkotlin.devtools.inapp.model.StoreEntry>;kotlin.collections.Set<kotlin.String>){}[0]
+
+    final val merged // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.merged|{}merged[0]
+        final fun <get-merged>(): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.merged.<get-merged>|<get-merged>(){}[0]
+    final val mergedRows // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.mergedRows|{}mergedRows[0]
+        final fun <get-mergedRows>(): kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/StoreActionRow> // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.mergedRows.<get-mergedRows>|<get-mergedRows>(){}[0]
+    final val selectedIds // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.selectedIds|{}selectedIds[0]
+        final fun <get-selectedIds>(): kotlin.collections/Set<kotlin/String> // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.selectedIds.<get-selectedIds>|<get-selectedIds>(){}[0]
+    final val stores // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.stores|{}stores[0]
+        final fun <get-stores>(): kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/StoreEntry> // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.stores.<get-stores>|<get-stores>(){}[0]
+
+    final fun component1(): kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/StoreEntry> // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/Set<kotlin/String> // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.component2|component2(){}[0]
+    final fun copy(kotlin.collections/List<org.reduxkotlin.devtools.inapp.model/StoreEntry> = ..., kotlin.collections/Set<kotlin/String> = ...): org.reduxkotlin.devtools.inapp.model/StoreRegistryState // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.copy|copy(kotlin.collections.List<org.reduxkotlin.devtools.inapp.model.StoreEntry>;kotlin.collections.Set<kotlin.String>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp.model/StoreRegistryState.toString|toString(){}[0]
+}
+
 final object org.reduxkotlin.devtools.inapp.theme/RkTokens { // org.reduxkotlin.devtools.inapp.theme/RkTokens|null[0]
     final val Amber // org.reduxkotlin.devtools.inapp.theme/RkTokens.Amber|{}Amber[0]
         final fun <get-Amber>(): androidx.compose.ui.graphics/Color // org.reduxkotlin.devtools.inapp.theme/RkTokens.Amber.<get-Amber>|<get-Amber>(){}[0]
@@ -139,12 +224,22 @@ final object org.reduxkotlin.devtools.inapp.theme/RkTokens { // org.reduxkotlin.
 final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop[0]
 final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppState$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppState$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_InAppState$stableprop[0]
 final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop[0]
+final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreActionRow$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreActionRow$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_StoreActionRow$stableprop[0]
+final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreEntry$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreEntry$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_StoreEntry$stableprop[0]
+final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRef$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRef$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_StoreRef$stableprop[0]
+final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRegistryModel$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRegistryModel$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_StoreRegistryModel$stableprop[0]
+final val org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRegistryState$stableprop // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRegistryState$stableprop|#static{}org_reduxkotlin_devtools_inapp_model_StoreRegistryState$stableprop[0]
 final val org.reduxkotlin.devtools.inapp.theme/org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop // org.reduxkotlin.devtools.inapp.theme/org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop|#static{}org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop[0]
 
 final fun org.reduxkotlin.devtools.inapp.model/actionType(kotlinx.serialization.json/JsonElement): kotlin/String // org.reduxkotlin.devtools.inapp.model/actionType|actionType(kotlinx.serialization.json.JsonElement){}[0]
 final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop_getter|org_reduxkotlin_devtools_inapp_model_InAppModel$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppState$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_InAppState$stableprop_getter|org_reduxkotlin_devtools_inapp_model_InAppState$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop_getter|org_reduxkotlin_devtools_inapp_model_OutputRow$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreActionRow$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreActionRow$stableprop_getter|org_reduxkotlin_devtools_inapp_model_StoreActionRow$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreEntry$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreEntry$stableprop_getter|org_reduxkotlin_devtools_inapp_model_StoreEntry$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRef$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRef$stableprop_getter|org_reduxkotlin_devtools_inapp_model_StoreRef$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRegistryModel$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRegistryModel$stableprop_getter|org_reduxkotlin_devtools_inapp_model_StoreRegistryModel$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRegistryState$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.model/org_reduxkotlin_devtools_inapp_model_StoreRegistryState$stableprop_getter|org_reduxkotlin_devtools_inapp_model_StoreRegistryState$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools.inapp.theme/ReduxKotlinDevToolsTheme(org.reduxkotlin.devtools.inapp/DevToolsThemeMode, kotlin/Boolean, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // org.reduxkotlin.devtools.inapp.theme/ReduxKotlinDevToolsTheme|ReduxKotlinDevToolsTheme(org.reduxkotlin.devtools.inapp.DevToolsThemeMode;kotlin.Boolean;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
 final fun org.reduxkotlin.devtools.inapp.theme/org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp.theme/org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop_getter|org_reduxkotlin_devtools_inapp_theme_RkTokens$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools.inapp.ui.tabs/ActionsTab(org.reduxkotlin.devtools.inapp.model/InAppState, kotlin/Function1<kotlin/String, kotlin/Unit>, kotlin/Function1<kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // org.reduxkotlin.devtools.inapp.ui.tabs/ActionsTab|ActionsTab(org.reduxkotlin.devtools.inapp.model.InAppState;kotlin.Function1<kotlin.String,kotlin.Unit>;kotlin.Function1<kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
