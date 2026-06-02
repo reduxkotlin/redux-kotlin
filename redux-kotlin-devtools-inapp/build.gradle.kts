@@ -1,5 +1,5 @@
 plugins {
-    id("convention.library-mpp-loved")
+    id("convention.library-mpp-loved-composeui")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.serialization)
@@ -23,11 +23,6 @@ kotlin {
             namespace = "org.reduxkotlin.devtools.inapp"
         }
     }
-
-    // Compose Multiplatform 1.11 publishes no linuxX64/mingwX64 artifacts for
-    // foundation/material3/ui, so this UI module can't target them (unlike the
-    // headless core). Drop the two targets the convention plugin adds by default.
-    targets.removeIf { it.name == "linuxX64" || it.name == "mingwX64" }
 
     sourceSets {
         commonMain {
