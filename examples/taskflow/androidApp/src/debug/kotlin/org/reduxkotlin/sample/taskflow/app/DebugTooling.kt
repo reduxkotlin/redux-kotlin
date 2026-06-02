@@ -6,19 +6,18 @@ import org.reduxkotlin.sample.taskflow.store.debugStoreEnhancer
 
 /**
  * DEBUG variant: installs Redux DevTools as the per-account store enhancer. The
- * `redux-kotlin-devtools` artifact is a `debugImplementation` dependency, so this file (and the
- * devtools classes) exist only in debug builds. The matching `release` source set is a no-op.
+ * `redux-kotlin-devtools-core` artifact is a `debugImplementation` dependency, so this file (and
+ * the devtools classes) exist only in debug builds. The matching `release` source set is a no-op.
  *
- * Run `npx @redux-devtools/cli@4 --port 8000`; on an emulator the host is `10.0.2.2`, on a USB
- * device run `adb reverse tcp:8000 tcp:8000` (host = `localhost`). The "TaskFlow" instance appears
- * once an account's board store is created.
+ * Records in-process into the `DevToolsHub`; the "TaskFlow" instance appears once an account's
+ * board store is created. To stream to the external monitor (`npx @redux-devtools/cli@4 --port
+ * 8000`), add `redux-kotlin-devtools-remote` and start a `RemoteOutput` against the session.
  */
 internal fun installDebugTooling() {
     debugStoreEnhancer = {
         devTools(
             DevToolsConfig(
                 name = "TaskFlow",
-                host = "localhost",
                 logger = { println("[DevTools] $it") },
             ),
         )

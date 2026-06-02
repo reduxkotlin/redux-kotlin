@@ -9,7 +9,7 @@ import org.reduxkotlin.multimodel.ModelState
  *
  * A debug build installs it before the first account store is created — see the androidApp's
  * `src/debug` `installDebugTooling()`. Kept as a plain settable hook (rather than a `commonMain`
- * dependency on `redux-kotlin-devtools`) so the devtools artifact stays a `debugImplementation`
+ * dependency on `redux-kotlin-devtools-core`) so the devtools artifact stays a `debugImplementation`
  * concern of the platform application module, not of this shared module.
  */
 public var debugStoreEnhancer: (() -> StoreEnhancer<ModelState>?)? = null

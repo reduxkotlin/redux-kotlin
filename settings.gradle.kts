@@ -31,7 +31,6 @@ include(
     ":redux-kotlin-compose",
     ":redux-kotlin-multimodel-granular",
     ":redux-kotlin-compose-multimodel",
-    ":redux-kotlin-devtools",
     ":redux-kotlin-devtools-core",
     ":redux-kotlin-devtools-remote",
     ":examples:counter:common",

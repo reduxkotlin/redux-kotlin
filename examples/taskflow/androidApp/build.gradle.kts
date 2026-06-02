@@ -36,6 +36,6 @@ dependencies {
     // store-enhancer hook; the release source set is a no-op and never links these artifacts.
     // multimodel supplies the ModelState type the debug enhancer is generic over (composeApp
     // depends on the bundle via implementation, so it isn't exposed transitively here).
-    debugImplementation(project(":redux-kotlin-devtools"))
+    debugImplementation(project(":redux-kotlin-devtools-core"))
     debugImplementation(project(":redux-kotlin-multimodel"))
 }
