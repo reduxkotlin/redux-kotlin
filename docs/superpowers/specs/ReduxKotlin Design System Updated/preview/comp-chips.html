@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; }
+  .row { display:flex; gap: 10px; align-items:center; flex-wrap: wrap; }
+  .chip { font: var(--w-medium) 13px var(--font-sans); height: 32px; padding: 0 14px; border-radius: var(--radius-sm); display:inline-flex; align-items:center; gap:6px; border: 1px solid var(--md-outline-variant); }
+  .chip.sel { background: var(--md-secondary-container); color: var(--md-on-secondary-container); border-color: transparent; }
+  .badge { font: var(--w-semibold) 11px var(--font-mono); padding: 3px 9px; border-radius: var(--radius-full); }
+  .cap { margin-top: 16px; font:12px var(--font-mono); color:var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <span class="chip sel">✓ Android</span>
+      <span class="chip">iOS</span>
+      <span class="chip">JVM</span>
+      <span class="chip">JS</span>
+      <span class="chip">WASM</span>
+      <span class="badge" style="background:#d7e8ff;color:#00305f">v0.6.0</span>
+      <span class="badge" style="background:#b9f0c8;color:#002111">stable</span>
+      <span class="badge" style="background:#ffdcbc;color:#311300">snapshot</span>
+    </div>
+    <div class="cap">Filter chips (platform targets) &amp; status badges</div>
+  </div>
+</body>
+</html>

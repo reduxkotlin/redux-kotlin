@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; }
+  .grad { height: 78px; border-radius: var(--radius-md); background: linear-gradient(60deg,#c858bc 0%,#f98909 100%); box-shadow: var(--elev-1); position: relative; }
+  .grad .stops { position:absolute; inset:0; display:flex; justify-content:space-between; align-items:flex-end; padding:8px 10px; }
+  .grad .stops span { font:var(--w-semibold) 11px var(--font-mono); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.3); }
+  .pair { display:flex; gap:14px; margin-top:14px; }
+  .chip { flex:1; display:flex; align-items:center; gap:10px; }
+  .dot { width:30px; height:30px; border-radius:var(--radius-full); box-shadow: var(--elev-1); }
+  .lbl b { font:var(--w-semibold) 13px var(--font-sans); display:block; }
+  .lbl span { font:11px var(--font-mono); color:var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grad"><div class="stops"><span>#C858BC</span><span>signature gradient · 60°</span><span>#F98909</span></div></div>
+    <div class="pair">
+      <div class="chip"><div class="dot" style="background:#c858bc"></div><div class="lbl"><b>Magenta</b><span>--rk-magenta · #C858BC</span></div></div>
+      <div class="chip"><div class="dot" style="background:#f98909"></div><div class="lbl"><b>Orange</b><span>--rk-orange · #F98909</span></div></div>
+      <div class="chip"><div class="dot" style="background:#764abc"></div><div class="lbl"><b>Heritage purple</b><span>--rk-purple · #764ABC</span></div></div>
+    </div>
+  </div>
+</body>
+</html>
