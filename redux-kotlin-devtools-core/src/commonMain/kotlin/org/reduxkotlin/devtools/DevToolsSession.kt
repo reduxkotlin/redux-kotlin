@@ -119,7 +119,7 @@ public class DevToolsSession private constructor(
             }
 
             is Capture.Action -> {
-                val actionJson = serializer.toJson(capture.action)
+                val actionJson = serializer.toActionJson(capture.action)
                 val stateJson = serializer.toJson(capture.state)
                 val before = lastStateJson ?: stateJson
                 val diff = diffJson(before, stateJson)
