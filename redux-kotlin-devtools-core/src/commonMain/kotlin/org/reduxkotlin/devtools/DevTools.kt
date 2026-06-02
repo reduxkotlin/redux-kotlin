@@ -27,7 +27,7 @@ public fun <State> devTools(config: DevToolsConfig = DevToolsConfig()): StoreEnh
                     val result = origDispatch(action)
                     @Suppress("TooGenericExceptionCaught") // devtools must never break the host store
                     try {
-                        session.record(action, store.getState())
+                        session.record(action, store.getState(), session.takePendingTrace())
                     } catch (t: Throwable) {
                         config.logger("devtools: record failed: ${t.message}")
                     }

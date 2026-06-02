@@ -58,6 +58,28 @@ public final class org/reduxkotlin/devtools/DevToolsEvent$Initialized : org/redu
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class org/reduxkotlin/devtools/DevToolsEvent$PipelineRegistered : org/reduxkotlin/devtools/DevToolsEvent {
+	public fun <init> (Lorg/reduxkotlin/devtools/PipelineStructure;)V
+	public final fun component1 ()Lorg/reduxkotlin/devtools/PipelineStructure;
+	public final fun copy (Lorg/reduxkotlin/devtools/PipelineStructure;)Lorg/reduxkotlin/devtools/DevToolsEvent$PipelineRegistered;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/DevToolsEvent$PipelineRegistered;Lorg/reduxkotlin/devtools/PipelineStructure;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/DevToolsEvent$PipelineRegistered;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getStructure ()Lorg/reduxkotlin/devtools/PipelineStructure;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/DevToolsEvent$PipelineTraced : org/reduxkotlin/devtools/DevToolsEvent {
+	public fun <init> (Lorg/reduxkotlin/devtools/PipelineTrace;)V
+	public final fun component1 ()Lorg/reduxkotlin/devtools/PipelineTrace;
+	public final fun copy (Lorg/reduxkotlin/devtools/PipelineTrace;)Lorg/reduxkotlin/devtools/DevToolsEvent$PipelineTraced;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/DevToolsEvent$PipelineTraced;Lorg/reduxkotlin/devtools/PipelineTrace;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/DevToolsEvent$PipelineTraced;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTrace ()Lorg/reduxkotlin/devtools/PipelineTrace;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class org/reduxkotlin/devtools/DevToolsHub {
 	public static final field INSTANCE Lorg/reduxkotlin/devtools/DevToolsHub;
 	public final fun createSession (Lorg/reduxkotlin/devtools/DevToolsConfig;)Lorg/reduxkotlin/devtools/DevToolsSession;
@@ -90,7 +112,9 @@ public final class org/reduxkotlin/devtools/DevToolsSession {
 	public final fun history ()Ljava/util/List;
 	public final fun init (Ljava/lang/Object;)V
 	public final fun liftedState ()Lkotlinx/serialization/json/JsonObject;
-	public final fun record (Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun record (Ljava/lang/Object;Ljava/lang/Object;Ljava/util/List;)V
+	public static synthetic fun record$default (Lorg/reduxkotlin/devtools/DevToolsSession;Ljava/lang/Object;Ljava/lang/Object;Ljava/util/List;ILjava/lang/Object;)V
+	public final fun registerPipeline (Lorg/reduxkotlin/devtools/PipelineStructure;)V
 }
 
 public final class org/reduxkotlin/devtools/DevToolsSession$Companion {
@@ -126,6 +150,72 @@ public final class org/reduxkotlin/devtools/DiffOp : java/lang/Enum {
 
 public final class org/reduxkotlin/devtools/JsonDiffKt {
 	public static final fun diffJson (Lkotlinx/serialization/json/JsonElement;Lkotlinx/serialization/json/JsonElement;)Ljava/util/List;
+}
+
+public final class org/reduxkotlin/devtools/PipelineNode {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/PipelineNodeKind;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lorg/reduxkotlin/devtools/PipelineNodeKind;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/PipelineNodeKind;)Lorg/reduxkotlin/devtools/PipelineNode;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/PipelineNode;Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/PipelineNodeKind;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/PipelineNode;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getKind ()Lorg/reduxkotlin/devtools/PipelineNodeKind;
+	public final fun getLabel ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/PipelineNodeKind : java/lang/Enum {
+	public static final field ENTRY Lorg/reduxkotlin/devtools/PipelineNodeKind;
+	public static final field MIDDLEWARE Lorg/reduxkotlin/devtools/PipelineNodeKind;
+	public static final field REDUCER Lorg/reduxkotlin/devtools/PipelineNodeKind;
+	public static final field SLICE Lorg/reduxkotlin/devtools/PipelineNodeKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/PipelineNodeKind;
+	public static fun values ()[Lorg/reduxkotlin/devtools/PipelineNodeKind;
+}
+
+public final class org/reduxkotlin/devtools/PipelineNodeTrace {
+	public fun <init> (Ljava/lang/String;JZZ)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()J
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public final fun copy (Ljava/lang/String;JZZ)Lorg/reduxkotlin/devtools/PipelineNodeTrace;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/PipelineNodeTrace;Ljava/lang/String;JZZILjava/lang/Object;)Lorg/reduxkotlin/devtools/PipelineNodeTrace;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChanged ()Z
+	public final fun getDurationNanos ()J
+	public final fun getForwarded ()Z
+	public final fun getNodeId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/PipelineStructure {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lorg/reduxkotlin/devtools/PipelineStructure;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/List;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/PipelineStructure;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNodes ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/PipelineTrace {
+	public fun <init> (ILjava/util/List;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (ILjava/util/List;)Lorg/reduxkotlin/devtools/PipelineTrace;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/PipelineTrace;ILjava/util/List;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/PipelineTrace;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActionId ()I
+	public final fun getNodes ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class org/reduxkotlin/devtools/ToStringValueSerializer : org/reduxkotlin/devtools/ValueSerializer {

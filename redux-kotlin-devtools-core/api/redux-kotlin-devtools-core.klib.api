@@ -18,6 +18,19 @@ final enum class org.reduxkotlin.devtools/DiffOp : kotlin/Enum<org.reduxkotlin.d
     final fun values(): kotlin/Array<org.reduxkotlin.devtools/DiffOp> // org.reduxkotlin.devtools/DiffOp.values|values#static(){}[0]
 }
 
+final enum class org.reduxkotlin.devtools/PipelineNodeKind : kotlin/Enum<org.reduxkotlin.devtools/PipelineNodeKind> { // org.reduxkotlin.devtools/PipelineNodeKind|null[0]
+    enum entry ENTRY // org.reduxkotlin.devtools/PipelineNodeKind.ENTRY|null[0]
+    enum entry MIDDLEWARE // org.reduxkotlin.devtools/PipelineNodeKind.MIDDLEWARE|null[0]
+    enum entry REDUCER // org.reduxkotlin.devtools/PipelineNodeKind.REDUCER|null[0]
+    enum entry SLICE // org.reduxkotlin.devtools/PipelineNodeKind.SLICE|null[0]
+
+    final val entries // org.reduxkotlin.devtools/PipelineNodeKind.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<org.reduxkotlin.devtools/PipelineNodeKind> // org.reduxkotlin.devtools/PipelineNodeKind.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): org.reduxkotlin.devtools/PipelineNodeKind // org.reduxkotlin.devtools/PipelineNodeKind.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<org.reduxkotlin.devtools/PipelineNodeKind> // org.reduxkotlin.devtools/PipelineNodeKind.values|values#static(){}[0]
+}
+
 abstract interface org.reduxkotlin.devtools/DevToolsOutput { // org.reduxkotlin.devtools/DevToolsOutput|null[0]
     abstract val id // org.reduxkotlin.devtools/DevToolsOutput.id|{}id[0]
         abstract fun <get-id>(): kotlin/String // org.reduxkotlin.devtools/DevToolsOutput.id.<get-id>|<get-id>(){}[0]
@@ -73,6 +86,32 @@ sealed interface org.reduxkotlin.devtools/DevToolsEvent { // org.reduxkotlin.dev
         final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DevToolsEvent.Initialized.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsEvent.Initialized.toString|toString(){}[0]
     }
+
+    final class PipelineRegistered : org.reduxkotlin.devtools/DevToolsEvent { // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered|null[0]
+        constructor <init>(org.reduxkotlin.devtools/PipelineStructure) // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered.<init>|<init>(org.reduxkotlin.devtools.PipelineStructure){}[0]
+
+        final val structure // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered.structure|{}structure[0]
+            final fun <get-structure>(): org.reduxkotlin.devtools/PipelineStructure // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered.structure.<get-structure>|<get-structure>(){}[0]
+
+        final fun component1(): org.reduxkotlin.devtools/PipelineStructure // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered.component1|component1(){}[0]
+        final fun copy(org.reduxkotlin.devtools/PipelineStructure = ...): org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered.copy|copy(org.reduxkotlin.devtools.PipelineStructure){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsEvent.PipelineRegistered.toString|toString(){}[0]
+    }
+
+    final class PipelineTraced : org.reduxkotlin.devtools/DevToolsEvent { // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced|null[0]
+        constructor <init>(org.reduxkotlin.devtools/PipelineTrace) // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced.<init>|<init>(org.reduxkotlin.devtools.PipelineTrace){}[0]
+
+        final val trace // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced.trace|{}trace[0]
+            final fun <get-trace>(): org.reduxkotlin.devtools/PipelineTrace // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced.trace.<get-trace>|<get-trace>(){}[0]
+
+        final fun component1(): org.reduxkotlin.devtools/PipelineTrace // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced.component1|component1(){}[0]
+        final fun copy(org.reduxkotlin.devtools/PipelineTrace = ...): org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced.copy|copy(org.reduxkotlin.devtools.PipelineTrace){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsEvent.PipelineTraced.toString|toString(){}[0]
+    }
 }
 
 final class org.reduxkotlin.devtools/DevToolsConfig { // org.reduxkotlin.devtools/DevToolsConfig|null[0]
@@ -116,7 +155,8 @@ final class org.reduxkotlin.devtools/DevToolsSession { // org.reduxkotlin.devtoo
     final fun history(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded> // org.reduxkotlin.devtools/DevToolsSession.history|history(){}[0]
     final fun init(kotlin/Any?) // org.reduxkotlin.devtools/DevToolsSession.init|init(kotlin.Any?){}[0]
     final fun liftedState(): kotlinx.serialization.json/JsonObject // org.reduxkotlin.devtools/DevToolsSession.liftedState|liftedState(){}[0]
-    final fun record(kotlin/Any, kotlin/Any?) // org.reduxkotlin.devtools/DevToolsSession.record|record(kotlin.Any;kotlin.Any?){}[0]
+    final fun record(kotlin/Any, kotlin/Any?, kotlin.collections/List<org.reduxkotlin.devtools/PipelineNodeTrace>? = ...) // org.reduxkotlin.devtools/DevToolsSession.record|record(kotlin.Any;kotlin.Any?;kotlin.collections.List<org.reduxkotlin.devtools.PipelineNodeTrace>?){}[0]
+    final fun registerPipeline(org.reduxkotlin.devtools/PipelineStructure) // org.reduxkotlin.devtools/DevToolsSession.registerPipeline|registerPipeline(org.reduxkotlin.devtools.PipelineStructure){}[0]
 
     final object Companion { // org.reduxkotlin.devtools/DevToolsSession.Companion|null[0]
         final fun create(org.reduxkotlin.devtools/DevToolsConfig, kotlinx.coroutines/CoroutineDispatcher = ...): org.reduxkotlin.devtools/DevToolsSession // org.reduxkotlin.devtools/DevToolsSession.Companion.create|create(org.reduxkotlin.devtools.DevToolsConfig;kotlinx.coroutines.CoroutineDispatcher){}[0]
@@ -143,6 +183,76 @@ final class org.reduxkotlin.devtools/DiffEntry { // org.reduxkotlin.devtools/Dif
     final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DiffEntry.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DiffEntry.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.devtools/DiffEntry.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools/PipelineNode { // org.reduxkotlin.devtools/PipelineNode|null[0]
+    constructor <init>(kotlin/String, kotlin/String, org.reduxkotlin.devtools/PipelineNodeKind) // org.reduxkotlin.devtools/PipelineNode.<init>|<init>(kotlin.String;kotlin.String;org.reduxkotlin.devtools.PipelineNodeKind){}[0]
+
+    final val id // org.reduxkotlin.devtools/PipelineNode.id|{}id[0]
+        final fun <get-id>(): kotlin/String // org.reduxkotlin.devtools/PipelineNode.id.<get-id>|<get-id>(){}[0]
+    final val kind // org.reduxkotlin.devtools/PipelineNode.kind|{}kind[0]
+        final fun <get-kind>(): org.reduxkotlin.devtools/PipelineNodeKind // org.reduxkotlin.devtools/PipelineNode.kind.<get-kind>|<get-kind>(){}[0]
+    final val label // org.reduxkotlin.devtools/PipelineNode.label|{}label[0]
+        final fun <get-label>(): kotlin/String // org.reduxkotlin.devtools/PipelineNode.label.<get-label>|<get-label>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools/PipelineNode.component1|component1(){}[0]
+    final fun component2(): kotlin/String // org.reduxkotlin.devtools/PipelineNode.component2|component2(){}[0]
+    final fun component3(): org.reduxkotlin.devtools/PipelineNodeKind // org.reduxkotlin.devtools/PipelineNode.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., org.reduxkotlin.devtools/PipelineNodeKind = ...): org.reduxkotlin.devtools/PipelineNode // org.reduxkotlin.devtools/PipelineNode.copy|copy(kotlin.String;kotlin.String;org.reduxkotlin.devtools.PipelineNodeKind){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/PipelineNode.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/PipelineNode.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools/PipelineNode.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools/PipelineNodeTrace { // org.reduxkotlin.devtools/PipelineNodeTrace|null[0]
+    constructor <init>(kotlin/String, kotlin/Long, kotlin/Boolean, kotlin/Boolean) // org.reduxkotlin.devtools/PipelineNodeTrace.<init>|<init>(kotlin.String;kotlin.Long;kotlin.Boolean;kotlin.Boolean){}[0]
+
+    final val changed // org.reduxkotlin.devtools/PipelineNodeTrace.changed|{}changed[0]
+        final fun <get-changed>(): kotlin/Boolean // org.reduxkotlin.devtools/PipelineNodeTrace.changed.<get-changed>|<get-changed>(){}[0]
+    final val durationNanos // org.reduxkotlin.devtools/PipelineNodeTrace.durationNanos|{}durationNanos[0]
+        final fun <get-durationNanos>(): kotlin/Long // org.reduxkotlin.devtools/PipelineNodeTrace.durationNanos.<get-durationNanos>|<get-durationNanos>(){}[0]
+    final val forwarded // org.reduxkotlin.devtools/PipelineNodeTrace.forwarded|{}forwarded[0]
+        final fun <get-forwarded>(): kotlin/Boolean // org.reduxkotlin.devtools/PipelineNodeTrace.forwarded.<get-forwarded>|<get-forwarded>(){}[0]
+    final val nodeId // org.reduxkotlin.devtools/PipelineNodeTrace.nodeId|{}nodeId[0]
+        final fun <get-nodeId>(): kotlin/String // org.reduxkotlin.devtools/PipelineNodeTrace.nodeId.<get-nodeId>|<get-nodeId>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools/PipelineNodeTrace.component1|component1(){}[0]
+    final fun component2(): kotlin/Long // org.reduxkotlin.devtools/PipelineNodeTrace.component2|component2(){}[0]
+    final fun component3(): kotlin/Boolean // org.reduxkotlin.devtools/PipelineNodeTrace.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // org.reduxkotlin.devtools/PipelineNodeTrace.component4|component4(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Long = ..., kotlin/Boolean = ..., kotlin/Boolean = ...): org.reduxkotlin.devtools/PipelineNodeTrace // org.reduxkotlin.devtools/PipelineNodeTrace.copy|copy(kotlin.String;kotlin.Long;kotlin.Boolean;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/PipelineNodeTrace.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/PipelineNodeTrace.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools/PipelineNodeTrace.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools/PipelineStructure { // org.reduxkotlin.devtools/PipelineStructure|null[0]
+    constructor <init>(kotlin.collections/List<org.reduxkotlin.devtools/PipelineNode>) // org.reduxkotlin.devtools/PipelineStructure.<init>|<init>(kotlin.collections.List<org.reduxkotlin.devtools.PipelineNode>){}[0]
+
+    final val nodes // org.reduxkotlin.devtools/PipelineStructure.nodes|{}nodes[0]
+        final fun <get-nodes>(): kotlin.collections/List<org.reduxkotlin.devtools/PipelineNode> // org.reduxkotlin.devtools/PipelineStructure.nodes.<get-nodes>|<get-nodes>(){}[0]
+
+    final fun component1(): kotlin.collections/List<org.reduxkotlin.devtools/PipelineNode> // org.reduxkotlin.devtools/PipelineStructure.component1|component1(){}[0]
+    final fun copy(kotlin.collections/List<org.reduxkotlin.devtools/PipelineNode> = ...): org.reduxkotlin.devtools/PipelineStructure // org.reduxkotlin.devtools/PipelineStructure.copy|copy(kotlin.collections.List<org.reduxkotlin.devtools.PipelineNode>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/PipelineStructure.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/PipelineStructure.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools/PipelineStructure.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools/PipelineTrace { // org.reduxkotlin.devtools/PipelineTrace|null[0]
+    constructor <init>(kotlin/Int, kotlin.collections/List<org.reduxkotlin.devtools/PipelineNodeTrace>) // org.reduxkotlin.devtools/PipelineTrace.<init>|<init>(kotlin.Int;kotlin.collections.List<org.reduxkotlin.devtools.PipelineNodeTrace>){}[0]
+
+    final val actionId // org.reduxkotlin.devtools/PipelineTrace.actionId|{}actionId[0]
+        final fun <get-actionId>(): kotlin/Int // org.reduxkotlin.devtools/PipelineTrace.actionId.<get-actionId>|<get-actionId>(){}[0]
+    final val nodes // org.reduxkotlin.devtools/PipelineTrace.nodes|{}nodes[0]
+        final fun <get-nodes>(): kotlin.collections/List<org.reduxkotlin.devtools/PipelineNodeTrace> // org.reduxkotlin.devtools/PipelineTrace.nodes.<get-nodes>|<get-nodes>(){}[0]
+
+    final fun component1(): kotlin/Int // org.reduxkotlin.devtools/PipelineTrace.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<org.reduxkotlin.devtools/PipelineNodeTrace> // org.reduxkotlin.devtools/PipelineTrace.component2|component2(){}[0]
+    final fun copy(kotlin/Int = ..., kotlin.collections/List<org.reduxkotlin.devtools/PipelineNodeTrace> = ...): org.reduxkotlin.devtools/PipelineTrace // org.reduxkotlin.devtools/PipelineTrace.copy|copy(kotlin.Int;kotlin.collections.List<org.reduxkotlin.devtools.PipelineNodeTrace>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/PipelineTrace.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/PipelineTrace.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools/PipelineTrace.toString|toString(){}[0]
 }
 
 final object org.reduxkotlin.devtools/DevToolsHub { // org.reduxkotlin.devtools/DevToolsHub|null[0]
