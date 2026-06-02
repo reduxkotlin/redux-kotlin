@@ -36,4 +36,18 @@ public sealed interface DevToolsEvent {
         public val timestampMillis: Long,
         public val isExcess: Boolean,
     ) : DevToolsEvent
+
+    /**
+     * The static pipeline structure for the session, emitted once when a pipeline combinator is wired.
+     *
+     * @property structure the ordered node map.
+     */
+    public data class PipelineRegistered(public val structure: PipelineStructure) : DevToolsEvent
+
+    /**
+     * A per-action pipeline trace. Emitted alongside the [ActionRecorded] with the same `actionId`.
+     *
+     * @property trace which nodes the action traversed, with timing and forwarded/changed flags.
+     */
+    public data class PipelineTraced(public val trace: PipelineTrace) : DevToolsEvent
 }
