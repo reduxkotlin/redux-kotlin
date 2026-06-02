@@ -18,6 +18,31 @@ public final class org/reduxkotlin/devtools/inapp/DevToolsThemeMode : java/lang/
 	public static fun values ()[Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
 }
 
+public final class org/reduxkotlin/devtools/inapp/model/ActionLogKt {
+	public static final fun actionLogRows (Lorg/reduxkotlin/devtools/inapp/model/InAppState;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public static final fun actionLogRows (Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;Ljava/lang/String;)Ljava/util/List;
+	public static final fun matches (Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;Ljava/lang/String;Z)Z
+	public static final fun payloadPreview (Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/inapp/model/ActionLogRow {
+	public static final field $stable I
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;Ljava/lang/String;Ljava/lang/String;ZLorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEvent ()Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;
+	public final fun getMerged ()Z
+	public final fun getStoreId ()Ljava/lang/String;
+	public final fun getStoreName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class org/reduxkotlin/devtools/inapp/model/InAppModel {
 	public static final field $stable I
 	public fun <init> ()V
@@ -179,16 +204,6 @@ public final class org/reduxkotlin/devtools/inapp/theme/RkTokens {
 	public final fun getPurple-0d7_KjU ()J
 	public final fun getRed-0d7_KjU ()J
 	public final fun getSheetCorner-D9Ej5fM ()F
-}
-
-public final class org/reduxkotlin/devtools/inapp/ui/tabs/ActionsTabKt {
-	public static final fun ActionsTab (Lorg/reduxkotlin/devtools/inapp/model/InAppState;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)V
-}
-
-public final class org/reduxkotlin/devtools/inapp/ui/tabs/ComposableSingletons$ActionsTabKt {
-	public static final field INSTANCE Lorg/reduxkotlin/devtools/inapp/ui/tabs/ComposableSingletons$ActionsTabKt;
-	public fun <init> ()V
-	public final fun getLambda$-1551630280$redux_kotlin_devtools_ui ()Lkotlin/jvm/functions/Function2;
 }
 
 public final class org/reduxkotlin/devtools/inapp/ui/tabs/DiffTabKt {
