@@ -281,3 +281,63 @@ The in-app drawer renders inside the app's own Compose tree via
 `ReduxDevToolsHost`. It does not request `SYSTEM_ALERT_WINDOW` and is not a
 system overlay window. This means it is only visible while your app is in the
 foreground, which is the intended behavior for a developer tool.
+
+## Standalone monitor (desktop + web)
+
+A separate Compose app — `redux-kotlin-devtools-standalone` — that monitors a
+debugged app from *outside* its process, with desktop-class screen real estate:
+all panels visible at once (action log, State, Diff, Pipeline), a multi-store
+rail, a time-travel timeline, global search, and session save/load.
+
+### Run it (desktop)
+
+```
+./gradlew :redux-kotlin-devtools-standalone:run
+```
+
+The monitor binds a WebSocket server on `ws://127.0.0.1:9090` (loopback) and
+opens a window. Then point your app at it.
+
+### Stream from your app (the bridge)
+
+Add the bridge (debug-only) and register a `BridgeOutput` against your store's
+session — it is off by default and connects to `127.0.0.1:9090`:
+
+```kotlin
+debugImplementation("org.reduxkotlin:redux-kotlin-devtools-bridge:<version>")
+```
+
+```kotlin
+val cfg = DevToolsConfig(name = "appStore")
+val store = createStore(reducer, AppState(), devTools(cfg))
+DevToolsHub.session(cfg.instanceId ?: cfg.name)?.let { session ->
+    BridgeOutput(BridgeConfig(clientId = "myapp", clientLabel = "MyApp · desktop")).start(session)
+}
+```
+
+Multiple stores stream as multiple sessions (one `BridgeOutput` per store,
+sharing a `clientId`); the monitor groups them under one client and offers
+per-store / "all stores" (merged-by-time) views with per-row store badges.
+
+### Reaches platforms the in-app drawer cannot
+
+The in-app drawer needs Compose-material3, so it is unavailable on
+`linuxX64`/`mingwX64` and headless/server-side Kotlin apps. The bridge needs
+only a Ktor WebSocket client, so it compiles on every target `redux-kotlin`
+supports — making the standalone monitor the **only** devtools option for
+headless/native/server redux-kotlin apps. For structured state on iOS/native/JS,
+register a `KotlinxValueSerializer(json)` as `DevToolsConfig.serializer`.
+
+### Web
+
+The desktop app also hosts the same UI in a browser (Compose for Web / wasm)
+at `http://127.0.0.1:9090`, connecting back to the monitor over the same-origin
+WebSocket. (Serving the compiled web bundle through the embedded server is a
+work-in-progress; the desktop app is the primary surface.)
+
+### Security
+
+The monitor binds `127.0.0.1` and the bridge defaults to loopback. Streaming app
+state off the loopback interface requires a non-loopback `host` **and** a shared
+`token` (sent in the handshake, enforced by the monitor). The bridge is
+debug-only — never ship it in a release build.
