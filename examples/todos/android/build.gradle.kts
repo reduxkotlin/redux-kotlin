@@ -37,5 +37,5 @@ dependencies {
     implementation(project(":examples:todos:common"))
     implementation(project(":redux-kotlin-threadsafe"))
     // DevTools ships only in debug builds (see src/debug vs src/release DevToolsEnhancer.kt).
-    debugImplementation(project(":redux-kotlin-devtools"))
+    debugImplementation(project(":redux-kotlin-devtools-core"))
 }
