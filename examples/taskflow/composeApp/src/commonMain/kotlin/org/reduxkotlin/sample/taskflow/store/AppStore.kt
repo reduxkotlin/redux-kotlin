@@ -3,6 +3,8 @@ package org.reduxkotlin.sample.taskflow.store
 import org.reduxkotlin.Store
 import org.reduxkotlin.bundle.createConcurrentModelStore
 import org.reduxkotlin.concurrent.NotificationContext
+import org.reduxkotlin.devtools.DevToolsConfig
+import org.reduxkotlin.devtools.devTools
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
 import org.reduxkotlin.sample.taskflow.action.EditProfile
@@ -38,7 +40,10 @@ import org.reduxkotlin.sample.taskflow.reducer.authFlowReducer
  * @return the root [Store] over [ModelState].
  */
 public fun createAppStore(notificationContext: NotificationContext = mainNotificationContext()): Store<ModelState> =
-    createConcurrentModelStore(notificationContext = notificationContext) {
+    createConcurrentModelStore(
+        notificationContext = notificationContext,
+        enhancer = devTools(DevToolsConfig(name = "TaskFlow-root")),
+    ) {
         model(AccountsModel()) {
             on<AccountLoggedIn> { s, a -> accountsReducer(s, a) }
             on<SwitchAccount> { s, a -> accountsReducer(s, a) }

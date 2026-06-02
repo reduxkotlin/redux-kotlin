@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.devtools.inapp.InAppConfig
+import org.reduxkotlin.devtools.inapp.ReduxDevToolsHost
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.Back
 import org.reduxkotlin.sample.taskflow.action.BoardClosed
@@ -84,30 +86,33 @@ import kotlin.time.Clock
  */
 @Composable
 public fun App() {
-    // Wire the singleton Coil ImageLoader before any AsyncImage composes.
-    initCoil()
+    // Mount the in-app DevTools drawer (edge-swipe + floating bubble). It targets the per-account
+    // store's rich "TaskFlow" hub session (actions, state, diff, middleware pipeline).
+    ReduxDevToolsHost(InAppConfig(instanceId = "TaskFlow")) {
+        // Wire the singleton Coil ImageLoader before any AsyncImage composes.
+        initCoil()
 
-    val appStore = remember { createAppStore() }
+        val appStore = remember { createAppStore() }
 
-    // Durable LocalStore is built off the suspending platform driver; show a splash until it is ready.
-    val localStore by produceState<LocalStore?>(null) {
-        val driver = DriverFactory().createDriver()
-        value = SqlDelightLocalStore(taskFlowDb(driver))
-    }
+        // Durable LocalStore is built off the suspending platform driver; splash until it is ready.
+        val localStore by produceState<LocalStore?>(null) {
+            val driver = DriverFactory().createDriver()
+            value = SqlDelightLocalStore(taskFlowDb(driver))
+        }
 
-    val store = localStore
-    if (store == null) {
-        TaskFlowTheme {
-            Surface(modifier = Modifier.fillMaxSize()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+        val store = localStore
+        if (store == null) {
+            TaskFlowTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
+        } else {
+            AppShell(appStore = appStore, localStore = store)
         }
-        return
     }
-
-    AppShell(appStore = appStore, localStore = store)
 }
 
 /**
