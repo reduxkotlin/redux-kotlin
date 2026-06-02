@@ -44,9 +44,9 @@ public class MonitorServer(
                             ?.let {
                                 runCatching {
                                     bridgeJson.decodeFromString(
-                                BridgeMessage.serializer(),
-                                it,
-                            )
+                                        BridgeMessage.serializer(),
+                                        it,
+                                    )
                                 }.getOrNull()
                             }
                             ?: continue
