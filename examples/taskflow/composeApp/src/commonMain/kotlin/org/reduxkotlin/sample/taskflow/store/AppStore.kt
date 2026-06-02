@@ -70,7 +70,11 @@ public fun createAppStore(notificationContext: NotificationContext = mainNotific
         }
     }
     DevToolsHub.session(rootCfg.instanceId ?: rootCfg.name)?.let { session ->
-        BridgeOutput(BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow")).start(session)
+        BridgeOutput(
+            BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow"),
+            logger = { println("[rk-bridge root] $it") },
+        ).start(session)
+        println("[rk-bridge root] started against session '${session.id}'")
     }
     return store
 }

@@ -173,8 +173,14 @@ public fun createAccountStore(
     store.dispatch(EffectsWarmUp)
 
     val devtoolsId = devCfg.instanceId ?: devCfg.name
-    val bridge = BridgeOutput(BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow"))
-    DevToolsHub.session(devtoolsId)?.let { session -> bridge.start(session) }
+    val bridge = BridgeOutput(
+        BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow"),
+        logger = { println("[rk-bridge account] $it") },
+    )
+    DevToolsHub.session(devtoolsId)?.let { session ->
+        bridge.start(session)
+        println("[rk-bridge account] started against session '${session.id}'")
+    } ?: println("[rk-bridge account] NO session '$devtoolsId' in hub — bridge not started")
 
     return AccountStoreHandle(
         store = store,
