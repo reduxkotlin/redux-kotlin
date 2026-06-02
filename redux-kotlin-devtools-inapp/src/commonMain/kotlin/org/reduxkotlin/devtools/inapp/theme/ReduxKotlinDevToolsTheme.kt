@@ -34,11 +34,7 @@ private val LightColors = lightColorScheme(
  * @param content the themed content.
  */
 @Composable
-public fun ReduxKotlinDevToolsTheme(
-    mode: DevToolsThemeMode,
-    systemDark: Boolean,
-    content: @Composable () -> Unit,
-) {
+public fun ReduxKotlinDevToolsTheme(mode: DevToolsThemeMode, systemDark: Boolean, content: @Composable () -> Unit) {
     val dark = when (mode) {
         DevToolsThemeMode.DARK -> true
         DevToolsThemeMode.LIGHT -> false
