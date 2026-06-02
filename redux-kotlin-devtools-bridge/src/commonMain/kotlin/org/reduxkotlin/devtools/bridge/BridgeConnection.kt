@@ -13,9 +13,10 @@ import kotlinx.serialization.encodeToString
 import org.reduxkotlin.devtools.DevToolsSession
 
 /**
- * The bridge's Ktor WebSocket client: handshakes, seeds the monitor with [DevToolsSession.liftedState],
- * then drains a bounded outbound queue of wire frames. On disconnect it retries with backoff and
- * reseeds. One connection per store. Errors are swallowed/logged — never propagated to the host.
+ * The bridge's Ktor WebSocket client: handshakes, backfills the monitor with recent history via
+ * [DevToolsSession.history], then drains a bounded outbound queue of wire frames. On disconnect it
+ * retries with backoff and reseeds. One connection per store. Errors are swallowed/logged — never
+ * propagated to the host.
  *
  * @param config connection settings.
  * @param session the store being streamed (for reseed snapshots + identity).
@@ -42,9 +43,9 @@ internal class BridgeConnection(
         if (result.isFailure) logger("bridge: outbound buffer full, dropping message")
     }
 
-    /** Reseeds the monitor with a fresh [BridgeMessage.Init] from the session's current lifted state. */
+    /** Backfills a (re)connected monitor with the recent recorded actions (no clearing Init). */
     fun reseed() {
-        runCatching { enqueue(BridgeMessage.Init(session.liftedState())) }
+        runCatching { session.history().forEach { enqueue(toWire(it)) } }
     }
 
     /** Stops the connection and closes the client. */
