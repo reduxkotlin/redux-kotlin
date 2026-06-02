@@ -94,6 +94,11 @@ import org.reduxkotlin.sample.taskflow.reducer.undoModelReducer
  * @property remoteApi the account's isolated fake backend.
  * @property detail the seed identity/collaborators this account was built from.
  * @property botJob the running bot coroutine, or `null` when the bot is stopped.
+ * @property bridgeOutput the live [BridgeOutput] wired to this account's DevTools session, or
+ *   `null` when no DevTools session was active at creation time. Must be stopped in [AccountRegistry.remove].
+ * @property devtoolsId the DevTools session id used when registering this account's store, matching
+ *   `DevToolsConfig.instanceId ?: DevToolsConfig.name`. Used by [AccountRegistry.remove] to call
+ *   [DevToolsHub.removeSession].
  */
 public class AccountStoreHandle(
     public val store: Store<ModelState>,
@@ -102,6 +107,8 @@ public class AccountStoreHandle(
     public val remoteApi: RemoteApi,
     public val detail: AccountDetail,
     public var botJob: Job? = null,
+    internal val bridgeOutput: BridgeOutput? = null,
+    internal val devtoolsId: String? = null,
 )
 
 /**
@@ -165,9 +172,9 @@ public fun createAccountStore(
     // attached before any real mutation; the warm-up action matches no handler (a routing no-op).
     store.dispatch(EffectsWarmUp)
 
-    DevToolsHub.session(devCfg.instanceId ?: devCfg.name)?.let { session ->
-        BridgeOutput(BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow")).start(session)
-    }
+    val devtoolsId = devCfg.instanceId ?: devCfg.name
+    val bridge = BridgeOutput(BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow"))
+    DevToolsHub.session(devtoolsId)?.let { session -> bridge.start(session) }
 
     return AccountStoreHandle(
         store = store,
@@ -175,6 +182,8 @@ public fun createAccountStore(
         syncRepo = syncRepo,
         remoteApi = remoteApi,
         detail = detail,
+        bridgeOutput = bridge,
+        devtoolsId = devtoolsId,
     )
 }
 

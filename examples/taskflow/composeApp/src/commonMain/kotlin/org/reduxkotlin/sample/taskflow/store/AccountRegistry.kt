@@ -3,6 +3,7 @@ package org.reduxkotlin.sample.taskflow.store
 import kotlinx.coroutines.cancel
 import org.reduxkotlin.Store
 import org.reduxkotlin.concurrent.NotificationContext
+import org.reduxkotlin.devtools.DevToolsHub
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.registry.StoreRegistry
 import org.reduxkotlin.sample.taskflow.data.local.LocalStore
@@ -75,13 +76,16 @@ public class AccountRegistry(
     public fun store(id: AccountId): Store<ModelState>? = registry.get(id)
 
     /**
-     * Tears down the account [id]: cancels its bot and its whole coroutine [scope][AccountStoreHandle.scope]
-     * (stopping every effect/sync coroutine), forgets the handle, and removes the store from the registry.
+     * Tears down the account [id]: stops the bridge output and removes its DevTools session, cancels
+     * its bot and its whole coroutine [scope][AccountStoreHandle.scope] (stopping every effect/sync
+     * coroutine), forgets the handle, and removes the store from the registry.
      *
      * @param id the account to evict.
      */
     public fun remove(id: AccountId) {
         handles[id]?.let { handle ->
+            handle.bridgeOutput?.stop()
+            handle.devtoolsId?.let { DevToolsHub.removeSession(it) }
             handle.botJob?.cancel()
             handle.scope.cancel()
         }
