@@ -32,6 +32,7 @@ include(
     ":redux-kotlin-multimodel-granular",
     ":redux-kotlin-compose-multimodel",
     ":redux-kotlin-devtools-core",
+    ":redux-kotlin-devtools-bridge",
     ":redux-kotlin-devtools-remote",
     ":redux-kotlin-devtools-inapp",
     ":redux-kotlin-devtools-inapp-noop",
