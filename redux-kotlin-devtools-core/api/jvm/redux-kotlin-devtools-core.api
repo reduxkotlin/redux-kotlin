@@ -159,6 +159,11 @@ public final class org/reduxkotlin/devtools/JsonDiffKt {
 	public static final fun diffJson (Lkotlinx/serialization/json/JsonElement;Lkotlinx/serialization/json/JsonElement;)Ljava/util/List;
 }
 
+public final class org/reduxkotlin/devtools/KotlinxValueSerializer : org/reduxkotlin/devtools/ValueSerializer {
+	public fun <init> (Lkotlinx/serialization/json/Json;)V
+	public fun toJson (Ljava/lang/Object;)Lkotlinx/serialization/json/JsonElement;
+}
+
 public final class org/reduxkotlin/devtools/NamedMiddleware {
 }
 
