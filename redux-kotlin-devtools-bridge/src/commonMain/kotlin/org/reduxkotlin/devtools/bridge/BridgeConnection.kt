@@ -9,7 +9,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import org.reduxkotlin.devtools.DevToolsSession
 
 /**
@@ -75,10 +74,13 @@ internal class BridgeConnection(
                         serializerTier = "unknown",
                         token = config.token,
                     )
-                    send(Frame.Text(bridgeJson.encodeToString<BridgeMessage>(hello)))
+                    send(Frame.Text(bridgeJson.encodeToString(BridgeMessage.serializer(), hello)))
                     val ackFrame = incoming.receive() as? Frame.Text
                     val ack = ackFrame?.let {
-                        bridgeJson.decodeFromString<BridgeMessage>(it.readText()) as? BridgeMessage.HelloAck
+                        bridgeJson.decodeFromString(
+                            BridgeMessage.serializer(),
+                            it.readText(),
+                        ) as? BridgeMessage.HelloAck
                     }
                     if (ack?.accepted != true) {
                         logger("bridge: handshake refused: ${ack?.reason}")
@@ -87,7 +89,7 @@ internal class BridgeConnection(
                     backoffMs = 500L
                     reseed()
                     for (msg in outbound) {
-                        send(Frame.Text(bridgeJson.encodeToString<BridgeMessage>(msg)))
+                        send(Frame.Text(bridgeJson.encodeToString(BridgeMessage.serializer(), msg)))
                     }
                 }
             } catch (c: CancellationException) {
