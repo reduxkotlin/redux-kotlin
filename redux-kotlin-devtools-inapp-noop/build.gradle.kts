@@ -2,6 +2,7 @@ plugins {
     id("convention.library-mpp-loved")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
     id("convention.publishing-mpp")
 }
 
@@ -27,6 +28,7 @@ kotlin {
             dependencies {
                 api(project(":redux-kotlin"))
                 implementation(compose.runtime)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
         commonTest {
