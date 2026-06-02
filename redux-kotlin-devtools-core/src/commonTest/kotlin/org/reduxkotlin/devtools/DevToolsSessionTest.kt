@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -52,5 +54,24 @@ class DevToolsSessionTest {
         job.cancel()
 
         assertTrue(received.none { it is DevToolsEvent.ActionRecorded })
+    }
+
+    @Test
+    fun recorded_action_carries_its_type_label() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val session = DevToolsSession.create(DevToolsConfig(name = "ty"), dispatcher)
+        val received = mutableListOf<DevToolsEvent>()
+        val job = launch(dispatcher) { session.events.toList(received) }
+        testScheduler.runCurrent()
+
+        session.init(St(0))
+        session.record(Inc, St(1))
+        testScheduler.advanceUntilIdle()
+        session.close()
+        job.cancel()
+
+        val rec = received.filterIsInstance<DevToolsEvent.ActionRecorded>().single()
+        val type = (rec.action as JsonObject)["type"]
+        assertEquals("Inc", (type as JsonPrimitive).content)
     }
 }
