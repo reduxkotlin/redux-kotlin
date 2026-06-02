@@ -114,6 +114,10 @@ sealed interface org.reduxkotlin.devtools/DevToolsEvent { // org.reduxkotlin.dev
     }
 }
 
+final class <#A: kotlin/Any?> org.reduxkotlin.devtools/NamedMiddleware // org.reduxkotlin.devtools/NamedMiddleware|null[0]
+
+final class <#A: kotlin/Any?> org.reduxkotlin.devtools/NamedReducer // org.reduxkotlin.devtools/NamedReducer|null[0]
+
 final class org.reduxkotlin.devtools/DevToolsConfig { // org.reduxkotlin.devtools/DevToolsConfig|null[0]
     constructor <init>(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., org.reduxkotlin.devtools/ValueSerializer? = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...) // org.reduxkotlin.devtools/DevToolsConfig.<init>|<init>(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;org.reduxkotlin.devtools.ValueSerializer?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
 
@@ -270,4 +274,8 @@ final object org.reduxkotlin.devtools/ToStringValueSerializer : org.reduxkotlin.
 }
 
 final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/devTools(org.reduxkotlin.devtools/DevToolsConfig = ...): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.devtools/devTools|devTools(org.reduxkotlin.devtools.DevToolsConfig){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/devToolsCombineReducers(org.reduxkotlin.devtools/DevToolsConfig, kotlin/Array<out org.reduxkotlin.devtools/NamedReducer<#A>>...): kotlin/Function2<#A, kotlin/Any, #A> // org.reduxkotlin.devtools/devToolsCombineReducers|devToolsCombineReducers(org.reduxkotlin.devtools.DevToolsConfig;kotlin.Array<out|org.reduxkotlin.devtools.NamedReducer<0:0>>...){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/devToolsMiddleware(org.reduxkotlin.devtools/DevToolsConfig, kotlin/Array<out org.reduxkotlin.devtools/NamedMiddleware<#A>>...): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.devtools/devToolsMiddleware|devToolsMiddleware(org.reduxkotlin.devtools.DevToolsConfig;kotlin.Array<out|org.reduxkotlin.devtools.NamedMiddleware<0:0>>...){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/named(kotlin/String, kotlin/Function1<org.reduxkotlin/TypedStore<#A, kotlin/Any>, kotlin/Function1<kotlin/Function1<kotlin/Any, kotlin/Any>, kotlin/Function1<kotlin/Any, kotlin/Any>>>): org.reduxkotlin.devtools/NamedMiddleware<#A> // org.reduxkotlin.devtools/named|named(kotlin.String;kotlin.Function1<org.reduxkotlin.TypedStore<0:0,kotlin.Any>,kotlin.Function1<kotlin.Function1<kotlin.Any,kotlin.Any>,kotlin.Function1<kotlin.Any,kotlin.Any>>>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/named(kotlin/String, kotlin/Function2<#A, kotlin/Any, #A>): org.reduxkotlin.devtools/NamedReducer<#A> // org.reduxkotlin.devtools/named|named(kotlin.String;kotlin.Function2<0:0,kotlin.Any,0:0>){0§<kotlin.Any?>}[0]
 final fun org.reduxkotlin.devtools/diffJson(kotlinx.serialization.json/JsonElement, kotlinx.serialization.json/JsonElement): kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry> // org.reduxkotlin.devtools/diffJson|diffJson(kotlinx.serialization.json.JsonElement;kotlinx.serialization.json.JsonElement){}[0]
