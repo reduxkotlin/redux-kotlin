@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: var(--md-surface-container-low); color: var(--fg-1); }
+  .wrap { padding: 26px; }
+  .row { display:flex; gap: 22px; }
+  .item { text-align:center; }
+  .box { background:#fff; width: 84px; height: 56px; border-radius: var(--radius-md); }
+  .item b { display:block; font:var(--w-semibold) 12px var(--font-sans); margin-top:12px; }
+  .item span { font:10px var(--font-mono); color:var(--fg-3); }
+  .cap { margin-top: 18px; font:12px var(--font-mono); color:var(--fg-3); }
+  .e1{box-shadow:var(--elev-1)} .e2{box-shadow:var(--elev-2)} .e3{box-shadow:var(--elev-3)} .e4{box-shadow:var(--elev-4)} .e5{box-shadow:var(--elev-5)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <div class="item"><div class="box e1"></div><b>1</b><span>card</span></div>
+      <div class="item"><div class="box e2"></div><b>2</b><span>raised</span></div>
+      <div class="item"><div class="box e3"></div><b>3</b><span>menu</span></div>
+      <div class="item"><div class="box e4"></div><b>4</b><span>dialog</span></div>
+      <div class="item"><div class="box e5"></div><b>5</b><span>FAB</span></div>
+    </div>
+    <div class="cap">Elevation — soft neutral-tinted M3 shadow scale (--elev-1 … --elev-5)</div>
+  </div>
+</body>
+</html>

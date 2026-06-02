@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; }
+  .row { display:flex; gap: 10px; align-items:flex-end; }
+  .item { text-align:center; }
+  .bar { background: var(--rk-gradient); border-radius: 3px; height: 14px; }
+  .item b { display:block; font:var(--w-semibold) 11px var(--font-sans); margin-top:8px; }
+  .item span { font:10px var(--font-mono); color:var(--fg-3); }
+  .cap { margin-top: 16px; font:12px var(--font-mono); color:var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <div class="item"><div class="bar" style="width:4px"></div><b>1</b><span>4</span></div>
+      <div class="item"><div class="bar" style="width:8px"></div><b>2</b><span>8</span></div>
+      <div class="item"><div class="bar" style="width:12px"></div><b>3</b><span>12</span></div>
+      <div class="item"><div class="bar" style="width:16px"></div><b>4</b><span>16</span></div>
+      <div class="item"><div class="bar" style="width:24px"></div><b>6</b><span>24</span></div>
+      <div class="item"><div class="bar" style="width:32px"></div><b>8</b><span>32</span></div>
+      <div class="item"><div class="bar" style="width:48px"></div><b>12</b><span>48</span></div>
+      <div class="item"><div class="bar" style="width:64px"></div><b>16</b><span>64</span></div>
+      <div class="item"><div class="bar" style="width:80px"></div><b>20</b><span>80</span></div>
+    </div>
+    <div class="cap">Spacing — 4px base grid (--space-1 … --space-20)</div>
+  </div>
+</body>
+</html>

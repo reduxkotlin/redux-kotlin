@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; display:flex; gap: 18px; align-items:flex-start; }
+  .field { flex:1; }
+  .label { font: var(--w-medium) 12px var(--font-sans); color: var(--md-primary); margin-bottom: 4px; }
+  .input { height: 44px; border-radius: var(--radius-xs) var(--radius-xs) 0 0; background: var(--md-surface-container-high); border: none; border-bottom: 2px solid var(--md-primary); display:flex; align-items:center; padding: 0 14px; font: 15px var(--font-sans); color: var(--fg-1); }
+  .input.rest { border-bottom-color: var(--md-outline); }
+  .help { font: 11px var(--font-sans); color: var(--fg-3); margin-top: 5px; }
+  .help.err { color: var(--md-error); }
+  .input.err { border-bottom-color: var(--md-error); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="field">
+      <div class="label">Store name</div>
+      <div class="input">appStore</div>
+      <div class="help">Filled text field · focused</div>
+    </div>
+    <div class="field">
+      <div class="label" style="color:var(--fg-3)">Dispatch key</div>
+      <div class="input rest">SHOW_ALL</div>
+      <div class="help">Resting state</div>
+    </div>
+    <div class="field">
+      <div class="label" style="color:var(--md-error)">Reducer</div>
+      <div class="input err">—</div>
+      <div class="help err">Required field</div>
+    </div>
+  </div>
+</body>
+</html>

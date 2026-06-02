@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; }
+  .row { display:flex; gap: 12px; align-items:center; flex-wrap: wrap; }
+  button { font: var(--w-medium) 14px var(--font-sans); border:none; cursor:pointer; height: 40px; padding: 0 24px; border-radius: var(--radius-full); transition: box-shadow .2s, background .2s; }
+  .filled { background: var(--md-primary); color: #fff; }
+  .filled:hover { box-shadow: var(--elev-2); }
+  .tonal { background: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+  .outlined { background: transparent; color: var(--md-primary); border: 1px solid var(--md-outline); }
+  .text { background: transparent; color: var(--md-primary); padding: 0 12px; }
+  .fab { width:48px; height:48px; padding:0; border-radius:var(--radius-lg); background: var(--md-tertiary-container); color: var(--md-on-tertiary-container); box-shadow: var(--elev-2); font-size: 22px; }
+  .cap { margin-top: 16px; font:12px var(--font-mono); color:var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <button class="filled">Get Started →</button>
+      <button class="tonal">Tonal</button>
+      <button class="outlined">Outlined</button>
+      <button class="text">Text</button>
+      <button class="fab">+</button>
+    </div>
+    <div class="cap">Buttons — M3 filled · tonal · outlined · text · FAB · all pill-shaped</div>
+  </div>
+</body>
+</html>

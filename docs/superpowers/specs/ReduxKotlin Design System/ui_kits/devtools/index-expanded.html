@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReduxKotlin · In-App DevTools (Expanded)</title>
+<link rel="icon" href="../../assets/favicon.ico">
+<link rel="stylesheet" href="../../colors_and_type.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .material-symbols-rounded { font-size: 24px; user-select: none; line-height: 1; }
+  ::-webkit-scrollbar { width: 7px; height: 7px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
+
+  @keyframes rkPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(95,211,154,0.5); }
+    70%  { box-shadow: 0 0 0 6px rgba(95,211,154,0); }
+    100% { box-shadow: 0 0 0 0 rgba(95,211,154,0); }
+  }
+  @keyframes rkRowIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes rkFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes rkLit { 0% { opacity: 0; transform: scale(0.96); } 60% { opacity: 1; } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes rkFlow { 0% { top: -2px; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { top: 14px; opacity: 0; } }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="devtools-data.jsx"></script>
+  <script type="text/babel" src="HostApp.jsx"></script>
+  <script type="text/babel" src="DevToolsTabs.jsx"></script>
+  <script type="text/babel" src="DevToolsPanel.jsx"></script>
+  <script type="text/babel" src="app-expanded.jsx"></script>
+</body>
+</html>

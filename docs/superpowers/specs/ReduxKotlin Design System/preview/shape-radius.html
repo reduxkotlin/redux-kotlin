@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; }
+  .row { display:flex; gap: 16px; align-items:flex-end; }
+  .item { text-align:center; }
+  .box { background: var(--md-primary-container); border: 1.5px solid var(--md-primary); width: 64px; height: 56px; }
+  .item b { display:block; font:var(--w-semibold) 12px var(--font-sans); margin-top:8px; }
+  .item span { font:10px var(--font-mono); color:var(--fg-3); }
+  .cap { margin-top: 16px; font:12px var(--font-mono); color:var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row">
+      <div class="item"><div class="box" style="border-radius:4px"></div><b>xs</b><span>4px</span></div>
+      <div class="item"><div class="box" style="border-radius:8px"></div><b>sm</b><span>8px</span></div>
+      <div class="item"><div class="box" style="border-radius:12px"></div><b>md</b><span>12px</span></div>
+      <div class="item"><div class="box" style="border-radius:16px"></div><b>lg</b><span>16px</span></div>
+      <div class="item"><div class="box" style="border-radius:28px"></div><b>xl</b><span>28px</span></div>
+      <div class="item"><div class="box" style="border-radius:36px"></div><b>2xl</b><span>36px</span></div>
+      <div class="item"><div class="box" style="border-radius:999px"></div><b>full</b><span>pill</span></div>
+    </div>
+    <div class="cap">Corner radius — M3 expressive scale · app cards favor 16–28px, docs 8px</div>
+  </div>
+</body>
+</html>

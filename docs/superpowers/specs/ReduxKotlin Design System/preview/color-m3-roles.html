@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; font-family: var(--font-sans); background: #fff; color: var(--fg-1); }
+  .wrap { padding: 22px 26px; }
+  .roles { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .role { border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--elev-1); }
+  .role .main { height: 46px; display:flex; align-items:center; padding:0 12px; font:var(--w-semibold) 13px var(--font-sans); }
+  .role .cont { height: 30px; display:flex; align-items:center; padding:0 12px; font:11px var(--font-mono); }
+  .cap { margin-top: 13px; font: 12px var(--font-mono); color: var(--fg-3); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="roles">
+      <div class="role">
+        <div class="main" style="background:#137af9;color:#fff">Primary</div>
+        <div class="cont" style="background:#d7e8ff;color:#00305f">container</div>
+      </div>
+      <div class="role">
+        <div class="main" style="background:#b8419f;color:#fff">Secondary</div>
+        <div class="cont" style="background:#ffd7f2;color:#43003a">container</div>
+      </div>
+      <div class="role">
+        <div class="main" style="background:#9a5400;color:#fff">Tertiary</div>
+        <div class="cont" style="background:#ffdcbc;color:#311300">container</div>
+      </div>
+    </div>
+    <div class="cap">Material 3 accent roles — brand's three hues map to primary / secondary / tertiary</div>
+  </div>
+</body>
+</html>
