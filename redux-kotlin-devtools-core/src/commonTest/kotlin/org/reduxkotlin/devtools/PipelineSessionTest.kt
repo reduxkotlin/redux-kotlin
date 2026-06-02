@@ -23,7 +23,7 @@ class PipelineSessionTest {
         session.submitTrace(listOf(PipelineNodeTrace("mw_logger", 5, forwarded = true, changed = false)))
         session.record("Inc", St(1), session.takePendingTrace())
         testScheduler.advanceUntilIdle()
-        session.close();
+        session.close()
         job.cancel()
 
         val action = received.filterIsInstance<DevToolsEvent.ActionRecorded>().single()
