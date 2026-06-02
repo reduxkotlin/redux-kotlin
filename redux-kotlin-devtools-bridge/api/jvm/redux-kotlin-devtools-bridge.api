@@ -1,0 +1,240 @@
+public final class org/reduxkotlin/devtools/bridge/BridgeConfig {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;IZZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;IZZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;IZZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/reduxkotlin/devtools/bridge/BridgeConfig;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/bridge/BridgeConfig;Ljava/lang/String;IZZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/bridge/BridgeConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClientId ()Ljava/lang/String;
+	public final fun getClientLabel ()Ljava/lang/String;
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPort ()I
+	public final fun getSecure ()Z
+	public final fun getStartEnabled ()Z
+	public final fun getToken ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class org/reduxkotlin/devtools/bridge/BridgeMessage {
+	public static final field Companion Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Companion;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$Action : org/reduxkotlin/devtools/bridge/BridgeMessage {
+	public static final field Companion Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Action$Companion;
+	public fun <init> (ILkotlinx/serialization/json/JsonElement;Lkotlinx/serialization/json/JsonElement;Ljava/util/List;JZ)V
+	public final fun component1 ()I
+	public final fun component2 ()Lkotlinx/serialization/json/JsonElement;
+	public final fun component3 ()Lkotlinx/serialization/json/JsonElement;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()J
+	public final fun component6 ()Z
+	public final fun copy (ILkotlinx/serialization/json/JsonElement;Lkotlinx/serialization/json/JsonElement;Ljava/util/List;JZ)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Action;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Action;ILkotlinx/serialization/json/JsonElement;Lkotlinx/serialization/json/JsonElement;Ljava/util/List;JZILjava/lang/Object;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Action;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAction ()Lkotlinx/serialization/json/JsonElement;
+	public final fun getActionId ()I
+	public final fun getDiff ()Ljava/util/List;
+	public final fun getState ()Lkotlinx/serialization/json/JsonElement;
+	public final fun getTimestampMillis ()J
+	public fun hashCode ()I
+	public final fun isExcess ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class org/reduxkotlin/devtools/bridge/BridgeMessage$Action$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Action$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Action;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Action;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$Action$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$Hello : org/reduxkotlin/devtools/bridge/BridgeMessage {
+	public static final field Companion Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Hello$Companion;
+	public fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun copy (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Hello;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Hello;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Hello;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClientId ()Ljava/lang/String;
+	public final fun getClientLabel ()Ljava/lang/String;
+	public final fun getProtocolVersion ()I
+	public final fun getSerializerTier ()Ljava/lang/String;
+	public final fun getStoreInstanceId ()Ljava/lang/String;
+	public final fun getStoreName ()Ljava/lang/String;
+	public final fun getToken ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class org/reduxkotlin/devtools/bridge/BridgeMessage$Hello$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Hello$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Hello;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Hello;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$Hello$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck : org/reduxkotlin/devtools/bridge/BridgeMessage {
+	public static final field Companion Lorg/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck$Companion;
+	public fun <init> (IZLjava/lang/String;)V
+	public synthetic fun <init> (IZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (IZLjava/lang/String;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck;IZLjava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccepted ()Z
+	public final fun getProtocolVersion ()I
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class org/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$HelloAck$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$Init : org/reduxkotlin/devtools/bridge/BridgeMessage {
+	public static final field Companion Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Init$Companion;
+	public fun <init> (Lkotlinx/serialization/json/JsonElement;)V
+	public final fun component1 ()Lkotlinx/serialization/json/JsonElement;
+	public final fun copy (Lkotlinx/serialization/json/JsonElement;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Init;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Init;Lkotlinx/serialization/json/JsonElement;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Init;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getState ()Lkotlinx/serialization/json/JsonElement;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class org/reduxkotlin/devtools/bridge/BridgeMessage$Init$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Init$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Init;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/bridge/BridgeMessage$Init;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$Init$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered : org/reduxkotlin/devtools/bridge/BridgeMessage {
+	public static final field Companion Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered$Companion;
+	public fun <init> (Lorg/reduxkotlin/devtools/PipelineStructure;)V
+	public final fun component1 ()Lorg/reduxkotlin/devtools/PipelineStructure;
+	public final fun copy (Lorg/reduxkotlin/devtools/PipelineStructure;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered;Lorg/reduxkotlin/devtools/PipelineStructure;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getStructure ()Lorg/reduxkotlin/devtools/PipelineStructure;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class org/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$PipelineRegistered$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced : org/reduxkotlin/devtools/bridge/BridgeMessage {
+	public static final field Companion Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced$Companion;
+	public fun <init> (Lorg/reduxkotlin/devtools/PipelineTrace;)V
+	public final fun component1 ()Lorg/reduxkotlin/devtools/PipelineTrace;
+	public final fun copy (Lorg/reduxkotlin/devtools/PipelineTrace;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced;Lorg/reduxkotlin/devtools/PipelineTrace;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTrace ()Lorg/reduxkotlin/devtools/PipelineTrace;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class org/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeMessage$PipelineTraced$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeOutput : org/reduxkotlin/devtools/DevToolsOutput {
+	public fun <init> (Lorg/reduxkotlin/devtools/bridge/BridgeConfig;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/reduxkotlin/devtools/bridge/BridgeConfig;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getId ()Ljava/lang/String;
+	public fun getLabel ()Ljava/lang/String;
+	public final fun getStartEnabled ()Z
+	public final fun isRunning ()Z
+	public fun start (Lorg/reduxkotlin/devtools/DevToolsSession;)V
+	public fun stop ()V
+}
+
+public final class org/reduxkotlin/devtools/bridge/BridgeProtocolKt {
+	public static final field PROTOCOL_VERSION I
+	public static final fun getBridgeJson ()Lkotlinx/serialization/json/Json;
+	public static final fun toWire (Lorg/reduxkotlin/devtools/DevToolsEvent;)Lorg/reduxkotlin/devtools/bridge/BridgeMessage;
+}
+

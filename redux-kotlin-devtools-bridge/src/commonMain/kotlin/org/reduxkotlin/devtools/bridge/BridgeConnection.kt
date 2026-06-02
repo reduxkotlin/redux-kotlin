@@ -74,7 +74,7 @@ internal class BridgeConnection(
                         serializerTier = "unknown",
                         token = config.token,
                     )
-                    send(Frame.Text(bridgeJson.encodeToString(hello)))
+                    send(Frame.Text(bridgeJson.encodeToString<BridgeMessage>(hello)))
                     val ackFrame = incoming.receive() as? Frame.Text
                     val ack = ackFrame?.let {
                         bridgeJson.decodeFromString<BridgeMessage>(it.readText()) as? BridgeMessage.HelloAck
@@ -86,7 +86,7 @@ internal class BridgeConnection(
                     backoffMs = 500L
                     reseed()
                     for (msg in outbound) {
-                        send(Frame.Text(bridgeJson.encodeToString(msg)))
+                        send(Frame.Text(bridgeJson.encodeToString<BridgeMessage>(msg)))
                     }
                 }
             } catch (c: CancellationException) {
