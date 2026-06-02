@@ -7,10 +7,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import org.reduxkotlin.Store
-import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.bundle.createConcurrentModelStore
 import org.reduxkotlin.compose
 import org.reduxkotlin.concurrent.NotificationContext
+import org.reduxkotlin.devtools.DevToolsConfig
+import org.reduxkotlin.devtools.devTools
+import org.reduxkotlin.devtools.devToolsMiddleware
+import org.reduxkotlin.devtools.named
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.routing.RoutingBuilder
 import org.reduxkotlin.sample.taskflow.action.AddCard
@@ -139,15 +142,20 @@ public fun createAccountStore(
     val syncRepo = SyncRepository(localStore, remoteApi, scope, detail.accountId)
     val effects = effectsMiddleware(syncRepo, scope)
 
-    // A debug build may install [debugStoreEnhancer] (Redux DevTools) — see the androidApp's
-    // debug source set. When present it is composed INNERMOST (closest to the base store) so it
-    // records the plain actions that reach the reducers, after the middleware chain runs. Release
-    // builds never set it, so neither the devtools wiring nor its dependency is linked.
-    val baseEnhancer = applyMiddleware(activityLoggerMiddleware(), undoMiddleware(), effects)
-    val devEnhancer = debugStoreEnhancer?.invoke()
+    // Redux DevTools: [devTools] records actions + state into the in-app hub session named
+    // "TaskFlow"; [devToolsMiddleware] is a drop-in for applyMiddleware that ALSO captures the
+    // named middleware pipeline for the drawer. The in-app drawer (App.kt) targets this fixed
+    // session id — a single active account means no id collision.
+    val devCfg = DevToolsConfig(name = "TaskFlow")
+    val pipelineEnhancer = devToolsMiddleware(
+        devCfg,
+        named("activityLogger", activityLoggerMiddleware()),
+        named("undo", undoMiddleware()),
+        named("effects", effects),
+    )
     val store = createConcurrentModelStore(
         notificationContext = notificationContext,
-        enhancer = if (devEnhancer != null) compose(baseEnhancer, devEnhancer) else baseEnhancer,
+        enhancer = compose(devTools(devCfg), pipelineEnhancer),
     ) { declareAccountModels(detail) }
 
     // Eagerly trigger the effects middleware's first invocation so its reject/status collectors are

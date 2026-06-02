@@ -49,6 +49,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(project(":redux-kotlin-bundle-compose"))
+            implementation(project(":redux-kotlin-devtools-core"))
+            implementation(project(":redux-kotlin-devtools-inapp"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
