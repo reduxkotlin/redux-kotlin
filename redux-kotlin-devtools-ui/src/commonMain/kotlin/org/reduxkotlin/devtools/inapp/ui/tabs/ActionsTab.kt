@@ -19,7 +19,7 @@ import org.reduxkotlin.devtools.inapp.theme.RkTokens
 
 /** The Actions tab: a filter field over a tappable action log. Selecting a row drives the other tabs. */
 @Composable
-internal fun ActionsTab(state: InAppState, onFilter: (String) -> Unit, onSelect: (Int) -> Unit) {
+public fun ActionsTab(state: InAppState, onFilter: (String) -> Unit, onSelect: (Int) -> Unit) {
     Column(Modifier.fillMaxWidth()) {
         OutlinedTextField(
             value = state.filter,

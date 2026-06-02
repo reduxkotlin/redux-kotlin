@@ -15,7 +15,7 @@ import org.reduxkotlin.devtools.inapp.theme.RkTokens
 
 /** The Pipeline tab: the static node map, lighting nodes the selected action's [trace] traversed. */
 @Composable
-internal fun PipelineTab(structure: PipelineStructure?, trace: PipelineTrace?) {
+public fun PipelineTab(structure: PipelineStructure?, trace: PipelineTrace?) {
     if (structure == null) {
         Text(
             "No pipeline registered. Use devToolsMiddleware / devToolsCombineReducers.",

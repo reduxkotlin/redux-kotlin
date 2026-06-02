@@ -15,7 +15,7 @@ import org.reduxkotlin.devtools.inapp.theme.RkTokens
 
 /** The Diff tab: added/changed/removed leaf paths for the selected action. */
 @Composable
-internal fun DiffTab(diff: List<DiffEntry>) {
+public fun DiffTab(diff: List<DiffEntry>) {
     if (diff.isEmpty()) {
         Text("No changes for this action.", color = RkTokens.InkDim, modifier = Modifier.padding(16.dp))
         return

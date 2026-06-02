@@ -15,7 +15,7 @@ import org.reduxkotlin.devtools.inapp.theme.RkTokens
 
 /** The Outputs tab: one integration, multiple outputs. In-app is locked on; remote/file toggle. */
 @Composable
-internal fun OutputsTab(outputs: List<OutputRow>, onToggle: (String, Boolean) -> Unit) {
+public fun OutputsTab(outputs: List<OutputRow>, onToggle: (String, Boolean) -> Unit) {
     Column {
         outputs.forEach { o ->
             Row(
