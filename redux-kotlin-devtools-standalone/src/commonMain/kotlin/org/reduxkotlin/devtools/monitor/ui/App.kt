@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.reduxkotlin.devtools.bridge.BridgeMessage
 import org.reduxkotlin.devtools.monitor.MonitorIngest
 import org.reduxkotlin.devtools.monitor.MonitorState
+import org.reduxkotlin.devtools.monitor.decodeRecording
+import org.reduxkotlin.devtools.monitor.encodeRecording
+import org.reduxkotlin.devtools.monitor.loadRecording
+import org.reduxkotlin.devtools.monitor.saveRecording
 
 /**
  * The standalone monitor's root composable: a winbar, the top bar, the four-panel dock
@@ -37,7 +42,32 @@ public fun MonitorApp(ingest: MonitorIngest, state: MonitorState) {
                 matches = matches,
                 onPause = { state.paused = !state.paused },
                 onReconnect = { ingest.registry.refresh() },
-                onSave = {},
+                onSave = {
+                    val id = active?.ref?.id
+                    if (id != null) {
+                        ingest.recordingFor(id)?.let { (header, messages) ->
+                            saveRecording("${header.storeName}.jsonl", encodeRecording(header, messages))
+                        }
+                    }
+                },
+                onLoad = {
+                    loadRecording { text ->
+                        val (h, msgs) = decodeRecording(text)
+                        val c = ingest.openConnection()
+                        c.accept(
+                            BridgeMessage.Hello(
+                                protocolVersion = h.protocolVersion,
+                                clientId = h.clientId,
+                                clientLabel = h.clientLabel,
+                                storeInstanceId = h.storeInstanceId,
+                                storeName = h.storeName,
+                                serializerTier = h.serializerTier,
+                                token = null,
+                            ),
+                        )
+                        msgs.forEach { c.accept(it) }
+                    }
+                },
                 onClear = {},
                 onTheme = { state.dark = !state.dark },
             )

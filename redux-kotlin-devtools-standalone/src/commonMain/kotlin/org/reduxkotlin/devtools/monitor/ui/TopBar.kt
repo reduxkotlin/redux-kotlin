@@ -44,6 +44,7 @@ public fun TopBar(
     onPause: () -> Unit,
     onReconnect: () -> Unit,
     onSave: () -> Unit,
+    onLoad: () -> Unit,
     onClear: () -> Unit,
     onTheme: () -> Unit,
 ) {
@@ -59,7 +60,7 @@ public fun TopBar(
         Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
             SearchField(state, colors, matches)
         }
-        StatusAndControls(state, colors, onPause, onReconnect, onSave, onClear, onTheme)
+        StatusAndControls(state, colors, onPause, onReconnect, onSave, onLoad, onClear, onTheme)
     }
 }
 
@@ -171,6 +172,7 @@ private fun StatusAndControls(
     onPause: () -> Unit,
     onReconnect: () -> Unit,
     onSave: () -> Unit,
+    onLoad: () -> Unit,
     onClear: () -> Unit,
     onTheme: () -> Unit,
 ) {
@@ -183,6 +185,7 @@ private fun StatusAndControls(
         IconBtn(if (state.paused) "▶" else "⏸", colors, active = state.paused, onClick = onPause)
         IconBtn("↻", colors, onClick = onReconnect)
         IconBtn("↓", colors, onClick = onSave)
+        IconBtn("↑", colors, onClick = onLoad)
         IconBtn("⌫", colors, onClick = onClear)
         IconBtn(if (state.dark) "☀" else "☽", colors, onClick = onTheme)
     }
