@@ -1,0 +1,163 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, linuxX64, macosArm64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-devtools-core>
+final enum class org.reduxkotlin.devtools/DiffOp : kotlin/Enum<org.reduxkotlin.devtools/DiffOp> { // org.reduxkotlin.devtools/DiffOp|null[0]
+    enum entry ADDED // org.reduxkotlin.devtools/DiffOp.ADDED|null[0]
+    enum entry CHANGED // org.reduxkotlin.devtools/DiffOp.CHANGED|null[0]
+    enum entry REMOVED // org.reduxkotlin.devtools/DiffOp.REMOVED|null[0]
+
+    final val entries // org.reduxkotlin.devtools/DiffOp.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<org.reduxkotlin.devtools/DiffOp> // org.reduxkotlin.devtools/DiffOp.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): org.reduxkotlin.devtools/DiffOp // org.reduxkotlin.devtools/DiffOp.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<org.reduxkotlin.devtools/DiffOp> // org.reduxkotlin.devtools/DiffOp.values|values#static(){}[0]
+}
+
+abstract interface org.reduxkotlin.devtools/DevToolsOutput { // org.reduxkotlin.devtools/DevToolsOutput|null[0]
+    abstract val id // org.reduxkotlin.devtools/DevToolsOutput.id|{}id[0]
+        abstract fun <get-id>(): kotlin/String // org.reduxkotlin.devtools/DevToolsOutput.id.<get-id>|<get-id>(){}[0]
+    abstract val label // org.reduxkotlin.devtools/DevToolsOutput.label|{}label[0]
+        abstract fun <get-label>(): kotlin/String // org.reduxkotlin.devtools/DevToolsOutput.label.<get-label>|<get-label>(){}[0]
+
+    abstract fun start(org.reduxkotlin.devtools/DevToolsSession) // org.reduxkotlin.devtools/DevToolsOutput.start|start(org.reduxkotlin.devtools.DevToolsSession){}[0]
+    abstract fun stop() // org.reduxkotlin.devtools/DevToolsOutput.stop|stop(){}[0]
+}
+
+abstract interface org.reduxkotlin.devtools/ValueSerializer { // org.reduxkotlin.devtools/ValueSerializer|null[0]
+    abstract fun toJson(kotlin/Any?): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/ValueSerializer.toJson|toJson(kotlin.Any?){}[0]
+}
+
+sealed interface org.reduxkotlin.devtools/DevToolsEvent { // org.reduxkotlin.devtools/DevToolsEvent|null[0]
+    final class ActionRecorded : org.reduxkotlin.devtools/DevToolsEvent { // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded|null[0]
+        constructor <init>(kotlin/Int, kotlinx.serialization.json/JsonElement, kotlinx.serialization.json/JsonElement, kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry>, kotlin/Long, kotlin/Boolean) // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.<init>|<init>(kotlin.Int;kotlinx.serialization.json.JsonElement;kotlinx.serialization.json.JsonElement;kotlin.collections.List<org.reduxkotlin.devtools.DiffEntry>;kotlin.Long;kotlin.Boolean){}[0]
+
+        final val action // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.action|{}action[0]
+            final fun <get-action>(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.action.<get-action>|<get-action>(){}[0]
+        final val actionId // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.actionId|{}actionId[0]
+            final fun <get-actionId>(): kotlin/Int // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.actionId.<get-actionId>|<get-actionId>(){}[0]
+        final val diff // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.diff|{}diff[0]
+            final fun <get-diff>(): kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry> // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.diff.<get-diff>|<get-diff>(){}[0]
+        final val isExcess // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.isExcess|{}isExcess[0]
+            final fun <get-isExcess>(): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.isExcess.<get-isExcess>|<get-isExcess>(){}[0]
+        final val state // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.state|{}state[0]
+            final fun <get-state>(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.state.<get-state>|<get-state>(){}[0]
+        final val timestampMillis // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.timestampMillis|{}timestampMillis[0]
+            final fun <get-timestampMillis>(): kotlin/Long // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.timestampMillis.<get-timestampMillis>|<get-timestampMillis>(){}[0]
+
+        final fun component1(): kotlin/Int // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.component1|component1(){}[0]
+        final fun component2(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.component2|component2(){}[0]
+        final fun component3(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.component3|component3(){}[0]
+        final fun component4(): kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry> // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.component4|component4(){}[0]
+        final fun component5(): kotlin/Long // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.component5|component5(){}[0]
+        final fun component6(): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.component6|component6(){}[0]
+        final fun copy(kotlin/Int = ..., kotlinx.serialization.json/JsonElement = ..., kotlinx.serialization.json/JsonElement = ..., kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry> = ..., kotlin/Long = ..., kotlin/Boolean = ...): org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.copy|copy(kotlin.Int;kotlinx.serialization.json.JsonElement;kotlinx.serialization.json.JsonElement;kotlin.collections.List<org.reduxkotlin.devtools.DiffEntry>;kotlin.Long;kotlin.Boolean){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded.toString|toString(){}[0]
+    }
+
+    final class Initialized : org.reduxkotlin.devtools/DevToolsEvent { // org.reduxkotlin.devtools/DevToolsEvent.Initialized|null[0]
+        constructor <init>(kotlinx.serialization.json/JsonElement) // org.reduxkotlin.devtools/DevToolsEvent.Initialized.<init>|<init>(kotlinx.serialization.json.JsonElement){}[0]
+
+        final val state // org.reduxkotlin.devtools/DevToolsEvent.Initialized.state|{}state[0]
+            final fun <get-state>(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/DevToolsEvent.Initialized.state.<get-state>|<get-state>(){}[0]
+
+        final fun component1(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/DevToolsEvent.Initialized.component1|component1(){}[0]
+        final fun copy(kotlinx.serialization.json/JsonElement = ...): org.reduxkotlin.devtools/DevToolsEvent.Initialized // org.reduxkotlin.devtools/DevToolsEvent.Initialized.copy|copy(kotlinx.serialization.json.JsonElement){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsEvent.Initialized.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DevToolsEvent.Initialized.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsEvent.Initialized.toString|toString(){}[0]
+    }
+}
+
+final class org.reduxkotlin.devtools/DevToolsConfig { // org.reduxkotlin.devtools/DevToolsConfig|null[0]
+    constructor <init>(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., org.reduxkotlin.devtools/ValueSerializer? = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...) // org.reduxkotlin.devtools/DevToolsConfig.<init>|<init>(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;org.reduxkotlin.devtools.ValueSerializer?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+
+    final val allowlist // org.reduxkotlin.devtools/DevToolsConfig.allowlist|{}allowlist[0]
+        final fun <get-allowlist>(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.allowlist.<get-allowlist>|<get-allowlist>(){}[0]
+    final val denylist // org.reduxkotlin.devtools/DevToolsConfig.denylist|{}denylist[0]
+        final fun <get-denylist>(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.denylist.<get-denylist>|<get-denylist>(){}[0]
+    final val instanceId // org.reduxkotlin.devtools/DevToolsConfig.instanceId|{}instanceId[0]
+        final fun <get-instanceId>(): kotlin/String? // org.reduxkotlin.devtools/DevToolsConfig.instanceId.<get-instanceId>|<get-instanceId>(){}[0]
+    final val logger // org.reduxkotlin.devtools/DevToolsConfig.logger|{}logger[0]
+        final fun <get-logger>(): kotlin/Function1<kotlin/String, kotlin/Unit> // org.reduxkotlin.devtools/DevToolsConfig.logger.<get-logger>|<get-logger>(){}[0]
+    final val maxAge // org.reduxkotlin.devtools/DevToolsConfig.maxAge|{}maxAge[0]
+        final fun <get-maxAge>(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.maxAge.<get-maxAge>|<get-maxAge>(){}[0]
+    final val name // org.reduxkotlin.devtools/DevToolsConfig.name|{}name[0]
+        final fun <get-name>(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.name.<get-name>|<get-name>(){}[0]
+    final val serializer // org.reduxkotlin.devtools/DevToolsConfig.serializer|{}serializer[0]
+        final fun <get-serializer>(): org.reduxkotlin.devtools/ValueSerializer? // org.reduxkotlin.devtools/DevToolsConfig.serializer.<get-serializer>|<get-serializer>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.component1|component1(){}[0]
+    final fun component2(): kotlin/String? // org.reduxkotlin.devtools/DevToolsConfig.component2|component2(){}[0]
+    final fun component3(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.component4|component4(){}[0]
+    final fun component5(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.component5|component5(){}[0]
+    final fun component6(): org.reduxkotlin.devtools/ValueSerializer? // org.reduxkotlin.devtools/DevToolsConfig.component6|component6(){}[0]
+    final fun component7(): kotlin/Function1<kotlin/String, kotlin/Unit> // org.reduxkotlin.devtools/DevToolsConfig.component7|component7(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., org.reduxkotlin.devtools/ValueSerializer? = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...): org.reduxkotlin.devtools/DevToolsConfig // org.reduxkotlin.devtools/DevToolsConfig.copy|copy(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;org.reduxkotlin.devtools.ValueSerializer?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools/DevToolsSession { // org.reduxkotlin.devtools/DevToolsSession|null[0]
+    final val events // org.reduxkotlin.devtools/DevToolsSession.events|{}events[0]
+        final fun <get-events>(): kotlinx.coroutines.flow/SharedFlow<org.reduxkotlin.devtools/DevToolsEvent> // org.reduxkotlin.devtools/DevToolsSession.events.<get-events>|<get-events>(){}[0]
+    final val id // org.reduxkotlin.devtools/DevToolsSession.id|{}id[0]
+        final fun <get-id>(): kotlin/String // org.reduxkotlin.devtools/DevToolsSession.id.<get-id>|<get-id>(){}[0]
+
+    final fun close() // org.reduxkotlin.devtools/DevToolsSession.close|close(){}[0]
+    final fun history(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded> // org.reduxkotlin.devtools/DevToolsSession.history|history(){}[0]
+    final fun init(kotlin/Any?) // org.reduxkotlin.devtools/DevToolsSession.init|init(kotlin.Any?){}[0]
+    final fun liftedState(): kotlinx.serialization.json/JsonObject // org.reduxkotlin.devtools/DevToolsSession.liftedState|liftedState(){}[0]
+    final fun record(kotlin/Any, kotlin/Any?) // org.reduxkotlin.devtools/DevToolsSession.record|record(kotlin.Any;kotlin.Any?){}[0]
+
+    final object Companion { // org.reduxkotlin.devtools/DevToolsSession.Companion|null[0]
+        final fun create(org.reduxkotlin.devtools/DevToolsConfig, kotlinx.coroutines/CoroutineDispatcher = ...): org.reduxkotlin.devtools/DevToolsSession // org.reduxkotlin.devtools/DevToolsSession.Companion.create|create(org.reduxkotlin.devtools.DevToolsConfig;kotlinx.coroutines.CoroutineDispatcher){}[0]
+    }
+}
+
+final class org.reduxkotlin.devtools/DiffEntry { // org.reduxkotlin.devtools/DiffEntry|null[0]
+    constructor <init>(org.reduxkotlin.devtools/DiffOp, kotlin/String, kotlinx.serialization.json/JsonElement?, kotlinx.serialization.json/JsonElement?) // org.reduxkotlin.devtools/DiffEntry.<init>|<init>(org.reduxkotlin.devtools.DiffOp;kotlin.String;kotlinx.serialization.json.JsonElement?;kotlinx.serialization.json.JsonElement?){}[0]
+
+    final val after // org.reduxkotlin.devtools/DiffEntry.after|{}after[0]
+        final fun <get-after>(): kotlinx.serialization.json/JsonElement? // org.reduxkotlin.devtools/DiffEntry.after.<get-after>|<get-after>(){}[0]
+    final val before // org.reduxkotlin.devtools/DiffEntry.before|{}before[0]
+        final fun <get-before>(): kotlinx.serialization.json/JsonElement? // org.reduxkotlin.devtools/DiffEntry.before.<get-before>|<get-before>(){}[0]
+    final val op // org.reduxkotlin.devtools/DiffEntry.op|{}op[0]
+        final fun <get-op>(): org.reduxkotlin.devtools/DiffOp // org.reduxkotlin.devtools/DiffEntry.op.<get-op>|<get-op>(){}[0]
+    final val path // org.reduxkotlin.devtools/DiffEntry.path|{}path[0]
+        final fun <get-path>(): kotlin/String // org.reduxkotlin.devtools/DiffEntry.path.<get-path>|<get-path>(){}[0]
+
+    final fun component1(): org.reduxkotlin.devtools/DiffOp // org.reduxkotlin.devtools/DiffEntry.component1|component1(){}[0]
+    final fun component2(): kotlin/String // org.reduxkotlin.devtools/DiffEntry.component2|component2(){}[0]
+    final fun component3(): kotlinx.serialization.json/JsonElement? // org.reduxkotlin.devtools/DiffEntry.component3|component3(){}[0]
+    final fun component4(): kotlinx.serialization.json/JsonElement? // org.reduxkotlin.devtools/DiffEntry.component4|component4(){}[0]
+    final fun copy(org.reduxkotlin.devtools/DiffOp = ..., kotlin/String = ..., kotlinx.serialization.json/JsonElement? = ..., kotlinx.serialization.json/JsonElement? = ...): org.reduxkotlin.devtools/DiffEntry // org.reduxkotlin.devtools/DiffEntry.copy|copy(org.reduxkotlin.devtools.DiffOp;kotlin.String;kotlinx.serialization.json.JsonElement?;kotlinx.serialization.json.JsonElement?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DiffEntry.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DiffEntry.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools/DiffEntry.toString|toString(){}[0]
+}
+
+final object org.reduxkotlin.devtools/DevToolsHub { // org.reduxkotlin.devtools/DevToolsHub|null[0]
+    final fun createSession(org.reduxkotlin.devtools/DevToolsConfig): org.reduxkotlin.devtools/DevToolsSession // org.reduxkotlin.devtools/DevToolsHub.createSession|createSession(org.reduxkotlin.devtools.DevToolsConfig){}[0]
+    final fun outputs(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsOutput> // org.reduxkotlin.devtools/DevToolsHub.outputs|outputs(){}[0]
+    final fun registerOutput(org.reduxkotlin.devtools/DevToolsOutput) // org.reduxkotlin.devtools/DevToolsHub.registerOutput|registerOutput(org.reduxkotlin.devtools.DevToolsOutput){}[0]
+    final fun removeSession(kotlin/String) // org.reduxkotlin.devtools/DevToolsHub.removeSession|removeSession(kotlin.String){}[0]
+    final fun reset() // org.reduxkotlin.devtools/DevToolsHub.reset|reset(){}[0]
+    final fun session(kotlin/String): org.reduxkotlin.devtools/DevToolsSession? // org.reduxkotlin.devtools/DevToolsHub.session|session(kotlin.String){}[0]
+    final fun sessions(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsSession> // org.reduxkotlin.devtools/DevToolsHub.sessions|sessions(){}[0]
+}
+
+final object org.reduxkotlin.devtools/ToStringValueSerializer : org.reduxkotlin.devtools/ValueSerializer { // org.reduxkotlin.devtools/ToStringValueSerializer|null[0]
+    final fun toJson(kotlin/Any?): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/ToStringValueSerializer.toJson|toJson(kotlin.Any?){}[0]
+}
+
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/devTools(org.reduxkotlin.devtools/DevToolsConfig = ...): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.devtools/devTools|devTools(org.reduxkotlin.devtools.DevToolsConfig){0§<kotlin.Any?>}[0]
+final fun org.reduxkotlin.devtools/diffJson(kotlinx.serialization.json/JsonElement, kotlinx.serialization.json/JsonElement): kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry> // org.reduxkotlin.devtools/diffJson|diffJson(kotlinx.serialization.json.JsonElement;kotlinx.serialization.json.JsonElement){}[0]
