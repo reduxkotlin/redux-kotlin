@@ -19,7 +19,8 @@ class NoOpParityTest {
         val root = devToolsCombineReducers(cfg, named("count", reducer))
         val store = createStore(root, St(), compose(devTools(cfg), devToolsMiddleware(cfg, named("logger", mw))))
         store.dispatch(Inc)
-        ReduxDevTools.open(); ReduxDevTools.close()
+        ReduxDevTools.open();
+        ReduxDevTools.close()
         assertEquals(1, store.state.n)
     }
 }
