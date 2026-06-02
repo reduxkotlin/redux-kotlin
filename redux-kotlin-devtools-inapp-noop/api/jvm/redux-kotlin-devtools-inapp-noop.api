@@ -1,0 +1,97 @@
+public final class org/reduxkotlin/devtools/inapp/DevToolsConfig {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;ILjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()I
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/util/List;
+	public final fun component6 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ILjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/devtools/inapp/DevToolsConfig;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/DevToolsConfig;Ljava/lang/String;Ljava/lang/String;ILjava/util/List;Ljava/util/List;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/DevToolsConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAllowlist ()Ljava/util/List;
+	public final fun getDenylist ()Ljava/util/List;
+	public final fun getInstanceId ()Ljava/lang/String;
+	public final fun getLogger ()Lkotlin/jvm/functions/Function1;
+	public final fun getMaxAge ()I
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/inapp/DevToolsTab : java/lang/Enum {
+	public static final field ACTIONS Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public static final field DIFF Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public static final field OUTPUTS Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public static final field PIPELINE Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public static final field STATE Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public static fun values ()[Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+}
+
+public final class org/reduxkotlin/devtools/inapp/DevToolsThemeMode : java/lang/Enum {
+	public static final field DARK Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public static final field LIGHT Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public static final field SYSTEM Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public static fun values ()[Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+}
+
+public final class org/reduxkotlin/devtools/inapp/DevToolsTrigger : java/lang/Enum {
+	public static final field BUBBLE Lorg/reduxkotlin/devtools/inapp/DevToolsTrigger;
+	public static final field EDGE_SWIPE Lorg/reduxkotlin/devtools/inapp/DevToolsTrigger;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/DevToolsTrigger;
+	public static fun values ()[Lorg/reduxkotlin/devtools/inapp/DevToolsTrigger;
+}
+
+public final class org/reduxkotlin/devtools/inapp/InAppConfig {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Ljava/util/Set;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/Set;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public final fun component3 ()Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/util/Set;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/InAppConfig;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/InAppConfig;Ljava/util/Set;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;Ljava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/InAppConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInstanceId ()Ljava/lang/String;
+	public final fun getStartTab ()Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public final fun getTheme ()Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public final fun getTriggers ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/inapp/NamedMiddleware {
+	public static final field $stable I
+}
+
+public final class org/reduxkotlin/devtools/inapp/NamedReducer {
+	public static final field $stable I
+}
+
+public final class org/reduxkotlin/devtools/inapp/NoOpKt {
+	public static final fun ReduxDevToolsHost (Lorg/reduxkotlin/devtools/inapp/InAppConfig;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun devTools (Lorg/reduxkotlin/devtools/inapp/DevToolsConfig;)Lkotlin/jvm/functions/Function1;
+	public static synthetic fun devTools$default (Lorg/reduxkotlin/devtools/inapp/DevToolsConfig;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
+	public static final fun devToolsCombineReducers (Lorg/reduxkotlin/devtools/inapp/DevToolsConfig;[Lorg/reduxkotlin/devtools/inapp/NamedReducer;)Lkotlin/jvm/functions/Function2;
+	public static final fun devToolsMiddleware (Lorg/reduxkotlin/devtools/inapp/DevToolsConfig;[Lorg/reduxkotlin/devtools/inapp/NamedMiddleware;)Lkotlin/jvm/functions/Function1;
+	public static final fun named (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/devtools/inapp/NamedMiddleware;
+	public static final fun named (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)Lorg/reduxkotlin/devtools/inapp/NamedReducer;
+}
+
+public final class org/reduxkotlin/devtools/inapp/ReduxDevTools {
+	public static final field $stable I
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/inapp/ReduxDevTools;
+	public final fun close ()V
+	public final fun open ()V
+}
+
