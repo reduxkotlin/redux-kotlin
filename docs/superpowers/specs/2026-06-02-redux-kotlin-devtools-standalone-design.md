@@ -23,7 +23,7 @@ A **standalone Redux DevTools monitor** that runs *outside* the app being debugg
 
 ## Non-goals / scope tiers
 
-- **P0:** native event-stream transport (transport A); shared `-ui` module; the standalone app (Desktop + Web) with the IDE-dock layout; **session switcher**; **time-travel timeline (read-only scrubbing)**; **global search**; **save/load recording**; **kotlinx.serialization `ValueSerializer` tier**; security baseline (localhost + off-by-default + token for non-loopback); wire-protocol handshake + versioning.
+- **P0:** native event-stream transport (transport A); shared `-ui` module; the standalone app (Desktop + Web) with the IDE-dock layout; **multi-store rail** (select store · filter to a subset · view-all, with store-name badges — see Identity model); **time-travel timeline (read-only scrubbing)**; **global search**; **save/load recording**; **kotlinx.serialization `ValueSerializer` tier**; security baseline (localhost + off-by-default + token for non-loopback); wire-protocol handshake + versioning.
 - **P1:** timing/frequency charts; multi-session **side-by-side**; command palette; full hosted (native-less) web deployment.
 - **Later:** **bidirectional dispatch** — driving the debugged app's state from the monitor (custom dispatch, edit-and-resend, true time-travel *reset*). Breaks the read-only guarantee; opt-in, separate design.
 - **Not in scope:** a mobile (iOS/Android) build *of the monitor* — the in-app drawer already covers on-device; the monitor targets desktop + web only.
@@ -54,6 +54,9 @@ redux-kotlin-devtools-ui          (NEW; extracted from -inapp)
   - InAppModel, InAppState, OutputRow, actionType   (already public, moved here)
   - the five tab composables (Actions/State/Diff/Pipeline/Outputs)  (internal → public)
   - RkTokens, ReduxKotlinDevToolsTheme              (already public, moved here)
+  - StoreRegistryModel (NEW): aggregates Map<StoreId, InAppModel> + a selection
+      (All / Client / Store / Subset) + a merged-by-timestamp action view, each
+      row tagged with its store identity. Shared by the in-app drawer + standalone.
   - package stays org.reduxkotlin.devtools.inapp.* (no FQN changes → non-breaking)
 
 redux-kotlin-devtools-inapp       (now depends on -ui)
@@ -82,8 +85,9 @@ DEBUGGED APP (any platform)
         | JSON-serialized DevToolsEvent stream (+ handshake)
         v
 STANDALONE (native/JVM): embedded Ktor WS server
-  decode → per-session InAppModel  (session key = instanceId + connectionId)
-        | StateFlow<InAppState>
+  decode → per-STORE InAppModel  (store key = clientId + storeInstanceId; from handshake)
+         → grouped under their Client; aggregated by StoreRegistryModel
+        | StateFlow<InAppState> per store
         v
   Desktop dock UI  (Compose Desktop)        Web UI (browser)
                                               ^  WS feed + served wasmJs bundle
@@ -92,10 +96,26 @@ STANDALONE (native/JVM): embedded Ktor WS server
 
 The standalone is the **server**; the debugged app dials out (mirrors `RemoteOutput`, and suits apps behind NAT/emulators). The web app is a **client** of the same server (option A: native app doubles as server + web host).
 
+## Identity model & vocabulary
+
+"Session" was conflating three things with different lifetimes. The standalone uses four precise concepts; **"session" is retired as a user-facing term** (core keeps the `DevToolsSession` type, documented as "one store's recording session" — see below):
+
+| Concept | What it is | Lifetime / key |
+|---|---|---|
+| **Connection** | one WS link from a debugged process | ephemeral; reconnect = new connection (transport plumbing only) |
+| **Client (app instance)** | the debugged app/device | stable `clientId` from the handshake; survives reconnects; display label (e.g. "TaskFlow · Pixel 7") |
+| **Store** | a redux store within a client — *the unit you inspect* | key = `clientId + storeInstanceId`; backed by one core `DevToolsSession` (app side) → one `InAppModel` (monitor side) |
+| **Recording** | a saved capture of a client's stores | frozen, read-only, disconnected; replayable |
+
+- **Client → has → Stores.** A Store is what `-core` calls a `DevToolsSession`; the name is kept (it accurately means "one store's recording session") and documented. UI/spec speak **Clients**, **Stores**, **Recordings** — never "session."
+- **One connection per store.** Because `DevToolsOutput.start(session)` is per-store, the app registers one `BridgeOutput` per store; each opens its own connection whose **handshake** carries the store's identity. `clientId` is shared across an app's connections, so the monitor groups its stores under one Client and keeps them stable across reconnects (no rail fragmentation).
+- **In-app drawer** reuses the same `StoreRegistryModel`, keyed only by `storeInstanceId` (one client = this app; `clientId`/Connection don't apply in-process). This also delivers the in-app store-picker that Plan 3 deferred.
+- Store identity therefore rides the **handshake** (per connection), not a per-event field — explicit, minimal overhead. Merged "view all" interleaves stores by `timestampMillis` (cross-*device* merge has clock skew — acceptable, noted).
+
 ## Transport & wire protocol
 
-- **Transport A (P0):** `BridgeOutput` serializes each `DevToolsEvent` to a versioned JSON envelope and streams it over a raw WebSocket (not SocketCluster). On connect it performs a **handshake** carrying: protocol version, session identity (`name`, `instanceId`), and the serializer tier in use. The standalone replies with its accepted protocol version (capability negotiation; refuse/upgrade on mismatch).
-- **Wire schema:** `@Serializable` envelopes — `Hello`/`HelloAck` (handshake), and one variant per `DevToolsEvent` (`Initialized`, `ActionRecorded`, `PipelineRegistered`, `PipelineTraced`) plus `PipelineStructure`/`PipelineTrace`/`DiffEntry`. `JsonElement` fields serialize natively. A top-level `protocolVersion` gates forward/backward compatibility; unknown variants are ignored by older peers.
+- **Transport A (P0):** `BridgeOutput` serializes each `DevToolsEvent` to a versioned JSON envelope and streams it over a raw WebSocket (not SocketCluster). On connect it performs a **handshake** (`Hello`) carrying: `protocolVersion`, `clientId` (stable per app instance), `clientLabel`, `storeInstanceId`, `storeName`, `serializerTier`, and `token` (when non-loopback). The standalone replies (`HelloAck`) with its accepted protocol version (capability negotiation; refuse/upgrade on mismatch).
+- **Wire schema:** `@Serializable` envelopes — `Hello`/`HelloAck` (handshake, fields above), and one variant per `DevToolsEvent` (`Initialized`, `ActionRecorded`, `PipelineRegistered`, `PipelineTraced`) plus `PipelineStructure`/`PipelineTrace`/`DiffEntry`. `JsonElement` fields serialize natively. A top-level `protocolVersion` gates forward/backward compatibility; unknown variants are ignored by older peers.
 - **Transport B (kept, reduced functionality):** the existing `-remote` SocketCluster path to the JS monitor is untouched. It drops pipeline events (the JS monitor can't render them); document exactly which `DevToolsEvent` variants B omits.
 - **Backpressure / ordering / reconnect:** the bridge feeds from the session's multicast `SharedFlow`; a bounded outbound buffer with a drop-oldest policy protects a slow socket (mirrors the recorder's `isExcess` notion, logged). On reconnect the bridge **reseeds** from `DevToolsSession.liftedState()`/`history()` (full snapshot), then resumes live — ordering across reconnect is snapshot-then-stream, not a fragile cursor.
 
@@ -112,10 +132,10 @@ The standalone is the **server**; the debugged app dials out (mirrors `RemoteOut
 
 ## Standalone UX
 
-**Layout — IDE dock (all panels visible):** narrow **session rail** (connected stores/apps) · **action log** (chronological, searchable, tap to select) · **State + Diff** stacked center · **Pipeline** docked right · **time-travel timeline** along the bottom. Splitters are resizable; panels dockable. Selecting an action updates every panel together. Material 3 Expressive, dark default, brand tokens — identical look to the drawer.
+**Layout — IDE dock (all panels visible):** narrow **store rail** (Clients → Stores; see Identity model) · **action log** (chronological, searchable, tap to select) · **State + Diff** stacked center · **Pipeline** docked right · **time-travel timeline** along the bottom. Splitters are resizable; panels dockable. Selecting an action updates every panel together. Material 3 Expressive, dark default, brand tokens — identical look to the drawer.
 
 **P0 features:**
-- **Session switcher / rail.** One entry per connected session (key = `instanceId + connectionId`, so two apps sharing a name don't collide). Shows connection status; a disconnected session **freezes read-only** (kept for inspection, not evicted) until dismissed.
+- **Multi-store rail + view-all.** Stores listed (grouped under their Client when more than one client is connected; flat for the common single-app case). Selection modes: **one store**, a **subset** (filter-by-store), or **All** — All/Subset show a merged action log interleaved by timestamp, each row carrying a **store-name badge** (mono chip); the badge is hidden in single-store mode to avoid clutter. State/Diff/Pipeline follow the selected row's store. Each store shows connection status; a disconnected store **freezes read-only** (kept for inspection, not evicted) until dismissed.
 - **Time-travel timeline (read-only).** Scrub/click to select any recorded action; the State/Diff/Pipeline panels show that action's recorded snapshot. The debugged app is **not** reset — P0 is inspection only; state-*reset* is the deferred bidirectional feature. The read-only model has no dispatch path, so the P0/Later boundary cannot leak. The standalone retains more history than the in-app `maxAge` (desktop memory), bounded by a configurable cap.
 - **Global search.** Substring/regex over action type + payload + serialized state; jump-to-match. Operates on the session's accumulated `InAppState`.
 - **Save / load recording.** Capture the received event stream (with a **versioned file header**: protocol version, serializer tier, session metadata) and replay it into a fresh `InAppModel`. Desktop writes/reads a `.jsonl` file via the filesystem; **web** uses Blob download / File-input upload (no filesystem) — same schema, platform-split I/O.
@@ -135,8 +155,8 @@ The standalone is the **server**; the debugged app dials out (mirrors `RemoteOut
 
 ## Testing strategy
 
-- **-ui (extraction):** the moved `InAppModel` tests still pass; add a test that the tab composables are public and render given an `InAppState`.
-- **-bridge:** `BridgeOutput` lifecycle (off by default, start/stop, reconnect-reseed); wire round-trip — a `DevToolsEvent` serialized by the bridge decodes to an equal event on the standalone side (shared schema); handshake version negotiation; token gating on non-loopback; backpressure drop under a stalled sink.
+- **-ui (extraction):** the moved `InAppModel` tests still pass; add a test that the tab composables are public and render given an `InAppState`. **`StoreRegistryModel`:** selection modes (one/subset/All), merged action ordering by `timestampMillis` across stores, per-row store identity, and that single-store mode hides the badge.
+- **-bridge:** `BridgeOutput` lifecycle (off by default, start/stop, reconnect-reseed); wire round-trip — a `DevToolsEvent` serialized by the bridge decodes to an equal event on the standalone side (shared schema); handshake carries `clientId`/`storeInstanceId` and a reconnect re-attaches to the *same* store entry (stable `clientId`, no rail fragmentation); version negotiation; token gating on non-loopback; backpressure drop under a stalled sink.
 - **standalone (headless-testable core):** the ingestion layer (decode stream → `InAppModel`) unit-tested without UI; save→load round-trip reproduces the same `InAppState`; search/filter logic; session-key collision handling; a Compose smoke test (desktop) that renders the dock from a seeded model and scrubs the timeline.
 - **xplat compile:** the bridge compiles on every claimed target (CI host-gates native); the kotlinx.serialization tier produces structured JSON on a non-JVM target test.
 
@@ -146,10 +166,10 @@ The only artifact that ever touches the debugged app is `-bridge`, wired `debugI
 
 ## Rollout / sequencing (for the implementation plan)
 
-1. Extract `redux-kotlin-devtools-ui` from `-inapp` (move model/theme, promote tab composables to public, repoint `-inapp`); regenerate ABI dumps.
+1. Extract `redux-kotlin-devtools-ui` from `-inapp` (move model/theme, promote tab composables to public, repoint `-inapp`); add `StoreRegistryModel` (multi-store aggregation: selection All/Client/Store/Subset + merged-by-timestamp action view with per-row store identity); regenerate ABI dumps. Retro-fit the in-app drawer's store-picker on top of `StoreRegistryModel`.
 2. Add the kotlinx.serialization `ValueSerializer` tier to `-core`.
 3. Build `-bridge` (`BridgeOutput`/`BridgeConfig`, wire schema + handshake + versioning, security, reconnect-reseed); expand `-core`/`-bridge` native targets (verify the `redux-kotlin` cascade).
-4. Build `redux-kotlin-devtools-standalone`: ingestion (server + decode → `InAppModel`), then the desktop dock shell + P0 features (session rail, timeline scrub, search, save/load).
+4. Build `redux-kotlin-devtools-standalone`: ingestion (server + handshake → per-store `InAppModel` keyed `clientId + storeInstanceId`, grouped via `StoreRegistryModel`), then the desktop dock shell + P0 features (multi-store rail with select/filter/All + store-name badges, timeline scrub, search, save/load).
 5. Wire the web variant: serve the wasmJs bundle + browser WS feed from the JVM app; same-origin discovery; Blob save/load.
 6. Docs + a sample: point taskflow's bridge at the standalone; integration recipe in `docs/devtools.md`.
 
@@ -165,6 +185,6 @@ The only artifact that ever touches the debugged app is `-bridge`, wired `debugI
 
 > Use the **ReduxKotlin Design System** skill (`docs/superpowers/specs/ReduxKotlin Design System/`) to produce high-fidelity HTML mockups of the **Standalone Redux DevTools — desktop monitor**, per `docs/superpowers/specs/2026-06-02-redux-kotlin-devtools-standalone-design.md`. Brand: Material 3 Expressive, **dark default** (sheet/surface `#0E1726`), primary blue `#137AF9`, secondary magenta `#C858BC`, tertiary orange `#F98909`, success green `#5FD39A`, diff amber `#F9B357`, error red `#FF7A8A`; **JetBrains Mono** for all log/JSON/diff/timing text, **Roboto Flex** for UI; the magenta→orange gradient used sparingly (active tab/indicator, logo, accents). Reuse the visual language of the existing in-app DevTools UI kit (`ui_kits/devtools/`) — same row styles, JSON-tree leaf colors (string=green, number=orange, bool=magenta), diff +/~/− rows, lit pipeline nodes — but recomposed for a **wide desktop window**, not a phone sheet.
 >
-> Produce a wide (≥1440px) desktop window mockup of the **IDE-dock layout**: a top bar (app/store picker, global search field, connection status "● N clients", capture controls ⏸/⟲/💾/🗑); a narrow left **session rail** (connected stores: "TaskFlow", "Account-2", each with a live dot); an **action log** column (id · type in mono · payload preview · timestamp, selected row highlighted with a left gradient bar + count badge); a center area with **State** (recursive JSON tree) above **Diff** (added/changed/removed rows) split by a resizable divider; a right-docked **Pipeline** panel (vertical `dispatch → logger → thunk → effects → rootReducer{todos✓ filter·}` with lit nodes, per-node µs timing, "changed" chips, and a legend); and a full-width **time-travel timeline** along the bottom (scrubber with action ticks, selected marker, ◀/▶, "#40 / #42"). Use the redux-kotlin Todo/TaskFlow domain for realistic content (AddCard, MoveCard, SetFilter, @@INIT). Render light and dark, dark as the hero.
+> Produce a wide (≥1440px) desktop window mockup of the **IDE-dock layout**: a top bar (app/store picker, global search field, connection status "● N clients", capture controls ⏸/⟲/💾/🗑); a narrow left **store rail** grouped by Client → Stores (e.g. Client "TaskFlow · desktop" containing stores "TaskFlow-root" and "Account-2", each store with a live dot, plus an **"All stores"** entry at top and multi-select for filtering); an **action log** column (id · type in mono · payload preview · timestamp, selected row highlighted with a left gradient bar + count badge; in **All/multi mode** each row also shows a small **store-name chip**); a center area with **State** (recursive JSON tree) above **Diff** (added/changed/removed rows) split by a resizable divider; a right-docked **Pipeline** panel (vertical `dispatch → logger → thunk → effects → rootReducer{todos✓ filter·}` with lit nodes, per-node µs timing, "changed" chips, and a legend); and a full-width **time-travel timeline** along the bottom (scrubber with action ticks, selected marker, ◀/▶, "#40 / #42"). Use the redux-kotlin Todo/TaskFlow domain for realistic content (AddCard, MoveCard, SetFilter, @@INIT). Render light and dark, dark as the hero.
 >
 > Also produce: (2) a **session side-by-side** variant (two inspector columns for two stores, P1); (3) the **command palette** overlay (P1); (4) the **web** variant note (identical UI in a browser chrome frame). Keep it to layout + brand fidelity, not pixel-perfect polish; output static HTML files I can open, copying assets from the design system. No emoji.
