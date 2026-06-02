@@ -1,0 +1,266 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, linuxX64, macosArm64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-devtools-bridge>
+sealed interface org.reduxkotlin.devtools.bridge/BridgeMessage { // org.reduxkotlin.devtools.bridge/BridgeMessage|null[0]
+    final class Action : org.reduxkotlin.devtools.bridge/BridgeMessage { // org.reduxkotlin.devtools.bridge/BridgeMessage.Action|null[0]
+        constructor <init>(kotlin/Int, kotlinx.serialization.json/JsonElement, kotlinx.serialization.json/JsonElement, kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry>, kotlin/Long, kotlin/Boolean) // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.<init>|<init>(kotlin.Int;kotlinx.serialization.json.JsonElement;kotlinx.serialization.json.JsonElement;kotlin.collections.List<org.reduxkotlin.devtools.DiffEntry>;kotlin.Long;kotlin.Boolean){}[0]
+
+        final val action // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.action|{}action[0]
+            final fun <get-action>(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.action.<get-action>|<get-action>(){}[0]
+        final val actionId // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.actionId|{}actionId[0]
+            final fun <get-actionId>(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.actionId.<get-actionId>|<get-actionId>(){}[0]
+        final val diff // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.diff|{}diff[0]
+            final fun <get-diff>(): kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry> // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.diff.<get-diff>|<get-diff>(){}[0]
+        final val isExcess // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.isExcess|{}isExcess[0]
+            final fun <get-isExcess>(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.isExcess.<get-isExcess>|<get-isExcess>(){}[0]
+        final val state // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.state|{}state[0]
+            final fun <get-state>(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.state.<get-state>|<get-state>(){}[0]
+        final val timestampMillis // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.timestampMillis|{}timestampMillis[0]
+            final fun <get-timestampMillis>(): kotlin/Long // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.timestampMillis.<get-timestampMillis>|<get-timestampMillis>(){}[0]
+
+        final fun component1(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.component1|component1(){}[0]
+        final fun component2(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.component2|component2(){}[0]
+        final fun component3(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.component3|component3(){}[0]
+        final fun component4(): kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry> // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.component4|component4(){}[0]
+        final fun component5(): kotlin/Long // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.component5|component5(){}[0]
+        final fun component6(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.component6|component6(){}[0]
+        final fun copy(kotlin/Int = ..., kotlinx.serialization.json/JsonElement = ..., kotlinx.serialization.json/JsonElement = ..., kotlin.collections/List<org.reduxkotlin.devtools/DiffEntry> = ..., kotlin/Long = ..., kotlin/Boolean = ...): org.reduxkotlin.devtools.bridge/BridgeMessage.Action // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.copy|copy(kotlin.Int;kotlinx.serialization.json.JsonElement;kotlinx.serialization.json.JsonElement;kotlin.collections.List<org.reduxkotlin.devtools.DiffEntry>;kotlin.Long;kotlin.Boolean){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.Action> { // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.$serializer|null[0]
+            final val descriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools.bridge/BridgeMessage.Action // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools.bridge/BridgeMessage.Action) // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.bridge.BridgeMessage.Action){}[0]
+        }
+
+        final object Companion { // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.Companion|null[0]
+            final val $childSerializers // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.Companion.$childSerializers|{}$childSerializers[0]
+
+            final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.Action> // org.reduxkotlin.devtools.bridge/BridgeMessage.Action.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class Hello : org.reduxkotlin.devtools.bridge/BridgeMessage { // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello|null[0]
+        constructor <init>(kotlin/Int, kotlin/String, kotlin/String, kotlin/String, kotlin/String, kotlin/String, kotlin/String? = ...) // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.<init>|<init>(kotlin.Int;kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.String?){}[0]
+
+        final val clientId // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.clientId|{}clientId[0]
+            final fun <get-clientId>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.clientId.<get-clientId>|<get-clientId>(){}[0]
+        final val clientLabel // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.clientLabel|{}clientLabel[0]
+            final fun <get-clientLabel>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.clientLabel.<get-clientLabel>|<get-clientLabel>(){}[0]
+        final val protocolVersion // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.protocolVersion|{}protocolVersion[0]
+            final fun <get-protocolVersion>(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.protocolVersion.<get-protocolVersion>|<get-protocolVersion>(){}[0]
+        final val serializerTier // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.serializerTier|{}serializerTier[0]
+            final fun <get-serializerTier>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.serializerTier.<get-serializerTier>|<get-serializerTier>(){}[0]
+        final val storeInstanceId // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.storeInstanceId|{}storeInstanceId[0]
+            final fun <get-storeInstanceId>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.storeInstanceId.<get-storeInstanceId>|<get-storeInstanceId>(){}[0]
+        final val storeName // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.storeName|{}storeName[0]
+            final fun <get-storeName>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.storeName.<get-storeName>|<get-storeName>(){}[0]
+        final val token // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.token|{}token[0]
+            final fun <get-token>(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.token.<get-token>|<get-token>(){}[0]
+
+        final fun component1(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.component1|component1(){}[0]
+        final fun component2(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.component2|component2(){}[0]
+        final fun component3(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.component3|component3(){}[0]
+        final fun component4(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.component4|component4(){}[0]
+        final fun component5(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.component5|component5(){}[0]
+        final fun component6(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.component6|component6(){}[0]
+        final fun component7(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.component7|component7(){}[0]
+        final fun copy(kotlin/Int = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String? = ...): org.reduxkotlin.devtools.bridge/BridgeMessage.Hello // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.copy|copy(kotlin.Int;kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.Hello> { // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.$serializer|null[0]
+            final val descriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools.bridge/BridgeMessage.Hello // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools.bridge/BridgeMessage.Hello) // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.bridge.BridgeMessage.Hello){}[0]
+        }
+
+        final object Companion { // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.Hello> // org.reduxkotlin.devtools.bridge/BridgeMessage.Hello.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class HelloAck : org.reduxkotlin.devtools.bridge/BridgeMessage { // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck|null[0]
+        constructor <init>(kotlin/Int, kotlin/Boolean = ..., kotlin/String? = ...) // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.<init>|<init>(kotlin.Int;kotlin.Boolean;kotlin.String?){}[0]
+
+        final val accepted // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.accepted|{}accepted[0]
+            final fun <get-accepted>(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.accepted.<get-accepted>|<get-accepted>(){}[0]
+        final val protocolVersion // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.protocolVersion|{}protocolVersion[0]
+            final fun <get-protocolVersion>(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.protocolVersion.<get-protocolVersion>|<get-protocolVersion>(){}[0]
+        final val reason // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.reason|{}reason[0]
+            final fun <get-reason>(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.reason.<get-reason>|<get-reason>(){}[0]
+
+        final fun component1(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.component1|component1(){}[0]
+        final fun component2(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.component3|component3(){}[0]
+        final fun copy(kotlin/Int = ..., kotlin/Boolean = ..., kotlin/String? = ...): org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.copy|copy(kotlin.Int;kotlin.Boolean;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck> { // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.$serializer|null[0]
+            final val descriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck) // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.bridge.BridgeMessage.HelloAck){}[0]
+        }
+
+        final object Companion { // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck> // org.reduxkotlin.devtools.bridge/BridgeMessage.HelloAck.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class Init : org.reduxkotlin.devtools.bridge/BridgeMessage { // org.reduxkotlin.devtools.bridge/BridgeMessage.Init|null[0]
+        constructor <init>(kotlinx.serialization.json/JsonElement) // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.<init>|<init>(kotlinx.serialization.json.JsonElement){}[0]
+
+        final val state // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.state|{}state[0]
+            final fun <get-state>(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.state.<get-state>|<get-state>(){}[0]
+
+        final fun component1(): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.component1|component1(){}[0]
+        final fun copy(kotlinx.serialization.json/JsonElement = ...): org.reduxkotlin.devtools.bridge/BridgeMessage.Init // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.copy|copy(kotlinx.serialization.json.JsonElement){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.Init> { // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.$serializer|null[0]
+            final val descriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools.bridge/BridgeMessage.Init // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools.bridge/BridgeMessage.Init) // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.bridge.BridgeMessage.Init){}[0]
+        }
+
+        final object Companion { // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.Init> // org.reduxkotlin.devtools.bridge/BridgeMessage.Init.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class PipelineRegistered : org.reduxkotlin.devtools.bridge/BridgeMessage { // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered|null[0]
+        constructor <init>(org.reduxkotlin.devtools/PipelineStructure) // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.<init>|<init>(org.reduxkotlin.devtools.PipelineStructure){}[0]
+
+        final val structure // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.structure|{}structure[0]
+            final fun <get-structure>(): org.reduxkotlin.devtools/PipelineStructure // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.structure.<get-structure>|<get-structure>(){}[0]
+
+        final fun component1(): org.reduxkotlin.devtools/PipelineStructure // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.component1|component1(){}[0]
+        final fun copy(org.reduxkotlin.devtools/PipelineStructure = ...): org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.copy|copy(org.reduxkotlin.devtools.PipelineStructure){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered> { // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.$serializer|null[0]
+            final val descriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered) // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.bridge.BridgeMessage.PipelineRegistered){}[0]
+        }
+
+        final object Companion { // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered> // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineRegistered.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final class PipelineTraced : org.reduxkotlin.devtools.bridge/BridgeMessage { // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced|null[0]
+        constructor <init>(org.reduxkotlin.devtools/PipelineTrace) // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.<init>|<init>(org.reduxkotlin.devtools.PipelineTrace){}[0]
+
+        final val trace // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.trace|{}trace[0]
+            final fun <get-trace>(): org.reduxkotlin.devtools/PipelineTrace // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.trace.<get-trace>|<get-trace>(){}[0]
+
+        final fun component1(): org.reduxkotlin.devtools/PipelineTrace // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.component1|component1(){}[0]
+        final fun copy(org.reduxkotlin.devtools/PipelineTrace = ...): org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.copy|copy(org.reduxkotlin.devtools.PipelineTrace){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.toString|toString(){}[0]
+
+        final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced> { // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.$serializer|null[0]
+            final val descriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.$serializer.descriptor|{}descriptor[0]
+                final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+            final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.$serializer.childSerializers|childSerializers(){}[0]
+            final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+            final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced) // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.bridge.BridgeMessage.PipelineTraced){}[0]
+        }
+
+        final object Companion { // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.Companion|null[0]
+            final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced> // org.reduxkotlin.devtools.bridge/BridgeMessage.PipelineTraced.Companion.serializer|serializer(){}[0]
+        }
+    }
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // org.reduxkotlin.devtools.bridge/BridgeMessage.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools.bridge/BridgeMessage> // org.reduxkotlin.devtools.bridge/BridgeMessage.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // org.reduxkotlin.devtools.bridge/BridgeMessage.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
+
+final class org.reduxkotlin.devtools.bridge/BridgeConfig { // org.reduxkotlin.devtools.bridge/BridgeConfig|null[0]
+    constructor <init>(kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/String = ...) // org.reduxkotlin.devtools.bridge/BridgeConfig.<init>|<init>(kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Boolean;kotlin.String?;kotlin.String;kotlin.String){}[0]
+
+    final val clientId // org.reduxkotlin.devtools.bridge/BridgeConfig.clientId|{}clientId[0]
+        final fun <get-clientId>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.clientId.<get-clientId>|<get-clientId>(){}[0]
+    final val clientLabel // org.reduxkotlin.devtools.bridge/BridgeConfig.clientLabel|{}clientLabel[0]
+        final fun <get-clientLabel>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.clientLabel.<get-clientLabel>|<get-clientLabel>(){}[0]
+    final val host // org.reduxkotlin.devtools.bridge/BridgeConfig.host|{}host[0]
+        final fun <get-host>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.host.<get-host>|<get-host>(){}[0]
+    final val port // org.reduxkotlin.devtools.bridge/BridgeConfig.port|{}port[0]
+        final fun <get-port>(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeConfig.port.<get-port>|<get-port>(){}[0]
+    final val secure // org.reduxkotlin.devtools.bridge/BridgeConfig.secure|{}secure[0]
+        final fun <get-secure>(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeConfig.secure.<get-secure>|<get-secure>(){}[0]
+    final val startEnabled // org.reduxkotlin.devtools.bridge/BridgeConfig.startEnabled|{}startEnabled[0]
+        final fun <get-startEnabled>(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeConfig.startEnabled.<get-startEnabled>|<get-startEnabled>(){}[0]
+    final val token // org.reduxkotlin.devtools.bridge/BridgeConfig.token|{}token[0]
+        final fun <get-token>(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeConfig.token.<get-token>|<get-token>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeConfig.component2|component2(){}[0]
+    final fun component3(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeConfig.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeConfig.component4|component4(){}[0]
+    final fun component5(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeConfig.component5|component5(){}[0]
+    final fun component6(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.component6|component6(){}[0]
+    final fun component7(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.component7|component7(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/String = ...): org.reduxkotlin.devtools.bridge/BridgeConfig // org.reduxkotlin.devtools.bridge/BridgeConfig.copy|copy(kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Boolean;kotlin.String?;kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools.bridge/BridgeOutput : org.reduxkotlin.devtools/DevToolsOutput { // org.reduxkotlin.devtools.bridge/BridgeOutput|null[0]
+    constructor <init>(org.reduxkotlin.devtools.bridge/BridgeConfig, kotlin/Function1<kotlin/String, kotlin/Unit> = ...) // org.reduxkotlin.devtools.bridge/BridgeOutput.<init>|<init>(org.reduxkotlin.devtools.bridge.BridgeConfig;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+
+    final val id // org.reduxkotlin.devtools.bridge/BridgeOutput.id|{}id[0]
+        final fun <get-id>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeOutput.id.<get-id>|<get-id>(){}[0]
+    final val isRunning // org.reduxkotlin.devtools.bridge/BridgeOutput.isRunning|{}isRunning[0]
+        final fun <get-isRunning>(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeOutput.isRunning.<get-isRunning>|<get-isRunning>(){}[0]
+    final val label // org.reduxkotlin.devtools.bridge/BridgeOutput.label|{}label[0]
+        final fun <get-label>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeOutput.label.<get-label>|<get-label>(){}[0]
+    final val startEnabled // org.reduxkotlin.devtools.bridge/BridgeOutput.startEnabled|{}startEnabled[0]
+        final fun <get-startEnabled>(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeOutput.startEnabled.<get-startEnabled>|<get-startEnabled>(){}[0]
+
+    final fun start(org.reduxkotlin.devtools/DevToolsSession) // org.reduxkotlin.devtools.bridge/BridgeOutput.start|start(org.reduxkotlin.devtools.DevToolsSession){}[0]
+    final fun stop() // org.reduxkotlin.devtools.bridge/BridgeOutput.stop|stop(){}[0]
+}
+
+final const val org.reduxkotlin.devtools.bridge/PROTOCOL_VERSION // org.reduxkotlin.devtools.bridge/PROTOCOL_VERSION|{}PROTOCOL_VERSION[0]
+    final fun <get-PROTOCOL_VERSION>(): kotlin/Int // org.reduxkotlin.devtools.bridge/PROTOCOL_VERSION.<get-PROTOCOL_VERSION>|<get-PROTOCOL_VERSION>(){}[0]
+
+final val org.reduxkotlin.devtools.bridge/bridgeJson // org.reduxkotlin.devtools.bridge/bridgeJson|{}bridgeJson[0]
+    final fun <get-bridgeJson>(): kotlinx.serialization.json/Json // org.reduxkotlin.devtools.bridge/bridgeJson.<get-bridgeJson>|<get-bridgeJson>(){}[0]
+
+final fun org.reduxkotlin.devtools.bridge/toWire(org.reduxkotlin.devtools/DevToolsEvent): org.reduxkotlin.devtools.bridge/BridgeMessage // org.reduxkotlin.devtools.bridge/toWire|toWire(org.reduxkotlin.devtools.DevToolsEvent){}[0]
