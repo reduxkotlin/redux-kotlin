@@ -61,7 +61,7 @@ public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
         conn.start()
         runCatching { conn.enqueueState(session.liftedState()) }
         session.events
-            .onEach { event -> runCatching { conn.enqueue(toWireMessage(event, session)) } }
+            .onEach { event -> toWireMessage(event, session)?.let { msg -> runCatching { conn.enqueue(msg) } } }
             .launchIn(s)
     }
 
@@ -77,7 +77,7 @@ public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
         scope = null
     }
 
-    private fun toWireMessage(event: DevToolsEvent, session: DevToolsSession): JsonObject {
+    private fun toWireMessage(event: DevToolsEvent, session: DevToolsSession): JsonObject? {
         val ctx = MessageContext(socketId = null, name = session.id, instanceId = session.id)
         return when (event) {
             is DevToolsEvent.Initialized -> stateMessage(ctx, session.liftedState())
@@ -99,6 +99,9 @@ public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
                     isExcess = event.isExcess,
                 )
             }
+
+            // Pipeline events are in-app-only; the remote monitor protocol does not consume them.
+            is DevToolsEvent.PipelineRegistered, is DevToolsEvent.PipelineTraced -> null
         }
     }
 }
