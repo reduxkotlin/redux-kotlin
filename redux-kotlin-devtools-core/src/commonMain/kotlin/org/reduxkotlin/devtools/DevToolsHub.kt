@@ -1,0 +1,75 @@
+package org.reduxkotlin.devtools
+
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
+
+/**
+ * Process-global, debug-only registry that rendezvous the [devTools] enhancer with its outputs.
+ *
+ * The enhancer records into a [DevToolsSession] keyed by `instanceId`; [DevToolsOutput]s subscribe
+ * to those sessions. Multi-store support falls out for free — each enhanced store is one session.
+ * This object holds static state and therefore must only exist in debug builds (the release no-op
+ * artifact in Plan 3 has no hub).
+ */
+public object DevToolsHub {
+    private val lock = SynchronizedObject()
+    private val sessionsById = LinkedHashMap<String, DevToolsSession>()
+    private val configsById = LinkedHashMap<String, DevToolsConfig>()
+    private val registeredOutputs = ArrayList<DevToolsOutput>()
+
+    /**
+     * Returns the existing session for the config's id, or creates and registers a new one.
+     *
+     * Sessions are keyed by `instanceId ?: name`. **Footgun guard:** if a session already exists for
+     * the id but was created from a *different* config, two distinct stores have collided on one id
+     * (most often two stores both left at the default `name = "redux-kotlin"`). Their actions would
+     * interleave into one session. We log a warning so the integrator gives each store a distinct
+     * `name`/`instanceId`; we still return the existing session (re-enhancing the same store with the
+     * same config is the legitimate idempotent case and stays silent).
+     */
+    public fun createSession(config: DevToolsConfig): DevToolsSession = synchronized(lock) {
+        val id = config.instanceId ?: config.name
+        val existing = sessionsById[id]
+        if (existing != null) {
+            if (configsById[id] != config) {
+                config.logger(
+                    "devtools: two stores share devtools id \"$id\" — give each store a distinct " +
+                        "DevToolsConfig.name or instanceId, or their actions will interleave.",
+                )
+            }
+            return@synchronized existing
+        }
+        val created = DevToolsSession.create(config)
+        sessionsById[id] = created
+        configsById[id] = config
+        created
+    }
+
+    /** The session registered under [id], or `null`. */
+    public fun session(id: String): DevToolsSession? = synchronized(lock) { sessionsById[id] }
+
+    /** A snapshot of all active sessions (the drawer's store-picker source). */
+    public fun sessions(): List<DevToolsSession> = synchronized(lock) { sessionsById.values.toList() }
+
+    /** Closes and removes the session under [id]. Call when a store is torn down to avoid leaks. */
+    public fun removeSession(id: String): Unit = synchronized(lock) {
+        sessionsById.remove(id)?.close()
+        configsById.remove(id)
+    }
+
+    /** Registers a [DevToolsOutput]. Outputs decide for themselves whether to start (off by default). */
+    public fun registerOutput(output: DevToolsOutput): Unit = synchronized(lock) {
+        if (registeredOutputs.none { it.id == output.id }) registeredOutputs.add(output)
+    }
+
+    /** A snapshot of all registered outputs (the Outputs tab source). */
+    public fun outputs(): List<DevToolsOutput> = synchronized(lock) { registeredOutputs.toList() }
+
+    /** Clears all sessions and outputs. For tests only. */
+    public fun reset(): Unit = synchronized(lock) {
+        sessionsById.values.forEach { it.close() }
+        sessionsById.clear()
+        configsById.clear()
+        registeredOutputs.clear()
+    }
+}
