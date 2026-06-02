@@ -1,0 +1,43 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, linuxX64, macosArm64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-devtools-remote>
+final class org.reduxkotlin.devtools.remote/RemoteConfig { // org.reduxkotlin.devtools.remote/RemoteConfig|null[0]
+    constructor <init>(kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // org.reduxkotlin.devtools.remote/RemoteConfig.<init>|<init>(kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Boolean){}[0]
+
+    final val host // org.reduxkotlin.devtools.remote/RemoteConfig.host|{}host[0]
+        final fun <get-host>(): kotlin/String // org.reduxkotlin.devtools.remote/RemoteConfig.host.<get-host>|<get-host>(){}[0]
+    final val port // org.reduxkotlin.devtools.remote/RemoteConfig.port|{}port[0]
+        final fun <get-port>(): kotlin/Int // org.reduxkotlin.devtools.remote/RemoteConfig.port.<get-port>|<get-port>(){}[0]
+    final val secure // org.reduxkotlin.devtools.remote/RemoteConfig.secure|{}secure[0]
+        final fun <get-secure>(): kotlin/Boolean // org.reduxkotlin.devtools.remote/RemoteConfig.secure.<get-secure>|<get-secure>(){}[0]
+    final val startEnabled // org.reduxkotlin.devtools.remote/RemoteConfig.startEnabled|{}startEnabled[0]
+        final fun <get-startEnabled>(): kotlin/Boolean // org.reduxkotlin.devtools.remote/RemoteConfig.startEnabled.<get-startEnabled>|<get-startEnabled>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools.remote/RemoteConfig.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // org.reduxkotlin.devtools.remote/RemoteConfig.component2|component2(){}[0]
+    final fun component3(): kotlin/Boolean // org.reduxkotlin.devtools.remote/RemoteConfig.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // org.reduxkotlin.devtools.remote/RemoteConfig.component4|component4(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Boolean = ...): org.reduxkotlin.devtools.remote/RemoteConfig // org.reduxkotlin.devtools.remote/RemoteConfig.copy|copy(kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.remote/RemoteConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.remote/RemoteConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.remote/RemoteConfig.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools.remote/RemoteOutput : org.reduxkotlin.devtools/DevToolsOutput { // org.reduxkotlin.devtools.remote/RemoteOutput|null[0]
+    constructor <init>(org.reduxkotlin.devtools.remote/RemoteConfig) // org.reduxkotlin.devtools.remote/RemoteOutput.<init>|<init>(org.reduxkotlin.devtools.remote.RemoteConfig){}[0]
+
+    final val id // org.reduxkotlin.devtools.remote/RemoteOutput.id|{}id[0]
+        final fun <get-id>(): kotlin/String // org.reduxkotlin.devtools.remote/RemoteOutput.id.<get-id>|<get-id>(){}[0]
+    final val isRunning // org.reduxkotlin.devtools.remote/RemoteOutput.isRunning|{}isRunning[0]
+        final fun <get-isRunning>(): kotlin/Boolean // org.reduxkotlin.devtools.remote/RemoteOutput.isRunning.<get-isRunning>|<get-isRunning>(){}[0]
+    final val label // org.reduxkotlin.devtools.remote/RemoteOutput.label|{}label[0]
+        final fun <get-label>(): kotlin/String // org.reduxkotlin.devtools.remote/RemoteOutput.label.<get-label>|<get-label>(){}[0]
+
+    final fun start(org.reduxkotlin.devtools/DevToolsSession) // org.reduxkotlin.devtools.remote/RemoteOutput.start|start(org.reduxkotlin.devtools.DevToolsSession){}[0]
+    final fun stop() // org.reduxkotlin.devtools.remote/RemoteOutput.stop|stop(){}[0]
+}

@@ -1,0 +1,28 @@
+public final class org/reduxkotlin/devtools/remote/RemoteConfig {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;IZZ)V
+	public synthetic fun <init> (Ljava/lang/String;IZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public final fun copy (Ljava/lang/String;IZZ)Lorg/reduxkotlin/devtools/remote/RemoteConfig;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/remote/RemoteConfig;Ljava/lang/String;IZZILjava/lang/Object;)Lorg/reduxkotlin/devtools/remote/RemoteConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPort ()I
+	public final fun getSecure ()Z
+	public final fun getStartEnabled ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/reduxkotlin/devtools/remote/RemoteOutput : org/reduxkotlin/devtools/DevToolsOutput {
+	public fun <init> (Lorg/reduxkotlin/devtools/remote/RemoteConfig;)V
+	public fun getId ()Ljava/lang/String;
+	public fun getLabel ()Ljava/lang/String;
+	public final fun isRunning ()Z
+	public fun start (Lorg/reduxkotlin/devtools/DevToolsSession;)V
+	public fun stop ()V
+}
+
