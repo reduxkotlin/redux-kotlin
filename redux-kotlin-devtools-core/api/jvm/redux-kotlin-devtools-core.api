@@ -1,3 +1,10 @@
+public final class org/reduxkotlin/devtools/CombinatorsKt {
+	public static final fun devToolsCombineReducers (Lorg/reduxkotlin/devtools/DevToolsConfig;[Lorg/reduxkotlin/devtools/NamedReducer;)Lkotlin/jvm/functions/Function2;
+	public static final fun devToolsMiddleware (Lorg/reduxkotlin/devtools/DevToolsConfig;[Lorg/reduxkotlin/devtools/NamedMiddleware;)Lkotlin/jvm/functions/Function1;
+	public static final fun named (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/devtools/NamedMiddleware;
+	public static final fun named (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)Lorg/reduxkotlin/devtools/NamedReducer;
+}
+
 public final class org/reduxkotlin/devtools/DevToolsConfig {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;ILjava/util/List;Ljava/util/List;Lorg/reduxkotlin/devtools/ValueSerializer;Lkotlin/jvm/functions/Function1;)V
@@ -150,6 +157,12 @@ public final class org/reduxkotlin/devtools/DiffOp : java/lang/Enum {
 
 public final class org/reduxkotlin/devtools/JsonDiffKt {
 	public static final fun diffJson (Lkotlinx/serialization/json/JsonElement;Lkotlinx/serialization/json/JsonElement;)Ljava/util/List;
+}
+
+public final class org/reduxkotlin/devtools/NamedMiddleware {
+}
+
+public final class org/reduxkotlin/devtools/NamedReducer {
 }
 
 public final class org/reduxkotlin/devtools/PipelineNode {
