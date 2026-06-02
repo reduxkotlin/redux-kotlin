@@ -48,7 +48,6 @@ public class MonitorServer(
                 call.respondText(WEB_INDEX_HTML, ContentType.Text.Html)
             }
             webSocket("/bridge") {
-                println("[rk-monitor] /bridge connection opened")
                 val conn = ingest.openConnection()
                 try {
                     for (frame in incoming) {
@@ -67,7 +66,6 @@ public class MonitorServer(
                             val loopback = host in loopbackHosts
                             val ok = (loopback || (token != null && msg.token == token)) &&
                                 msg.protocolVersion == PROTOCOL_VERSION
-                            println("[rk-monitor] Hello client=${msg.clientId} store=${msg.storeName} v=${msg.protocolVersion} accepted=$ok")
                             send(
                                 Frame.Text(
                                     bridgeJson.encodeToString(
@@ -98,9 +96,7 @@ public class MonitorServer(
      */
     public fun start(): Int {
         server.start(wait = false)
-        val bound = runBlocking { server.engine.resolvedConnectors().first().port }
-        println("[rk-monitor] WS server listening on $host:$bound/bridge")
-        return bound
+        return runBlocking { server.engine.resolvedConnectors().first().port }
     }
 
     /** Stops the server. */
