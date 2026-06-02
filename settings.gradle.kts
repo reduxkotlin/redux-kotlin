@@ -37,6 +37,7 @@ include(
     ":redux-kotlin-devtools-inapp",
     ":redux-kotlin-devtools-inapp-noop",
     ":redux-kotlin-devtools-ui",
+    ":redux-kotlin-devtools-standalone",
     ":examples:counter:common",
     ":examples:counter:android",
     ":examples:todos:common",
