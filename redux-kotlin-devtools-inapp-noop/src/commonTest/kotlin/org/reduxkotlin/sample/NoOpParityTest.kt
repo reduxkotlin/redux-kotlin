@@ -1,9 +1,11 @@
 package org.reduxkotlin.sample
 
+import kotlinx.serialization.json.JsonPrimitive
 import org.reduxkotlin.Store
 import org.reduxkotlin.compose
 import org.reduxkotlin.createStore
 import org.reduxkotlin.devtools.DevToolsConfig
+import org.reduxkotlin.devtools.ValueSerializer
 import org.reduxkotlin.devtools.devTools
 import org.reduxkotlin.devtools.devToolsCombineReducers
 import org.reduxkotlin.devtools.devToolsMiddleware
@@ -23,7 +25,10 @@ class NoOpParityTest {
         // Imports mirror a REAL integrator: core-package symbols from org.reduxkotlin.devtools,
         // in-app symbols from org.reduxkotlin.devtools.inapp. This must compile against the no-op
         // with NO core dependency on the (release) classpath.
-        val cfg = DevToolsConfig(name = "release")
+        val redactor = object : ValueSerializer {
+            override fun toJson(value: Any?) = JsonPrimitive("redacted")
+        }
+        val cfg = DevToolsConfig(name = "release", serializer = redactor)
         val mw: (Store<St>) -> ((Any) -> Any) -> (Any) -> Any = { _ -> { next -> { a -> next(a) } } }
         val root = devToolsCombineReducers(cfg, named("count", reducer))
         val store = createStore(root, St(), compose(devTools(cfg), devToolsMiddleware(cfg, named("logger", mw))))

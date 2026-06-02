@@ -43,6 +43,10 @@ final enum class org.reduxkotlin.devtools.inapp/DevToolsTrigger : kotlin/Enum<or
     final fun values(): kotlin/Array<org.reduxkotlin.devtools.inapp/DevToolsTrigger> // org.reduxkotlin.devtools.inapp/DevToolsTrigger.values|values#static(){}[0]
 }
 
+abstract interface org.reduxkotlin.devtools/ValueSerializer { // org.reduxkotlin.devtools/ValueSerializer|null[0]
+    abstract fun toJson(kotlin/Any?): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/ValueSerializer.toJson|toJson(kotlin.Any?){}[0]
+}
+
 final class <#A: kotlin/Any?> org.reduxkotlin.devtools/NamedMiddleware // org.reduxkotlin.devtools/NamedMiddleware|null[0]
 
 final class <#A: kotlin/Any?> org.reduxkotlin.devtools/NamedReducer // org.reduxkotlin.devtools/NamedReducer|null[0]
@@ -70,7 +74,7 @@ final class org.reduxkotlin.devtools.inapp/InAppConfig { // org.reduxkotlin.devt
 }
 
 final class org.reduxkotlin.devtools/DevToolsConfig { // org.reduxkotlin.devtools/DevToolsConfig|null[0]
-    constructor <init>(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...) // org.reduxkotlin.devtools/DevToolsConfig.<init>|<init>(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+    constructor <init>(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., org.reduxkotlin.devtools/ValueSerializer? = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...) // org.reduxkotlin.devtools/DevToolsConfig.<init>|<init>(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;org.reduxkotlin.devtools.ValueSerializer?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
 
     final val allowlist // org.reduxkotlin.devtools/DevToolsConfig.allowlist|{}allowlist[0]
         final fun <get-allowlist>(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.allowlist.<get-allowlist>|<get-allowlist>(){}[0]
@@ -84,14 +88,17 @@ final class org.reduxkotlin.devtools/DevToolsConfig { // org.reduxkotlin.devtool
         final fun <get-maxAge>(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.maxAge.<get-maxAge>|<get-maxAge>(){}[0]
     final val name // org.reduxkotlin.devtools/DevToolsConfig.name|{}name[0]
         final fun <get-name>(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.name.<get-name>|<get-name>(){}[0]
+    final val serializer // org.reduxkotlin.devtools/DevToolsConfig.serializer|{}serializer[0]
+        final fun <get-serializer>(): org.reduxkotlin.devtools/ValueSerializer? // org.reduxkotlin.devtools/DevToolsConfig.serializer.<get-serializer>|<get-serializer>(){}[0]
 
     final fun component1(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.component1|component1(){}[0]
     final fun component2(): kotlin/String? // org.reduxkotlin.devtools/DevToolsConfig.component2|component2(){}[0]
     final fun component3(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.component3|component3(){}[0]
     final fun component4(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.component4|component4(){}[0]
     final fun component5(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools/DevToolsConfig.component5|component5(){}[0]
-    final fun component6(): kotlin/Function1<kotlin/String, kotlin/Unit> // org.reduxkotlin.devtools/DevToolsConfig.component6|component6(){}[0]
-    final fun copy(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...): org.reduxkotlin.devtools/DevToolsConfig // org.reduxkotlin.devtools/DevToolsConfig.copy|copy(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+    final fun component6(): org.reduxkotlin.devtools/ValueSerializer? // org.reduxkotlin.devtools/DevToolsConfig.component6|component6(){}[0]
+    final fun component7(): kotlin/Function1<kotlin/String, kotlin/Unit> // org.reduxkotlin.devtools/DevToolsConfig.component7|component7(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., org.reduxkotlin.devtools/ValueSerializer? = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...): org.reduxkotlin.devtools/DevToolsConfig // org.reduxkotlin.devtools/DevToolsConfig.copy|copy(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;org.reduxkotlin.devtools.ValueSerializer?;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsConfig.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools/DevToolsConfig.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.toString|toString(){}[0]
@@ -102,11 +109,16 @@ final object org.reduxkotlin.devtools.inapp/ReduxDevTools { // org.reduxkotlin.d
     final fun open() // org.reduxkotlin.devtools.inapp/ReduxDevTools.open|open(){}[0]
 }
 
+final object org.reduxkotlin.devtools/ToStringValueSerializer : org.reduxkotlin.devtools/ValueSerializer { // org.reduxkotlin.devtools/ToStringValueSerializer|null[0]
+    final fun toJson(kotlin/Any?): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/ToStringValueSerializer.toJson|toJson(kotlin.Any?){}[0]
+}
+
 final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop|#static{}org_reduxkotlin_devtools_inapp_InAppConfig$stableprop[0]
 final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop|#static{}org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop[0]
 final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_DevToolsConfig$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_DevToolsConfig$stableprop|#static{}org_reduxkotlin_devtools_DevToolsConfig$stableprop[0]
 final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedMiddleware$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedMiddleware$stableprop|#static{}org_reduxkotlin_devtools_NamedMiddleware$stableprop[0]
 final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedReducer$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedReducer$stableprop|#static{}org_reduxkotlin_devtools_NamedReducer$stableprop[0]
+final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_ToStringValueSerializer$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_ToStringValueSerializer$stableprop|#static{}org_reduxkotlin_devtools_ToStringValueSerializer$stableprop[0]
 
 final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/devTools(org.reduxkotlin.devtools/DevToolsConfig = ...): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.devtools/devTools|devTools(org.reduxkotlin.devtools.DevToolsConfig){0§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> org.reduxkotlin.devtools/devToolsCombineReducers(org.reduxkotlin.devtools/DevToolsConfig, kotlin/Array<out org.reduxkotlin.devtools/NamedReducer<#A>>...): kotlin/Function2<#A, kotlin/Any, #A> // org.reduxkotlin.devtools/devToolsCombineReducers|devToolsCombineReducers(org.reduxkotlin.devtools.DevToolsConfig;kotlin.Array<out|org.reduxkotlin.devtools.NamedReducer<0:0>>...){0§<kotlin.Any?>}[0]
@@ -119,3 +131,4 @@ final fun org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDev
 final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_DevToolsConfig$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_DevToolsConfig$stableprop_getter|org_reduxkotlin_devtools_DevToolsConfig$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedMiddleware$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedMiddleware$stableprop_getter|org_reduxkotlin_devtools_NamedMiddleware$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedReducer$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedReducer$stableprop_getter|org_reduxkotlin_devtools_NamedReducer$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_ToStringValueSerializer$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_ToStringValueSerializer$stableprop_getter|org_reduxkotlin_devtools_ToStringValueSerializer$stableprop_getter(){}[0]

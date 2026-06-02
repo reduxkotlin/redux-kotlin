@@ -1,10 +1,28 @@
 package org.reduxkotlin.devtools
 
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
 import org.reduxkotlin.Middleware
 import org.reduxkotlin.Reducer
 import org.reduxkotlin.StoreEnhancer
 import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.combineReducers
+
+/**
+ * No-op mirror of core's [ValueSerializer] (release builds never call it).
+ * Present so that integrators can reference this type in shared/main code
+ * without a compile error when the release classpath swaps core for the no-op.
+ */
+public interface ValueSerializer {
+    /** Serializes [value] to a [JsonElement]; returns a string primitive on failure. */
+    public fun toJson(value: Any?): JsonElement
+}
+
+/** No-op mirror of core's [ToStringValueSerializer]. */
+public object ToStringValueSerializer : ValueSerializer {
+    override fun toJson(value: Any?): JsonElement =
+        JsonPrimitive(runCatching { value?.toString() }.getOrNull() ?: "null")
+}
 
 /** No-op replacement of the core `DevToolsConfig` for release builds. All fields inert. */
 public data class DevToolsConfig(
@@ -18,6 +36,8 @@ public data class DevToolsConfig(
     public val allowlist: List<String> = emptyList(),
     /** Inert. */
     public val denylist: List<String> = emptyList(),
+    /** Inert. */
+    public val serializer: ValueSerializer? = null,
     /** Inert. */
     public val logger: (String) -> Unit = {},
 )
