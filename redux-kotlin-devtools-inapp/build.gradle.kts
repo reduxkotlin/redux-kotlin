@@ -2,6 +2,7 @@ plugins {
     id("convention.library-mpp-loved")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
     id("convention.publishing-mpp")
 }
 
@@ -27,6 +28,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":redux-kotlin-devtools-core"))
+                implementation(libs.kotlinx.serialization.json)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
