@@ -1,0 +1,121 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, linuxX64, macosArm64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-devtools-inapp-noop>
+final enum class org.reduxkotlin.devtools.inapp/DevToolsTab : kotlin/Enum<org.reduxkotlin.devtools.inapp/DevToolsTab> { // org.reduxkotlin.devtools.inapp/DevToolsTab|null[0]
+    enum entry ACTIONS // org.reduxkotlin.devtools.inapp/DevToolsTab.ACTIONS|null[0]
+    enum entry DIFF // org.reduxkotlin.devtools.inapp/DevToolsTab.DIFF|null[0]
+    enum entry OUTPUTS // org.reduxkotlin.devtools.inapp/DevToolsTab.OUTPUTS|null[0]
+    enum entry PIPELINE // org.reduxkotlin.devtools.inapp/DevToolsTab.PIPELINE|null[0]
+    enum entry STATE // org.reduxkotlin.devtools.inapp/DevToolsTab.STATE|null[0]
+
+    final val entries // org.reduxkotlin.devtools.inapp/DevToolsTab.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<org.reduxkotlin.devtools.inapp/DevToolsTab> // org.reduxkotlin.devtools.inapp/DevToolsTab.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): org.reduxkotlin.devtools.inapp/DevToolsTab // org.reduxkotlin.devtools.inapp/DevToolsTab.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<org.reduxkotlin.devtools.inapp/DevToolsTab> // org.reduxkotlin.devtools.inapp/DevToolsTab.values|values#static(){}[0]
+}
+
+final enum class org.reduxkotlin.devtools.inapp/DevToolsThemeMode : kotlin/Enum<org.reduxkotlin.devtools.inapp/DevToolsThemeMode> { // org.reduxkotlin.devtools.inapp/DevToolsThemeMode|null[0]
+    enum entry DARK // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.DARK|null[0]
+    enum entry LIGHT // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.LIGHT|null[0]
+    enum entry SYSTEM // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.SYSTEM|null[0]
+
+    final val entries // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<org.reduxkotlin.devtools.inapp/DevToolsThemeMode> // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): org.reduxkotlin.devtools.inapp/DevToolsThemeMode // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<org.reduxkotlin.devtools.inapp/DevToolsThemeMode> // org.reduxkotlin.devtools.inapp/DevToolsThemeMode.values|values#static(){}[0]
+}
+
+final enum class org.reduxkotlin.devtools.inapp/DevToolsTrigger : kotlin/Enum<org.reduxkotlin.devtools.inapp/DevToolsTrigger> { // org.reduxkotlin.devtools.inapp/DevToolsTrigger|null[0]
+    enum entry BUBBLE // org.reduxkotlin.devtools.inapp/DevToolsTrigger.BUBBLE|null[0]
+    enum entry EDGE_SWIPE // org.reduxkotlin.devtools.inapp/DevToolsTrigger.EDGE_SWIPE|null[0]
+
+    final val entries // org.reduxkotlin.devtools.inapp/DevToolsTrigger.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<org.reduxkotlin.devtools.inapp/DevToolsTrigger> // org.reduxkotlin.devtools.inapp/DevToolsTrigger.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): org.reduxkotlin.devtools.inapp/DevToolsTrigger // org.reduxkotlin.devtools.inapp/DevToolsTrigger.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<org.reduxkotlin.devtools.inapp/DevToolsTrigger> // org.reduxkotlin.devtools.inapp/DevToolsTrigger.values|values#static(){}[0]
+}
+
+final class <#A: kotlin/Any?> org.reduxkotlin.devtools.inapp/NamedMiddleware // org.reduxkotlin.devtools.inapp/NamedMiddleware|null[0]
+
+final class <#A: kotlin/Any?> org.reduxkotlin.devtools.inapp/NamedReducer // org.reduxkotlin.devtools.inapp/NamedReducer|null[0]
+
+final class org.reduxkotlin.devtools.inapp/DevToolsConfig { // org.reduxkotlin.devtools.inapp/DevToolsConfig|null[0]
+    constructor <init>(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...) // org.reduxkotlin.devtools.inapp/DevToolsConfig.<init>|<init>(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+
+    final val allowlist // org.reduxkotlin.devtools.inapp/DevToolsConfig.allowlist|{}allowlist[0]
+        final fun <get-allowlist>(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools.inapp/DevToolsConfig.allowlist.<get-allowlist>|<get-allowlist>(){}[0]
+    final val denylist // org.reduxkotlin.devtools.inapp/DevToolsConfig.denylist|{}denylist[0]
+        final fun <get-denylist>(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools.inapp/DevToolsConfig.denylist.<get-denylist>|<get-denylist>(){}[0]
+    final val instanceId // org.reduxkotlin.devtools.inapp/DevToolsConfig.instanceId|{}instanceId[0]
+        final fun <get-instanceId>(): kotlin/String? // org.reduxkotlin.devtools.inapp/DevToolsConfig.instanceId.<get-instanceId>|<get-instanceId>(){}[0]
+    final val logger // org.reduxkotlin.devtools.inapp/DevToolsConfig.logger|{}logger[0]
+        final fun <get-logger>(): kotlin/Function1<kotlin/String, kotlin/Unit> // org.reduxkotlin.devtools.inapp/DevToolsConfig.logger.<get-logger>|<get-logger>(){}[0]
+    final val maxAge // org.reduxkotlin.devtools.inapp/DevToolsConfig.maxAge|{}maxAge[0]
+        final fun <get-maxAge>(): kotlin/Int // org.reduxkotlin.devtools.inapp/DevToolsConfig.maxAge.<get-maxAge>|<get-maxAge>(){}[0]
+    final val name // org.reduxkotlin.devtools.inapp/DevToolsConfig.name|{}name[0]
+        final fun <get-name>(): kotlin/String // org.reduxkotlin.devtools.inapp/DevToolsConfig.name.<get-name>|<get-name>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools.inapp/DevToolsConfig.component1|component1(){}[0]
+    final fun component2(): kotlin/String? // org.reduxkotlin.devtools.inapp/DevToolsConfig.component2|component2(){}[0]
+    final fun component3(): kotlin/Int // org.reduxkotlin.devtools.inapp/DevToolsConfig.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools.inapp/DevToolsConfig.component4|component4(){}[0]
+    final fun component5(): kotlin.collections/List<kotlin/String> // org.reduxkotlin.devtools.inapp/DevToolsConfig.component5|component5(){}[0]
+    final fun component6(): kotlin/Function1<kotlin/String, kotlin/Unit> // org.reduxkotlin.devtools.inapp/DevToolsConfig.component6|component6(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String? = ..., kotlin/Int = ..., kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/Function1<kotlin/String, kotlin/Unit> = ...): org.reduxkotlin.devtools.inapp/DevToolsConfig // org.reduxkotlin.devtools.inapp/DevToolsConfig.copy|copy(kotlin.String;kotlin.String?;kotlin.Int;kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.String>;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.inapp/DevToolsConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.inapp/DevToolsConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp/DevToolsConfig.toString|toString(){}[0]
+}
+
+final class org.reduxkotlin.devtools.inapp/InAppConfig { // org.reduxkotlin.devtools.inapp/InAppConfig|null[0]
+    constructor <init>(kotlin.collections/Set<org.reduxkotlin.devtools.inapp/DevToolsTrigger> = ..., org.reduxkotlin.devtools.inapp/DevToolsTab = ..., org.reduxkotlin.devtools.inapp/DevToolsThemeMode = ..., kotlin/String? = ...) // org.reduxkotlin.devtools.inapp/InAppConfig.<init>|<init>(kotlin.collections.Set<org.reduxkotlin.devtools.inapp.DevToolsTrigger>;org.reduxkotlin.devtools.inapp.DevToolsTab;org.reduxkotlin.devtools.inapp.DevToolsThemeMode;kotlin.String?){}[0]
+
+    final val instanceId // org.reduxkotlin.devtools.inapp/InAppConfig.instanceId|{}instanceId[0]
+        final fun <get-instanceId>(): kotlin/String? // org.reduxkotlin.devtools.inapp/InAppConfig.instanceId.<get-instanceId>|<get-instanceId>(){}[0]
+    final val startTab // org.reduxkotlin.devtools.inapp/InAppConfig.startTab|{}startTab[0]
+        final fun <get-startTab>(): org.reduxkotlin.devtools.inapp/DevToolsTab // org.reduxkotlin.devtools.inapp/InAppConfig.startTab.<get-startTab>|<get-startTab>(){}[0]
+    final val theme // org.reduxkotlin.devtools.inapp/InAppConfig.theme|{}theme[0]
+        final fun <get-theme>(): org.reduxkotlin.devtools.inapp/DevToolsThemeMode // org.reduxkotlin.devtools.inapp/InAppConfig.theme.<get-theme>|<get-theme>(){}[0]
+    final val triggers // org.reduxkotlin.devtools.inapp/InAppConfig.triggers|{}triggers[0]
+        final fun <get-triggers>(): kotlin.collections/Set<org.reduxkotlin.devtools.inapp/DevToolsTrigger> // org.reduxkotlin.devtools.inapp/InAppConfig.triggers.<get-triggers>|<get-triggers>(){}[0]
+
+    final fun component1(): kotlin.collections/Set<org.reduxkotlin.devtools.inapp/DevToolsTrigger> // org.reduxkotlin.devtools.inapp/InAppConfig.component1|component1(){}[0]
+    final fun component2(): org.reduxkotlin.devtools.inapp/DevToolsTab // org.reduxkotlin.devtools.inapp/InAppConfig.component2|component2(){}[0]
+    final fun component3(): org.reduxkotlin.devtools.inapp/DevToolsThemeMode // org.reduxkotlin.devtools.inapp/InAppConfig.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // org.reduxkotlin.devtools.inapp/InAppConfig.component4|component4(){}[0]
+    final fun copy(kotlin.collections/Set<org.reduxkotlin.devtools.inapp/DevToolsTrigger> = ..., org.reduxkotlin.devtools.inapp/DevToolsTab = ..., org.reduxkotlin.devtools.inapp/DevToolsThemeMode = ..., kotlin/String? = ...): org.reduxkotlin.devtools.inapp/InAppConfig // org.reduxkotlin.devtools.inapp/InAppConfig.copy|copy(kotlin.collections.Set<org.reduxkotlin.devtools.inapp.DevToolsTrigger>;org.reduxkotlin.devtools.inapp.DevToolsTab;org.reduxkotlin.devtools.inapp.DevToolsThemeMode;kotlin.String?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.inapp/InAppConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.inapp/InAppConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.inapp/InAppConfig.toString|toString(){}[0]
+}
+
+final object org.reduxkotlin.devtools.inapp/ReduxDevTools { // org.reduxkotlin.devtools.inapp/ReduxDevTools|null[0]
+    final fun close() // org.reduxkotlin.devtools.inapp/ReduxDevTools.close|close(){}[0]
+    final fun open() // org.reduxkotlin.devtools.inapp/ReduxDevTools.open|open(){}[0]
+}
+
+final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_DevToolsConfig$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_DevToolsConfig$stableprop|#static{}org_reduxkotlin_devtools_inapp_DevToolsConfig$stableprop[0]
+final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop|#static{}org_reduxkotlin_devtools_inapp_InAppConfig$stableprop[0]
+final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_NamedMiddleware$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_NamedMiddleware$stableprop|#static{}org_reduxkotlin_devtools_inapp_NamedMiddleware$stableprop[0]
+final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_NamedReducer$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_NamedReducer$stableprop|#static{}org_reduxkotlin_devtools_inapp_NamedReducer$stableprop[0]
+final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop|#static{}org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop[0]
+
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools.inapp/devTools(org.reduxkotlin.devtools.inapp/DevToolsConfig = ...): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.devtools.inapp/devTools|devTools(org.reduxkotlin.devtools.inapp.DevToolsConfig){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools.inapp/devToolsCombineReducers(org.reduxkotlin.devtools.inapp/DevToolsConfig, kotlin/Array<out org.reduxkotlin.devtools.inapp/NamedReducer<#A>>...): kotlin/Function2<#A, kotlin/Any, #A> // org.reduxkotlin.devtools.inapp/devToolsCombineReducers|devToolsCombineReducers(org.reduxkotlin.devtools.inapp.DevToolsConfig;kotlin.Array<out|org.reduxkotlin.devtools.inapp.NamedReducer<0:0>>...){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools.inapp/devToolsMiddleware(org.reduxkotlin.devtools.inapp/DevToolsConfig, kotlin/Array<out org.reduxkotlin.devtools.inapp/NamedMiddleware<#A>>...): kotlin/Function1<kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>, kotlin/Function3<kotlin/Function2<#A, kotlin/Any, #A>, #A, kotlin/Any?, org.reduxkotlin/TypedStore<#A, kotlin/Any>>> // org.reduxkotlin.devtools.inapp/devToolsMiddleware|devToolsMiddleware(org.reduxkotlin.devtools.inapp.DevToolsConfig;kotlin.Array<out|org.reduxkotlin.devtools.inapp.NamedMiddleware<0:0>>...){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools.inapp/named(kotlin/String, kotlin/Function1<org.reduxkotlin/TypedStore<#A, kotlin/Any>, kotlin/Function1<kotlin/Function1<kotlin/Any, kotlin/Any>, kotlin/Function1<kotlin/Any, kotlin/Any>>>): org.reduxkotlin.devtools.inapp/NamedMiddleware<#A> // org.reduxkotlin.devtools.inapp/named|named(kotlin.String;kotlin.Function1<org.reduxkotlin.TypedStore<0:0,kotlin.Any>,kotlin.Function1<kotlin.Function1<kotlin.Any,kotlin.Any>,kotlin.Function1<kotlin.Any,kotlin.Any>>>){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.devtools.inapp/named(kotlin/String, kotlin/Function2<#A, kotlin/Any, #A>): org.reduxkotlin.devtools.inapp/NamedReducer<#A> // org.reduxkotlin.devtools.inapp/named|named(kotlin.String;kotlin.Function2<0:0,kotlin.Any,0:0>){0§<kotlin.Any?>}[0]
+final fun org.reduxkotlin.devtools.inapp/ReduxDevToolsHost(org.reduxkotlin.devtools.inapp/InAppConfig?, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // org.reduxkotlin.devtools.inapp/ReduxDevToolsHost|ReduxDevToolsHost(org.reduxkotlin.devtools.inapp.InAppConfig?;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_DevToolsConfig$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_DevToolsConfig$stableprop_getter|org_reduxkotlin_devtools_inapp_DevToolsConfig$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop_getter|org_reduxkotlin_devtools_inapp_InAppConfig$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_NamedMiddleware$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_NamedMiddleware$stableprop_getter|org_reduxkotlin_devtools_inapp_NamedMiddleware$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_NamedReducer$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_NamedReducer$stableprop_getter|org_reduxkotlin_devtools_inapp_NamedReducer$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop_getter|org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop_getter(){}[0]
