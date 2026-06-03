@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.db
+package org.reduxkotlin.sample.taskflow.infra.db
 
 import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
@@ -8,6 +8,20 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.LabelId
 import org.reduxkotlin.sample.taskflow.core.OpId
+import org.reduxkotlin.sample.taskflow.db.Account
+import org.reduxkotlin.sample.taskflow.db.Account_nav
+import org.reduxkotlin.sample.taskflow.db.Activity
+import org.reduxkotlin.sample.taskflow.db.App_settings
+import org.reduxkotlin.sample.taskflow.db.Attachment
+import org.reduxkotlin.sample.taskflow.db.Board
+import org.reduxkotlin.sample.taskflow.db.Board_column
+import org.reduxkotlin.sample.taskflow.db.Card
+import org.reduxkotlin.sample.taskflow.db.Card_label
+import org.reduxkotlin.sample.taskflow.db.Collaborator
+import org.reduxkotlin.sample.taskflow.db.Label
+import org.reduxkotlin.sample.taskflow.db.Pending_op
+import org.reduxkotlin.sample.taskflow.db.Sync_meta
+import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
 import kotlin.time.Instant
 
 /** Maps an [AccountId] value-class to/from its `TEXT` storage form. */

@@ -53,11 +53,11 @@ import org.reduxkotlin.sample.taskflow.core.CardOpSucceeded
 import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.NavModel
-import org.reduxkotlin.sample.taskflow.data.SeedData
-import org.reduxkotlin.sample.taskflow.data.local.LocalStore
-import org.reduxkotlin.sample.taskflow.data.remote.FakeRemoteApi
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteApi
-import org.reduxkotlin.sample.taskflow.data.sync.SyncRepository
+import org.reduxkotlin.sample.taskflow.infra.SeedData
+import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
+import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.middleware.activityLoggerMiddleware
 import org.reduxkotlin.sample.taskflow.middleware.effectsMiddleware
 import org.reduxkotlin.sample.taskflow.middleware.undoMiddleware

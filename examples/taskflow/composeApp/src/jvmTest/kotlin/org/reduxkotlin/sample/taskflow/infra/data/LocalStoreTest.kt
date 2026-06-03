@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data
+package org.reduxkotlin.sample.taskflow.infra.data
 
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
@@ -12,13 +12,13 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.Column
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.data.local.LocalStore
-import org.reduxkotlin.sample.taskflow.data.local.SqlDelightLocalStore
-import org.reduxkotlin.sample.taskflow.data.remote.InverseOpDto
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteChange
-import org.reduxkotlin.sample.taskflow.data.remote.SyncOp
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
-import org.reduxkotlin.sample.taskflow.db.taskFlowDb
+import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.remote.InverseOpDto
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
+import org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp
+import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
 import org.reduxkotlin.sample.taskflow.model.newBoardColumns
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data.sync
+package org.reduxkotlin.sample.taskflow.infra.data.sync
 
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentSetOf
@@ -12,12 +12,12 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.CardOpFailed
 import org.reduxkotlin.sample.taskflow.core.CardOpSucceeded
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.data.local.LocalStore
-import org.reduxkotlin.sample.taskflow.data.remote.OfflineException
-import org.reduxkotlin.sample.taskflow.data.remote.PushResult
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteApi
-import org.reduxkotlin.sample.taskflow.data.remote.TransientNetworkException
-import org.reduxkotlin.sample.taskflow.data.remote.toDomain
+import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.remote.OfflineException
+import org.reduxkotlin.sample.taskflow.infra.data.remote.PushResult
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
+import org.reduxkotlin.sample.taskflow.infra.data.remote.TransientNetworkException
+import org.reduxkotlin.sample.taskflow.infra.data.remote.toDomain
 import kotlin.time.Instant
 
 /**
@@ -32,7 +32,7 @@ import kotlin.time.Instant
  * retries later.
  *
  * @property local the durable offline cache + outbound queue.
- * @property remote the network seam (real or [org.reduxkotlin.sample.taskflow.data.remote.FakeRemoteApi]).
+ * @property remote the network seam (real or [org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi]).
  * @property scope the background scope drains run on (its dispatch path is off-main; the effects layer
  *   hops to Main before dispatching — Rule E).
  * @property onAccept invoked once per accepted op with a [CardOpSucceeded] so the store can clear the

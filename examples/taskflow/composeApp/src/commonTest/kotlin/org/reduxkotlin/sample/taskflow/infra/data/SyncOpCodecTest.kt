@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data
+package org.reduxkotlin.sample.taskflow.infra.data
 
 import kotlinx.collections.immutable.persistentListOf
 import org.reduxkotlin.sample.taskflow.core.AccountId
@@ -14,10 +14,10 @@ import org.reduxkotlin.sample.taskflow.core.InverseOp
 import org.reduxkotlin.sample.taskflow.core.Label
 import org.reduxkotlin.sample.taskflow.core.LabelId
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.data.remote.SyncOp
-import org.reduxkotlin.sample.taskflow.data.remote.decodeSyncOp
-import org.reduxkotlin.sample.taskflow.data.remote.encodeToPayload
-import org.reduxkotlin.sample.taskflow.data.remote.toSyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.remote.decodeSyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.remote.encodeToPayload
+import org.reduxkotlin.sample.taskflow.infra.data.remote.toSyncOp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Instant

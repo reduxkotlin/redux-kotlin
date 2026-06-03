@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data.remote
+package org.reduxkotlin.sample.taskflow.infra.data.remote
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -10,14 +10,14 @@ import org.reduxkotlin.sample.taskflow.core.Card
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
-import org.reduxkotlin.sample.taskflow.data.SeedData
+import org.reduxkotlin.sample.taskflow.infra.SeedData
 import kotlin.random.Random
 import kotlin.time.Instant
 
 /**
  * In-memory fake backend implementing [RemoteApi] for the sample.
  *
- * It owns a mutable server-side board snapshot seeded **identically** to the [LocalStore][org.reduxkotlin.sample.taskflow.data.local.LocalStore]
+ * It owns a mutable server-side board snapshot seeded **identically** to the [LocalStore][org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore]
  * (both consume [SeedData]), and reproduces real network behaviour from the live
  * [FakeServiceConfig] read via [config]: per-call **latency**, a **failure rate** (transient), and
  * an **offline** gate. Deterministic server validation rejects a card move into a column already at

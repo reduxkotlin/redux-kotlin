@@ -34,7 +34,7 @@ import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
 import org.reduxkotlin.sample.taskflow.action.LoginRequested
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
-import org.reduxkotlin.sample.taskflow.data.SeedData
+import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.model.AuthFlowModel
 import org.reduxkotlin.sample.taskflow.store.getModel
 import org.reduxkotlin.sample.taskflow.ui.components.AccountRow

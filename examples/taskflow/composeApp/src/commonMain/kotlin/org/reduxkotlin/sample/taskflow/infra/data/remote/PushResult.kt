@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data.remote
+package org.reduxkotlin.sample.taskflow.infra.data.remote
 
 /**
  * The outcome of a [RemoteApi.push] that the backend actually evaluated.

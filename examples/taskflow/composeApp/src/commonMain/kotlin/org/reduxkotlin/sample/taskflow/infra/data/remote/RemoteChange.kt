@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data.remote
+package org.reduxkotlin.sample.taskflow.infra.data.remote
 
 import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.BoardSummary

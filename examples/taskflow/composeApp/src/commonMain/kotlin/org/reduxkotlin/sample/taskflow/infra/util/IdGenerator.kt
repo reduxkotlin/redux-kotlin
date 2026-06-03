@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.util
+package org.reduxkotlin.sample.taskflow.infra.util
 
 import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.CardId

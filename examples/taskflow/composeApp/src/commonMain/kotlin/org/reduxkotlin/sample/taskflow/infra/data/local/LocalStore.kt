@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data.local
+package org.reduxkotlin.sample.taskflow.infra.data.local
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
@@ -15,8 +15,8 @@ import org.reduxkotlin.sample.taskflow.core.Column
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteChange
-import org.reduxkotlin.sample.taskflow.data.remote.SyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
+import org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp
 import kotlin.time.Instant
 
 /**
@@ -120,6 +120,6 @@ public interface LocalStore {
 
     // ---- seed ----
 
-    /** Seeds the database from [org.reduxkotlin.sample.taskflow.data.SeedData] if empty (idempotent). */
+    /** Seeds the database from [org.reduxkotlin.sample.taskflow.infra.SeedData] if empty (idempotent). */
     public suspend fun ensureSeeded()
 }

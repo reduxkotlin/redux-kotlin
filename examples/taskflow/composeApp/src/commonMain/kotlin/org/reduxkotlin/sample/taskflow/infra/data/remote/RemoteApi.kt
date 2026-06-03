@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data.remote
+package org.reduxkotlin.sample.taskflow.infra.data.remote
 
 import kotlinx.collections.immutable.PersistentList
 import kotlin.time.Instant

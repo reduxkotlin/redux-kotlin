@@ -10,11 +10,11 @@ import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.data.SeedData
-import org.reduxkotlin.sample.taskflow.data.local.LocalStore
-import org.reduxkotlin.sample.taskflow.data.local.SqlDelightLocalStore
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
-import org.reduxkotlin.sample.taskflow.db.taskFlowDb
+import org.reduxkotlin.sample.taskflow.infra.SeedData
+import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
+import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

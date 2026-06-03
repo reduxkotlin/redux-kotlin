@@ -9,7 +9,7 @@ import org.reduxkotlin.registry.StoreRegistry
 import org.reduxkotlin.sample.taskflow.core.AccountDetail
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
-import org.reduxkotlin.sample.taskflow.data.local.LocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.middleware.startBot
 import org.reduxkotlin.sample.taskflow.platform.mainNotificationContext
 
@@ -18,7 +18,7 @@ import org.reduxkotlin.sample.taskflow.platform.mainNotificationContext
  *
  * The bare [Store]s live in a [StoreRegistry] (lock-free, atomic snapshot); the richer
  * [AccountStoreHandle]s — which also carry the per-account [kotlinx.coroutines.CoroutineScope],
- * [org.reduxkotlin.sample.taskflow.data.sync.SyncRepository] and bot [kotlinx.coroutines.Job] —
+ * [org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository] and bot [kotlinx.coroutines.Job] —
  * live in a parallel side map so [remove] can tear the account's coroutines down (the registry
  * only ever forgets a store, never disposes it).
  *
