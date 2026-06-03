@@ -56,13 +56,13 @@ import org.reduxkotlin.sample.taskflow.model.AuthMode
 import org.reduxkotlin.sample.taskflow.store.AccountRegistry
 import org.reduxkotlin.sample.taskflow.store.createAppStore
 import org.reduxkotlin.sample.taskflow.store.getModel
+import org.reduxkotlin.sample.taskflow.ui.Avatar
 import org.reduxkotlin.sample.taskflow.ui.BackHandler
 import org.reduxkotlin.sample.taskflow.ui.LocalClock
 import org.reduxkotlin.sample.taskflow.ui.LocalIdGenerator
 import org.reduxkotlin.sample.taskflow.ui.PredictiveBackHandler
 import org.reduxkotlin.sample.taskflow.ui.adaptive.widthSizeClass
 import org.reduxkotlin.sample.taskflow.ui.components.AdaptiveNav
-import org.reduxkotlin.sample.taskflow.ui.components.Avatar
 import org.reduxkotlin.sample.taskflow.ui.image.initCoil
 import org.reduxkotlin.sample.taskflow.ui.screens.BoardListScreen
 import org.reduxkotlin.sample.taskflow.ui.screens.BoardScreen

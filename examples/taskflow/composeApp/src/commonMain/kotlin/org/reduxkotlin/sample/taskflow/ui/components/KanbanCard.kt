@@ -33,6 +33,7 @@ import coil3.compose.AsyncImage
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.Attachment
 import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.ui.Avatar
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 import org.reduxkotlin.sample.taskflow.ui.theme.LocalSemanticColors
 import org.reduxkotlin.sample.taskflow.ui.theme.TaskFlowMotion

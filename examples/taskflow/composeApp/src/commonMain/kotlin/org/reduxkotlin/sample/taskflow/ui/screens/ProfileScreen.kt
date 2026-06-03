@@ -44,7 +44,7 @@ import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.model.SessionModel
-import org.reduxkotlin.sample.taskflow.ui.components.Avatar
+import org.reduxkotlin.sample.taskflow.ui.Avatar
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**
