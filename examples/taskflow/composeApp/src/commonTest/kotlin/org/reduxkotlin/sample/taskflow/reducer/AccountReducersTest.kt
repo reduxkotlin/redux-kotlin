@@ -5,9 +5,7 @@ import kotlinx.collections.immutable.persistentMapOf
 import org.reduxkotlin.sample.taskflow.action.Back
 import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
-import org.reduxkotlin.sample.taskflow.action.CreateBoard
 import org.reduxkotlin.sample.taskflow.action.EnterEditMode
-import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
 import org.reduxkotlin.sample.taskflow.action.Refresh
@@ -23,9 +21,13 @@ import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
 import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
 import org.reduxkotlin.sample.taskflow.feature.account.sessionReducer
+import org.reduxkotlin.sample.taskflow.feature.boardlist.BoardListModel
+import org.reduxkotlin.sample.taskflow.feature.boardlist.CreateBoard
+import org.reduxkotlin.sample.taskflow.feature.boardlist.DEFAULT_BOARD_COLOR
+import org.reduxkotlin.sample.taskflow.feature.boardlist.LoadBoardListSucceeded
+import org.reduxkotlin.sample.taskflow.feature.boardlist.boardListReducer
 import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.feature.collaborators.collaboratorsReducer
-import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
