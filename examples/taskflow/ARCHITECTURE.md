@@ -6,7 +6,19 @@ concurrent ModelState store, the routing-DSL reducer model, render-isolation Com
 bindings, and an offline-first sync layer.
 
 This document describes the architecture as it exists in `examples/taskflow/`. Diagrams
-are Mermaid; component references use `path:line` so they stay clickable.
+are Mermaid; component references use `path:line` so they stay clickable. Paths are
+relative to
+`composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/`.
+
+> **Note on packaging:** the source tree is organized **package-by-feature** over a shared
+> **domain kernel**. The seven feature packages (`feature/board`, `feature/boardlist`,
+> `feature/undo`, `feature/activity`, `feature/collaborators`, `feature/account`,
+> `feature/settings`) each own their full vertical slice (slot models · reducers ·
+> effects/middleware · actions · selectors · UI). Cross-cutting homes are `core/` (the
+> domain kernel), `infra/` (DB · data · sync · platform shims), `ui/` (theme + shared
+> widgets + UI shims), and `app/` (the composition root: store factories, nav, the `App()`
+> shell). See [§4 Module & dependency graph](#4-module--dependency-graph) and
+> [§5 Layered architecture](#5-layered-architecture).
 
 > **Note on navigation:** the navigation layer was recently refactored from a flat
 > `NavModel(route, openCardId, composing)` to a **Route stack** (`NavModel(stack)`).
@@ -53,8 +65,9 @@ are Mermaid; component references use `path:line` so they stay clickable.
   (optimistic), enqueues a serializable `SyncOp` carrying its own inverse, and kicks a
   `SyncEngine` that drains the queue against a replaceable `RemoteApi` (the in-repo
   `FakeRemoteApi`). On rejection the per-op inverse reverts exactly that op.
-- **Side effects live in one place** — `effectsMiddleware`, the only code that turns
-  dispatched intent into repository calls and folds sync results back into the store.
+- **Side effects live in one place** — `effectsMiddleware`
+  (`feature/board/EffectsMiddleware.kt`), the only code that turns dispatched intent into
+  repository calls and folds sync results back into the store.
 - **The UI never reads the store wholesale.** Each column/card subscribes to the
   smallest slice it needs through `selectorState{}` / `fieldStateOf()`, so moving one
   card recomposes only the two affected columns ("Rule C").
@@ -139,7 +152,11 @@ real network. The persistence layer (SQLDelight) is the durable source of truth 
 
 ## 4. Module & dependency graph
 
-TaskFlow depends on a **single** redux artifact; everything else is transitive.
+TaskFlow is still **one** Gradle module (`:examples:taskflow:composeApp`) depending on a
+**single** redux artifact; everything else is transitive. Inside that module the source is
+split into feature packages over a shared `core` kernel.
+
+### Gradle / artifact graph
 
 ```mermaid
 flowchart TD
@@ -167,9 +184,65 @@ flowchart TD
 - `iosApp/` is a Swift shell (`iOSApp.swift` + `ContentView.swift`); the Xcode project is
   a documented manual follow-up. Gradle only gates the framework link.
 
+### Internal package graph (package-by-feature)
+
+One module, many packages. Dependency direction flows **inward to the kernel**:
+`core ← infra`, then `core` / `infra` / `ui` ← every `feature/*`, and `app` is the
+**composition root** that wires everything (it is the only package allowed to know all
+features and both store factories).
+
+```mermaid
+flowchart TD
+  subgraph APP["app/ — composition root"]
+    APPSHELL["App.kt shell + lifecycle · app/nav/ (NavReducer · NavActions · AdaptiveNav)<br/>AppStore · AccountStore · AccountRegistry · StoreExt"]
+  end
+  subgraph FEATS["feature/*  (7 vertical slices)"]
+    FB["board"]; FBL["boardlist"]; FU["undo"]; FA["activity"]
+    FC["collaborators"]; FAC["account"]; FS["settings"]
+  end
+  UI["ui/ — theme · adaptive · image · shared widgets · UI shims"]
+  INFRA["infra/ — platform shims · db (Adapters) · data/{local,remote,sync} · SeedData · util"]
+  CORE["core/ — domain kernel: ids · Action/Undoable markers · entities<br/>· ActivityEntry · card+sync actions + sealed InverseOp"]
+
+  INFRA --> CORE
+  FEATS --> CORE
+  FEATS --> INFRA
+  FEATS --> UI
+  UI --> CORE
+  APP --> FEATS
+  APP --> INFRA
+  APP --> UI
+  APP --> CORE
+```
+
+- **`core/`** is the domain kernel: ids (`core/Ids.kt`), the plain marker interfaces
+  `Action`/`Undoable` (`core/Action.kt`), entities (`core/BoardEntities.kt`,
+  `core/AccountEntities.kt`, `core/RootEntities.kt`), `core/ActivityEntry.kt`, and the
+  card-mutation / sync actions plus the sealed `InverseOp` (`core/CardActions.kt`). It
+  depends on nothing in the app.
+- **`infra/`** depends only on `core`. It holds the platform `expect/actual` shims
+  (`infra/platform/`), the SQLDelight adapters (`infra/db/Adapters.kt`; the generated
+  SQLDelight code stays at package `…db`), the data/sync layer
+  (`infra/data/{local,remote,sync}`), `infra/SeedData.kt`, and `infra/util/IdGenerator.kt`.
+- **Each `feature/*`** owns its vertical slice (slot models · reducers ·
+  effects/middleware · actions · selectors · UI) and may depend on `core`, `infra`, and
+  `ui` — but not on other features (cross-feature wiring is the app's job).
+- **`app/`** is the composition root: the `App()` shell, navigation (`app/nav/`), and the
+  store composition (`app/AppStore.kt`, `app/AccountStore.kt`, `app/AccountRegistry.kt`,
+  `app/StoreExt.kt`).
+
 ---
 
 ## 5. Layered architecture
+
+The classic layers — **model · action · reducer · middleware · effect · UI** — are no
+longer top-level packages. They now live **within each feature** (`feature/board` has its
+own `BoardModels` · `BoardActions` · `BoardReducers` · `EffectsMiddleware` · `BoardScreen`,
+etc.). The cross-cutting homes own the parts that don't belong to a single feature:
+`core` (the shared domain kernel), `infra` (data/sync/db/platform), `ui` (theme + shared
+widgets), and `app` (composition root + navigation). The diagram below is therefore a
+**conceptual** layering of responsibilities, not a directory map; each box names where the
+work lives by feature/package.
 
 ```mermaid
 flowchart TB
@@ -178,22 +251,22 @@ flowchart TB
     COMPS["Pure components: KanbanCard · FabMenu · SyncIndicator · AdaptiveNav · …"]
     BIND["Bindings: rememberStableStore · selectorState · fieldStateOf"]
   end
-  subgraph STATE["State layer"]
-    STORES["Root store + per-account stores (ModelState, concurrent)"]
-    MW["Middleware: activityLogger → undo → effects"]
-    REDUCERS["Pure slot reducers (routing DSL)"]
+  subgraph STATE["State layer (app/ composition + per-feature slices)"]
+    STORES["Root + per-account stores (app/AppStore · app/AccountStore · app/AccountRegistry)"]
+    MW["Middleware: activityLogger (feature/activity) → undo (feature/undo) → effects (feature/board)"]
+    REDUCERS["Pure slot reducers per feature (routing DSL)"]
   end
   subgraph EFFECTS["Effect / sync layer (off-main)"]
-    SR["SyncRepository (local-first gateway)"]
-    SE["SyncEngine (queue drain)"]
-    BOT["BotCollaborator"]
+    SR["SyncRepository — infra/data/sync (local-first gateway)"]
+    SE["SyncEngine — infra/data/sync (queue drain)"]
+    BOT["BotCollaborator — feature/collaborators"]
   end
-  subgraph DATA["Data layer"]
-    LS["LocalStore / SqlDelightLocalStore"]
-    RA["RemoteApi / FakeRemoteApi"]
-    CODEC["SyncOp codec + DTO mappers"]
+  subgraph DATA["Data layer (infra/data, infra/db)"]
+    LS["LocalStore / SqlDelightLocalStore — infra/data/local"]
+    RA["RemoteApi / FakeRemoteApi — infra/data/remote"]
+    CODEC["SyncOp codec + DTO mappers — infra/data/remote"]
   end
-  subgraph PLATFORM["Platform shims (expect/actual)"]
+  subgraph PLATFORM["Platform shims (expect/actual) — infra/platform + ui shims"]
     P["DriverFactory · newUuid · dynamicColorScheme · ktorEngineOrNull · mainNotificationContext · BackHandler"]
   end
 
@@ -238,12 +311,12 @@ flowchart TB
 
 Key facts:
 
-- `createAppStore()` — `store/AppStore.kt:40`. Root store; **no middleware**.
-- `createAccountStore()` — `store/AccountStore.kt:123`. Per-account store behind the
+- `createAppStore()` — `app/AppStore.kt:45`. Root store; **no middleware**.
+- `createAccountStore()` — `app/AccountStore.kt:136`. Per-account store behind the
   `activityLogger → undo → effects` middleware stack; constructs a per-account
   `FakeRemoteApi` + `SyncRepository` on a fresh `CoroutineScope(SupervisorJob() +
   Dispatchers.Default)`; returns an `AccountStoreHandle`.
-- `AccountRegistry` — `store/AccountRegistry.kt:28`. Dual structure: a lock-free
+- `AccountRegistry` — `app/AccountRegistry.kt:29`. Dual structure: a lock-free
   `StoreRegistry` holding the bare stores, plus a parallel `handles` map holding the
   disposable per-account resources. `remove(id)` cancels the bot + the whole scope
   (tearing down every effect/sync/bot coroutine) before forgetting both entries.
@@ -265,7 +338,7 @@ Key facts:
 | `FakeServiceConfig` | `latencyMinMs=300`, `latencyMaxMs=800`, `failureRate=0.10`, `botEnabled=true`, `botIntervalMs=4000`, `online=true`, `syncIntervalMs=10000` | The demo "backend knobs" |
 | `AuthFlowModel` | `mode: AuthMode`, `inFlight: Boolean`, `error: String?` | Login / add-account flow |
 
-### Per-account models (`declareAccountModels`, `store/AccountStore.kt:163`)
+### Per-account models (`declareAccountModels`, `app/AccountStore.kt:193`)
 
 | Model | Fields | Role |
 |---|---|---|
@@ -288,10 +361,30 @@ Card>`. All ids are `@JvmInline value class`es over `String` (`AccountId`, `Boar
 
 ## 8. Actions, reducers & the routing DSL
 
-All actions implement `sealed interface Action` (`action/Actions.kt`). One orthogonal
-marker, `sealed interface Undoable`, is applied **only** to the four user card mutations
-(`CardMoveRequested`, `AddCard`, `EditCard`, `DeleteCard`) — that is what `undoMiddleware`
-keys off, so bot moves and async op-results never enter undo history.
+All actions implement `interface Action` (`core/Action.kt:7`). One orthogonal marker,
+`interface Undoable` (`core/Action.kt:4`), is applied **only** to the four user card
+mutations (`CardMoveRequested`, `AddCard`, `EditCard`, `DeleteCard`) — that is what
+`undoMiddleware` keys off, so bot moves and async op-results never enter undo history.
+
+> **Why plain (not `sealed`) markers.** Package-by-feature spreads the concrete action
+> leaves across many packages (`core/CardActions.kt`, `app/nav/NavActions.kt`, and one
+> `…Actions.kt` per feature), and a Kotlin `sealed` interface requires all subtypes in the
+> same package/module-compilation unit. So `Action` and `Undoable` are **plain marker
+> interfaces**. `InverseOp` (`core/CardActions.kt:50`) keeps its `sealed` modifier because
+> all of its leaves live together in `core`.
+
+Concrete actions, by home package:
+
+| Actions | File |
+|---|---|
+| Card mutations + sync results + `InverseOp` (`CardMoveRequested`, `AddCard`, `EditCard`, `DeleteCard`, `BotMovedCard`, `BotAddedCard`, `CardOpSucceeded`, `CardOpFailed`, `SyncStatusChanged`, board load actions…) | `core/CardActions.kt` |
+| Navigation (`Navigate`, `Back`, `EnterEditMode`, `OpenCard`, `CloseCard`, `StartCreateCard`, `CancelCreateCard`) | `app/nav/NavActions.kt` |
+| Board feature (`AddColumn`, `Refresh`, filter actions…) | `feature/board/BoardActions.kt` |
+| Board list (`LoadBoardListSucceeded`, `CreateBoard`…) | `feature/boardlist/BoardListActions.kt` |
+| Account / auth (`AccountLoggedIn`, `SwitchAccount`, `LogoutAccount`, `LoadAccountsSucceeded`, `EditProfile`, login flow…) | `feature/account/AccountActions.kt` |
+| Settings (`SetTheme`, `SetLatency`, `SetFailureRate`, `SetBotEnabled`, `SetOnline`…) | `feature/settings/SettingsActions.kt` |
+| Undo (`Undo`, `Redo`, `PushUndo`, `SetUndoModel`…) | `feature/undo/UndoActions.kt` |
+| Activity (`RecordActivity`) | `feature/activity/ActivityActions.kt` |
 
 Reducers are pure `(model, action) -> model` functions registered per slot. The routing
 DSL matches by **exact leaf class**; an unhandled action returns the *same* model instance
@@ -359,7 +452,7 @@ flowchart LR
   end
 ```
 
-`navReducer` (`reducer/AccountReducers.kt:59`) rules:
+`navReducer` (`app/nav/NavReducer.kt:39`) rules:
 
 - **Navigate to a `TopLevel`** resets the stack to a canonical base —
   `BoardList → [BoardList]`, `Board(id) → [BoardList, Board(id)]`,
@@ -372,15 +465,15 @@ flowchart LR
 - `OpenCard` / `CloseCard` / `StartCreateCard` / `CancelCreateCard` are domain aliases
   that forward to `Navigate` / `Back`.
 
-The routing shell (`App.kt` `BoxWithConstraintsRouting`) computes
+The routing shell (`app/App.kt:241` `BoxWithConstraintsRouting`) computes
 `background = stack.last { it is TopLevel }` and `overlay = current.takeIf { it !is
 TopLevel }`, drawing the overlay in `key(overlay)` so per-card UI state resets across
 swaps. `BackHandler` is an `expect/actual` wired only on Android (others are no-ops); the
 in-app `Back` action is the canonical pop.
 
 > **Status:** this stack-based model is the current on-disk implementation (a recent
-> refactor from the flat `NavModel`). One known loose end: `EnterEditMode` is handled by
-> `navReducer` but not yet registered on the `NavModel` slot in `declareAccountModels`.
+> refactor from the flat `NavModel`). `EnterEditMode` is handled by `navReducer` and is now
+> registered on the `NavModel` slot in `declareAccountModels` (`app/AccountStore.kt:201`).
 
 ---
 
@@ -404,8 +497,9 @@ flowchart LR
 - **`undoMiddleware`** — on any `Undoable` action it dispatches `PushUndo(present board)`
   *before* forwarding; on `Undo`/`Redo` it intercepts (does not forward) and runs the
   `undoReducer` step.
-- **`effectsMiddleware`** — the innermost middleware and the **single dispatch-site for
-  side effects**. It calls the reducer via `next(action)` then launches repository work.
+- **`effectsMiddleware`** (`feature/board/EffectsMiddleware.kt:45`) — the innermost
+  middleware and the **single dispatch-site for side effects**. It calls the reducer via
+  `next(action)` then launches repository work.
 
 ### The optimistic-mutation dance
 
@@ -515,7 +609,7 @@ Holds an in-memory server snapshot seeded identically to the local DB (both cons
 Tables: `account`, `app_settings` (single row), `account_nav`, `board`, `board_column`,
 `card`, `attachment`, `label`, `card_label`, `activity`, `collaborator`, **`pending_op`**
 (the outbound queue), `sync_meta` (per-account pull cursor). Value-class ids map to `TEXT`,
-`Instant` to `INTEGER` epoch-millis, via `db/Adapters.kt`. `selectBoardList` derives
+`Instant` to `INTEGER` epoch-millis, via `infra/db/Adapters.kt`. `selectBoardList` derives
 `cardCount`/`doneCount` via SQL `LEFT JOIN`s so board tiles never recompute aggregates in
 Kotlin.
 
@@ -535,8 +629,9 @@ erDiagram
 
 ## 12. The bot collaborator
 
-`BotCollaborator` simulates an external teammate. `startBot` (`middleware/
-BotCollaborator.kt:37`) launches a single cancellable coroutine on the per-account scope:
+`BotCollaborator` simulates an external teammate. `startBot`
+(`feature/collaborators/BotCollaborator.kt:37`) launches a single cancellable coroutine on
+the per-account scope:
 
 ```kotlin
 scope.launch {
@@ -550,7 +645,7 @@ scope.launch {
 It picks a non-terminal column with cards and advances one card to the next column,
 dispatching **`BotMovedCard`** (not `Undoable`, so it never enters user undo history, and
 it triggers no sync — it represents server truth). The bot is started/stopped by
-`AccountRegistry.startBot/stopBot`, driven by `App.kt`'s `BoardLifecycleEffect` (start on
+`AccountRegistry.startBot/stopBot`, driven by `app/App.kt`'s `BoardLifecycleEffect` (start on
 board open, stop on dispose). Defaults: every 4 s, toggleable via Settings.
 
 > `BotAddedCard` is fully wired (action + reducer + activity attribution) but the current
@@ -578,7 +673,8 @@ flowchart TB
 
 Because each column is `key(colId)` and each card is `key(cardId)`, moving one card
 recomposes only the two affected columns. All list work (`deriveVisibleCardIds`, WIP
-counts, column-neighbor walking) lives in pure functions in `BoardSelectors.kt` called
+counts, column-neighbor walking) lives in pure functions in
+`feature/board/BoardSelectors.kt` called
 from `selectorState{}` — never `.filter`/`.count` in a composable body. Leaf components are
 pure-presentational: finished `@Stable` data + remembered callbacks, no store access. Ids
 and timestamps are minted at the dispatch site from `LocalIdGenerator`/`LocalClock`
@@ -718,7 +814,10 @@ lost.
 
 ## 15. Platform shims (expect/actual)
 
-Six `expect` symbols isolate platform differences; everything else is shared.
+Six `expect` symbols isolate platform differences; everything else is shared. Five live in
+`infra/platform/` (`DriverFactory`, `newUuid`, `dynamicColorScheme`, `ktorEngineOrNull`,
+`mainNotificationContext`); the Compose-facing `BackHandler` lives in `ui/BackHandler.kt`
+(with the other UI shims `ui/Locals.kt`, `ui/SystemBarAppearance.kt`).
 
 | Shim | commonMain | Android | iOS | JVM | wasmJs |
 |---|---|---|---|---|---|
@@ -776,11 +875,13 @@ The codebase follows a small set of named conventions (referenced throughout the
   never duplicated inconsistently.
 - **Rule E — Off-main effects.** All repository/sync/bot work runs off-main; dispatch
   marshals notifications back to main via `NotificationContext` (no explicit main hop in
-  effects).
-- **Rule F — Delta-only status.** `SyncEngine` emits `onStatus` only on a real
-  `SyncStatus` change.
-- **Rule G — Mint at the edge.** Ids and timestamps come from `LocalIdGenerator`/
-  `LocalClock` at the dispatch site, never from a reducer.
+  effects). The effect dispatch-site is `effectsMiddleware`
+  (`feature/board/EffectsMiddleware.kt`); the sync layer lives in `infra/data/sync`.
+- **Rule F — Delta-only status.** `SyncEngine` (`infra/data/sync/SyncEngine.kt`) emits
+  `onStatus` only on a real `SyncStatus` change.
+- **Rule G — Mint at the edge.** Ids and timestamps come from the `LocalIdGenerator`/
+  `LocalClock` CompositionLocals (`ui/Locals.kt`; `IdGenerator` itself in
+  `infra/util/IdGenerator.kt`) at the dispatch site, never from a reducer.
 - **Rule H — Single inset point.** Window insets are applied once at the shell root.
 
 Persistence (`LocalStore`) and network (`RemoteApi`) are deliberately separate seams.
@@ -792,13 +893,15 @@ inject/eject) — "not loaded" is a nullable payload, not an absent slot.
 ## 18. Testing strategy
 
 - **`commonTest`** — platform-uniform correctness: reducer purity/integrity
-  (`BoardReducersTest`), action shape (`ActionsTest`), sync-op codec (`SyncOpCodecTest`),
-  fake backend (`FakeRemoteApiTest`).
+  (`BoardReducersTest`, covering `feature/board`), action shape (`ActionsTest`, covering
+  `feature/board`), sync-op codec (`SyncOpCodecTest`, covering `infra/data`), fake backend
+  (`FakeRemoteApiTest`, covering `infra/data`).
 - **`jvmTest`** — JVM-driver and integration tests: `LocalStoreTest` (SQLDelight
-  round-trips on the JDBC driver), `SyncEngineTest` (drain outcomes), `OfflineSyncE2ETest`
-  (the real store + middleware + sync wiring across offline/reconnect/reject under virtual
-  time with `NotificationContext.Inline`), plus Compose UI tests (render isolation,
-  account switching).
+  round-trips on the JDBC driver, covering `infra/data`), `SyncEngineTest` (drain outcomes,
+  `infra/data`), `OfflineSyncE2ETest` (the real store + middleware + sync wiring across
+  offline/reconnect/reject under virtual time with `NotificationContext.Inline`, exercising
+  `infra/data` + the feature middleware), plus Compose UI tests (render isolation, account
+  switching).
 - Native/iOS-simulator and browser test execution is host/CI-gated; local verification
   uses scoped `jvmTest` + cross-target compiles + `detektAll`.
 
