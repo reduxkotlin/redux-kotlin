@@ -9,10 +9,7 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.middleware
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.AddColumn
-import org.reduxkotlin.sample.taskflow.action.CreateBoard
 import org.reduxkotlin.sample.taskflow.action.LoadBoardFailed
-import org.reduxkotlin.sample.taskflow.action.LoadBoardListRequested
-import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.LoadBoardRequested
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.Refresh
@@ -24,12 +21,15 @@ import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.InverseOp
 import org.reduxkotlin.sample.taskflow.core.NavModel
+import org.reduxkotlin.sample.taskflow.feature.boardlist.CreateBoard
+import org.reduxkotlin.sample.taskflow.feature.boardlist.DEFAULT_BOARD_COLOR
+import org.reduxkotlin.sample.taskflow.feature.boardlist.LoadBoardListRequested
+import org.reduxkotlin.sample.taskflow.feature.boardlist.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.feature.settings.SetOnline
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.columnById
 import org.reduxkotlin.sample.taskflow.model.newBoardColumns
-import org.reduxkotlin.sample.taskflow.reducer.DEFAULT_BOARD_COLOR
 
 private const val DEFAULT_INDEX = 0
 

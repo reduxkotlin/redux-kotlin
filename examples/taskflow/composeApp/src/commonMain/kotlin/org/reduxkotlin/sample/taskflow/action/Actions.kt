@@ -1,12 +1,10 @@
 package org.reduxkotlin.sample.taskflow.action
 
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.BoardId
-import org.reduxkotlin.sample.taskflow.core.BoardSummary
 import org.reduxkotlin.sample.taskflow.core.Card
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
@@ -30,7 +28,7 @@ data object CancelCreateCard : Action
 
 data class AddColumn(val id: ColumnId, val title: String) : Action
 
-data class CreateBoard(val boardId: BoardId, val name: String, val now: Instant) : Action
+// CreateBoard moved to …feature.boardlist.BoardListActions
 
 // --- nav ---
 
@@ -78,11 +76,7 @@ data class LoadBoardSucceeded(val board: Board) : Action
 
 data class LoadBoardFailed(val boardId: BoardId, val error: String) : Action
 
-data object LoadBoardListRequested : Action
-
-data class LoadBoardListSucceeded(val summaries: PersistentList<BoardSummary>) : Action
-
-data class LoadBoardListFailed(val error: String) : Action
+// LoadBoardListRequested, LoadBoardListSucceeded, LoadBoardListFailed moved to …feature.boardlist.BoardListActions
 
 // --- sync (per-account) — folded into SyncModel by syncReducer ---
 data class SyncStatusChanged(

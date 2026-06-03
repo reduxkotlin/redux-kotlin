@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.screens
+package org.reduxkotlin.sample.taskflow.feature.boardlist
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -33,17 +33,13 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.CreateBoard
-import org.reduxkotlin.sample.taskflow.action.LoadBoardListRequested
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.ui.LocalClock
 import org.reduxkotlin.sample.taskflow.ui.LocalIdGenerator
 import org.reduxkotlin.sample.taskflow.ui.adaptive.WindowSizeClass
 import org.reduxkotlin.sample.taskflow.ui.adaptive.rememberWindowSize
-import org.reduxkotlin.sample.taskflow.ui.components.BoardSummaryCard
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**
@@ -51,7 +47,7 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  * [BoardSummaryCard] (looked up in [BoardListModel.boards]); tapping one dispatches
  * `Navigate(Route.Board(id))` to open it. A dashed "New board" tile opens a name dialog that
  * dispatches [CreateBoard]. When no boards exist yet the screen shows a Display-style "No boards
- * yet" hero. Card counts come straight from each [org.reduxkotlin.sample.taskflow.model.BoardSummary]
+ * yet" hero. Card counts come straight from each [org.reduxkotlin.sample.taskflow.core.BoardSummary]
  * (the DB-aggregate cache) — never recomputed here.
  *
  * Binding discipline (Rule C): the whole [BoardListModel] is read once via a single [fieldStateOf]
@@ -59,8 +55,8 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  * no list derivation in the composable body. Each [BoardSummaryCard] gets finished immutable data
  * plus a remembered callback — the store never reaches a child. The grid column count is purely a
  * function of window width (1 / 2 / 3 columns at Compact / Medium / Expanded). On enter the screen
- * fires [LoadBoardListRequested] exactly once via `LaunchedEffect(Unit)`. New ids and the clock for
- * [CreateBoard] are minted at the dispatch site from `LocalIdGenerator` / `LocalClock` (Rule G).
+ * fires [LoadBoardListRequested] exactly once via `LaunchedEffect(Unit)`. New ids and the clock
+ * for [CreateBoard] are minted at the dispatch site from `LocalIdGenerator` / `LocalClock` (Rule G).
  *
  * @param accountStore the active account store holding [BoardListModel].
  * @param modifier the [Modifier] for the screen root.

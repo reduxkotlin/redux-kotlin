@@ -25,9 +25,7 @@ import org.reduxkotlin.sample.taskflow.action.BotAddedCard
 import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
-import org.reduxkotlin.sample.taskflow.action.CreateBoard
 import org.reduxkotlin.sample.taskflow.action.EnterEditMode
-import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
@@ -52,6 +50,10 @@ import org.reduxkotlin.sample.taskflow.feature.activity.ActivityModel
 import org.reduxkotlin.sample.taskflow.feature.activity.RecordActivity
 import org.reduxkotlin.sample.taskflow.feature.activity.activityLoggerMiddleware
 import org.reduxkotlin.sample.taskflow.feature.activity.activityReducer
+import org.reduxkotlin.sample.taskflow.feature.boardlist.BoardListModel
+import org.reduxkotlin.sample.taskflow.feature.boardlist.CreateBoard
+import org.reduxkotlin.sample.taskflow.feature.boardlist.LoadBoardListSucceeded
+import org.reduxkotlin.sample.taskflow.feature.boardlist.boardListReducer
 import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.feature.collaborators.collaboratorsReducer
 import org.reduxkotlin.sample.taskflow.feature.collaborators.seedCollaborators
@@ -67,11 +69,9 @@ import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.infra.platform.mainNotificationContext
 import org.reduxkotlin.sample.taskflow.middleware.effectsMiddleware
-import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
-import org.reduxkotlin.sample.taskflow.reducer.boardListReducer
 import org.reduxkotlin.sample.taskflow.reducer.boardReducer
 import org.reduxkotlin.sample.taskflow.reducer.filterReducer
 import org.reduxkotlin.sample.taskflow.reducer.navReducer
