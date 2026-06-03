@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.store
+package org.reduxkotlin.sample.taskflow.app
 
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver

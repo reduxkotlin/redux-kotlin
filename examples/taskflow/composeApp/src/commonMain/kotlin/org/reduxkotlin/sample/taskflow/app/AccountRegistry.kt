@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.store
+package org.reduxkotlin.sample.taskflow.app
 
 import kotlinx.coroutines.cancel
 import org.reduxkotlin.Store

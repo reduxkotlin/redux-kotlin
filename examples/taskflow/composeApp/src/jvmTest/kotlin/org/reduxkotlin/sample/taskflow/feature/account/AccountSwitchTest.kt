@@ -18,6 +18,8 @@ import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
+import org.reduxkotlin.sample.taskflow.app.AccountRegistry
+import org.reduxkotlin.sample.taskflow.app.createAppStore
 import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.NavModel
@@ -27,8 +29,6 @@ import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
 import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
-import org.reduxkotlin.sample.taskflow.store.AccountRegistry
-import org.reduxkotlin.sample.taskflow.store.createAppStore
 import org.reduxkotlin.sample.taskflow.ui.image.fakeNoNetworkImageLoader
 
 /**

@@ -78,7 +78,7 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  * wholesale.** The column list is bound as a lightweight [ColDesc] list once; each [ColumnView] is
  * wrapped in `key(colId)` and subscribes only to its own `cardIds` (by [ColumnId], never by index)
  * via [deriveVisibleCardIds] in a `selectorState`; each card is wrapped in `key(cardId)` and
- * subscribes only to its own [org.reduxkotlin.sample.taskflow.model.Card] plus its optimistic flag
+ * subscribes only to its own [org.reduxkotlin.sample.taskflow.core.Card] plus its optimistic flag
  * (`cardId in `[SyncModel.inFlight]). All derivation (visible/filtered ids, WIP count, name lookup)
  * lives in `selectorState{}` or reducers — never `.filter`/`.count` in a composable body. So moving
  * one card recomposes only the two affected columns; every other column stays frozen.
@@ -389,7 +389,7 @@ private fun ColumnView(
 }
 
 /**
- * One card cell: binds only its own [org.reduxkotlin.sample.taskflow.model.Card] and its optimistic
+ * One card cell: binds only its own [org.reduxkotlin.sample.taskflow.core.Card] and its optimistic
  * flag, so a change to a sibling card never recomposes this one (Rule C). The assignee is an O(1)
  * map lookup against the pre-bound [collaborators] (a single-key lookup is the allowed exception).
  */

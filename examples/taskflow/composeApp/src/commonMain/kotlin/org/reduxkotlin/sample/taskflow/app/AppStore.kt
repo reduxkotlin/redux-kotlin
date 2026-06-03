@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.store
+package org.reduxkotlin.sample.taskflow.app
 
 import org.reduxkotlin.Store
 import org.reduxkotlin.bundle.createConcurrentModelStore

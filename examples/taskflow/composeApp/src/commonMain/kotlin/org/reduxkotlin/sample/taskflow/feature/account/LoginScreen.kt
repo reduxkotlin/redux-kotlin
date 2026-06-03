@@ -30,10 +30,10 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
+import org.reduxkotlin.sample.taskflow.app.getModel
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.infra.SeedData
-import org.reduxkotlin.sample.taskflow.store.getModel
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**

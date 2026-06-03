@@ -11,6 +11,10 @@ import kotlinx.coroutines.test.runTest
 import org.reduxkotlin.Store
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
+import org.reduxkotlin.sample.taskflow.app.AccountStoreHandle
+import org.reduxkotlin.sample.taskflow.app.createAccountStore
+import org.reduxkotlin.sample.taskflow.app.createAppStore
+import org.reduxkotlin.sample.taskflow.app.getModel
 import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
@@ -36,10 +40,6 @@ import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
 import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
-import org.reduxkotlin.sample.taskflow.store.AccountStoreHandle
-import org.reduxkotlin.sample.taskflow.store.createAccountStore
-import org.reduxkotlin.sample.taskflow.store.createAppStore
-import org.reduxkotlin.sample.taskflow.store.getModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

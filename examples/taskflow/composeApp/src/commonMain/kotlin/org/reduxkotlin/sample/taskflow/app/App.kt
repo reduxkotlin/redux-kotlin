@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow
+package org.reduxkotlin.sample.taskflow.app
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.Box
@@ -61,9 +61,6 @@ import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
 import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
 import org.reduxkotlin.sample.taskflow.infra.platform.DriverFactory
 import org.reduxkotlin.sample.taskflow.infra.util.DefaultIdGenerator
-import org.reduxkotlin.sample.taskflow.store.AccountRegistry
-import org.reduxkotlin.sample.taskflow.store.createAppStore
-import org.reduxkotlin.sample.taskflow.store.getModel
 import org.reduxkotlin.sample.taskflow.ui.Avatar
 import org.reduxkotlin.sample.taskflow.ui.BackHandler
 import org.reduxkotlin.sample.taskflow.ui.LocalClock

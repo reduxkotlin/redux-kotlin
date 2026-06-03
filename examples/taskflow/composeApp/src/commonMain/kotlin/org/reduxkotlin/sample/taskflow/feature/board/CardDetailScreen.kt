@@ -81,7 +81,7 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  * **full-screen** surface on Compact, switched purely by the window size class.
  *
  * Binding discipline (Rule C): the overlay reads only `current` from [NavModel]; the view/edit
- * body binds *just* that one [org.reduxkotlin.sample.taskflow.model.Card] via
+ * body binds *just* that one [org.reduxkotlin.sample.taskflow.core.Card] via
  * `fieldStateOf(BoardModel::class){ …cards[id] }`, never the whole board. The card's column
  * position (for [MoveToGroup]'s edge state) is derived in a value-equal [CardColumnNav]
  * `selectorState`, and the assignee is an O(1) lookup against the bound [CollaboratorsModel.byId].
