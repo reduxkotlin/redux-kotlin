@@ -13,8 +13,8 @@ import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
 import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
+import org.reduxkotlin.sample.taskflow.infra.platform.newUuid
 import org.reduxkotlin.sample.taskflow.model.SessionModel
-import org.reduxkotlin.sample.taskflow.platform.newUuid
 import kotlin.time.Clock
 
 /** The non-login bot collaborator's id; mirrors `SeedData.bot.id` so bot activity is attributed to it. */
