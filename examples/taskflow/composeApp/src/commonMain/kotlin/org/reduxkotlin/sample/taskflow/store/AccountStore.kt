@@ -17,11 +17,12 @@ import org.reduxkotlin.devtools.devToolsMiddleware
 import org.reduxkotlin.devtools.named
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.routing.RoutingBuilder
-import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.CloseCard
-import org.reduxkotlin.sample.taskflow.action.EnterEditMode
-import org.reduxkotlin.sample.taskflow.action.Navigate
-import org.reduxkotlin.sample.taskflow.action.OpenCard
+import org.reduxkotlin.sample.taskflow.app.nav.Back
+import org.reduxkotlin.sample.taskflow.app.nav.CloseCard
+import org.reduxkotlin.sample.taskflow.app.nav.EnterEditMode
+import org.reduxkotlin.sample.taskflow.app.nav.Navigate
+import org.reduxkotlin.sample.taskflow.app.nav.OpenCard
+import org.reduxkotlin.sample.taskflow.app.nav.navReducer
 import org.reduxkotlin.sample.taskflow.core.AccountDetail
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
@@ -75,7 +76,6 @@ import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.infra.platform.mainNotificationContext
-import org.reduxkotlin.sample.taskflow.reducer.navReducer
 
 /**
  * Owns one account's running store plus everything bound to that account's lifetime.

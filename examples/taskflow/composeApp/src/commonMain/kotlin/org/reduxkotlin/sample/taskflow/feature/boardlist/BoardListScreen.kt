@@ -33,7 +33,7 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.Navigate
+import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.ui.LocalClock

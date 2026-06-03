@@ -33,8 +33,9 @@ import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.devtools.inapp.InAppConfig
 import org.reduxkotlin.devtools.inapp.ReduxDevToolsHost
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.Navigate
+import org.reduxkotlin.sample.taskflow.app.nav.AdaptiveNav
+import org.reduxkotlin.sample.taskflow.app.nav.Back
+import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -69,7 +70,6 @@ import org.reduxkotlin.sample.taskflow.ui.LocalClock
 import org.reduxkotlin.sample.taskflow.ui.LocalIdGenerator
 import org.reduxkotlin.sample.taskflow.ui.PredictiveBackHandler
 import org.reduxkotlin.sample.taskflow.ui.adaptive.widthSizeClass
-import org.reduxkotlin.sample.taskflow.ui.components.AdaptiveNav
 import org.reduxkotlin.sample.taskflow.ui.image.initCoil
 import org.reduxkotlin.sample.taskflow.ui.theme.TaskFlowTheme
 import kotlin.time.Clock

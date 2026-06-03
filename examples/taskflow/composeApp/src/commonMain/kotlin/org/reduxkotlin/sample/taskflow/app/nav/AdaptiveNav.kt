@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.components
+package org.reduxkotlin.sample.taskflow.app.nav
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -48,7 +48,7 @@ private fun NavDestination.matches(route: Route): Boolean = when (this) {
  * The adaptive navigation shell. At [WindowSizeClass.Compact] it wraps [content] in a [Scaffold]
  * with a bottom [NavigationBar]; at [WindowSizeClass.Medium] / [WindowSizeClass.Expanded] it places
  * a [NavigationRail] (with an optional [header], e.g. a FAB) beside the [content]. Same three
- * destinations (Boards / Profile / Settings) and the same [NavModel][org.reduxkotlin.sample.taskflow.model.NavModel]
+ * destinations (Boards / Profile / Settings) and the same [NavModel][org.reduxkotlin.sample.taskflow.core.NavModel]
  * route either way; the selected item uses a `secondaryContainer` pill indicator with a Label
  * Medium label. Mirrors the `AdaptiveNav` spec entry (spec-data.js).
  *

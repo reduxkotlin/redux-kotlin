@@ -2,7 +2,7 @@ package org.reduxkotlin.sample.taskflow.feature.activity
 
 import org.reduxkotlin.Store
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.Navigate
+import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.Card

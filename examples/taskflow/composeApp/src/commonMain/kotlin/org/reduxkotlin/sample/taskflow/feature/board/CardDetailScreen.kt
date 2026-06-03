@@ -43,9 +43,9 @@ import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.compose.selectorState
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.CloseCard
-import org.reduxkotlin.sample.taskflow.action.EnterEditMode
+import org.reduxkotlin.sample.taskflow.app.nav.Back
+import org.reduxkotlin.sample.taskflow.app.nav.CloseCard
+import org.reduxkotlin.sample.taskflow.app.nav.EnterEditMode
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.Card

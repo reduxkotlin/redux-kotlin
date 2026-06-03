@@ -18,7 +18,7 @@ import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.Navigate
+import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
