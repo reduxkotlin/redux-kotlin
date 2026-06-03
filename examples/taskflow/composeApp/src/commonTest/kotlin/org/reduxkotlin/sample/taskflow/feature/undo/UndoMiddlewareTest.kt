@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.middleware
+package org.reduxkotlin.sample.taskflow.feature.undo
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
@@ -7,10 +7,6 @@ import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.BoardRestored
 import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.action.Navigate
-import org.reduxkotlin.sample.taskflow.action.PushUndo
-import org.reduxkotlin.sample.taskflow.action.Redo
-import org.reduxkotlin.sample.taskflow.action.SetUndoModel
-import org.reduxkotlin.sample.taskflow.action.Undo
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -22,7 +18,6 @@ import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.UndoModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
