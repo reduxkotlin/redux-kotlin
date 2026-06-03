@@ -49,10 +49,10 @@ import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
 import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
+import org.reduxkotlin.sample.taskflow.infra.platform.DriverFactory
 import org.reduxkotlin.sample.taskflow.infra.util.DefaultIdGenerator
 import org.reduxkotlin.sample.taskflow.model.AccountsModel
 import org.reduxkotlin.sample.taskflow.model.AuthMode
-import org.reduxkotlin.sample.taskflow.platform.DriverFactory
 import org.reduxkotlin.sample.taskflow.store.AccountRegistry
 import org.reduxkotlin.sample.taskflow.store.createAppStore
 import org.reduxkotlin.sample.taskflow.store.getModel

@@ -58,6 +58,7 @@ import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
+import org.reduxkotlin.sample.taskflow.infra.platform.mainNotificationContext
 import org.reduxkotlin.sample.taskflow.middleware.activityLoggerMiddleware
 import org.reduxkotlin.sample.taskflow.middleware.effectsMiddleware
 import org.reduxkotlin.sample.taskflow.middleware.undoMiddleware
@@ -69,7 +70,6 @@ import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.SessionModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
 import org.reduxkotlin.sample.taskflow.model.UndoModel
-import org.reduxkotlin.sample.taskflow.platform.mainNotificationContext
 import org.reduxkotlin.sample.taskflow.reducer.activityReducer
 import org.reduxkotlin.sample.taskflow.reducer.boardListReducer
 import org.reduxkotlin.sample.taskflow.reducer.boardReducer

@@ -7,7 +7,7 @@ import coil3.PlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import io.ktor.client.HttpClient
-import org.reduxkotlin.sample.taskflow.platform.ktorEngineOrNull
+import org.reduxkotlin.sample.taskflow.infra.platform.ktorEngineOrNull
 
 /**
  * Installs the app-wide Coil [ImageLoader] singleton, wiring the platform Ktor engine

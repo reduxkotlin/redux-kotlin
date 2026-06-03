@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import org.reduxkotlin.sample.taskflow.App
-import org.reduxkotlin.sample.taskflow.platform.AndroidContextHolder
+import org.reduxkotlin.sample.taskflow.infra.platform.AndroidContextHolder
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

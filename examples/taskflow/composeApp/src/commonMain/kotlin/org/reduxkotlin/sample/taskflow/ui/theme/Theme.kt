@@ -5,7 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import org.reduxkotlin.sample.taskflow.core.Theme
-import org.reduxkotlin.sample.taskflow.platform.dynamicColorScheme
+import org.reduxkotlin.sample.taskflow.infra.platform.dynamicColorScheme
 import org.reduxkotlin.sample.taskflow.ui.ApplySystemBarAppearance
 
 /**

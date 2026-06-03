@@ -4,7 +4,7 @@ import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.platform.newUuid
+import org.reduxkotlin.sample.taskflow.infra.platform.newUuid
 
 /**
  * Source of fresh, unique ids minted at dispatch sites (Rule G — never in a reducer).
