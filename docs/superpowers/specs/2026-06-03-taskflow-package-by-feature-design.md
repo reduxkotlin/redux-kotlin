@@ -27,7 +27,7 @@ Reducers combined via the hand-written `createConcurrentModelStore { model<M> { 
 
 Per-account middleware order (inside the devTools pipeline, **must be preserved exactly**): `activityLogger → undo → effects`.
 
-**Cross-cutting actions** (one sealed leaf, handled by reducers now living in different feature packages — legal in Kotlin 1.5+):
+**Cross-cutting actions** (one action leaf, handled by reducers now living in different feature packages — fine because the `Action`/`Undoable` markers are plain interfaces, see note below):
 - `EditProfile` → `accountsReducer` (account) + `sessionReducer` (account) + `collaboratorsReducer` (collaborators)
 - `BoardClosed` → `boardReducer` + `filterReducer` + `syncReducer` (board) + `undoModelReducer` (undo)
 
@@ -60,7 +60,9 @@ Per-account middleware order (inside the devTools pipeline, **must be preserved 
 
 The multi-agent completeness review surfaced that the `data/` layer (`LocalStore`, `SqlDelightLocalStore`, `FakeRemoteApi`, `RemoteChange`, `SyncMappers`, `SyncOpBuilders`, `SyncEngine`, `SyncRepository`) — destined for `infra` — imports domain **entities**, persisted **state value-types**, and **card-mutation actions** from across the app. Homing those in feature packages would make `infra` depend on `feature.board/boardlist/account/settings/activity/app.nav` — a backward layer dependency in the canonical exemplar.
 
-**Resolution (chosen):** a shared **domain kernel** in `core`. `core` holds exactly the types `infra` structurally needs, so `infra → core` only. Features keep their `ModelState` slot models, reducers, effects/middleware, selectors, UI, and feature-specific actions. This is a behavior-preserving placement change (no logic change); the sealed `Action` leaves still live across packages (§5.1 holds — now `core` + 6 feature/app packages).
+**Resolution (chosen):** a shared **domain kernel** in `core`. `core` holds exactly the types `infra` structurally needs, so `infra → core` only. Features keep their `ModelState` slot models, reducers, effects/middleware, selectors, UI, and feature-specific actions. This is a behavior-preserving placement change (no logic change); the `Action` leaves live across packages (§5.1 holds — now `core` + 6 feature/app packages).
+
+> **Correction (Kotlin sealed rule):** §5.1 and earlier drafts claimed sealed-interface leaves may live across packages in the same module (Kotlin 1.5+). That is **incorrect** — Kotlin 1.5 relaxed sealed subtypes to the same **module AND same package**, not arbitrary packages. To split `Action` leaves across feature packages, the root `Action`/`Undoable` markers are therefore **plain `public interface`s, not `sealed`**. This is the idiomatic package-by-feature choice and is behavior-preserving here: no `when(action)` relies on exhaustiveness (all use an `else`/no-op branch), and `is Undoable` marker checks are unaffected. `InverseOp` **stays `sealed`** because all four of its leaves live together in `core`.
 
 **`core` membership (supersedes the `core` row above):**
 - ids: AccountId, BoardId, ColumnId, CardId, LabelId, OpId
@@ -84,7 +86,7 @@ The multi-agent completeness review surfaced that the `data/` layer (`LocalStore
 
 ### File splits
 
-- **`action/Actions.kt`** (single sealed file) → per-feature action files. Root `Action` + `Undoable` markers move to `core`. Each feature owns its leaves (board mutations + InverseOp → board; nav actions → app.nav; etc.). Sealed-interface leaves across packages are legal (Kotlin 1.5+).
+- **`action/Actions.kt`** (single file) → per-feature action files. Root `Action` + `Undoable` markers move to `core` as **plain interfaces** (see the sealed-rule correction above). Each feature owns its leaves (card mutations + InverseOp → core; other board leaves → board; nav actions → app.nav; etc.).
 - **`middleware/EffectsMiddleware.kt`** → `effectsMiddleware` stays as the single composed middleware (Rule E = discipline, not one file). Its per-action handlers (`onMove/onAdd/onEdit/onDelete/onLoadBoard/onLoadBoardList/onCreateBoard/onAddColumn`) stay co-located with board. The `handle(...)` routing `when` and collector-start logic are preserved verbatim. Lives in `feature.board`.
 - **`model/RootModels.kt`** → account (AccountsModel, AuthFlowModel, AuthMode, AccountSummary) + settings (AppSettingsModel, Theme, FakeServiceConfig).
 - **`model/AccountModels.kt`** → account (SessionModel, AccountDetail) + app.nav (NavModel, Route) + boardList (BoardListModel, BoardSummary) + collaborators (CollaboratorsModel).

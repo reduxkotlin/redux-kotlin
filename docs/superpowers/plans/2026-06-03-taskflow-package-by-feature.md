@@ -4,7 +4,7 @@
 
 **Goal:** Reorganize `examples/taskflow` from package-by-layer to package-by-feature, behavior-identical, with a green multiplatform build.
 
-**Architecture:** Single Gradle module (`:examples:taskflow:composeApp`). 7 `feature.<name>` packages + 4 shared homes (`core`, `infra`, `app`, `ui`). **Revision 1 (from the completeness review):** a shared **domain kernel** lives in `core` — the domain entities, persisted state value-types, and card-mutation/sync-contract actions that the `data/` (→`infra`) layer structurally needs. This keeps `infra → core` only (no backward `infra → feature` edge). Features keep their `ModelState` slot models, reducers, effects/middleware, selectors, UI, and feature-specific actions. The sealed `Action`/`Undoable` markers move to `core`; concrete leaves split across `core` + 6 feature/app packages (legal Kotlin 1.5+). `effectsMiddleware` stays whole in `feature.board`. The `createConcurrentModelStore { model<M>{ on<T>{} } }` routing DSL and the `activityLogger → undo → effects` middleware order are preserved verbatim.
+**Architecture:** Single Gradle module (`:examples:taskflow:composeApp`). 7 `feature.<name>` packages + 4 shared homes (`core`, `infra`, `app`, `ui`). **Revision 1 (from the completeness review):** a shared **domain kernel** lives in `core` — the domain entities, persisted state value-types, and card-mutation/sync-contract actions that the `data/` (→`infra`) layer structurally needs. This keeps `infra → core` only (no backward `infra → feature` edge). Features keep their `ModelState` slot models, reducers, effects/middleware, selectors, UI, and feature-specific actions. The `Action`/`Undoable` markers move to `core` as **plain `public interface`s** (NOT sealed — Kotlin 1.5's relaxation is same-module *and same-package*, so a sealed root cannot have leaves spread across feature packages; plain markers are the idiomatic package-by-feature choice and behavior-preserving here since no `when` relies on exhaustiveness). Concrete leaves split across `core` + 6 feature/app packages. `InverseOp` stays `sealed` (its 4 leaves all live in `core`). `effectsMiddleware` stays whole in `feature.board`. The `createConcurrentModelStore { model<M>{ on<T>{} } }` routing DSL and the `activityLogger → undo → effects` middleware order are preserved verbatim.
 
 **Tech Stack:** Kotlin Multiplatform, Compose Multiplatform, SQLDelight, redux-kotlin (concurrent + multimodel + compose-multimodel bundle), detekt 2.0.0-alpha.3 (`explicitApi()` on), kotlin-test.
 
@@ -97,10 +97,10 @@ No commit.
 package org.reduxkotlin.sample.taskflow.core
 
 /** User card mutations only — drives the undo/redo stack. */
-public sealed interface Undoable
+public interface Undoable
 
 /** Every concrete action implements Action. */
-public sealed interface Action
+public interface Action
 ```
 - Create `CM/core/BoardEntities.kt` ← cut Board, Column, Card, Attachment, Label from `model/BoardModels.kt` (leave `newBoardColumns`,`columnById` and any `BoardModel` slot in `BoardModels.kt` for now — they go to feature.board in Task 11).
 - Create `CM/core/AccountEntities.kt` ← cut BoardSummary, AccountDetail, NavModel, Route from `model/AccountModels.kt`.
