@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.screens
+package org.reduxkotlin.sample.taskflow.feature.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,15 +26,9 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.SetBotEnabled
-import org.reduxkotlin.sample.taskflow.action.SetFailureRate
-import org.reduxkotlin.sample.taskflow.action.SetLatency
-import org.reduxkotlin.sample.taskflow.action.SetOnline
-import org.reduxkotlin.sample.taskflow.action.SetTheme
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
 import org.reduxkotlin.sample.taskflow.core.Theme
-import org.reduxkotlin.sample.taskflow.ui.components.SettingsSlider
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**

@@ -14,7 +14,6 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.LabelId
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.core.Theme
 import org.reduxkotlin.sample.taskflow.model.AuthMode
 import org.reduxkotlin.sample.taskflow.model.UndoModel
 import kotlin.time.Instant
@@ -134,14 +133,3 @@ data class LoadAccountsFailed(val error: String) : Action
 data class SwitchAccount(val accountId: AccountId) : Action
 
 data class LogoutAccount(val accountId: AccountId) : Action
-
-data class SetTheme(val theme: Theme) : Action
-
-data class SetLatency(val minMs: Int, val maxMs: Int) : Action
-
-data class SetFailureRate(val rate: Float) : Action
-
-data class SetBotEnabled(val enabled: Boolean) : Action
-
-// writes AppSettingsModel.fakeService.online (root)
-data class SetOnline(val online: Boolean) : Action

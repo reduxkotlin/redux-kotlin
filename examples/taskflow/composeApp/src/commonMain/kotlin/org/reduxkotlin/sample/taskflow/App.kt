@@ -45,6 +45,7 @@ import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
+import org.reduxkotlin.sample.taskflow.feature.settings.SettingsScreen
 import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
@@ -69,7 +70,6 @@ import org.reduxkotlin.sample.taskflow.ui.screens.BoardScreen
 import org.reduxkotlin.sample.taskflow.ui.screens.CardDetailScreen
 import org.reduxkotlin.sample.taskflow.ui.screens.LoginScreen
 import org.reduxkotlin.sample.taskflow.ui.screens.ProfileScreen
-import org.reduxkotlin.sample.taskflow.ui.screens.SettingsScreen
 import org.reduxkotlin.sample.taskflow.ui.screens.SwitcherScreen
 import org.reduxkotlin.sample.taskflow.ui.theme.TaskFlowTheme
 import kotlin.time.Clock

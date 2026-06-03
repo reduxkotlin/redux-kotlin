@@ -16,7 +16,6 @@ import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.LoadBoardRequested
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.Refresh
-import org.reduxkotlin.sample.taskflow.action.SetOnline
 import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.Board
@@ -25,6 +24,7 @@ import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.InverseOp
 import org.reduxkotlin.sample.taskflow.core.NavModel
+import org.reduxkotlin.sample.taskflow.feature.settings.SetOnline
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.columnById
