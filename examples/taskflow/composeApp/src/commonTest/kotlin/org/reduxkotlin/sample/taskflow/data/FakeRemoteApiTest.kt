@@ -2,6 +2,11 @@ package org.reduxkotlin.sample.taskflow.data
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.runTest
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.data.remote.FakeRemoteApi
 import org.reduxkotlin.sample.taskflow.data.remote.InverseOpDto
 import org.reduxkotlin.sample.taskflow.data.remote.OfflineException
@@ -9,11 +14,6 @@ import org.reduxkotlin.sample.taskflow.data.remote.PushResult
 import org.reduxkotlin.sample.taskflow.data.remote.RemoteChange
 import org.reduxkotlin.sample.taskflow.data.remote.SyncOp
 import org.reduxkotlin.sample.taskflow.data.remote.TransientNetworkException
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.BoardId
-import org.reduxkotlin.sample.taskflow.model.Card
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.ColumnId
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,7 +33,7 @@ class FakeRemoteApiTest {
         failureRate: Float = 0f,
         latencyMinMs: Int = 100,
         latencyMaxMs: Int = 100,
-    ) = org.reduxkotlin.sample.taskflow.model.FakeServiceConfig(
+    ) = org.reduxkotlin.sample.taskflow.core.FakeServiceConfig(
         latencyMinMs = latencyMinMs,
         latencyMaxMs = latencyMaxMs,
         failureRate = failureRate,
@@ -41,7 +41,7 @@ class FakeRemoteApiTest {
     )
 
     private fun api(
-        config: () -> org.reduxkotlin.sample.taskflow.model.FakeServiceConfig,
+        config: () -> org.reduxkotlin.sample.taskflow.core.FakeServiceConfig,
         rng: Random = Random(0),
     ): FakeRemoteApi = FakeRemoteApi(seededAccounts = SeedData.seededAccounts(), config = config, rng = rng)
 

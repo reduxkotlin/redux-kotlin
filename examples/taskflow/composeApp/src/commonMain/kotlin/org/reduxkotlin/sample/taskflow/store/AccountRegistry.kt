@@ -6,11 +6,11 @@ import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.devtools.DevToolsHub
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.registry.StoreRegistry
+import org.reduxkotlin.sample.taskflow.core.AccountDetail
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.middleware.startBot
-import org.reduxkotlin.sample.taskflow.model.AccountDetail
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.platform.mainNotificationContext
 
 /**

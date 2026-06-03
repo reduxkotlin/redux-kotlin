@@ -3,11 +3,11 @@ package org.reduxkotlin.sample.taskflow.ui.screens
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import org.reduxkotlin.sample.taskflow.model.Board
+import org.reduxkotlin.sample.taskflow.core.Board
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.Card
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.ColumnId
 import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.columnById
 

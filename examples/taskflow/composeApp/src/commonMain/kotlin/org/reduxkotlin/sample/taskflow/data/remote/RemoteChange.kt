@@ -1,11 +1,11 @@
 package org.reduxkotlin.sample.taskflow.data.remote
 
-import org.reduxkotlin.sample.taskflow.model.BoardId
-import org.reduxkotlin.sample.taskflow.model.BoardSummary
-import org.reduxkotlin.sample.taskflow.model.Card
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.Column
-import org.reduxkotlin.sample.taskflow.model.ColumnId
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.BoardSummary
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.Column
+import org.reduxkotlin.sample.taskflow.core.ColumnId
 
 /**
  * A domain-typed change emitted by the remote API for the local store to apply.

@@ -2,12 +2,12 @@ package org.reduxkotlin.sample.taskflow.db
 
 import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.BoardId
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.ColumnId
-import org.reduxkotlin.sample.taskflow.model.LabelId
-import org.reduxkotlin.sample.taskflow.model.OpId
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.ColumnId
+import org.reduxkotlin.sample.taskflow.core.LabelId
+import org.reduxkotlin.sample.taskflow.core.OpId
 import kotlin.time.Instant
 
 /** Maps an [AccountId] value-class to/from its `TEXT` storage form. */

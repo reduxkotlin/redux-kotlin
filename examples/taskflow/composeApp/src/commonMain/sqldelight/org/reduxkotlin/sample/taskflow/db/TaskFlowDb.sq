@@ -1,12 +1,12 @@
 import kotlin.Boolean;
 import kotlin.Int;
 import kotlin.time.Instant;
-import org.reduxkotlin.sample.taskflow.model.AccountId;
-import org.reduxkotlin.sample.taskflow.model.BoardId;
-import org.reduxkotlin.sample.taskflow.model.CardId;
-import org.reduxkotlin.sample.taskflow.model.ColumnId;
-import org.reduxkotlin.sample.taskflow.model.LabelId;
-import org.reduxkotlin.sample.taskflow.model.OpId;
+import org.reduxkotlin.sample.taskflow.core.AccountId;
+import org.reduxkotlin.sample.taskflow.core.BoardId;
+import org.reduxkotlin.sample.taskflow.core.CardId;
+import org.reduxkotlin.sample.taskflow.core.ColumnId;
+import org.reduxkotlin.sample.taskflow.core.LabelId;
+import org.reduxkotlin.sample.taskflow.core.OpId;
 
 -- ============================================================================
 -- TaskFlow durable LocalStore schema (design §13a, field shapes §5).

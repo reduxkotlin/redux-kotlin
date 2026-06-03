@@ -2,69 +2,22 @@ package org.reduxkotlin.sample.taskflow.action
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
-import org.reduxkotlin.sample.taskflow.model.ActivityEntry
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.Action
+import org.reduxkotlin.sample.taskflow.core.ActivityEntry
+import org.reduxkotlin.sample.taskflow.core.Board
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.BoardSummary
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.ColumnId
+import org.reduxkotlin.sample.taskflow.core.LabelId
+import org.reduxkotlin.sample.taskflow.core.Route
+import org.reduxkotlin.sample.taskflow.core.Theme
 import org.reduxkotlin.sample.taskflow.model.AuthMode
-import org.reduxkotlin.sample.taskflow.model.Board
-import org.reduxkotlin.sample.taskflow.model.BoardId
-import org.reduxkotlin.sample.taskflow.model.BoardSummary
-import org.reduxkotlin.sample.taskflow.model.Card
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.ColumnId
-import org.reduxkotlin.sample.taskflow.model.LabelId
-import org.reduxkotlin.sample.taskflow.model.OpId
-import org.reduxkotlin.sample.taskflow.model.Route
-import org.reduxkotlin.sample.taskflow.model.Theme
 import org.reduxkotlin.sample.taskflow.model.UndoModel
 import kotlin.time.Instant
-
-// User card mutations only — drives the undo/redo stack.
-sealed interface Undoable
-
-// Every concrete action implements Action.
-sealed interface Action
-
-// --- card mutations (optimistic + undoable + persisted) — carry OpId, pre-minted ids/clock ---
-data class CardMoveRequested(
-    val cardId: CardId,
-    val from: ColumnId,
-    val to: ColumnId,
-    val toIndex: Int,
-    val opId: OpId,
-) : Action,
-    Undoable
-
-data class AddCard(
-    val columnId: ColumnId,
-    val cardId: CardId,
-    val title: String,
-    val description: String,
-    val opId: OpId,
-    val now: Instant,
-) : Action,
-    Undoable
-
-data class EditCard(val cardId: CardId, val title: String, val description: String, val opId: OpId, val now: Instant) :
-    Action,
-    Undoable
-
-data class DeleteCard(val cardId: CardId, val opId: OpId) :
-    Action,
-    Undoable
-
-// --- async op results — carry cardId so syncReducer can clear SyncModel.inFlight (a Set<CardId>) ---
-data class CardOpSucceeded(val opId: OpId, val cardId: CardId) : Action
-
-data class CardOpFailed(val opId: OpId, val cardId: CardId, val error: String, val inverse: InverseOp) : Action
-
-// Per-op inverse — rides the queued SyncOp; reconstructed on Rejected (no middleware-side map).
-sealed interface InverseOp {
-    data class MoveBack(val cardId: CardId, val to: ColumnId, val index: Int) : InverseOp
-    data class DeleteAdded(val cardId: CardId) : InverseOp
-    data class RestoreEdited(val prev: Card) : InverseOp
-    data class ReAddDeleted(val card: Card, val column: ColumnId, val index: Int) : InverseOp
-}
 
 // --- bot (server-truth; NOT undoable, no revert) ---
 data class BotMovedCard(val cardId: CardId, val to: ColumnId, val toIndex: Int) : Action

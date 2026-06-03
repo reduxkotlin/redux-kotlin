@@ -40,7 +40,7 @@ import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.EditProfile
 import org.reduxkotlin.sample.taskflow.action.LogoutAccount
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.model.SessionModel

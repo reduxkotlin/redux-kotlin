@@ -36,9 +36,9 @@ import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.CreateBoard
 import org.reduxkotlin.sample.taskflow.action.LoadBoardListRequested
 import org.reduxkotlin.sample.taskflow.action.Navigate
-import org.reduxkotlin.sample.taskflow.model.BoardId
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
-import org.reduxkotlin.sample.taskflow.model.Route
 import org.reduxkotlin.sample.taskflow.ui.LocalClock
 import org.reduxkotlin.sample.taskflow.ui.LocalIdGenerator
 import org.reduxkotlin.sample.taskflow.ui.adaptive.WindowSizeClass

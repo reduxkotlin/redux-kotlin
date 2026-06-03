@@ -7,17 +7,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.reduxkotlin.sample.taskflow.action.CardOpFailed
-import org.reduxkotlin.sample.taskflow.action.CardOpSucceeded
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.CardOpFailed
+import org.reduxkotlin.sample.taskflow.core.CardOpSucceeded
+import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.data.remote.OfflineException
 import org.reduxkotlin.sample.taskflow.data.remote.PushResult
 import org.reduxkotlin.sample.taskflow.data.remote.RemoteApi
 import org.reduxkotlin.sample.taskflow.data.remote.TransientNetworkException
 import org.reduxkotlin.sample.taskflow.data.remote.toDomain
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.OpId
 import kotlin.time.Instant
 
 /**
