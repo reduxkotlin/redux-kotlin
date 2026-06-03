@@ -65,4 +65,5 @@ Canonical example: `examples/taskflow`.
 ## Deeper knowledge
 
 - **T1** per-concern guides → `docs/agent/references/` (`feature-slice.md` is live; the other six are planned — see `docs/agent/references/README.md`).
+- Task → guide routing (decision table) → `docs/agent/references/README.md`.
 - **T2** → `examples/taskflow/ARCHITECTURE.md` (full architecture + design rules) and `docs/agent/api-map.md` (module → `.api` index).
