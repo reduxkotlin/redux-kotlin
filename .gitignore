@@ -97,7 +97,8 @@ website/translated_docs/
 website/build/
 website/node_modules/
 website/.docusaurus/
-.claude/
+.claude/*
+!.claude/skills/
 .vercel
 .env*.local
 .superpowers/
