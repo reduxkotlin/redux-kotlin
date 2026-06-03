@@ -13,9 +13,6 @@ import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.LoadBoardRequested
 import org.reduxkotlin.sample.taskflow.action.Navigate
-import org.reduxkotlin.sample.taskflow.action.SetFailureRate
-import org.reduxkotlin.sample.taskflow.action.SetLatency
-import org.reduxkotlin.sample.taskflow.action.SetOnline
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.Board
@@ -27,6 +24,9 @@ import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
+import org.reduxkotlin.sample.taskflow.feature.settings.SetFailureRate
+import org.reduxkotlin.sample.taskflow.feature.settings.SetLatency
+import org.reduxkotlin.sample.taskflow.feature.settings.SetOnline
 import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
