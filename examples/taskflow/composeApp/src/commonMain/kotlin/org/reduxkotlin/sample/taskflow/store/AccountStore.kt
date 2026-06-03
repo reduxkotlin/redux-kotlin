@@ -32,7 +32,6 @@ import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
 import org.reduxkotlin.sample.taskflow.action.PushUndo
-import org.reduxkotlin.sample.taskflow.action.RecordActivity
 import org.reduxkotlin.sample.taskflow.action.SetFilterAssignee
 import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
 import org.reduxkotlin.sample.taskflow.action.SetUndoModel
@@ -51,6 +50,10 @@ import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
 import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
 import org.reduxkotlin.sample.taskflow.feature.account.sessionReducer
+import org.reduxkotlin.sample.taskflow.feature.activity.ActivityModel
+import org.reduxkotlin.sample.taskflow.feature.activity.RecordActivity
+import org.reduxkotlin.sample.taskflow.feature.activity.activityLoggerMiddleware
+import org.reduxkotlin.sample.taskflow.feature.activity.activityReducer
 import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.feature.collaborators.collaboratorsReducer
 import org.reduxkotlin.sample.taskflow.feature.collaborators.seedCollaborators
@@ -60,16 +63,13 @@ import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.infra.platform.mainNotificationContext
-import org.reduxkotlin.sample.taskflow.middleware.activityLoggerMiddleware
 import org.reduxkotlin.sample.taskflow.middleware.effectsMiddleware
 import org.reduxkotlin.sample.taskflow.middleware.undoMiddleware
-import org.reduxkotlin.sample.taskflow.model.ActivityModel
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
 import org.reduxkotlin.sample.taskflow.model.UndoModel
-import org.reduxkotlin.sample.taskflow.reducer.activityReducer
 import org.reduxkotlin.sample.taskflow.reducer.boardListReducer
 import org.reduxkotlin.sample.taskflow.reducer.boardReducer
 import org.reduxkotlin.sample.taskflow.reducer.filterReducer

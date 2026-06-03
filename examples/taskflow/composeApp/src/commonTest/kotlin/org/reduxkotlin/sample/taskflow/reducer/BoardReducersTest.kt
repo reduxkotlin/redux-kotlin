@@ -10,7 +10,6 @@ import org.reduxkotlin.sample.taskflow.action.BotAddedCard
 import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.PushUndo
-import org.reduxkotlin.sample.taskflow.action.RecordActivity
 import org.reduxkotlin.sample.taskflow.action.Redo
 import org.reduxkotlin.sample.taskflow.action.Refresh
 import org.reduxkotlin.sample.taskflow.action.SetFilterAssignee
@@ -36,7 +35,9 @@ import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.InverseOp
 import org.reduxkotlin.sample.taskflow.core.LabelId
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.model.ActivityModel
+import org.reduxkotlin.sample.taskflow.feature.activity.ActivityModel
+import org.reduxkotlin.sample.taskflow.feature.activity.RecordActivity
+import org.reduxkotlin.sample.taskflow.feature.activity.activityReducer
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel

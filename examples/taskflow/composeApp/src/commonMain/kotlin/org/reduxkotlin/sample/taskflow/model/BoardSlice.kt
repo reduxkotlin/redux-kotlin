@@ -5,7 +5,6 @@ import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import org.reduxkotlin.sample.taskflow.core.AccountId
-import org.reduxkotlin.sample.taskflow.core.ActivityEntry
 import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.LabelId
@@ -31,5 +30,3 @@ data class SyncModel(
     val lastSyncedAt: Instant? = null,
     val lastError: String? = null,
 )
-
-data class ActivityModel(val entries: PersistentList<ActivityEntry> = persistentListOf())

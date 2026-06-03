@@ -8,7 +8,6 @@ import org.reduxkotlin.sample.taskflow.action.BoardRestored
 import org.reduxkotlin.sample.taskflow.action.BotAddedCard
 import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
-import org.reduxkotlin.sample.taskflow.action.RecordActivity
 import org.reduxkotlin.sample.taskflow.action.SetFilterAssignee
 import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
 import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
@@ -27,13 +26,9 @@ import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.InverseOp
-import org.reduxkotlin.sample.taskflow.model.ActivityModel
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
-
-/** Maximum activity entries retained per account (oldest dropped). */
-public const val ACTIVITY_CAP: Int = 50
 
 /**
  * Pure per-account reducer for the [BoardModel] slice (the loaded board graph, or `null` = NotLoaded).
@@ -236,26 +231,4 @@ public fun syncReducer(model: SyncModel, action: Action): SyncModel = when (acti
     else -> model
 }
 
-/**
- * Pure per-account reducer for the [ActivityModel] slice (humanized activity feed, capped).
- *
- * [RecordActivity] appends the entry and trims to the most recent [ACTIVITY_CAP]. Not reset by
- * [BoardClosed]. Returns the same [model] instance unchanged for actions it does not handle.
- *
- * @param model the current activity slice.
- * @param action the dispatched action.
- * @return the next activity slice, or [model] unchanged when [action] is not handled.
- */
-public fun activityReducer(model: ActivityModel, action: Action): ActivityModel = when (action) {
-    is RecordActivity -> {
-        val appended = model.entries.add(action.entry)
-        val trimmed = if (appended.size > ACTIVITY_CAP) {
-            appended.subList(appended.size - ACTIVITY_CAP, appended.size).toPersistentList()
-        } else {
-            appended
-        }
-        model.copy(entries = trimmed)
-    }
-
-    else -> model
-}
+// activityReducer + ACTIVITY_CAP moved to …feature.activity.ActivityReducer
