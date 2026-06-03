@@ -1,0 +1,33 @@
+name: Agent knowledge
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, labeled]
+permissions:
+  contents: read
+concurrency:
+  cancel-in-progress: true
+  group: agent-knowledge-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+jobs:
+  anchor-check:
+    name: Anchor check (refs resolve)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check agent reference anchors
+        run: bash scripts/check-agent-refs.sh
+  api-tripwire:
+    name: API-change tripwire
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Tripwire on committed .api changes
+        env:
+          API_REVIEW_OK: ${{ contains(github.event.pull_request.labels.*.name, 'api-reviewed') && '1' || '0' }}
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1 || true
+          bash scripts/check-api-tripwire.sh "origin/${{ github.base_ref }}"
