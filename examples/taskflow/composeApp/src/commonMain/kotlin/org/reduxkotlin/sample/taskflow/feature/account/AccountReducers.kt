@@ -1,20 +1,10 @@
-package org.reduxkotlin.sample.taskflow.reducer
+package org.reduxkotlin.sample.taskflow.feature.account
 
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
-import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
-import org.reduxkotlin.sample.taskflow.action.EditProfile
-import org.reduxkotlin.sample.taskflow.action.LoadAccountsSucceeded
-import org.reduxkotlin.sample.taskflow.action.LoginFailed
-import org.reduxkotlin.sample.taskflow.action.LoginRequested
-import org.reduxkotlin.sample.taskflow.action.LogoutAccount
-import org.reduxkotlin.sample.taskflow.action.StartLogin
-import org.reduxkotlin.sample.taskflow.action.SwitchAccount
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.Action
-import org.reduxkotlin.sample.taskflow.model.AccountsModel
-import org.reduxkotlin.sample.taskflow.model.AuthFlowModel
 
 /**
  * Pure root-store reducer for the [AccountsModel] slice (logged-in account directory + active id).
@@ -88,5 +78,20 @@ public fun authFlowReducer(model: AuthFlowModel, action: Action): AuthFlowModel 
     is LoginRequested -> model.copy(inFlight = true, error = null)
     is AccountLoggedIn -> model.copy(inFlight = false, error = null)
     is LoginFailed -> model.copy(inFlight = false, error = action.error)
+    else -> model
+}
+
+/**
+ * Pure per-account reducer for the [SessionModel] slice (account id + session-only bio).
+ *
+ * Identity (name/email/avatar) lives in [org.reduxkotlin.sample.taskflow.model.CollaboratorsModel], not here; only the bio is updated.
+ * Returns the same [model] instance unchanged for actions it does not handle.
+ *
+ * @param model the current session slice.
+ * @param action the dispatched action.
+ * @return the next session slice, or [model] unchanged when [action] is not handled.
+ */
+public fun sessionReducer(model: SessionModel, action: Action): SessionModel = when (action) {
+    is EditProfile -> model.copy(bio = action.bio)
     else -> model
 }

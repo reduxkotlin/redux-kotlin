@@ -35,16 +35,21 @@ import org.reduxkotlin.devtools.inapp.ReduxDevToolsHost
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.Back
 import org.reduxkotlin.sample.taskflow.action.BoardClosed
-import org.reduxkotlin.sample.taskflow.action.LoadAccountsSucceeded
 import org.reduxkotlin.sample.taskflow.action.LoadBoardRequested
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.Refresh
-import org.reduxkotlin.sample.taskflow.action.StartLogin
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
+import org.reduxkotlin.sample.taskflow.feature.account.AccountsModel
+import org.reduxkotlin.sample.taskflow.feature.account.AuthMode
+import org.reduxkotlin.sample.taskflow.feature.account.LoadAccountsSucceeded
+import org.reduxkotlin.sample.taskflow.feature.account.LoginScreen
+import org.reduxkotlin.sample.taskflow.feature.account.ProfileScreen
+import org.reduxkotlin.sample.taskflow.feature.account.StartLogin
+import org.reduxkotlin.sample.taskflow.feature.account.SwitcherScreen
 import org.reduxkotlin.sample.taskflow.feature.settings.SettingsScreen
 import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
@@ -52,8 +57,6 @@ import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
 import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
 import org.reduxkotlin.sample.taskflow.infra.platform.DriverFactory
 import org.reduxkotlin.sample.taskflow.infra.util.DefaultIdGenerator
-import org.reduxkotlin.sample.taskflow.model.AccountsModel
-import org.reduxkotlin.sample.taskflow.model.AuthMode
 import org.reduxkotlin.sample.taskflow.store.AccountRegistry
 import org.reduxkotlin.sample.taskflow.store.createAppStore
 import org.reduxkotlin.sample.taskflow.store.getModel
@@ -68,9 +71,6 @@ import org.reduxkotlin.sample.taskflow.ui.image.initCoil
 import org.reduxkotlin.sample.taskflow.ui.screens.BoardListScreen
 import org.reduxkotlin.sample.taskflow.ui.screens.BoardScreen
 import org.reduxkotlin.sample.taskflow.ui.screens.CardDetailScreen
-import org.reduxkotlin.sample.taskflow.ui.screens.LoginScreen
-import org.reduxkotlin.sample.taskflow.ui.screens.ProfileScreen
-import org.reduxkotlin.sample.taskflow.ui.screens.SwitcherScreen
 import org.reduxkotlin.sample.taskflow.ui.theme.TaskFlowTheme
 import kotlin.time.Clock
 

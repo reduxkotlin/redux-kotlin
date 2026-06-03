@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.screens
+package org.reduxkotlin.sample.taskflow.feature.account
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,14 +30,10 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
-import org.reduxkotlin.sample.taskflow.action.LoginRequested
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.infra.SeedData
-import org.reduxkotlin.sample.taskflow.model.AuthFlowModel
 import org.reduxkotlin.sample.taskflow.store.getModel
-import org.reduxkotlin.sample.taskflow.ui.components.AccountRow
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**

@@ -3,7 +3,6 @@ package org.reduxkotlin.sample.taskflow.action
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
 import org.reduxkotlin.sample.taskflow.core.AccountId
-import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.ActivityEntry
 import org.reduxkotlin.sample.taskflow.core.Board
@@ -14,7 +13,6 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.LabelId
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.model.AuthMode
 import org.reduxkotlin.sample.taskflow.model.UndoModel
 import kotlin.time.Instant
 
@@ -109,27 +107,10 @@ data class SyncStatusChanged(
 data object Refresh : Action
 
 // --- profile / activity (per-account) ---
-data class EditProfile(val displayName: String, val email: String, val avatarUrl: String, val bio: String?) : Action
+// EditProfile moved to …feature.account.AccountActions
 
 data class RecordActivity(val entry: ActivityEntry) : Action
 
-// --- auth / accounts / settings (root) ---
-data class StartLogin(val mode: AuthMode) : Action
-
-data object LoginRequested : Action
-
-// (Succeeded-equivalent; documented deviation)
-data class AccountLoggedIn(val summary: AccountSummary) : Action
-
-data class LoginFailed(val error: String) : Action
-
-data object LoadAccountsRequested : Action
-
-data class LoadAccountsSucceeded(val accounts: PersistentList<AccountSummary>, val activeAccountId: AccountId?) :
-    Action
-
-data class LoadAccountsFailed(val error: String) : Action
-
-data class SwitchAccount(val accountId: AccountId) : Action
-
-data class LogoutAccount(val accountId: AccountId) : Action
+// StartLogin, LoginRequested, AccountLoggedIn, LoginFailed, LoadAccountsRequested,
+// LoadAccountsSucceeded, LoadAccountsFailed, SwitchAccount, LogoutAccount
+// moved to …feature.account.AccountActions

@@ -16,7 +16,7 @@ import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.model.SessionModel
+import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

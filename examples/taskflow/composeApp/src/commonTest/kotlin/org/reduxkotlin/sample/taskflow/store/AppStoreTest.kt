@@ -1,13 +1,13 @@
 package org.reduxkotlin.sample.taskflow.store
 
 import org.reduxkotlin.concurrent.NotificationContext
-import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.Theme
+import org.reduxkotlin.sample.taskflow.feature.account.AccountLoggedIn
+import org.reduxkotlin.sample.taskflow.feature.account.AccountsModel
 import org.reduxkotlin.sample.taskflow.feature.settings.SetTheme
-import org.reduxkotlin.sample.taskflow.model.AccountsModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

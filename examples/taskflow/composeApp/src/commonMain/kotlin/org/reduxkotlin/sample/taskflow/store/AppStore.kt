@@ -9,15 +9,19 @@ import org.reduxkotlin.devtools.bridge.BridgeConfig
 import org.reduxkotlin.devtools.bridge.BridgeOutput
 import org.reduxkotlin.devtools.devTools
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
-import org.reduxkotlin.sample.taskflow.action.EditProfile
-import org.reduxkotlin.sample.taskflow.action.LoadAccountsSucceeded
-import org.reduxkotlin.sample.taskflow.action.LoginFailed
-import org.reduxkotlin.sample.taskflow.action.LoginRequested
-import org.reduxkotlin.sample.taskflow.action.LogoutAccount
-import org.reduxkotlin.sample.taskflow.action.StartLogin
-import org.reduxkotlin.sample.taskflow.action.SwitchAccount
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
+import org.reduxkotlin.sample.taskflow.feature.account.AccountLoggedIn
+import org.reduxkotlin.sample.taskflow.feature.account.AccountsModel
+import org.reduxkotlin.sample.taskflow.feature.account.AuthFlowModel
+import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
+import org.reduxkotlin.sample.taskflow.feature.account.LoadAccountsSucceeded
+import org.reduxkotlin.sample.taskflow.feature.account.LoginFailed
+import org.reduxkotlin.sample.taskflow.feature.account.LoginRequested
+import org.reduxkotlin.sample.taskflow.feature.account.LogoutAccount
+import org.reduxkotlin.sample.taskflow.feature.account.StartLogin
+import org.reduxkotlin.sample.taskflow.feature.account.SwitchAccount
+import org.reduxkotlin.sample.taskflow.feature.account.accountsReducer
+import org.reduxkotlin.sample.taskflow.feature.account.authFlowReducer
 import org.reduxkotlin.sample.taskflow.feature.settings.SetBotEnabled
 import org.reduxkotlin.sample.taskflow.feature.settings.SetFailureRate
 import org.reduxkotlin.sample.taskflow.feature.settings.SetLatency
@@ -25,10 +29,6 @@ import org.reduxkotlin.sample.taskflow.feature.settings.SetOnline
 import org.reduxkotlin.sample.taskflow.feature.settings.SetTheme
 import org.reduxkotlin.sample.taskflow.feature.settings.appSettingsReducer
 import org.reduxkotlin.sample.taskflow.infra.platform.mainNotificationContext
-import org.reduxkotlin.sample.taskflow.model.AccountsModel
-import org.reduxkotlin.sample.taskflow.model.AuthFlowModel
-import org.reduxkotlin.sample.taskflow.reducer.accountsReducer
-import org.reduxkotlin.sample.taskflow.reducer.authFlowReducer
 
 /**
  * Builds the root application store: a concurrent [ModelState] store holding the account directory

@@ -8,7 +8,6 @@ import org.reduxkotlin.sample.taskflow.action.Back
 import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
 import org.reduxkotlin.sample.taskflow.action.CreateBoard
-import org.reduxkotlin.sample.taskflow.action.EditProfile
 import org.reduxkotlin.sample.taskflow.action.EnterEditMode
 import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
@@ -21,9 +20,9 @@ import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.BoardSummary
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
+import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
-import org.reduxkotlin.sample.taskflow.model.SessionModel
 
 /** Fallback tile color for a newly created board (Material 3 primary). */
 public const val DEFAULT_BOARD_COLOR: Long = 0xFF6750A4
@@ -122,20 +121,7 @@ private fun NavModel.flipCardDetailMode(to: Route.CardDetail.Mode, requireOther:
     }
 }
 
-/**
- * Pure per-account reducer for the [SessionModel] slice (account id + session-only bio).
- *
- * Identity (name/email/avatar) lives in [CollaboratorsModel], not here; only the bio is updated.
- * Returns the same [model] instance unchanged for actions it does not handle.
- *
- * @param model the current session slice.
- * @param action the dispatched action.
- * @return the next session slice, or [model] unchanged when [action] is not handled.
- */
-public fun sessionReducer(model: SessionModel, action: Action): SessionModel = when (action) {
-    is EditProfile -> model.copy(bio = action.bio)
-    else -> model
-}
+// sessionReducer moved to …feature.account.AccountReducers
 
 /**
  * Pure per-account reducer for the [BoardListModel] slice (board tile cache + display order).
