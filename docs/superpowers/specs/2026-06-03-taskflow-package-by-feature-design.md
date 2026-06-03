@@ -56,6 +56,32 @@ Per-account middleware order (inside the devTools pipeline, **must be preserved 
 | `app` | `App.kt` shell + routing composables (AppShell, ActiveAccount, BoxWithConstraintsRouting, RouteScreen, lifecycle effects); **`app.nav`** sub-pkg (NavModel, navReducer, Route, AdaptiveNav); store composition (AppStore, AccountStore, AccountRegistry, StoreExt). This is the composition root — it imports every feature's reducers (expected and acceptable). |
 | `ui` | `theme/`, `adaptive/WindowSize`, `image/` (ImageLoader, BundledFallback); cross-feature widgets (Avatar, MarkdownView, MarkdownEditor) |
 
+### Revision 1 (post completeness-review): shared domain kernel in `core`
+
+The multi-agent completeness review surfaced that the `data/` layer (`LocalStore`, `SqlDelightLocalStore`, `FakeRemoteApi`, `RemoteChange`, `SyncMappers`, `SyncOpBuilders`, `SyncEngine`, `SyncRepository`) — destined for `infra` — imports domain **entities**, persisted **state value-types**, and **card-mutation actions** from across the app. Homing those in feature packages would make `infra` depend on `feature.board/boardlist/account/settings/activity/app.nav` — a backward layer dependency in the canonical exemplar.
+
+**Resolution (chosen):** a shared **domain kernel** in `core`. `core` holds exactly the types `infra` structurally needs, so `infra → core` only. Features keep their `ModelState` slot models, reducers, effects/middleware, selectors, UI, and feature-specific actions. This is a behavior-preserving placement change (no logic change); the sealed `Action` leaves still live across packages (§5.1 holds — now `core` + 6 feature/app packages).
+
+**`core` membership (supersedes the `core` row above):**
+- ids: AccountId, BoardId, ColumnId, CardId, LabelId, OpId
+- markers: `Action`, `Undoable`
+- entities: Board, Column, Card, Attachment, Label
+- summaries/detail: BoardSummary, AccountSummary, AccountDetail
+- persisted state value-types: NavModel, Route, AppSettingsModel, FakeServiceConfig, Theme, ActivityEntry
+- card-mutation / sync-contract actions (the sync engine builds + replays them): CardMoveRequested, AddCard, EditCard, DeleteCard, CardOpSucceeded, CardOpFailed, InverseOp (+ 4 nested leaves)
+
+**Feature/app models after the kernel split (supersede the table rows above):**
+- `feature.board`: BoardModel, FilterModel, SyncModel + `newBoardColumns`/`columnById` helpers + non-kernel board actions (BotMovedCard, BotAddedCard, BoardClosed, BoardRestored, StartCreateCard, CancelCreateCard, AddColumn, LoadBoardRequested/Succeeded/Failed, SetFilterQuery, SetFilterAssignee, ToggleFilterLabel, SyncStatusChanged, Refresh) + boardReducer, filterReducer, syncReducer + effectsMiddleware + selectors + UI
+- `feature.boardlist`: BoardListModel + boardListReducer (`DEFAULT_BOARD_COLOR`) + LoadBoardList* / CreateBoard actions + UI
+- `feature.undo`: UndoModel + reducers + undoMiddleware + Undo/Redo/PushUndo/SetUndoModel
+- `feature.activity`: ActivityModel + activityReducer (`ACTIVITY_CAP`) + activityLoggerMiddleware (`BOT_ACCOUNT_ID`) + RecordActivity
+- `feature.collaborators`: CollaboratorsModel + collaboratorsReducer + BotCollaborator + `seedCollaborators`
+- `feature.account`: AccountsModel, AuthFlowModel, AuthMode, SessionModel + accountsReducer/authFlowReducer/sessionReducer + auth/account actions + UI
+- `feature.settings`: AppSettingsModel-reducer only (model lives in core) + Set* settings actions + UI
+- `app.nav`: navReducer + Navigate/Back/EnterEditMode/OpenCard/CloseCard + AdaptiveNav (NavModel/Route live in core)
+
+`infra` now depends only on `core`. `app` remains the composition root (depends on everything). The plan (`docs/superpowers/plans/2026-06-03-taskflow-package-by-feature.md`) carries the executable per-task mapping reflecting this revision.
+
 ### File splits
 
 - **`action/Actions.kt`** (single sealed file) → per-feature action files. Root `Action` + `Undoable` markers move to `core`. Each feature owns its leaves (board mutations + InverseOp → board; nav actions → app.nav; etc.). Sealed-interface leaves across packages are legal (Kotlin 1.5+).
