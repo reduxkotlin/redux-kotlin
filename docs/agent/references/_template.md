@@ -30,6 +30,7 @@ Prose explains the *why* and the *rule*. Every source reference uses the anchor 
 - The checker also verifies cited `:redux-kotlin*` **module names** exist in `settings.gradle.kts`
   and that cited `./gradlew <task>` names are in its allowlist.
 - Lines containing `(planned` are skipped (so you can point at not-yet-written guides).
+- Shared blocks (Rules C–H, module map) are single-sourced in `docs/agent/_fragments/` and injected into `AGENTS.md`/`SKILL.md` by `scripts/assemble-agent-knowledge.sh` — edit the fragment, then re-run the assembler (CI `assemble-check` enforces it).
 
 ## See also
 
