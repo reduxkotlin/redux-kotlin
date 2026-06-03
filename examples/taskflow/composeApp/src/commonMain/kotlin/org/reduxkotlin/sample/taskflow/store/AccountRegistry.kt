@@ -9,9 +9,9 @@ import org.reduxkotlin.registry.StoreRegistry
 import org.reduxkotlin.sample.taskflow.core.AccountDetail
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
+import org.reduxkotlin.sample.taskflow.feature.collaborators.startBot
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.platform.mainNotificationContext
-import org.reduxkotlin.sample.taskflow.middleware.startBot
 
 /**
  * Owns the live per-account stores, isolating each account's state, effects, sync and bot.

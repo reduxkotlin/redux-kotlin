@@ -84,7 +84,7 @@ public fun authFlowReducer(model: AuthFlowModel, action: Action): AuthFlowModel 
 /**
  * Pure per-account reducer for the [SessionModel] slice (account id + session-only bio).
  *
- * Identity (name/email/avatar) lives in [org.reduxkotlin.sample.taskflow.model.CollaboratorsModel], not here; only the bio is updated.
+ * Identity (name/email/avatar) lives in [org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel], not here; only the bio is updated.
  * Returns the same [model] instance unchanged for actions it does not handle.
  *
  * @param model the current session slice.

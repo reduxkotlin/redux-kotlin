@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.middleware
+package org.reduxkotlin.sample.taskflow.feature.collaborators
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -29,7 +29,7 @@ import kotlin.random.Random
  *
  * @param scope the long-lived background scope the loop runs on.
  * @param store the per-account store the bot reads the board from and dispatches into.
- * @param settings reads the live [org.reduxkotlin.sample.taskflow.model.FakeServiceConfig] each tick,
+ * @param settings reads the live [org.reduxkotlin.sample.taskflow.core.FakeServiceConfig] each tick,
  * so toggling `botEnabled` / `botIntervalMs` at runtime takes effect on the next tick.
  * @param rngSeed seeds the per-bot RNG so a given seed + board yields a deterministic move sequence.
  * @return the [Job] driving the loop; cancel it to stop the bot.

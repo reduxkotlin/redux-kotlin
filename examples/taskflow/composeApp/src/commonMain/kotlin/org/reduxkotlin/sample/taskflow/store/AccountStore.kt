@@ -1,7 +1,5 @@
 package org.reduxkotlin.sample.taskflow.store
 
-import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -42,8 +40,6 @@ import org.reduxkotlin.sample.taskflow.action.StartCreateCard
 import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
 import org.reduxkotlin.sample.taskflow.action.ToggleFilterLabel
 import org.reduxkotlin.sample.taskflow.core.AccountDetail
-import org.reduxkotlin.sample.taskflow.core.AccountId
-import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
@@ -55,6 +51,9 @@ import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
 import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
 import org.reduxkotlin.sample.taskflow.feature.account.sessionReducer
+import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
+import org.reduxkotlin.sample.taskflow.feature.collaborators.collaboratorsReducer
+import org.reduxkotlin.sample.taskflow.feature.collaborators.seedCollaborators
 import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
@@ -67,14 +66,12 @@ import org.reduxkotlin.sample.taskflow.middleware.undoMiddleware
 import org.reduxkotlin.sample.taskflow.model.ActivityModel
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
 import org.reduxkotlin.sample.taskflow.model.UndoModel
 import org.reduxkotlin.sample.taskflow.reducer.activityReducer
 import org.reduxkotlin.sample.taskflow.reducer.boardListReducer
 import org.reduxkotlin.sample.taskflow.reducer.boardReducer
-import org.reduxkotlin.sample.taskflow.reducer.collaboratorsReducer
 import org.reduxkotlin.sample.taskflow.reducer.filterReducer
 import org.reduxkotlin.sample.taskflow.reducer.navReducer
 import org.reduxkotlin.sample.taskflow.reducer.syncReducer
@@ -259,25 +256,4 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
  */
 private object EffectsWarmUp
 
-/**
- * Builds the initial [CollaboratorsModel] directory for [detail]: self + bot + every assignee
- * referenced on the account's seeded board.
- *
- * Drawing the assignees from [SeedData] (rather than only [AccountDetail.collaborators]) guarantees
- * the board screen can resolve every seeded card's avatar without reaching into the root store.
- *
- * @param detail the account whose collaborator directory is being seeded.
- * @return the self + bot + board-assignee summaries keyed by [AccountId].
- */
-public fun seedCollaborators(detail: AccountDetail): PersistentMap<AccountId, AccountSummary> {
-    val builder = persistentMapOf<AccountId, AccountSummary>().builder()
-    builder[detail.self.id] = detail.self
-    builder[SeedData.bot.id] = SeedData.bot
-    detail.collaborators.forEach { (id, summary) -> builder[id] = summary }
-    val seeded = SeedData.seededAccounts().firstOrNull { it.owner.id == detail.accountId }
-    if (seeded != null) {
-        // The board's collaborators (self + bot) cover every seeded card's assignee.
-        seeded.collaborators.forEach { builder[it.id] = it }
-    }
-    return builder.build()
-}
+// seedCollaborators moved to …feature.collaborators.CollaboratorsSeed
