@@ -13,16 +13,12 @@ import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
 import org.reduxkotlin.sample.taskflow.action.StartCreateCard
-import org.reduxkotlin.sample.taskflow.core.AccountId
-import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.BoardSummary
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
-import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
 
 /** Fallback tile color for a newly created board (Material 3 primary). */
 public const val DEFAULT_BOARD_COLOR: Long = 0xFF6750A4
@@ -163,30 +159,4 @@ public fun boardListReducer(model: BoardListModel, action: Action): BoardListMod
     else -> model
 }
 
-/**
- * Pure per-account reducer for the [CollaboratorsModel] slice (account directory including self).
- *
- * [EditProfile] carries no account id, so [selfId] (captured by the per-account store closure)
- * identifies the self collaborator to update or insert. Returns the same [model] instance unchanged
- * for actions it does not handle.
- *
- * @param model the current collaborators slice.
- * @param action the dispatched action.
- * @param selfId the id of the self account this per-account store belongs to.
- * @return the next collaborators slice, or [model] unchanged when [action] is not handled.
- */
-public fun collaboratorsReducer(model: CollaboratorsModel, action: Action, selfId: AccountId): CollaboratorsModel =
-    when (action) {
-        is EditProfile -> model.copy(
-            byId = model.byId.put(
-                selfId,
-                model.byId[selfId]?.copy(
-                    displayName = action.displayName,
-                    email = action.email,
-                    avatarUrl = action.avatarUrl,
-                ) ?: AccountSummary(selfId, action.displayName, action.email, action.avatarUrl),
-            ),
-        )
-
-        else -> model
-    }
+// collaboratorsReducer moved to …feature.collaborators.CollaboratorsReducer

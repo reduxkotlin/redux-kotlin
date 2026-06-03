@@ -23,8 +23,9 @@ import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
 import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
 import org.reduxkotlin.sample.taskflow.feature.account.sessionReducer
+import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
+import org.reduxkotlin.sample.taskflow.feature.collaborators.collaboratorsReducer
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
-import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

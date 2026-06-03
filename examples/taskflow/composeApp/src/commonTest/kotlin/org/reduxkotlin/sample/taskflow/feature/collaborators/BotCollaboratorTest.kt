@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.middleware
+package org.reduxkotlin.sample.taskflow.feature.collaborators
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
