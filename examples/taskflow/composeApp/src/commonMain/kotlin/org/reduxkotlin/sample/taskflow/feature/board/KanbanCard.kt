@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.components
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke

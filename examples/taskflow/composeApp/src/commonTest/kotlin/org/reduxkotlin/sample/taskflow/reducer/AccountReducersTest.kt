@@ -3,13 +3,10 @@ package org.reduxkotlin.sample.taskflow.reducer
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
 import org.reduxkotlin.sample.taskflow.action.EnterEditMode
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
-import org.reduxkotlin.sample.taskflow.action.Refresh
-import org.reduxkotlin.sample.taskflow.action.StartCreateCard
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -21,6 +18,9 @@ import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
 import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
 import org.reduxkotlin.sample.taskflow.feature.account.sessionReducer
+import org.reduxkotlin.sample.taskflow.feature.board.CancelCreateCard
+import org.reduxkotlin.sample.taskflow.feature.board.Refresh
+import org.reduxkotlin.sample.taskflow.feature.board.StartCreateCard
 import org.reduxkotlin.sample.taskflow.feature.boardlist.BoardListModel
 import org.reduxkotlin.sample.taskflow.feature.boardlist.CreateBoard
 import org.reduxkotlin.sample.taskflow.feature.boardlist.DEFAULT_BOARD_COLOR

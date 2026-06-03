@@ -11,7 +11,6 @@ import kotlinx.coroutines.test.runTest
 import org.reduxkotlin.Store
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.LoadBoardRequested
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
@@ -24,6 +23,10 @@ import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
+import org.reduxkotlin.sample.taskflow.feature.board.BoardModel
+import org.reduxkotlin.sample.taskflow.feature.board.LoadBoardRequested
+import org.reduxkotlin.sample.taskflow.feature.board.SyncModel
+import org.reduxkotlin.sample.taskflow.feature.board.columnById
 import org.reduxkotlin.sample.taskflow.feature.settings.SetFailureRate
 import org.reduxkotlin.sample.taskflow.feature.settings.SetLatency
 import org.reduxkotlin.sample.taskflow.feature.settings.SetOnline
@@ -33,9 +36,6 @@ import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
 import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
-import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.SyncModel
-import org.reduxkotlin.sample.taskflow.model.columnById
 import org.reduxkotlin.sample.taskflow.store.AccountStoreHandle
 import org.reduxkotlin.sample.taskflow.store.createAccountStore
 import org.reduxkotlin.sample.taskflow.store.createAppStore

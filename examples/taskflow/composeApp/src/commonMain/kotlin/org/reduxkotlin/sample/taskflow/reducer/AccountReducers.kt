@@ -3,15 +3,15 @@ package org.reduxkotlin.sample.taskflow.reducer
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
 import org.reduxkotlin.sample.taskflow.action.EnterEditMode
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
-import org.reduxkotlin.sample.taskflow.action.StartCreateCard
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
+import org.reduxkotlin.sample.taskflow.feature.board.CancelCreateCard
+import org.reduxkotlin.sample.taskflow.feature.board.StartCreateCard
 
 // DEFAULT_BOARD_COLOR moved to …feature.boardlist.BoardListReducer
 

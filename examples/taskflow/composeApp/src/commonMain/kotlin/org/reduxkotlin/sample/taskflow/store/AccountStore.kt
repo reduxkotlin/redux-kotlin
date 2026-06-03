@@ -17,23 +17,11 @@ import org.reduxkotlin.devtools.devToolsMiddleware
 import org.reduxkotlin.devtools.named
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.routing.RoutingBuilder
-import org.reduxkotlin.sample.taskflow.action.AddColumn
 import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.BoardClosed
-import org.reduxkotlin.sample.taskflow.action.BoardRestored
-import org.reduxkotlin.sample.taskflow.action.BotAddedCard
-import org.reduxkotlin.sample.taskflow.action.BotMovedCard
-import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
 import org.reduxkotlin.sample.taskflow.action.EnterEditMode
-import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
-import org.reduxkotlin.sample.taskflow.action.SetFilterAssignee
-import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
-import org.reduxkotlin.sample.taskflow.action.StartCreateCard
-import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
-import org.reduxkotlin.sample.taskflow.action.ToggleFilterLabel
 import org.reduxkotlin.sample.taskflow.core.AccountDetail
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
@@ -50,6 +38,25 @@ import org.reduxkotlin.sample.taskflow.feature.activity.ActivityModel
 import org.reduxkotlin.sample.taskflow.feature.activity.RecordActivity
 import org.reduxkotlin.sample.taskflow.feature.activity.activityLoggerMiddleware
 import org.reduxkotlin.sample.taskflow.feature.activity.activityReducer
+import org.reduxkotlin.sample.taskflow.feature.board.AddColumn
+import org.reduxkotlin.sample.taskflow.feature.board.BoardClosed
+import org.reduxkotlin.sample.taskflow.feature.board.BoardModel
+import org.reduxkotlin.sample.taskflow.feature.board.BoardRestored
+import org.reduxkotlin.sample.taskflow.feature.board.BotAddedCard
+import org.reduxkotlin.sample.taskflow.feature.board.BotMovedCard
+import org.reduxkotlin.sample.taskflow.feature.board.CancelCreateCard
+import org.reduxkotlin.sample.taskflow.feature.board.FilterModel
+import org.reduxkotlin.sample.taskflow.feature.board.LoadBoardSucceeded
+import org.reduxkotlin.sample.taskflow.feature.board.SetFilterAssignee
+import org.reduxkotlin.sample.taskflow.feature.board.SetFilterQuery
+import org.reduxkotlin.sample.taskflow.feature.board.StartCreateCard
+import org.reduxkotlin.sample.taskflow.feature.board.SyncModel
+import org.reduxkotlin.sample.taskflow.feature.board.SyncStatusChanged
+import org.reduxkotlin.sample.taskflow.feature.board.ToggleFilterLabel
+import org.reduxkotlin.sample.taskflow.feature.board.boardReducer
+import org.reduxkotlin.sample.taskflow.feature.board.effectsMiddleware
+import org.reduxkotlin.sample.taskflow.feature.board.filterReducer
+import org.reduxkotlin.sample.taskflow.feature.board.syncReducer
 import org.reduxkotlin.sample.taskflow.feature.boardlist.BoardListModel
 import org.reduxkotlin.sample.taskflow.feature.boardlist.CreateBoard
 import org.reduxkotlin.sample.taskflow.feature.boardlist.LoadBoardListSucceeded
@@ -68,14 +75,7 @@ import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.infra.platform.mainNotificationContext
-import org.reduxkotlin.sample.taskflow.middleware.effectsMiddleware
-import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.FilterModel
-import org.reduxkotlin.sample.taskflow.model.SyncModel
-import org.reduxkotlin.sample.taskflow.reducer.boardReducer
-import org.reduxkotlin.sample.taskflow.reducer.filterReducer
 import org.reduxkotlin.sample.taskflow.reducer.navReducer
-import org.reduxkotlin.sample.taskflow.reducer.syncReducer
 
 /**
  * Owns one account's running store plus everything bound to that account's lifetime.

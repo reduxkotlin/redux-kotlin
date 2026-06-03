@@ -2,8 +2,6 @@ package org.reduxkotlin.sample.taskflow.feature.activity
 
 import org.reduxkotlin.Store
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.BotAddedCard
-import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AddCard
@@ -16,6 +14,8 @@ import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
+import org.reduxkotlin.sample.taskflow.feature.board.BotAddedCard
+import org.reduxkotlin.sample.taskflow.feature.board.BotMovedCard
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

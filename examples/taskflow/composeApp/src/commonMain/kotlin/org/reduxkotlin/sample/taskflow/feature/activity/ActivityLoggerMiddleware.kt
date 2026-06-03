@@ -4,8 +4,6 @@ import org.reduxkotlin.Middleware
 import org.reduxkotlin.Store
 import org.reduxkotlin.middleware
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.BotAddedCard
-import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.ActivityEntry
 import org.reduxkotlin.sample.taskflow.core.AddCard
@@ -13,6 +11,8 @@ import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
 import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
+import org.reduxkotlin.sample.taskflow.feature.board.BotAddedCard
+import org.reduxkotlin.sample.taskflow.feature.board.BotMovedCard
 import org.reduxkotlin.sample.taskflow.infra.platform.newUuid
 import kotlin.time.Clock
 

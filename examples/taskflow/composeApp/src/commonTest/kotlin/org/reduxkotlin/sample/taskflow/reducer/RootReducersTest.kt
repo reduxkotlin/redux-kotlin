@@ -2,7 +2,6 @@ package org.reduxkotlin.sample.taskflow.reducer
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import org.reduxkotlin.sample.taskflow.action.Refresh
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
@@ -20,6 +19,7 @@ import org.reduxkotlin.sample.taskflow.feature.account.StartLogin
 import org.reduxkotlin.sample.taskflow.feature.account.SwitchAccount
 import org.reduxkotlin.sample.taskflow.feature.account.accountsReducer
 import org.reduxkotlin.sample.taskflow.feature.account.authFlowReducer
+import org.reduxkotlin.sample.taskflow.feature.board.Refresh
 import org.reduxkotlin.sample.taskflow.feature.settings.SetBotEnabled
 import org.reduxkotlin.sample.taskflow.feature.settings.SetFailureRate
 import org.reduxkotlin.sample.taskflow.feature.settings.SetLatency

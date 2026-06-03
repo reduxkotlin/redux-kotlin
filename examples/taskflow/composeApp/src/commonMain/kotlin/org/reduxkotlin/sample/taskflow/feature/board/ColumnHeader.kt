@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.components
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState

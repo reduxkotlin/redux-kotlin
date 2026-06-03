@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.screens
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -7,9 +7,6 @@ import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.Card
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
-import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.FilterModel
-import org.reduxkotlin.sample.taskflow.model.columnById
 
 /**
  * A value-equal, stable descriptor of one [org.reduxkotlin.sample.taskflow.model.Column] header:
@@ -18,7 +15,7 @@ import org.reduxkotlin.sample.taskflow.model.columnById
  * and per-card data stay behind each column's own narrow [BoardModel] subscription.
  *
  * @property id the column's stable [ColumnId] — used as the `key(...)` for each column composable.
- * @property title the column title shown in the [org.reduxkotlin.sample.taskflow.ui.components.ColumnHeader].
+ * @property title the column title shown in the [ColumnHeader].
  * @property wipLimit the column's optional WIP limit, or `null` when no limit is set.
  */
 public data class ColDesc(val id: ColumnId, val title: String, val wipLimit: Int?)

@@ -1,19 +1,8 @@
-package org.reduxkotlin.sample.taskflow.reducer
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.persistentSetOf
-import org.reduxkotlin.sample.taskflow.action.AddColumn
-import org.reduxkotlin.sample.taskflow.action.BoardClosed
-import org.reduxkotlin.sample.taskflow.action.BoardRestored
-import org.reduxkotlin.sample.taskflow.action.BotAddedCard
-import org.reduxkotlin.sample.taskflow.action.BotMovedCard
-import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
-import org.reduxkotlin.sample.taskflow.action.Refresh
-import org.reduxkotlin.sample.taskflow.action.SetFilterAssignee
-import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
-import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
-import org.reduxkotlin.sample.taskflow.action.ToggleFilterLabel
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.ActivityEntry
 import org.reduxkotlin.sample.taskflow.core.AddCard
@@ -42,9 +31,6 @@ import org.reduxkotlin.sample.taskflow.feature.undo.UndoModel
 import org.reduxkotlin.sample.taskflow.feature.undo.pushUndo
 import org.reduxkotlin.sample.taskflow.feature.undo.undoModelReducer
 import org.reduxkotlin.sample.taskflow.feature.undo.undoReducer
-import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.FilterModel
-import org.reduxkotlin.sample.taskflow.model.SyncModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

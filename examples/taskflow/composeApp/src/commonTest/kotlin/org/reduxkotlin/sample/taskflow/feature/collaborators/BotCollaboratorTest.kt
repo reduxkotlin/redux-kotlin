@@ -8,8 +8,6 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.reduxkotlin.Store
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.BotAddedCard
-import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -18,7 +16,9 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.Column
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
-import org.reduxkotlin.sample.taskflow.model.BoardModel
+import org.reduxkotlin.sample.taskflow.feature.board.BoardModel
+import org.reduxkotlin.sample.taskflow.feature.board.BotAddedCard
+import org.reduxkotlin.sample.taskflow.feature.board.BotMovedCard
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

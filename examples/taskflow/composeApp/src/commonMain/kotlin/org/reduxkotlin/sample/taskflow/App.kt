@@ -34,10 +34,7 @@ import org.reduxkotlin.devtools.inapp.InAppConfig
 import org.reduxkotlin.devtools.inapp.ReduxDevToolsHost
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.BoardClosed
-import org.reduxkotlin.sample.taskflow.action.LoadBoardRequested
 import org.reduxkotlin.sample.taskflow.action.Navigate
-import org.reduxkotlin.sample.taskflow.action.Refresh
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -50,6 +47,11 @@ import org.reduxkotlin.sample.taskflow.feature.account.LoginScreen
 import org.reduxkotlin.sample.taskflow.feature.account.ProfileScreen
 import org.reduxkotlin.sample.taskflow.feature.account.StartLogin
 import org.reduxkotlin.sample.taskflow.feature.account.SwitcherScreen
+import org.reduxkotlin.sample.taskflow.feature.board.BoardClosed
+import org.reduxkotlin.sample.taskflow.feature.board.BoardScreen
+import org.reduxkotlin.sample.taskflow.feature.board.CardDetailScreen
+import org.reduxkotlin.sample.taskflow.feature.board.LoadBoardRequested
+import org.reduxkotlin.sample.taskflow.feature.board.Refresh
 import org.reduxkotlin.sample.taskflow.feature.boardlist.BoardListScreen
 import org.reduxkotlin.sample.taskflow.feature.settings.SettingsScreen
 import org.reduxkotlin.sample.taskflow.infra.SeedData
@@ -69,8 +71,6 @@ import org.reduxkotlin.sample.taskflow.ui.PredictiveBackHandler
 import org.reduxkotlin.sample.taskflow.ui.adaptive.widthSizeClass
 import org.reduxkotlin.sample.taskflow.ui.components.AdaptiveNav
 import org.reduxkotlin.sample.taskflow.ui.image.initCoil
-import org.reduxkotlin.sample.taskflow.ui.screens.BoardScreen
-import org.reduxkotlin.sample.taskflow.ui.screens.CardDetailScreen
 import org.reduxkotlin.sample.taskflow.ui.theme.TaskFlowTheme
 import kotlin.time.Clock
 

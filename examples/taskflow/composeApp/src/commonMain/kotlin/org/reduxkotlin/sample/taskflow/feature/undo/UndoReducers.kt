@@ -2,9 +2,9 @@ package org.reduxkotlin.sample.taskflow.feature.undo
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import org.reduxkotlin.sample.taskflow.action.BoardClosed
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.Board
+import org.reduxkotlin.sample.taskflow.feature.board.BoardClosed
 
 /**
  * Pure per-account reducer for the [UndoModel] slot.
