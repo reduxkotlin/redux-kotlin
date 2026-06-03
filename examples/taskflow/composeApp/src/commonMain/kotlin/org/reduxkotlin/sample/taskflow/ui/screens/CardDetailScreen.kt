@@ -59,16 +59,16 @@ import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
+import org.reduxkotlin.sample.taskflow.ui.Avatar
 import org.reduxkotlin.sample.taskflow.ui.BackHandler
 import org.reduxkotlin.sample.taskflow.ui.LocalClock
 import org.reduxkotlin.sample.taskflow.ui.LocalIdGenerator
+import org.reduxkotlin.sample.taskflow.ui.MarkdownEditor
+import org.reduxkotlin.sample.taskflow.ui.MarkdownView
 import org.reduxkotlin.sample.taskflow.ui.adaptive.WindowSizeClass
 import org.reduxkotlin.sample.taskflow.ui.adaptive.widthSizeClass
 import org.reduxkotlin.sample.taskflow.ui.components.AttachmentChip
-import org.reduxkotlin.sample.taskflow.ui.components.Avatar
 import org.reduxkotlin.sample.taskflow.ui.components.LabelChip
-import org.reduxkotlin.sample.taskflow.ui.components.MarkdownEditor
-import org.reduxkotlin.sample.taskflow.ui.components.MarkdownView
 import org.reduxkotlin.sample.taskflow.ui.components.MoveToGroup
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
