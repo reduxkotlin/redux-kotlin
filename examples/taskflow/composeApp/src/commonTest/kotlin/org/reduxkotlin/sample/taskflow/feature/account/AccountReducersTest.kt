@@ -1,12 +1,13 @@
-package org.reduxkotlin.sample.taskflow.reducer
+package org.reduxkotlin.sample.taskflow.feature.account
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
-import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.CloseCard
-import org.reduxkotlin.sample.taskflow.action.EnterEditMode
-import org.reduxkotlin.sample.taskflow.action.Navigate
-import org.reduxkotlin.sample.taskflow.action.OpenCard
+import org.reduxkotlin.sample.taskflow.app.nav.Back
+import org.reduxkotlin.sample.taskflow.app.nav.CloseCard
+import org.reduxkotlin.sample.taskflow.app.nav.EnterEditMode
+import org.reduxkotlin.sample.taskflow.app.nav.Navigate
+import org.reduxkotlin.sample.taskflow.app.nav.OpenCard
+import org.reduxkotlin.sample.taskflow.app.nav.navReducer
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -15,9 +16,6 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
-import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
-import org.reduxkotlin.sample.taskflow.feature.account.sessionReducer
 import org.reduxkotlin.sample.taskflow.feature.board.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.feature.board.Refresh
 import org.reduxkotlin.sample.taskflow.feature.board.StartCreateCard

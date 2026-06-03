@@ -1,19 +1,12 @@
-package org.reduxkotlin.sample.taskflow.reducer
+package org.reduxkotlin.sample.taskflow.app.nav
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
-import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.CloseCard
-import org.reduxkotlin.sample.taskflow.action.EnterEditMode
-import org.reduxkotlin.sample.taskflow.action.Navigate
-import org.reduxkotlin.sample.taskflow.action.OpenCard
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.feature.board.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.feature.board.StartCreateCard
-
-// DEFAULT_BOARD_COLOR moved to …feature.boardlist.BoardListReducer
 
 /**
  * Pure per-account reducer for the [NavModel] slice (the navigation stack).
@@ -108,7 +101,3 @@ private fun NavModel.flipCardDetailMode(to: Route.CardDetail.Mode, requireOther:
         this
     }
 }
-
-// sessionReducer moved to …feature.account.AccountReducers
-// boardListReducer moved to …feature.boardlist.BoardListReducer
-// collaboratorsReducer moved to …feature.collaborators.CollaboratorsReducer

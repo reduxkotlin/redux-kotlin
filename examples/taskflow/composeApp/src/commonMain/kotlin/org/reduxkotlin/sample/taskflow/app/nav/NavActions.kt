@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.action
+package org.reduxkotlin.sample.taskflow.app.nav
 
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.CardId
@@ -33,13 +33,3 @@ data class OpenCard(val cardId: CardId) : Action
 
 /** Convenience for [Back] when the top of the stack is a [Route.CardDetail]. */
 data object CloseCard : Action
-
-// Undo, Redo, PushUndo, SetUndoModel moved to …feature.undo.UndoActions
-
-// --- profile / activity (per-account) ---
-// EditProfile moved to …feature.account.AccountActions
-// RecordActivity moved to …feature.activity.ActivityActions
-
-// StartLogin, LoginRequested, AccountLoggedIn, LoginFailed, LoadAccountsRequested,
-// LoadAccountsSucceeded, LoadAccountsFailed, SwitchAccount, LogoutAccount
-// moved to …feature.account.AccountActions
