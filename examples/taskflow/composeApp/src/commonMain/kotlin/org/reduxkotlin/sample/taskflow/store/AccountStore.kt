@@ -28,7 +28,6 @@ import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
 import org.reduxkotlin.sample.taskflow.action.CreateBoard
-import org.reduxkotlin.sample.taskflow.action.EditProfile
 import org.reduxkotlin.sample.taskflow.action.EnterEditMode
 import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
@@ -53,6 +52,9 @@ import org.reduxkotlin.sample.taskflow.core.CardOpSucceeded
 import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.NavModel
+import org.reduxkotlin.sample.taskflow.feature.account.EditProfile
+import org.reduxkotlin.sample.taskflow.feature.account.SessionModel
+import org.reduxkotlin.sample.taskflow.feature.account.sessionReducer
 import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
@@ -67,7 +69,6 @@ import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.model.FilterModel
-import org.reduxkotlin.sample.taskflow.model.SessionModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
 import org.reduxkotlin.sample.taskflow.model.UndoModel
 import org.reduxkotlin.sample.taskflow.reducer.activityReducer
@@ -76,7 +77,6 @@ import org.reduxkotlin.sample.taskflow.reducer.boardReducer
 import org.reduxkotlin.sample.taskflow.reducer.collaboratorsReducer
 import org.reduxkotlin.sample.taskflow.reducer.filterReducer
 import org.reduxkotlin.sample.taskflow.reducer.navReducer
-import org.reduxkotlin.sample.taskflow.reducer.sessionReducer
 import org.reduxkotlin.sample.taskflow.reducer.syncReducer
 import org.reduxkotlin.sample.taskflow.reducer.undoModelReducer
 

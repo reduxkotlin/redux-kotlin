@@ -11,9 +11,7 @@ import org.reduxkotlin.sample.taskflow.core.BoardSummary
 
 // --- Per-account models (ALL declared up front; board slices start empty/sentinel) ---
 // Identity (name/email/avatar) is NOT duplicated here — it lives once in CollaboratorsModel
-// (which includes self). SessionModel holds only the id + session-only fields.
-
-data class SessionModel(val accountId: AccountId, val bio: String? = null)
+// (which includes self). SessionModel moved to …feature.account.AccountModels.
 
 data class BoardListModel(
     val boards: PersistentMap<BoardId, BoardSummary> = persistentMapOf(),

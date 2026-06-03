@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.screens
+package org.reduxkotlin.sample.taskflow.feature.account
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +23,8 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.LogoutAccount
-import org.reduxkotlin.sample.taskflow.action.SwitchAccount
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
-import org.reduxkotlin.sample.taskflow.model.AccountsModel
-import org.reduxkotlin.sample.taskflow.ui.components.AccountRow
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 import org.reduxkotlin.sample.taskflow.ui.theme.ShapeExtraLargeIncreased
 

@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui
+package org.reduxkotlin.sample.taskflow.feature.account
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui.screens
+package org.reduxkotlin.sample.taskflow.feature.account
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,12 +38,9 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.EditProfile
-import org.reduxkotlin.sample.taskflow.action.LogoutAccount
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
-import org.reduxkotlin.sample.taskflow.model.SessionModel
 import org.reduxkotlin.sample.taskflow.ui.Avatar
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
