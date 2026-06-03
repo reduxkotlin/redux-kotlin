@@ -4,7 +4,6 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.Action
-import org.reduxkotlin.sample.taskflow.core.ActivityEntry
 import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.BoardSummary
@@ -108,8 +107,7 @@ data object Refresh : Action
 
 // --- profile / activity (per-account) ---
 // EditProfile moved to …feature.account.AccountActions
-
-data class RecordActivity(val entry: ActivityEntry) : Action
+// RecordActivity moved to …feature.activity.ActivityActions
 
 // StartLogin, LoginRequested, AccountLoggedIn, LoginFailed, LoadAccountsRequested,
 // LoadAccountsSucceeded, LoadAccountsFailed, SwitchAccount, LogoutAccount

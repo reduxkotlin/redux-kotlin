@@ -62,8 +62,8 @@ import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.ActivityEntry
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
+import org.reduxkotlin.sample.taskflow.feature.activity.ActivityModel
 import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
-import org.reduxkotlin.sample.taskflow.model.ActivityModel
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.FilterModel
