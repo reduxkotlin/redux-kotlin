@@ -1,15 +1,10 @@
-package org.reduxkotlin.sample.taskflow.reducer
+package org.reduxkotlin.sample.taskflow.feature.undo
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import org.reduxkotlin.sample.taskflow.action.BoardClosed
-import org.reduxkotlin.sample.taskflow.action.PushUndo
-import org.reduxkotlin.sample.taskflow.action.Redo
-import org.reduxkotlin.sample.taskflow.action.SetUndoModel
-import org.reduxkotlin.sample.taskflow.action.Undo
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.Board
-import org.reduxkotlin.sample.taskflow.model.UndoModel
 
 /**
  * Pure per-account reducer for the [UndoModel] slot.

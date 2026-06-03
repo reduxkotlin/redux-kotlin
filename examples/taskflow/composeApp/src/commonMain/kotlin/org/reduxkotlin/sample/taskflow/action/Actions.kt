@@ -12,7 +12,6 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.LabelId
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.model.UndoModel
 import kotlin.time.Instant
 
 // --- bot (server-truth; NOT undoable, no revert) ---
@@ -63,18 +62,9 @@ data class OpenCard(val cardId: CardId) : Action
 /** Convenience for [Back] when the top of the stack is a [Route.CardDetail]. */
 data object CloseCard : Action
 
-// --- undo / filter ---
-data object Undo : Action
+// Undo, Redo, PushUndo, SetUndoModel moved to …feature.undo.UndoActions
 
-data object Redo : Action
-
-// Internal undo plumbing — dispatched by undoMiddleware; folded by the UndoModel slot reducer.
-// snapshot the present board before an undoable mutation
-data class PushUndo(val snapshot: Board) : Action
-
-// commit the next undo stacks after an Undo/Redo step
-data class SetUndoModel(val model: UndoModel) : Action
-
+// --- filter ---
 data class SetFilterQuery(val query: String) : Action
 
 data class SetFilterAssignee(val accountId: AccountId?) : Action

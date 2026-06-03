@@ -31,10 +31,8 @@ import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
-import org.reduxkotlin.sample.taskflow.action.PushUndo
 import org.reduxkotlin.sample.taskflow.action.SetFilterAssignee
 import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
-import org.reduxkotlin.sample.taskflow.action.SetUndoModel
 import org.reduxkotlin.sample.taskflow.action.StartCreateCard
 import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
 import org.reduxkotlin.sample.taskflow.action.ToggleFilterLabel
@@ -57,6 +55,11 @@ import org.reduxkotlin.sample.taskflow.feature.activity.activityReducer
 import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.feature.collaborators.collaboratorsReducer
 import org.reduxkotlin.sample.taskflow.feature.collaborators.seedCollaborators
+import org.reduxkotlin.sample.taskflow.feature.undo.PushUndo
+import org.reduxkotlin.sample.taskflow.feature.undo.SetUndoModel
+import org.reduxkotlin.sample.taskflow.feature.undo.UndoModel
+import org.reduxkotlin.sample.taskflow.feature.undo.undoMiddleware
+import org.reduxkotlin.sample.taskflow.feature.undo.undoModelReducer
 import org.reduxkotlin.sample.taskflow.infra.SeedData
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
@@ -64,18 +67,15 @@ import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.infra.platform.mainNotificationContext
 import org.reduxkotlin.sample.taskflow.middleware.effectsMiddleware
-import org.reduxkotlin.sample.taskflow.middleware.undoMiddleware
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.FilterModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
-import org.reduxkotlin.sample.taskflow.model.UndoModel
 import org.reduxkotlin.sample.taskflow.reducer.boardListReducer
 import org.reduxkotlin.sample.taskflow.reducer.boardReducer
 import org.reduxkotlin.sample.taskflow.reducer.filterReducer
 import org.reduxkotlin.sample.taskflow.reducer.navReducer
 import org.reduxkotlin.sample.taskflow.reducer.syncReducer
-import org.reduxkotlin.sample.taskflow.reducer.undoModelReducer
 
 /**
  * Owns one account's running store plus everything bound to that account's lifetime.
