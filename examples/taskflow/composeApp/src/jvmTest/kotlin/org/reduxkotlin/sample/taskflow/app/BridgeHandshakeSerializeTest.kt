@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.store
+package org.reduxkotlin.sample.taskflow.app
 
 import org.reduxkotlin.devtools.bridge.BridgeMessage
 import org.reduxkotlin.devtools.bridge.PROTOCOL_VERSION

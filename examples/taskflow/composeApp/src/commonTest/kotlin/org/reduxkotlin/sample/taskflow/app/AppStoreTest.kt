@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.store
+package org.reduxkotlin.sample.taskflow.app
 
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.sample.taskflow.core.AccountId

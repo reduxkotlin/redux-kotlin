@@ -9,7 +9,7 @@ import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 
 /**
- * A value-equal, stable descriptor of one [org.reduxkotlin.sample.taskflow.model.Column] header:
+ * A value-equal, stable descriptor of one [org.reduxkotlin.sample.taskflow.core.Column] header:
  * just its identity and the fields a `ColumnView` needs to render its frame. Bound once per board
  * (Rule C) so the column-list composable never selects the whole board; the heavyweight `cardIds`
  * and per-card data stay behind each column's own narrow [BoardModel] subscription.

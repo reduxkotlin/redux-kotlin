@@ -101,7 +101,7 @@ public sealed interface SyncOp {
 }
 
 /**
- * Serializable form of a [org.reduxkotlin.sample.taskflow.model.Card].
+ * Serializable form of a [org.reduxkotlin.sample.taskflow.core.Card].
  *
  * @property id card id.
  * @property title card title.
@@ -127,7 +127,7 @@ public data class CardDto(
 )
 
 /**
- * Serializable form of a [org.reduxkotlin.sample.taskflow.model.Attachment].
+ * Serializable form of a [org.reduxkotlin.sample.taskflow.core.Attachment].
  */
 @Serializable
 public sealed interface AttachmentDto {
@@ -165,7 +165,7 @@ public sealed interface AttachmentDto {
 }
 
 /**
- * Serializable form of a [org.reduxkotlin.sample.taskflow.model.Label].
+ * Serializable form of a [org.reduxkotlin.sample.taskflow.core.Label].
  *
  * @property id label id.
  * @property name label text.
@@ -175,7 +175,7 @@ public sealed interface AttachmentDto {
 public data class LabelDto(public val id: String, public val name: String, public val color: Long)
 
 /**
- * Serializable form of a domain [org.reduxkotlin.sample.taskflow.action.InverseOp].
+ * Serializable form of a domain [org.reduxkotlin.sample.taskflow.core.InverseOp].
  *
  * Captures how to undo the [SyncOp] it is attached to.
  */
