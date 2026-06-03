@@ -4,10 +4,10 @@ import org.reduxkotlin.Middleware
 import org.reduxkotlin.Store
 import org.reduxkotlin.middleware
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.BoardRestored
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.Undoable
-import org.reduxkotlin.sample.taskflow.model.BoardModel
+import org.reduxkotlin.sample.taskflow.feature.board.BoardModel
+import org.reduxkotlin.sample.taskflow.feature.board.BoardRestored
 
 /**
  * The undo/redo middleware: the SINGLE place that maintains the per-account undo history.

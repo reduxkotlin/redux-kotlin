@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.middleware
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
@@ -31,7 +31,6 @@ import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncStatus
 import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
-import org.reduxkotlin.sample.taskflow.model.BoardModel
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals

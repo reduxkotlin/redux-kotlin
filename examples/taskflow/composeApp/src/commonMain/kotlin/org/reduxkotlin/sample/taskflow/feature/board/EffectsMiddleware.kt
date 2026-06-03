@@ -1,6 +1,6 @@
 @file:Suppress("TooManyFunctions") // one private effect handler per action kind, by design
 
-package org.reduxkotlin.sample.taskflow.middleware
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -8,12 +8,6 @@ import org.reduxkotlin.Middleware
 import org.reduxkotlin.Store
 import org.reduxkotlin.middleware
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.AddColumn
-import org.reduxkotlin.sample.taskflow.action.LoadBoardFailed
-import org.reduxkotlin.sample.taskflow.action.LoadBoardRequested
-import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
-import org.reduxkotlin.sample.taskflow.action.Refresh
-import org.reduxkotlin.sample.taskflow.action.SyncStatusChanged
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
@@ -27,9 +21,6 @@ import org.reduxkotlin.sample.taskflow.feature.boardlist.LoadBoardListRequested
 import org.reduxkotlin.sample.taskflow.feature.boardlist.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.feature.settings.SetOnline
 import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
-import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.columnById
-import org.reduxkotlin.sample.taskflow.model.newBoardColumns
 
 private const val DEFAULT_INDEX = 0
 

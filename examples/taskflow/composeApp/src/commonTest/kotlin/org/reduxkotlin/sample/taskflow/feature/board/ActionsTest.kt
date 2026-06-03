@@ -1,5 +1,6 @@
-package org.reduxkotlin.sample.taskflow.action
+package org.reduxkotlin.sample.taskflow.feature.board
 
+import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.CardMoveRequested

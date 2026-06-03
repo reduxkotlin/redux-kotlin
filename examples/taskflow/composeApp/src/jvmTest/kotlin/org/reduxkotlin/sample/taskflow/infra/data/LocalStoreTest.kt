@@ -13,13 +13,13 @@ import org.reduxkotlin.sample.taskflow.core.Column
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
+import org.reduxkotlin.sample.taskflow.feature.board.newBoardColumns
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.remote.InverseOpDto
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
 import org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp
 import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
-import org.reduxkotlin.sample.taskflow.model.newBoardColumns
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

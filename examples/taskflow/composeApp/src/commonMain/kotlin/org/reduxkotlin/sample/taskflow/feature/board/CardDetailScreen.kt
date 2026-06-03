@@ -4,7 +4,7 @@
 // point, so the default function-per-file ceiling is suppressed here.
 @file:Suppress("TooManyFunctions")
 
-package org.reduxkotlin.sample.taskflow.ui.screens
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +44,6 @@ import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.compose.selectorState
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.Back
-import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
 import org.reduxkotlin.sample.taskflow.action.EnterEditMode
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
@@ -57,8 +56,6 @@ import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
-import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.SyncModel
 import org.reduxkotlin.sample.taskflow.ui.Avatar
 import org.reduxkotlin.sample.taskflow.ui.BackHandler
 import org.reduxkotlin.sample.taskflow.ui.LocalClock
@@ -67,9 +64,6 @@ import org.reduxkotlin.sample.taskflow.ui.MarkdownEditor
 import org.reduxkotlin.sample.taskflow.ui.MarkdownView
 import org.reduxkotlin.sample.taskflow.ui.adaptive.WindowSizeClass
 import org.reduxkotlin.sample.taskflow.ui.adaptive.widthSizeClass
-import org.reduxkotlin.sample.taskflow.ui.components.AttachmentChip
-import org.reduxkotlin.sample.taskflow.ui.components.LabelChip
-import org.reduxkotlin.sample.taskflow.ui.components.MoveToGroup
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**

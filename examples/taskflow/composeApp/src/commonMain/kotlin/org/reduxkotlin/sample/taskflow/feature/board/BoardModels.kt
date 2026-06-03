@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.model
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf

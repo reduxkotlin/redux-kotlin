@@ -4,7 +4,7 @@
 // the point, so the default function-per-file ceiling is suppressed here.
 @file:Suppress("TooManyFunctions")
 
-package org.reduxkotlin.sample.taskflow.ui.screens
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -50,11 +50,7 @@ import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.compose.selectorState
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.AddColumn
 import org.reduxkotlin.sample.taskflow.action.OpenCard
-import org.reduxkotlin.sample.taskflow.action.Refresh
-import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
-import org.reduxkotlin.sample.taskflow.action.StartCreateCard
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.core.ActivityEntry
@@ -66,19 +62,9 @@ import org.reduxkotlin.sample.taskflow.feature.collaborators.CollaboratorsModel
 import org.reduxkotlin.sample.taskflow.feature.undo.Redo
 import org.reduxkotlin.sample.taskflow.feature.undo.Undo
 import org.reduxkotlin.sample.taskflow.feature.undo.UndoModel
-import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.FilterModel
-import org.reduxkotlin.sample.taskflow.model.SyncModel
-import org.reduxkotlin.sample.taskflow.model.columnById
 import org.reduxkotlin.sample.taskflow.ui.LocalIdGenerator
 import org.reduxkotlin.sample.taskflow.ui.adaptive.WindowSizeClass
 import org.reduxkotlin.sample.taskflow.ui.adaptive.widthSizeClass
-import org.reduxkotlin.sample.taskflow.ui.components.ColumnHeader
-import org.reduxkotlin.sample.taskflow.ui.components.FabMenu
-import org.reduxkotlin.sample.taskflow.ui.components.FilterBar
-import org.reduxkotlin.sample.taskflow.ui.components.KanbanCard
-import org.reduxkotlin.sample.taskflow.ui.components.SyncIndicator
-import org.reduxkotlin.sample.taskflow.ui.components.SyncToast
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**

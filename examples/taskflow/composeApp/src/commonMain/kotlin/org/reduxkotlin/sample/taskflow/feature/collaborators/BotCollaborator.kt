@@ -7,10 +7,10 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.reduxkotlin.Store
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.BotMovedCard
 import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
-import org.reduxkotlin.sample.taskflow.model.BoardModel
+import org.reduxkotlin.sample.taskflow.feature.board.BoardModel
+import org.reduxkotlin.sample.taskflow.feature.board.BotMovedCard
 import kotlin.random.Random
 
 /**

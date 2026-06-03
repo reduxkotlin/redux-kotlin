@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.ui
+package org.reduxkotlin.sample.taskflow.feature.board
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Text
@@ -19,8 +19,6 @@ import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.LoadBoardSucceeded
-import org.reduxkotlin.sample.taskflow.action.SetFilterQuery
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.Board
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -30,13 +28,6 @@ import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
 import org.reduxkotlin.sample.taskflow.core.Column
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.model.BoardModel
-import org.reduxkotlin.sample.taskflow.model.FilterModel
-import org.reduxkotlin.sample.taskflow.model.SyncModel
-import org.reduxkotlin.sample.taskflow.model.columnById
-import org.reduxkotlin.sample.taskflow.reducer.boardReducer
-import org.reduxkotlin.sample.taskflow.reducer.filterReducer
-import org.reduxkotlin.sample.taskflow.reducer.syncReducer
 import org.reduxkotlin.sample.taskflow.ui.image.fakeNoNetworkImageLoader
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
