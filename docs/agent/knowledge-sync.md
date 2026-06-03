@@ -5,7 +5,7 @@ derives_from: []
 api_files: []
 rules: []
 assembles_into: []
-last_verified: { commit: b089596, date: 2026-06-03 }
+last_verified: { commit: 06214a9, date: 2026-06-03 }
 ---
 
 # Knowledge-sync agent
