@@ -29,5 +29,7 @@ jobs:
         env:
           API_REVIEW_OK: ${{ contains(github.event.pull_request.labels.*.name, 'api-reviewed') && '1' || '0' }}
         run: |
-          git fetch origin "${{ github.base_ref }}" --depth=1 || true
+          # Full (unshallowed) base fetch so BASE...HEAD has a real merge-base
+          # (checkout used fetch-depth: 0; a --depth=1 base fetch would re-shallow and break three-dot diff).
+          git fetch --no-tags origin "${{ github.base_ref }}" || true
           bash scripts/check-api-tripwire.sh "origin/${{ github.base_ref }}"
