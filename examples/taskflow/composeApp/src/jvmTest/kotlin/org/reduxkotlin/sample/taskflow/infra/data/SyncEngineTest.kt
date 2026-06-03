@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data
+package org.reduxkotlin.sample.taskflow.infra.data
 
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
@@ -13,16 +13,17 @@ import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
 import org.reduxkotlin.sample.taskflow.core.InverseOp
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.data.local.LocalStore
-import org.reduxkotlin.sample.taskflow.data.local.SqlDelightLocalStore
-import org.reduxkotlin.sample.taskflow.data.remote.FakeRemoteApi
-import org.reduxkotlin.sample.taskflow.data.remote.InverseOpDto
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteChange
-import org.reduxkotlin.sample.taskflow.data.remote.SyncOp
-import org.reduxkotlin.sample.taskflow.data.sync.SyncEngine
-import org.reduxkotlin.sample.taskflow.data.sync.SyncStatus
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
-import org.reduxkotlin.sample.taskflow.db.taskFlowDb
+import org.reduxkotlin.sample.taskflow.infra.SeedData
+import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
+import org.reduxkotlin.sample.taskflow.infra.data.remote.InverseOpDto
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
+import org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncEngine
+import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncStatus
+import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals

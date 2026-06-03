@@ -1,8 +1,8 @@
 package org.reduxkotlin.sample.taskflow.ui
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import org.reduxkotlin.sample.taskflow.util.DefaultIdGenerator
-import org.reduxkotlin.sample.taskflow.util.IdGenerator
+import org.reduxkotlin.sample.taskflow.infra.util.DefaultIdGenerator
+import org.reduxkotlin.sample.taskflow.infra.util.IdGenerator
 import kotlin.time.Clock
 import kotlin.time.Instant
 

@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data
+package org.reduxkotlin.sample.taskflow.infra.data
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.runTest
@@ -7,13 +7,14 @@ import org.reduxkotlin.sample.taskflow.core.BoardId
 import org.reduxkotlin.sample.taskflow.core.Card
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.ColumnId
-import org.reduxkotlin.sample.taskflow.data.remote.FakeRemoteApi
-import org.reduxkotlin.sample.taskflow.data.remote.InverseOpDto
-import org.reduxkotlin.sample.taskflow.data.remote.OfflineException
-import org.reduxkotlin.sample.taskflow.data.remote.PushResult
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteChange
-import org.reduxkotlin.sample.taskflow.data.remote.SyncOp
-import org.reduxkotlin.sample.taskflow.data.remote.TransientNetworkException
+import org.reduxkotlin.sample.taskflow.infra.SeedData
+import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
+import org.reduxkotlin.sample.taskflow.infra.data.remote.InverseOpDto
+import org.reduxkotlin.sample.taskflow.infra.data.remote.OfflineException
+import org.reduxkotlin.sample.taskflow.infra.data.remote.PushResult
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
+import org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.remote.TransientNetworkException
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals

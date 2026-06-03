@@ -1,5 +1,7 @@
-package org.reduxkotlin.sample.taskflow.util
+package org.reduxkotlin.sample.taskflow.infra.util
 
+import org.reduxkotlin.sample.taskflow.infra.util.DefaultIdGenerator
+import org.reduxkotlin.sample.taskflow.infra.util.FakeIdGenerator
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

@@ -25,7 +25,7 @@ import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.InverseOp
 import org.reduxkotlin.sample.taskflow.core.NavModel
-import org.reduxkotlin.sample.taskflow.data.sync.SyncRepository
+import org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.columnById
 import org.reduxkotlin.sample.taskflow.model.newBoardColumns

@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data
+package org.reduxkotlin.sample.taskflow.infra.data
 
 import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
@@ -26,12 +26,13 @@ import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
 import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.core.Route
-import org.reduxkotlin.sample.taskflow.data.local.LocalStore
-import org.reduxkotlin.sample.taskflow.data.local.SqlDelightLocalStore
-import org.reduxkotlin.sample.taskflow.data.remote.FakeRemoteApi
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteChange
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
-import org.reduxkotlin.sample.taskflow.db.taskFlowDb
+import org.reduxkotlin.sample.taskflow.infra.SeedData
+import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.local.SqlDelightLocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.remote.FakeRemoteApi
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
+import org.reduxkotlin.sample.taskflow.infra.db.taskFlowDb
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.SyncModel
 import org.reduxkotlin.sample.taskflow.model.columnById
@@ -48,8 +49,8 @@ import kotlin.time.Instant
 /**
  * End-to-end offline-sync proof (plan Task 36): the **real** production wiring — the root app store
  * ([createAppStore]), a per-account store ([createAccountStore]) with its effects/undo/activity
- * middleware, its [org.reduxkotlin.sample.taskflow.data.sync.SyncRepository] +
- * [org.reduxkotlin.sample.taskflow.data.sync.SyncEngine] over an isolated [FakeRemoteApi], and a
+ * middleware, its [org.reduxkotlin.sample.taskflow.infra.data.sync.SyncRepository] +
+ * [org.reduxkotlin.sample.taskflow.infra.data.sync.SyncEngine] over an isolated [FakeRemoteApi], and a
  * durable in-memory [LocalStore] — exercised across the three real transitions:
  *
  * 1. **Offline** — the move persists locally and queues; no revert (offline is not a rejection).

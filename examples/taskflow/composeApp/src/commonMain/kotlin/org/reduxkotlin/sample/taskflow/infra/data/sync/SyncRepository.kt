@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data.sync
+package org.reduxkotlin.sample.taskflow.infra.data.sync
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentSetOf
@@ -28,9 +28,9 @@ import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.InverseOp
 import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.data.local.LocalStore
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteApi
-import org.reduxkotlin.sample.taskflow.data.remote.toSyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
+import org.reduxkotlin.sample.taskflow.infra.data.remote.toSyncOp
 import kotlin.time.Instant
 
 private const val NEW_CARD_INDEX = 0
@@ -47,7 +47,7 @@ private const val NEW_CARD_INDEX = 0
  *
  * Every mutation method is the same three-step dance: (1) write the durable [LocalStore] (instant,
  * works offline), (2) [LocalStore.enqueue] the matching serializable
- * [org.reduxkotlin.sample.taskflow.data.remote.SyncOp] carrying its per-op [InverseOp] (so a later
+ * [org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp] carrying its per-op [InverseOp] (so a later
  * `Rejected` push reconstructs the revert from the queued op), and (3) [SyncEngine.kick] to attempt
  * a drain. Reads delegate straight to the [LocalStore].
  *

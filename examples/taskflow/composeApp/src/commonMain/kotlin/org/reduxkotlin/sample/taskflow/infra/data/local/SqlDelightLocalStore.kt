@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data.local
+package org.reduxkotlin.sample.taskflow.infra.data.local
 
 import app.cash.sqldelight.async.coroutines.awaitAsList
 import app.cash.sqldelight.async.coroutines.awaitAsOne
@@ -27,12 +27,12 @@ import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.core.Theme
-import org.reduxkotlin.sample.taskflow.data.SeedData
-import org.reduxkotlin.sample.taskflow.data.remote.RemoteChange
-import org.reduxkotlin.sample.taskflow.data.remote.SyncOp
-import org.reduxkotlin.sample.taskflow.data.remote.decodeSyncOp
-import org.reduxkotlin.sample.taskflow.data.remote.encodeToPayload
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
+import org.reduxkotlin.sample.taskflow.infra.SeedData
+import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
+import org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.remote.decodeSyncOp
+import org.reduxkotlin.sample.taskflow.infra.data.remote.encodeToPayload
 import kotlin.time.Instant
 
 private const val ATTACHMENT_KIND_IMAGE = "image"

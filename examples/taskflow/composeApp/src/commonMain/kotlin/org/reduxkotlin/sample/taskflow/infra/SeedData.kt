@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.data
+package org.reduxkotlin.sample.taskflow.infra
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -20,7 +20,7 @@ import org.reduxkotlin.sample.taskflow.core.LabelId
 import kotlin.time.Instant
 
 /**
- * Deterministic seed content shared by [org.reduxkotlin.sample.taskflow.data.local.LocalStore]
+ * Deterministic seed content shared by [org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore]
  * and (later) the fake remote backend. All timestamps use a single fixed [SEED_INSTANT] so tests
  * are reproducible; only runtime-created cards use the platform clock.
  *
