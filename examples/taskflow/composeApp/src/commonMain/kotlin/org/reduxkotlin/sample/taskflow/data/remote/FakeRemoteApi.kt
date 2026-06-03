@@ -4,13 +4,13 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
+import org.reduxkotlin.sample.taskflow.core.Board
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.ColumnId
+import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
 import org.reduxkotlin.sample.taskflow.data.SeedData
-import org.reduxkotlin.sample.taskflow.model.Board
-import org.reduxkotlin.sample.taskflow.model.BoardId
-import org.reduxkotlin.sample.taskflow.model.Card
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.ColumnId
-import org.reduxkotlin.sample.taskflow.model.FakeServiceConfig
 import kotlin.random.Random
 import kotlin.time.Instant
 

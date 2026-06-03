@@ -3,7 +3,6 @@ package org.reduxkotlin.sample.taskflow.reducer
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentMapOf
 import org.reduxkotlin.sample.taskflow.action.AccountLoggedIn
-import org.reduxkotlin.sample.taskflow.action.Action
 import org.reduxkotlin.sample.taskflow.action.EditProfile
 import org.reduxkotlin.sample.taskflow.action.LoadAccountsSucceeded
 import org.reduxkotlin.sample.taskflow.action.LoginFailed
@@ -16,10 +15,11 @@ import org.reduxkotlin.sample.taskflow.action.SetOnline
 import org.reduxkotlin.sample.taskflow.action.SetTheme
 import org.reduxkotlin.sample.taskflow.action.StartLogin
 import org.reduxkotlin.sample.taskflow.action.SwitchAccount
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.Action
+import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.model.AccountsModel
-import org.reduxkotlin.sample.taskflow.model.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.model.AuthFlowModel
 
 /**

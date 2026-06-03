@@ -22,8 +22,8 @@ import org.reduxkotlin.sample.taskflow.action.SetOnline
 import org.reduxkotlin.sample.taskflow.action.SetTheme
 import org.reduxkotlin.sample.taskflow.action.StartLogin
 import org.reduxkotlin.sample.taskflow.action.SwitchAccount
+import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.model.AccountsModel
-import org.reduxkotlin.sample.taskflow.model.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.model.AuthFlowModel
 import org.reduxkotlin.sample.taskflow.platform.mainNotificationContext
 import org.reduxkotlin.sample.taskflow.reducer.accountsReducer

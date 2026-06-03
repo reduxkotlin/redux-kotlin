@@ -2,21 +2,21 @@ package org.reduxkotlin.sample.taskflow.data.local
 
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.ActivityEntry
+import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
+import org.reduxkotlin.sample.taskflow.core.Board
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.BoardSummary
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.Column
+import org.reduxkotlin.sample.taskflow.core.ColumnId
+import org.reduxkotlin.sample.taskflow.core.NavModel
+import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.data.remote.RemoteChange
 import org.reduxkotlin.sample.taskflow.data.remote.SyncOp
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
-import org.reduxkotlin.sample.taskflow.model.ActivityEntry
-import org.reduxkotlin.sample.taskflow.model.AppSettingsModel
-import org.reduxkotlin.sample.taskflow.model.Board
-import org.reduxkotlin.sample.taskflow.model.BoardId
-import org.reduxkotlin.sample.taskflow.model.BoardSummary
-import org.reduxkotlin.sample.taskflow.model.Card
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.Column
-import org.reduxkotlin.sample.taskflow.model.ColumnId
-import org.reduxkotlin.sample.taskflow.model.NavModel
-import org.reduxkotlin.sample.taskflow.model.OpId
 import kotlin.time.Instant
 
 /**

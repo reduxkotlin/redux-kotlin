@@ -1,11 +1,11 @@
 package org.reduxkotlin.sample.taskflow.data.remote
 
-import org.reduxkotlin.sample.taskflow.action.AddCard
-import org.reduxkotlin.sample.taskflow.action.CardMoveRequested
-import org.reduxkotlin.sample.taskflow.action.DeleteCard
-import org.reduxkotlin.sample.taskflow.action.EditCard
-import org.reduxkotlin.sample.taskflow.action.InverseOp
-import org.reduxkotlin.sample.taskflow.model.Card
+import org.reduxkotlin.sample.taskflow.core.AddCard
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
+import org.reduxkotlin.sample.taskflow.core.DeleteCard
+import org.reduxkotlin.sample.taskflow.core.EditCard
+import org.reduxkotlin.sample.taskflow.core.InverseOp
 
 /**
  * Builds a serializable [SyncOp.Move] from a [CardMoveRequested] domain action and its inverse.

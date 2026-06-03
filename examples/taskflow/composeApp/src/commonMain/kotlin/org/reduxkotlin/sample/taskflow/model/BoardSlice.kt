@@ -4,6 +4,11 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.ActivityEntry
+import org.reduxkotlin.sample.taskflow.core.Board
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.LabelId
 import kotlin.time.Instant
 
 data class FilterModel(
@@ -28,5 +33,3 @@ data class SyncModel(
 )
 
 data class ActivityModel(val entries: PersistentList<ActivityEntry> = persistentListOf())
-
-data class ActivityEntry(val id: String, val actorId: AccountId, val summary: String, val timestamp: Instant)

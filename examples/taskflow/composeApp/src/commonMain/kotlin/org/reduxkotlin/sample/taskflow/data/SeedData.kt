@@ -5,18 +5,18 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
-import org.reduxkotlin.sample.taskflow.model.AccountDetail
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
-import org.reduxkotlin.sample.taskflow.model.Attachment
-import org.reduxkotlin.sample.taskflow.model.Board
-import org.reduxkotlin.sample.taskflow.model.BoardId
-import org.reduxkotlin.sample.taskflow.model.Card
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.Column
-import org.reduxkotlin.sample.taskflow.model.ColumnId
-import org.reduxkotlin.sample.taskflow.model.Label
-import org.reduxkotlin.sample.taskflow.model.LabelId
+import org.reduxkotlin.sample.taskflow.core.AccountDetail
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.Attachment
+import org.reduxkotlin.sample.taskflow.core.Board
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.Column
+import org.reduxkotlin.sample.taskflow.core.ColumnId
+import org.reduxkotlin.sample.taskflow.core.Label
+import org.reduxkotlin.sample.taskflow.core.LabelId
 import kotlin.time.Instant
 
 /**

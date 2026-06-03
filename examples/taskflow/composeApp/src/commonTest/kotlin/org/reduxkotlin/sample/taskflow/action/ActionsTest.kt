@@ -1,9 +1,14 @@
 package org.reduxkotlin.sample.taskflow.action
 
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.ColumnId
-import org.reduxkotlin.sample.taskflow.model.OpId
-import org.reduxkotlin.sample.taskflow.model.Route
+import org.reduxkotlin.sample.taskflow.core.AddCard
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
+import org.reduxkotlin.sample.taskflow.core.CardOpFailed
+import org.reduxkotlin.sample.taskflow.core.ColumnId
+import org.reduxkotlin.sample.taskflow.core.InverseOp
+import org.reduxkotlin.sample.taskflow.core.OpId
+import org.reduxkotlin.sample.taskflow.core.Route
+import org.reduxkotlin.sample.taskflow.core.Undoable
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

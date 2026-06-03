@@ -31,9 +31,9 @@ import org.reduxkotlin.sample.taskflow.action.SetFailureRate
 import org.reduxkotlin.sample.taskflow.action.SetLatency
 import org.reduxkotlin.sample.taskflow.action.SetOnline
 import org.reduxkotlin.sample.taskflow.action.SetTheme
-import org.reduxkotlin.sample.taskflow.model.AppSettingsModel
-import org.reduxkotlin.sample.taskflow.model.FakeServiceConfig
-import org.reduxkotlin.sample.taskflow.model.Theme
+import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
+import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
+import org.reduxkotlin.sample.taskflow.core.Theme
 import org.reduxkotlin.sample.taskflow.ui.components.SettingsSlider
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 

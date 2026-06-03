@@ -4,13 +4,13 @@ import org.reduxkotlin.Middleware
 import org.reduxkotlin.Store
 import org.reduxkotlin.middleware
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.action.Action
 import org.reduxkotlin.sample.taskflow.action.BoardRestored
 import org.reduxkotlin.sample.taskflow.action.PushUndo
 import org.reduxkotlin.sample.taskflow.action.Redo
 import org.reduxkotlin.sample.taskflow.action.SetUndoModel
 import org.reduxkotlin.sample.taskflow.action.Undo
-import org.reduxkotlin.sample.taskflow.action.Undoable
+import org.reduxkotlin.sample.taskflow.core.Action
+import org.reduxkotlin.sample.taskflow.core.Undoable
 import org.reduxkotlin.sample.taskflow.model.BoardModel
 import org.reduxkotlin.sample.taskflow.model.UndoModel
 import org.reduxkotlin.sample.taskflow.reducer.undoReducer

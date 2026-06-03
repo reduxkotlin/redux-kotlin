@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.reduxkotlin.sample.taskflow.model.BoardSummary
+import org.reduxkotlin.sample.taskflow.core.BoardSummary
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 
 /**

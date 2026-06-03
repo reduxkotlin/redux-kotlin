@@ -30,9 +30,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
-import org.reduxkotlin.sample.taskflow.model.Attachment
-import org.reduxkotlin.sample.taskflow.model.Card
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.Attachment
+import org.reduxkotlin.sample.taskflow.core.Card
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
 import org.reduxkotlin.sample.taskflow.ui.theme.LocalSemanticColors
 import org.reduxkotlin.sample.taskflow.ui.theme.TaskFlowMotion

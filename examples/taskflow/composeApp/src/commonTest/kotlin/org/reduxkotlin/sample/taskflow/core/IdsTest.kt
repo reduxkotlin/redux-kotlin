@@ -1,4 +1,4 @@
-package org.reduxkotlin.sample.taskflow.model
+package org.reduxkotlin.sample.taskflow.core
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -25,8 +25,8 @@ import org.reduxkotlin.compose.rememberStableStore
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.action.LogoutAccount
 import org.reduxkotlin.sample.taskflow.action.SwitchAccount
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.model.AccountsModel
 import org.reduxkotlin.sample.taskflow.ui.components.AccountRow
 import org.reduxkotlin.sample.taskflow.ui.theme.Dimens

@@ -16,13 +16,13 @@ import org.reduxkotlin.sample.taskflow.action.SetOnline
 import org.reduxkotlin.sample.taskflow.action.SetTheme
 import org.reduxkotlin.sample.taskflow.action.StartLogin
 import org.reduxkotlin.sample.taskflow.action.SwitchAccount
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
+import org.reduxkotlin.sample.taskflow.core.Theme
 import org.reduxkotlin.sample.taskflow.model.AccountsModel
-import org.reduxkotlin.sample.taskflow.model.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.model.AuthFlowModel
 import org.reduxkotlin.sample.taskflow.model.AuthMode
-import org.reduxkotlin.sample.taskflow.model.Theme
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

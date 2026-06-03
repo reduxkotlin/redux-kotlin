@@ -1,14 +1,14 @@
 package org.reduxkotlin.sample.taskflow.data.remote
 
 import kotlinx.collections.immutable.toPersistentList
-import org.reduxkotlin.sample.taskflow.action.InverseOp
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.Attachment
-import org.reduxkotlin.sample.taskflow.model.Card
-import org.reduxkotlin.sample.taskflow.model.CardId
-import org.reduxkotlin.sample.taskflow.model.ColumnId
-import org.reduxkotlin.sample.taskflow.model.Label
-import org.reduxkotlin.sample.taskflow.model.LabelId
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.Attachment
+import org.reduxkotlin.sample.taskflow.core.Card
+import org.reduxkotlin.sample.taskflow.core.CardId
+import org.reduxkotlin.sample.taskflow.core.ColumnId
+import org.reduxkotlin.sample.taskflow.core.InverseOp
+import org.reduxkotlin.sample.taskflow.core.Label
+import org.reduxkotlin.sample.taskflow.core.LabelId
 import kotlin.time.Instant
 
 /**

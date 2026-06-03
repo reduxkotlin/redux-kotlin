@@ -4,7 +4,6 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toPersistentList
-import org.reduxkotlin.sample.taskflow.action.Action
 import org.reduxkotlin.sample.taskflow.action.Back
 import org.reduxkotlin.sample.taskflow.action.CancelCreateCard
 import org.reduxkotlin.sample.taskflow.action.CloseCard
@@ -15,14 +14,15 @@ import org.reduxkotlin.sample.taskflow.action.LoadBoardListSucceeded
 import org.reduxkotlin.sample.taskflow.action.Navigate
 import org.reduxkotlin.sample.taskflow.action.OpenCard
 import org.reduxkotlin.sample.taskflow.action.StartCreateCard
-import org.reduxkotlin.sample.taskflow.model.AccountId
-import org.reduxkotlin.sample.taskflow.model.AccountSummary
-import org.reduxkotlin.sample.taskflow.model.BoardId
+import org.reduxkotlin.sample.taskflow.core.AccountId
+import org.reduxkotlin.sample.taskflow.core.AccountSummary
+import org.reduxkotlin.sample.taskflow.core.Action
+import org.reduxkotlin.sample.taskflow.core.BoardId
+import org.reduxkotlin.sample.taskflow.core.BoardSummary
+import org.reduxkotlin.sample.taskflow.core.NavModel
+import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.model.BoardListModel
-import org.reduxkotlin.sample.taskflow.model.BoardSummary
 import org.reduxkotlin.sample.taskflow.model.CollaboratorsModel
-import org.reduxkotlin.sample.taskflow.model.NavModel
-import org.reduxkotlin.sample.taskflow.model.Route
 import org.reduxkotlin.sample.taskflow.model.SessionModel
 
 /** Fallback tile color for a newly created board (Material 3 primary). */
