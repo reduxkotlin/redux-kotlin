@@ -5,6 +5,8 @@ plugins {
     kotlin("jvm")
     application
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.multiplatform)
 }
 
 kotlin {
@@ -31,6 +33,9 @@ dependencies {
     implementation(libs.clikt)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(compose.desktop.currentOs)
+    implementation(compose.runtime)
+    implementation(compose.ui)
     testImplementation(kotlin("test"))
     testImplementation(libs.kotlinx.coroutines.test)
 }
