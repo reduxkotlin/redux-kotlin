@@ -9,6 +9,7 @@ checked to resolve (path exists, symbol present). See [_template.md](./_template
 | Concern | Guide | Status |
 |---|---|---|
 | Add a feature slice | [feature-slice.md](./feature-slice.md) | ✅ |
+| DevTools debugging loop | [devtools.md](./devtools.md) | ✅ |
 | Store setup & topology | [store-setup.md](./store-setup.md) | ✅ |
 | Compose binding (Rule C) | [compose-binding.md](./compose-binding.md) | ✅ |
 | Effects + sync (Rule E) | [effects-sync.md](./effects-sync.md) | ✅ |
