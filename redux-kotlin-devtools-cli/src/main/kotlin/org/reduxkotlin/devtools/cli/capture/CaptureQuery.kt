@@ -24,9 +24,9 @@ internal fun globToRegex(glob: String): Regex {
 
 /** Returns true when [a] satisfies all id/timestamp bounds in this [QuerySpec]. */
 internal fun QuerySpec.matchesBounds(a: BridgeMessage.Action): Boolean = (sinceId == null || a.actionId >= sinceId) &&
-        (untilId == null || a.actionId <= untilId) &&
-        (sinceTs == null || a.timestampMillis >= sinceTs) &&
-        (untilTs == null || a.timestampMillis <= untilTs)
+    (untilId == null || a.actionId <= untilId) &&
+    (sinceTs == null || a.timestampMillis >= sinceTs) &&
+    (untilTs == null || a.timestampMillis <= untilTs)
 
 /** A filter over captured actions. `type` is a glob (`*` wildcard); id/time bounds are inclusive. */
 internal data class QuerySpec(
