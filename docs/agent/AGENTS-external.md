@@ -1,0 +1,78 @@
+# AGENTS.md — redux-kotlin
+
+Token-tight index for AI agents building an app **with** redux-kotlin
+(Kotlin Multiplatform Redux). Drop this file at your repo root so any agent loads
+it. It points to depth on github.com; it does not inline it.
+
+## What redux-kotlin is
+
+A Kotlin Multiplatform port of the Redux contract: a minimal core (`redux-kotlin`)
+holding the `Store<S>` contract, plus opt-in companion modules (thread-safety,
+concurrency, granular subscriptions, multi-store registries, a heterogeneous model
+bag, Compose bindings) on that same contract. Take the core, add only what you need.
+
+## Dependencies (Maven Central, group `org.reduxkotlin`)
+
+```kotlin
+// latest published release
+implementation("org.reduxkotlin:redux-kotlin:0.6.1")
+// add companions as needed, e.g.:
+// implementation("org.reduxkotlin:redux-kotlin-compose:0.6.1")
+```
+
+## Module map
+
+<!-- assemble:modules:start -->
+- `redux-kotlin` — core contract: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
+- `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper).
+- `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; the CallerSerialized strategy).
+- `redux-kotlin-granular` — `subscribeTo` / `subscribeFields` field-level subscriptions.
+- `redux-kotlin-registry` — `StoreRegistry` / `TypedStoreRegistry` keyed multi-store container.
+- `redux-kotlin-multimodel` — `ModelState` typesafe heterogeneous model bag.
+- `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
+- `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
+- `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
+<!-- assemble:modules:end -->
+
+Full module → public-API index:
+https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/api-map.md
+
+## Design rules
+
+Faithful one-liners from the canonical sample app (`examples/taskflow`):
+
+<!-- assemble:rules:start -->
+- **Rule C — Render isolation.** No composable reads a model (board/cards/columns) wholesale; every leaf binds the narrowest slice via `selectorState`/`fieldStateOf` and is wrapped in `key(...)`; list derivation lives in pure functions/reducers.
+- **Rule D — Identity split.** A profile edit fans `EditProfile` to the root account directory, the per-account `CollaboratorsModel`, and `SessionModel` (bio) — identity is never duplicated inconsistently.
+- **Rule E — Off-main effects.** Effects originate only in middleware and run off-main; dispatch marshals back to main via `NotificationContext` (no explicit main hop). Per-feature handlers compose into one `effectsMiddleware`.
+- **Rule F — Delta-only status.** `SyncEngine` emits `onStatus` only on a real `SyncStatus` change.
+- **Rule G — Mint at the edge.** Ids and timestamps come from `LocalIdGenerator`/`LocalClock` at the dispatch site, never from a reducer.
+- **Rule H — Single inset point.** Window insets are applied once at the shell root.
+<!-- assemble:rules:end -->
+
+Full architecture + rules:
+https://github.com/reduxkotlin/redux-kotlin/blob/master/examples/taskflow/ARCHITECTURE.md
+
+## Recommended app layout
+
+Package-by-feature: a `feature/<name>/` slice (model, actions, reducer, effects,
+screen, selectors, tests) plus shared `core` (domain kernel — no Compose/IO),
+`infra` (platform shims, db, data/sync), `app` (composition root: store factories,
+nav), and `ui` (theme, locals, widgets).
+
+## Per-concern guides (read the one that matches your task)
+
+- Add a feature slice — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/feature-slice.md
+- Store setup & topology — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/store-setup.md
+- Compose binding (render isolation) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/compose-binding.md
+- Effects + sync — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/effects-sync.md
+- Testing & the verify loop — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/testing.md
+- Platform shims (expect/actual) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/platform-shims.md
+- Modularization (which module when) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/modularization.md
+- DevTools debugging loop — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
+
+## Verify loop
+
+After writing code, run (Gradle): build (`./gradlew build`), lint
+(`./gradlew detektAll`), and — if you publish a library module — `./gradlew apiCheck`.
+`explicitApi()` projects need a KDoc on every public declaration.
