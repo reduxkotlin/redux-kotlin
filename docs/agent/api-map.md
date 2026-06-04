@@ -29,7 +29,7 @@ Read the committed `.api` dump for a module's public surface; regenerate with `.
 | `:redux-kotlin-bundle` | `redux-kotlin-bundle/api/redux-kotlin-bundle.klib.api` | One-call assembly of a concurrent `ModelState` store + registry + routing (`createConcurrentModelStore`, `getOrCreateConcurrentModelStore`). |
 | `:redux-kotlin-bundle-compose` | `redux-kotlin-bundle-compose/api/redux-kotlin-bundle-compose.klib.api` | Compose-side bundle conveniences (no published declarations). |
 | `:redux-kotlin-devtools-core` | `redux-kotlin-devtools-core/api/redux-kotlin-devtools-core.klib.api` | DevTools core model: state/action diffing (`DiffOp`, `DiffEntry`). |
-| `:redux-kotlin-devtools-bridge` | `redux-kotlin-devtools-bridge/api/redux-kotlin-devtools-bridge.klib.api` | Wire protocol between app and DevTools UI (`BridgeMessage`). |
+| `:redux-kotlin-devtools-bridge` | `redux-kotlin-devtools-bridge/api/redux-kotlin-devtools-bridge.klib.api` | Wire protocol between app and DevTools UI (`BridgeMessage`, `BridgeConfig`, `BridgeOutput`) plus the `.jsonl` recording codec (`RecordingHeader`, `encodeRecording`/`decodeRecording`). |
 | `:redux-kotlin-devtools-remote` | `redux-kotlin-devtools-remote/api/redux-kotlin-devtools-remote.klib.api` | Remote DevTools transport config (`RemoteConfig`). |
 | `:redux-kotlin-devtools-inapp` | `redux-kotlin-devtools-inapp/api/redux-kotlin-devtools-inapp.klib.api` | In-app DevTools overlay: triggers/config (`DevToolsTrigger`, `InAppConfig`, `DevToolsTab`). |
 | `:redux-kotlin-devtools-inapp-noop` | `redux-kotlin-devtools-inapp-noop/api/redux-kotlin-devtools-inapp-noop.klib.api` | No-op in-app DevTools (same config types, stripped for release builds). |
