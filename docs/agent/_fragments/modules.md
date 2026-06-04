@@ -1,0 +1,9 @@
+- `redux-kotlin` — core contract: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
+- `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper).
+- `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; the CallerSerialized strategy).
+- `redux-kotlin-granular` — `subscribeTo` / `subscribeFields` field-level subscriptions.
+- `redux-kotlin-registry` — `StoreRegistry` / `TypedStoreRegistry` keyed multi-store container.
+- `redux-kotlin-multimodel` — `ModelState` typesafe heterogeneous model bag.
+- `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
+- `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
+- `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.

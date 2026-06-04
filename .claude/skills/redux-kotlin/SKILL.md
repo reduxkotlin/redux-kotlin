@@ -11,12 +11,14 @@ companion modules on one `Store<S>` contract. Recommended app organization is **
 
 ## Always-apply rules (full text → `../../../examples/taskflow/ARCHITECTURE.md` §17)
 
-- **Rule C — Render isolation.** No composable reads a model wholesale; bind the narrowest slice via `selectorState`/`fieldStateOf`, wrapped in `key(...)`. Derivation lives in pure functions/reducers.
-- **Rule D — Identity split.** A profile edit fans to the root account directory, per-account `CollaboratorsModel`, and `SessionModel` — never duplicate identity inconsistently.
-- **Rule E — Off-main effects.** Effects originate only in middleware and run off-main; dispatch marshals back to main via `NotificationContext`. Per-feature handlers compose into one `effectsMiddleware`.
-- **Rule F — Delta-only status.** Emit status only on a real change.
-- **Rule G — Mint at the edge.** Ids/timestamps come from `LocalIdGenerator`/`LocalClock` at the dispatch site, never from a reducer.
-- **Rule H — Single inset point.** Window insets applied once at the shell root.
+<!-- assemble:rules:start -->
+- **Rule C — Render isolation.** No composable reads a model (board/cards/columns) wholesale; every leaf binds the narrowest slice via `selectorState`/`fieldStateOf` and is wrapped in `key(...)`; list derivation lives in pure functions/reducers.
+- **Rule D — Identity split.** A profile edit fans `EditProfile` to the root account directory, the per-account `CollaboratorsModel`, and `SessionModel` (bio) — identity is never duplicated inconsistently.
+- **Rule E — Off-main effects.** Effects originate only in middleware and run off-main; dispatch marshals back to main via `NotificationContext` (no explicit main hop). Per-feature handlers compose into one `effectsMiddleware`.
+- **Rule F — Delta-only status.** `SyncEngine` emits `onStatus` only on a real `SyncStatus` change.
+- **Rule G — Mint at the edge.** Ids and timestamps come from `LocalIdGenerator`/`LocalClock` at the dispatch site, never from a reducer.
+- **Rule H — Single inset point.** Window insets are applied once at the shell root.
+<!-- assemble:rules:end -->
 
 ## Decision routing
 

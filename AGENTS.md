@@ -15,15 +15,17 @@ same single `Store<S>` contract. Take the core, add only the companions you need
 
 The nine published core modules (each "use for X"):
 
+<!-- assemble:modules:start -->
 - `redux-kotlin` — core contract: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
 - `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper).
-- `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes).
+- `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; the CallerSerialized strategy).
 - `redux-kotlin-granular` — `subscribeTo` / `subscribeFields` field-level subscriptions.
-- `redux-kotlin-registry` — `StoreRegistry<K,S>` / `TypedStoreRegistry` keyed multi-store container.
+- `redux-kotlin-registry` — `StoreRegistry` / `TypedStoreRegistry` keyed multi-store container.
 - `redux-kotlin-multimodel` — `ModelState` typesafe heterogeneous model bag.
 - `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
 - `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
 - `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
+<!-- assemble:modules:end -->
 
 More modules exist (routing/bundle/bom/devtools/codegen) → see `docs/agent/api-map.md`.
 
@@ -45,12 +47,14 @@ does not auto-correct. Full gate detail → `CLAUDE.md`.
 (There are no named Rules A or B.) Faithful one-liners from
 `examples/taskflow/ARCHITECTURE.md` §17:
 
-- **Rule C — render isolation.** No composable reads a slot wholesale; each leaf binds the narrowest slice via `selectorState`/`fieldStateOf`; list derivation lives in pure functions/reducers.
-- **Rule D — identity split.** A profile edit fans to the root account directory, the per-account model, and the session model so identity is never duplicated inconsistently.
-- **Rule E — off-main effects.** All repository/sync work runs off-main; dispatch marshals notifications back to main via `NotificationContext` (no explicit main hop in effects).
-- **Rule F — delta-only status.** `SyncEngine` emits `onStatus` only on a real `SyncStatus` change.
-- **Rule G — mint at the edge.** Ids and timestamps come from `LocalIdGenerator`/`LocalClock` at the dispatch site, never from a reducer.
-- **Rule H — single inset point.** Window insets are applied once at the shell root.
+<!-- assemble:rules:start -->
+- **Rule C — Render isolation.** No composable reads a model (board/cards/columns) wholesale; every leaf binds the narrowest slice via `selectorState`/`fieldStateOf` and is wrapped in `key(...)`; list derivation lives in pure functions/reducers.
+- **Rule D — Identity split.** A profile edit fans `EditProfile` to the root account directory, the per-account `CollaboratorsModel`, and `SessionModel` (bio) — identity is never duplicated inconsistently.
+- **Rule E — Off-main effects.** Effects originate only in middleware and run off-main; dispatch marshals back to main via `NotificationContext` (no explicit main hop). Per-feature handlers compose into one `effectsMiddleware`.
+- **Rule F — Delta-only status.** `SyncEngine` emits `onStatus` only on a real `SyncStatus` change.
+- **Rule G — Mint at the edge.** Ids and timestamps come from `LocalIdGenerator`/`LocalClock` at the dispatch site, never from a reducer.
+- **Rule H — Single inset point.** Window insets are applied once at the shell root.
+<!-- assemble:rules:end -->
 
 Full text → `examples/taskflow/ARCHITECTURE.md`.
 
@@ -65,4 +69,5 @@ Canonical example: `examples/taskflow`.
 ## Deeper knowledge
 
 - **T1** per-concern guides → `docs/agent/references/` (`feature-slice.md` is live; the other six are planned — see `docs/agent/references/README.md`).
+- Task → guide routing (decision table) → `docs/agent/references/README.md`.
 - **T2** → `examples/taskflow/ARCHITECTURE.md` (full architecture + design rules) and `docs/agent/api-map.md` (module → `.api` index).
