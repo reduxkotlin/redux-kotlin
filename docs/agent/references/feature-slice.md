@@ -106,7 +106,8 @@ Boardlist spine:
 Board callout:
 `examples/taskflow/composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/feature/board/BoardScreen.kt → BoardScreen`.
 The screen wraps its store once via `rememberStableStore(store).value`, then binds slices with
-`fieldStateOf` (a whole field, value-equal) or `selectorState` (a derived snapshot). Child composables
+`fieldStateOf` (a whole field, value-equal) or `selectorState` (a derived snapshot); per ARCHITECTURE
+§17, each narrowly-bound leaf is wrapped in `key(...)` so it recomposes independently. Child composables
 receive finished immutable data plus a remembered callback — the store never reaches a child. Editor
 text and dialog-open flags stay in transient local `remember`, never the store. Rule G lives at the
 *mint* side here: ids/clock for `CreateBoard` come from `LocalIdGenerator` / `LocalClock` at the
@@ -150,7 +151,7 @@ Tight inner loop, fast to slow: `compile <target>`, then `commonTest` / `jvmTest
 then `apiCheck`.
 `apiCheck` matters only when you touch a library module's public API (taskflow itself has none);
 the backing `.api` dumps are listed in `api_files`. iOS-sim targets are host-gated — run them
-locally only on macOS; trust CI otherwise. Full treatment → testing.md.
+locally only on macOS; trust CI otherwise. Full treatment → `testing.md` *(planned)*.
 
 `detektAll` is the gate that bites first: `explicitApi()` is on, so every new `public` declaration in a
 slice (models, actions, reducer, screen, selectors) needs an explicit visibility modifier **and** a KDoc
@@ -159,9 +160,10 @@ not. Document public symbols as you write them, and never bypass the hook with `
 
 ## Codegen note
 
-KSP `@Reduce` codegen is packaging-agnostic: a `@Reduce`-annotated reducer can live in any
-`feature/*` package and the generated routing wiring follows it — package-by-feature does not change
-how codegen resolves it. Full treatment → the feature / testing guides.
+KSP `@Reduce` / `@ReduxInitial` codegen is packaging-agnostic: a `@Reduce`-annotated reducer can live
+in any `feature/*` package and the generated routing wiring follows it — package-by-feature does not
+change how codegen resolves it. Full codegen treatment is deferred to a planned guide
+*(planned — 0-rest)*.
 
 ## See also
 

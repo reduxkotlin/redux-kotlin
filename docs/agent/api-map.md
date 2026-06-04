@@ -6,7 +6,7 @@ derives_from:
 api_files: []
 rules: []
 assembles_into: [AGENTS.md, claude-skill]
-last_verified: { commit: d388b46, date: 2026-06-03 }
+last_verified: { commit: 06214a9, date: 2026-06-03 }
 ---
 
 # API map
@@ -34,5 +34,9 @@ Read the committed `.api` dump for a module's public surface; regenerate with `.
 | `:redux-kotlin-devtools-inapp` | `redux-kotlin-devtools-inapp/api/redux-kotlin-devtools-inapp.klib.api` | In-app DevTools overlay: triggers/config (`DevToolsTrigger`, `InAppConfig`, `DevToolsTab`). |
 | `:redux-kotlin-devtools-inapp-noop` | `redux-kotlin-devtools-inapp-noop/api/redux-kotlin-devtools-inapp-noop.klib.api` | No-op in-app DevTools (same config types, stripped for release builds). |
 | `:redux-kotlin-devtools-ui` | `redux-kotlin-devtools-ui/api/redux-kotlin-devtools-ui.klib.api` | Compose DevTools UI panels (tabs, theme). |
+
+`redux-kotlin-bom` (BOM platform), `redux-kotlin-routing-codegen` (KSP processor), and
+`redux-kotlin-devtools-standalone` (sample app) are published/built but carry no `.api` dump, so
+they're not listed.
 
 `examples/*` are `convention.control` (not published, no `.api`).

@@ -1,0 +1,53 @@
+name: Knowledge sync
+on:
+  pull_request:
+    paths:
+      - 'redux-kotlin*/**/src/**'
+      - '**/api/*.api'
+      - 'examples/taskflow/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: write
+concurrency:
+  cancel-in-progress: true
+  group: knowledge-sync-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+jobs:
+  sync:
+    name: Knowledge drift review
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Gate on API key presence
+        id: gate
+        run: echo "enabled=${{ secrets.ANTHROPIC_API_KEY != '' }}" >> "$GITHUB_OUTPUT"
+      - name: Checkout
+        if: steps.gate.outputs.enabled == 'true'
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Claude knowledge-drift review
+        if: steps.gate.outputs.enabled == 'true'
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            You are the redux-kotlin knowledge-sync reviewer. This PR changed library source, a committed
+            `.api` dump, and/or `examples/taskflow` (the canonical reference app).
+
+            The agent knowledge lives under `docs/agent/`:
+            - `docs/agent/references/*.md` — T1 per-concern guides; each has a YAML `derives_from:` header
+              listing the `path → Symbol` sources it paraphrases.
+            - `AGENTS.md` — the T0 index (modules, commands, Rules C–H, layout).
+            - `docs/agent/api-map.md` — module → `.api` map.
+
+            Do this:
+            1. Read the PR diff (changed files).
+            2. For each knowledge doc, read its `derives_from` provenance; a doc is IN SCOPE if any changed
+               file matches one of its `derives_from` paths (or it documents a changed module / Rule).
+            3. For each in-scope doc, judge whether the change makes its prose, patterns, citations, or rule
+               statements stale — focus on SEMANTIC drift (deterministic anchor/API checks run separately).
+            4. Post ONE concise PR comment: a bullet per doc needing an update with the specific reason, or
+               exactly "No knowledge drift detected." Do not modify files. Do not restate the rules.
+            Keep it short and high-signal. Cite `path → Symbol` for any claim.
