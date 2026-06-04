@@ -257,10 +257,56 @@ final class org.reduxkotlin.devtools.bridge/BridgeOutput : org.reduxkotlin.devto
     final fun stop() // org.reduxkotlin.devtools.bridge/BridgeOutput.stop|stop(){}[0]
 }
 
+final class org.reduxkotlin.devtools.bridge/RecordingHeader { // org.reduxkotlin.devtools.bridge/RecordingHeader|null[0]
+    constructor <init>(kotlin/String = ..., kotlin/Int, kotlin/String, kotlin/String, kotlin/String, kotlin/String, kotlin/String) // org.reduxkotlin.devtools.bridge/RecordingHeader.<init>|<init>(kotlin.String;kotlin.Int;kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.String){}[0]
+
+    final val clientId // org.reduxkotlin.devtools.bridge/RecordingHeader.clientId|{}clientId[0]
+        final fun <get-clientId>(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.clientId.<get-clientId>|<get-clientId>(){}[0]
+    final val clientLabel // org.reduxkotlin.devtools.bridge/RecordingHeader.clientLabel|{}clientLabel[0]
+        final fun <get-clientLabel>(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.clientLabel.<get-clientLabel>|<get-clientLabel>(){}[0]
+    final val kind // org.reduxkotlin.devtools.bridge/RecordingHeader.kind|{}kind[0]
+        final fun <get-kind>(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.kind.<get-kind>|<get-kind>(){}[0]
+    final val protocolVersion // org.reduxkotlin.devtools.bridge/RecordingHeader.protocolVersion|{}protocolVersion[0]
+        final fun <get-protocolVersion>(): kotlin/Int // org.reduxkotlin.devtools.bridge/RecordingHeader.protocolVersion.<get-protocolVersion>|<get-protocolVersion>(){}[0]
+    final val serializerTier // org.reduxkotlin.devtools.bridge/RecordingHeader.serializerTier|{}serializerTier[0]
+        final fun <get-serializerTier>(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.serializerTier.<get-serializerTier>|<get-serializerTier>(){}[0]
+    final val storeInstanceId // org.reduxkotlin.devtools.bridge/RecordingHeader.storeInstanceId|{}storeInstanceId[0]
+        final fun <get-storeInstanceId>(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.storeInstanceId.<get-storeInstanceId>|<get-storeInstanceId>(){}[0]
+    final val storeName // org.reduxkotlin.devtools.bridge/RecordingHeader.storeName|{}storeName[0]
+        final fun <get-storeName>(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.storeName.<get-storeName>|<get-storeName>(){}[0]
+
+    final fun component1(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.component1|component1(){}[0]
+    final fun component2(): kotlin/Int // org.reduxkotlin.devtools.bridge/RecordingHeader.component2|component2(){}[0]
+    final fun component3(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.component3|component3(){}[0]
+    final fun component4(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.component4|component4(){}[0]
+    final fun component5(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.component5|component5(){}[0]
+    final fun component6(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.component6|component6(){}[0]
+    final fun component7(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.component7|component7(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Int = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ...): org.reduxkotlin.devtools.bridge/RecordingHeader // org.reduxkotlin.devtools.bridge/RecordingHeader.copy|copy(kotlin.String;kotlin.Int;kotlin.String;kotlin.String;kotlin.String;kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/RecordingHeader.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/RecordingHeader.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/RecordingHeader.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<org.reduxkotlin.devtools.bridge/RecordingHeader> { // org.reduxkotlin.devtools.bridge/RecordingHeader.$serializer|null[0]
+        final val descriptor // org.reduxkotlin.devtools.bridge/RecordingHeader.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // org.reduxkotlin.devtools.bridge/RecordingHeader.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // org.reduxkotlin.devtools.bridge/RecordingHeader.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): org.reduxkotlin.devtools.bridge/RecordingHeader // org.reduxkotlin.devtools.bridge/RecordingHeader.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, org.reduxkotlin.devtools.bridge/RecordingHeader) // org.reduxkotlin.devtools.bridge/RecordingHeader.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;org.reduxkotlin.devtools.bridge.RecordingHeader){}[0]
+    }
+
+    final object Companion { // org.reduxkotlin.devtools.bridge/RecordingHeader.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<org.reduxkotlin.devtools.bridge/RecordingHeader> // org.reduxkotlin.devtools.bridge/RecordingHeader.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final const val org.reduxkotlin.devtools.bridge/PROTOCOL_VERSION // org.reduxkotlin.devtools.bridge/PROTOCOL_VERSION|{}PROTOCOL_VERSION[0]
     final fun <get-PROTOCOL_VERSION>(): kotlin/Int // org.reduxkotlin.devtools.bridge/PROTOCOL_VERSION.<get-PROTOCOL_VERSION>|<get-PROTOCOL_VERSION>(){}[0]
 
 final val org.reduxkotlin.devtools.bridge/bridgeJson // org.reduxkotlin.devtools.bridge/bridgeJson|{}bridgeJson[0]
     final fun <get-bridgeJson>(): kotlinx.serialization.json/Json // org.reduxkotlin.devtools.bridge/bridgeJson.<get-bridgeJson>|<get-bridgeJson>(){}[0]
 
+final fun org.reduxkotlin.devtools.bridge/decodeRecording(kotlin/String): kotlin/Pair<org.reduxkotlin.devtools.bridge/RecordingHeader, kotlin.collections/List<org.reduxkotlin.devtools.bridge/BridgeMessage>> // org.reduxkotlin.devtools.bridge/decodeRecording|decodeRecording(kotlin.String){}[0]
+final fun org.reduxkotlin.devtools.bridge/encodeRecording(org.reduxkotlin.devtools.bridge/RecordingHeader, kotlin.collections/List<org.reduxkotlin.devtools.bridge/BridgeMessage>): kotlin/String // org.reduxkotlin.devtools.bridge/encodeRecording|encodeRecording(org.reduxkotlin.devtools.bridge.RecordingHeader;kotlin.collections.List<org.reduxkotlin.devtools.bridge.BridgeMessage>){}[0]
 final fun org.reduxkotlin.devtools.bridge/toWire(org.reduxkotlin.devtools/DevToolsEvent): org.reduxkotlin.devtools.bridge/BridgeMessage // org.reduxkotlin.devtools.bridge/toWire|toWire(org.reduxkotlin.devtools.DevToolsEvent){}[0]

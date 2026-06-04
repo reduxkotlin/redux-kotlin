@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.devtools.bridge.BridgeMessage
+import org.reduxkotlin.devtools.bridge.decodeRecording
+import org.reduxkotlin.devtools.bridge.encodeRecording
 import org.reduxkotlin.devtools.monitor.MonitorIngest
 import org.reduxkotlin.devtools.monitor.MonitorState
-import org.reduxkotlin.devtools.monitor.decodeRecording
-import org.reduxkotlin.devtools.monitor.encodeRecording
 import org.reduxkotlin.devtools.monitor.loadRecording
 import org.reduxkotlin.devtools.monitor.saveRecording
 

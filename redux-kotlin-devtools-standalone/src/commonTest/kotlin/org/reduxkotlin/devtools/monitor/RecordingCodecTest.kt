@@ -4,6 +4,9 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.reduxkotlin.devtools.bridge.BridgeMessage
 import org.reduxkotlin.devtools.bridge.PROTOCOL_VERSION
+import org.reduxkotlin.devtools.bridge.RecordingHeader
+import org.reduxkotlin.devtools.bridge.decodeRecording
+import org.reduxkotlin.devtools.bridge.encodeRecording
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

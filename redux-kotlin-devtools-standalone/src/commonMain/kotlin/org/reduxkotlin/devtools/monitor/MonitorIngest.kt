@@ -4,6 +4,7 @@ import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import org.reduxkotlin.devtools.DevToolsEvent
 import org.reduxkotlin.devtools.bridge.BridgeMessage
+import org.reduxkotlin.devtools.bridge.RecordingHeader
 import org.reduxkotlin.devtools.inapp.model.InAppModel
 import org.reduxkotlin.devtools.inapp.model.StoreRef
 import org.reduxkotlin.devtools.inapp.model.StoreRegistryModel
