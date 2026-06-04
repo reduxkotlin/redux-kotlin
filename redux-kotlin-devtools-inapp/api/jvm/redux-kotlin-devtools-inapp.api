@@ -37,6 +37,12 @@ public final class org/reduxkotlin/devtools/inapp/ReduxDevToolsHostKt {
 	public static final fun ReduxDevToolsHost (Lorg/reduxkotlin/devtools/inapp/InAppConfig;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class org/reduxkotlin/devtools/inapp/ui/ComposableSingletons$DrawerActionLogKt {
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/inapp/ui/ComposableSingletons$DrawerActionLogKt;
+	public fun <init> ()V
+	public final fun getLambda$839140025$redux_kotlin_devtools_inapp ()Lkotlin/jvm/functions/Function2;
+}
+
 public final class org/reduxkotlin/devtools/inapp/ui/ComposableSingletons$DrawerKt {
 	public static final field INSTANCE Lorg/reduxkotlin/devtools/inapp/ui/ComposableSingletons$DrawerKt;
 	public fun <init> ()V
