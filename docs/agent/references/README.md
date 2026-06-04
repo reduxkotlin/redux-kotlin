@@ -9,12 +9,12 @@ checked to resolve (path exists, symbol present). See [_template.md](./_template
 | Concern | Guide | Status |
 |---|---|---|
 | Add a feature slice | [feature-slice.md](./feature-slice.md) | ✅ |
-| Store setup & topology | `store-setup.md` | planned (0-rest) |
-| Compose binding (Rule C) | `compose-binding.md` | planned (0-rest) |
-| Effects + sync (Rule E) | `effects-sync.md` | planned (0-rest) |
-| Testing & the verify loop | `testing.md` | planned (0-rest) |
-| The 6 platform shims | `platform-shims.md` | planned (0-rest) |
-| Modularization | `modularization.md` | planned (0-rest) |
+| Store setup & topology | [store-setup.md](./store-setup.md) | ✅ |
+| Compose binding (Rule C) | [compose-binding.md](./compose-binding.md) | ✅ |
+| Effects + sync (Rule E) | [effects-sync.md](./effects-sync.md) | ✅ |
+| Testing & the verify loop | [testing.md](./testing.md) | ✅ |
+| The 5 platform shims | [platform-shims.md](./platform-shims.md) | ✅ |
+| Modularization | [modularization.md](./modularization.md) | ✅ |
 
 Tiers: **T0** = rules card + module map + commands (assembled into `AGENTS.md`). **T1** = these guides.
 **T2** = [`examples/taskflow/ARCHITECTURE.md`](../../../examples/taskflow/ARCHITECTURE.md) + committed `.api` dumps.

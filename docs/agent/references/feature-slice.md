@@ -151,7 +151,7 @@ Tight inner loop, fast to slow: `compile <target>`, then `commonTest` / `jvmTest
 then `apiCheck`.
 `apiCheck` matters only when you touch a library module's public API (taskflow itself has none);
 the backing `.api` dumps are listed in `api_files`. iOS-sim targets are host-gated — run them
-locally only on macOS; trust CI otherwise. Full treatment → `testing.md` *(planned)*.
+locally only on macOS; trust CI otherwise. Full treatment → [testing.md](./testing.md).
 
 `detektAll` is the gate that bites first: `explicitApi()` is on, so every new `public` declaration in a
 slice (models, actions, reducer, screen, selectors) needs an explicit visibility modifier **and** a KDoc
