@@ -21,7 +21,7 @@ internal fun resolveStore(dir: File, key: String?): StoreRef {
     check(stores.isNotEmpty()) { "no captures found in ${dir.path} (is `rk-devtools serve` running?)" }
     if (key != null) {
         return stores.firstOrNull { it.key == key }
-        ?: error("store '$key' not found; available: ${stores.joinToString { it.key }}")
+            ?: error("store '$key' not found; available: ${stores.joinToString { it.key }}")
     }
     check(stores.size == 1) { "multiple stores present; pass --store <key>: ${stores.joinToString { it.key }}" }
     return stores.first()
