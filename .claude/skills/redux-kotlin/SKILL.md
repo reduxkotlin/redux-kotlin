@@ -31,6 +31,7 @@ companion modules on one `Store<S>` contract. Recommended app organization is **
 | **Testing** + the verify loop | [`testing.md`](../../../docs/agent/references/testing.md) |
 | The 5 **platform shims** | [`platform-shims.md`](../../../docs/agent/references/platform-shims.md) |
 | **Modularization** | [`modularization.md`](../../../docs/agent/references/modularization.md) |
+| **Debugging** a running app (actions/state/diffs) | [`devtools.md`](../../../docs/agent/references/devtools.md) |
 
 ## Pointers
 

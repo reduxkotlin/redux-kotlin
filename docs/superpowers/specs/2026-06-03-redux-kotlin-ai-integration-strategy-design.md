@@ -185,17 +185,26 @@ Each phase is its own sub-project (spec → plan → build). Ordered so value la
 
 ## 8. Open best-practice questions
 
-Resolved per sub-project, not here:
+Status updated 2026-06-04 after Phases 0–4 shipped:
 
-1. **Store-topology decision rule** — when 1 store vs taskflow's 2-store + `AccountRegistry`?
-2. **Module-selection table** — concurrent vs threadsafe vs core; when granular / multimodel.
-3. **Verify-tier standardization** — which of headless-screenshot / UI-behavior / state-machine become
-   standard (overlap risk flagged; tier-1 is the only committed scope today).
-4. **KSP extension scope** — multi-model `onAction` / effect handlers: a separate later sub-project.
-5. **Skill granularity** — one skill vs several (feature / store / testing).
-6. **`AGENTS.md` ↔ `CLAUDE.md`** — unify (one generated source, maintainer + app-builder views) or split.
-7. **External distribution mechanics** — how `AGENTS.md` / the skill ship with the published library (docs
-   page? template repo? part of the artifact?).
+1. ✅ **Store-topology decision rule** — answered by `docs/agent/references/store-setup.md` ("One store vs.
+   two" decision rule).
+2. ✅ **Module-selection table** — answered by `docs/agent/references/modularization.md` (the
+   module-selection table + decision rules).
+3. ⏳ **Verify-tier standardization** — partially advanced: the **DevTools CLI** (shipped) adds a
+   runtime action/state/diff observability tier an agent can query (`docs/agent/references/devtools.md`).
+   Headless-screenshot / UI-behavior / state-machine tiers remain undesigned; tier-1 (compile + unit) is
+   still the only committed *test* scope.
+4. ⏳ **KSP extension scope** — multi-model `onAction` / effect handlers: still a deferred sub-project
+   (intentional; not started).
+5. ✅ **Skill granularity** — settled as **one** skill with a decision-routing table (no per-concern split).
+6. ⛔ **`AGENTS.md` ↔ `CLAUDE.md`** — STILL OPEN. Two overlapping files, no single source; no owner yet.
+7. ⛔ **External distribution mechanics** — STILL OPEN and the largest strategic gap: the strategy is
+   external-first, but nothing ships externally yet (no docs page / template repo / artifact packaging).
+   Its own sub-project (spec → plan → build).
+
+Also unmeasured: the §7 success metrics have no baseline run yet — needs a tokens-to-correct-slice
+cold-vs-equipped measurement to validate the knowledge-first bet.
 
 ## 9. Explicitly out of scope
 

@@ -162,8 +162,9 @@ not. Document public symbols as you write them, and never bypass the hook with `
 
 KSP `@Reduce` / `@ReduxInitial` codegen is packaging-agnostic: a `@Reduce`-annotated reducer can live
 in any `feature/*` package and the generated routing wiring follows it — package-by-feature does not
-change how codegen resolves it. Full codegen treatment is deferred to a planned guide
-*(planned — 0-rest)*.
+change how codegen resolves it. Full codegen reference (annotations, the generated `ReduxModule` wiring,
+and v1 limits) lives in `redux-kotlin-routing-codegen/README.md`. KSP extension (multi-model `onAction`
+/ effect handlers) is a separate deferred sub-project — see the AI-integration umbrella spec §8.
 
 ## See also
 
