@@ -12,8 +12,12 @@ import kotlin.test.assertEquals
 
 internal class CaptureReaderTest {
     private fun header() = RecordingHeader(
-        protocolVersion = PROTOCOL_VERSION, serializerTier = "json",
-        clientId = "taskflow", clientLabel = "TaskFlow", storeName = "TaskFlow", storeInstanceId = "root",
+        protocolVersion = PROTOCOL_VERSION,
+        serializerTier = "json",
+        clientId = "taskflow",
+        clientLabel = "TaskFlow",
+        storeName = "TaskFlow",
+        storeInstanceId = "root",
     )
 
     private fun action(id: Int, type: String) = BridgeMessage.Action(
@@ -27,7 +31,7 @@ internal class CaptureReaderTest {
 
     @Test
     fun reads_actions_and_tolerates_trailing_partial_line() {
-        val text = encodeRecording(header(), listOf(action(1, "A"), action(2, "B"))) + "{\"t\":\"acti"  // partial
+        val text = encodeRecording(header(), listOf(action(1, "A"), action(2, "B"))) + "{\"t\":\"acti" // partial
         val (h, actions) = parseCapture(text)
         assertEquals("TaskFlow", h.storeName)
         assertEquals(listOf(1, 2), actions.map { it.actionId })
