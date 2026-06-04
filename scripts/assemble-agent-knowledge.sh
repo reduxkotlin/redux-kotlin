@@ -7,6 +7,8 @@ MAP=(
   "AGENTS.md|rules|$FRAG/rules.md"
   ".claude/skills/redux-kotlin/SKILL.md|rules|$FRAG/rules.md"
   "AGENTS.md|modules|$FRAG/modules.md"
+  "docs/agent/AGENTS-external.md|rules|$FRAG/rules.md"
+  "docs/agent/AGENTS-external.md|modules|$FRAG/modules.md"
 )
 inject() { # stdin=content, $1=marker, $2=fragfile -> stdout
   awk -v s="<!-- assemble:$1:start -->" -v e="<!-- assemble:$1:end -->" -v f="$2" '
