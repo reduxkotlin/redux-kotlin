@@ -27,6 +27,7 @@ dependencies {
     implementation(project(":redux-kotlin-devtools-core"))
     implementation(project(":redux-kotlin-devtools-bridge"))
     implementation(project(":redux-kotlin-devtools-standalone"))
+    implementation(project(":redux-kotlin-devtools-ui"))
     implementation(libs.clikt)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.core)

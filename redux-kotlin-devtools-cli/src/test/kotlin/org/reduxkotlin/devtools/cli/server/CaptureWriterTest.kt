@@ -18,11 +18,22 @@ internal class CaptureWriterTest {
     fun writes_a_gui_loadable_recording_for_a_store() {
         val dir = Files.createTempDirectory("rkcap").toFile()
         val header = RecordingHeader(
-            protocolVersion = PROTOCOL_VERSION, serializerTier = "json",
-            clientId = "taskflow", clientLabel = "TaskFlow", storeName = "TaskFlow", storeInstanceId = "root",
+            protocolVersion = PROTOCOL_VERSION,
+            serializerTier = "json",
+            clientId = "taskflow",
+            clientLabel = "TaskFlow",
+            storeName = "TaskFlow",
+            storeInstanceId = "root",
         )
         val msgs = listOf(
-            BridgeMessage.Action(1, buildJsonObject { put("type", JsonPrimitive("A")) }, buildJsonObject {}, emptyList(), 1L, false),
+            BridgeMessage.Action(
+                1,
+                buildJsonObject { put("type", JsonPrimitive("A")) },
+                buildJsonObject {},
+                emptyList(),
+                1L,
+                false,
+            ),
         )
         val file: File = writeStoreCapture(dir, "taskflow::root", header, msgs)
         assertTrue(file.name.endsWith(".jsonl"))
