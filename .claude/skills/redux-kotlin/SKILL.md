@@ -25,12 +25,12 @@ companion modules on one `Store<S>` contract. Recommended app organization is **
 | If you are… | Read |
 |---|---|
 | Adding or editing a **feature** | [`feature-slice.md`](../../../docs/agent/references/feature-slice.md) |
-| Setting up the **store / topology** | `../../../docs/agent/references/store-setup.md` *(planned — see README)* |
-| **Compose** state binding (Rule C) | `../../../docs/agent/references/compose-binding.md` *(planned)* |
-| **Effects + sync** (Rule E) | `../../../docs/agent/references/effects-sync.md` *(planned)* |
-| **Testing** + the verify loop | `../../../docs/agent/references/testing.md` *(planned)* |
-| The 6 **platform shims** | `../../../docs/agent/references/platform-shims.md` *(planned)* |
-| **Modularization** | `../../../docs/agent/references/modularization.md` *(planned)* |
+| Setting up the **store / topology** | [`store-setup.md`](../../../docs/agent/references/store-setup.md) |
+| **Compose** state binding (Rule C) | [`compose-binding.md`](../../../docs/agent/references/compose-binding.md) |
+| **Effects + sync** (Rule E) | [`effects-sync.md`](../../../docs/agent/references/effects-sync.md) |
+| **Testing** + the verify loop | [`testing.md`](../../../docs/agent/references/testing.md) |
+| The 5 **platform shims** | [`platform-shims.md`](../../../docs/agent/references/platform-shims.md) |
+| **Modularization** | [`modularization.md`](../../../docs/agent/references/modularization.md) |
 
 ## Pointers
 
