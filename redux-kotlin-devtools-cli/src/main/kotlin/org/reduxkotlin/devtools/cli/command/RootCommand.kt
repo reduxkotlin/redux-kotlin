@@ -9,12 +9,11 @@ internal class RootCommand : CliktCommand(name = "rk-devtools") {
 }
 
 /** Build the configured command tree. */
-internal fun rootCommand(): CliktCommand =
-    RootCommand().subcommands(
-        ServeCommand(),
-        StoresCommand(),
-        ActionsCommand(),
-        DiffCommand(),
-        StateCommand(),
-        TailCommand(),
-    )
+internal fun rootCommand(): CliktCommand = RootCommand().subcommands(
+    ServeCommand(),
+    StoresCommand(),
+    ActionsCommand(),
+    DiffCommand(),
+    StateCommand(),
+    TailCommand(),
+)
