@@ -31,6 +31,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'AI Agents',
+      items: [
+        'ai-agents/building-with-ai-agents',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Basic Tutorial',
       items: [
         'basics/basic-tutorial',
