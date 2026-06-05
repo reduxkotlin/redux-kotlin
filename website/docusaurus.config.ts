@@ -78,6 +78,7 @@ const config: Config = {
         {to: '/introduction/getting-started', label: 'Getting Started', position: 'left'},
         {to: '/api', label: 'API', position: 'left'},
         {to: '/faq', label: 'FAQ', position: 'left'},
+        {to: '/ai-agents/building-with-ai-agents', label: 'AI Agents', position: 'left'},
         {
           href: 'https://github.com/reduxkotlin/redux-kotlin',
           label: 'GitHub',
