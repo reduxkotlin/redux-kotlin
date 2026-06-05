@@ -37,5 +37,36 @@ for t in $targets; do
     printf '%s\n' "$rendered" > "$t"
   fi
 done
+# --- Site copy-block: fence AGENTS-external.md into the Docusaurus (MDX) page ---
+PAGE="website/docs/ai-agents/BuildingWithAI.md"
+SRC="docs/agent/AGENTS-external.md"
+PAGE_START='{/* assemble:agents-external:start */}'
+PAGE_END='{/* assemble:agents-external:end */}'
+if [ -f "$PAGE" ] && [ -f "$SRC" ]; then
+  # 4-backtick fence so the AGENTS content's own 3-backtick ```kotlin block nests cleanly.
+  # Strip the inner `<!-- assemble:* -->` marker lines so the PUBLISHED copy-block is clean
+  # (the canonical AGENTS-external.md keeps its markers; only the page copy drops them).
+  fenced="$(grep -v '<!-- assemble:' "$SRC")"
+  block="$(
+    printf '%s\n' "$PAGE_START"
+    printf '````markdown title="AGENTS.md"\n'
+    printf '%s\n' "$fenced"
+    printf '````\n'
+    printf '%s\n' "$PAGE_END"
+  )"
+  rendered_page="$(ASSEMBLE_BLOCK="$block" ASSEMBLE_START="$PAGE_START" ASSEMBLE_END="$PAGE_END" \
+    awk 'BEGIN{ s=ENVIRON["ASSEMBLE_START"]; e=ENVIRON["ASSEMBLE_END"]; repl=ENVIRON["ASSEMBLE_BLOCK"] }
+    $0==s { print repl; skip=1; next }
+    $0==e { skip=0; next }
+    !skip { print }
+  ' "$PAGE")"
+  if [ "$CHECK" -eq 1 ]; then
+    if ! diff -q <(printf '%s\n' "$rendered_page") "$PAGE" >/dev/null; then
+      echo "ASSEMBLE-FAIL: $PAGE copy-block out of sync — run scripts/assemble-agent-knowledge.sh"; rc=1
+    fi
+  else
+    printf '%s\n' "$rendered_page" > "$PAGE"
+  fi
+fi
 [ "$rc" -eq 0 ] && { [ "$CHECK" -eq 1 ] && echo "ASSEMBLE CHECK OK" || echo "ASSEMBLED"; } || echo "ASSEMBLE FAILED"
 exit "$rc"
