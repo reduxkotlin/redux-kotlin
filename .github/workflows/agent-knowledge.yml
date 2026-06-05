@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v6
       - name: Check agent reference anchors
         run: bash scripts/check-agent-refs.sh
+      - name: Site reference-link existence
+        run: bash scripts/check-site-agent-links.sh
   api-tripwire:
     name: API-change tripwire
     runs-on: ubuntu-latest
