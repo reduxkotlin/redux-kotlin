@@ -199,9 +199,10 @@ Status updated 2026-06-04 after Phases 0–4 shipped:
    (intentional; not started).
 5. ✅ **Skill granularity** — settled as **one** skill with a decision-routing table (no per-concern split).
 6. ⛔ **`AGENTS.md` ↔ `CLAUDE.md`** — STILL OPEN. Two overlapping files, no single source; no owner yet.
-7. ⛔ **External distribution mechanics** — STILL OPEN and the largest strategic gap: the strategy is
-   external-first, but nothing ships externally yet (no docs page / template repo / artifact packaging).
-   Its own sub-project (spec → plan → build).
+7. ✅ **External distribution mechanics** — shipped: a reduxkotlin.org "Building with AI agents"
+   page + a repo-droppable external `AGENTS.md` (`docs/agent/AGENTS-external.md`), assembled from the
+   shared fragments. Claude plugin (B) and template repo (C) remain deferred follow-ons. See
+   `docs/superpowers/specs/2026-06-04-external-distribution-design.md`.
 
 Also unmeasured: the §7 success metrics have no baseline run yet — needs a tokens-to-correct-slice
 cold-vs-equipped measurement to validate the knowledge-first bet.
