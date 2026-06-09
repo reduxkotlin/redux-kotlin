@@ -28,6 +28,7 @@ kotlin {
             dependencies {
                 api(project(":redux-kotlin-bundle"))
                 api(project(":redux-kotlin-compose-multimodel"))
+                api(project(":redux-kotlin-compose-saveable"))
                 implementation(compose.runtime)
             }
         }
