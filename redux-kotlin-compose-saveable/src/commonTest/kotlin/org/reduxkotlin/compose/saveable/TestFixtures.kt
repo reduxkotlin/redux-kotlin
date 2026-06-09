@@ -21,8 +21,7 @@ internal val testReducer: (TestState, Any) -> TestState = { state, action ->
     }
 }
 
-internal fun newTestStore(initial: TestState = TestState()): Store<TestState> =
-    createStore(testReducer, initial)
+internal fun newTestStore(initial: TestState = TestState()): Store<TestState> = createStore(testReducer, initial)
 
 internal val testSaver: StateSaver<TestState, UiSnapshot> = StateSaver(
     serializer = UiSnapshot.serializer(),
