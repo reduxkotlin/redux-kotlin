@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Desktop monitor (back) -->
+  <rect x="40" y="90" width="300" height="185" rx="14" fill="var(--ifm-background-color)"/>
+  <path d="M190 275 V322"/>
+  <path d="M150 335 H230"/>
+  <!-- Tablet (middle) -->
+  <rect x="235" y="150" width="145" height="235" rx="18" fill="var(--ifm-background-color)"/>
+  <!-- Phone (front) -->
+  <rect x="335" y="200" width="115" height="210" rx="20" fill="var(--ifm-background-color)"/>
+  <path d="M362 250 H424"/>
+  <path d="M362 362 H424"/>
+  <circle cx="393" cy="388" r="7" fill="currentColor" stroke="none"/>
+</svg>
