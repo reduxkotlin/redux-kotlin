@@ -496,26 +496,31 @@ git commit -m "test(compose-saveable): end-to-end StateRestorationTester integra
 
 ---
 
-## Task 5: Public API dump
+## Task 5: Public API (ABI) dump
+
+This repo validates its public surface with Kotlin's built-in ABI validation —
+tasks `updateKotlinAbi` / `checkKotlinAbi`, dumps under `api/` (a merged
+`<module>.klib.api` plus a per-target `api/jvm/<module>.api`). There is **no**
+`apiDump`/`apiCheck` task (the CLAUDE.md names are stale).
 
 **Files:**
-- Create (generated): `redux-kotlin-compose-saveable/api/redux-kotlin-compose-saveable.api`
+- Create (generated): `redux-kotlin-compose-saveable/api/redux-kotlin-compose-saveable.klib.api` and `redux-kotlin-compose-saveable/api/jvm/redux-kotlin-compose-saveable.api`
 
-- [ ] **Step 1: Generate the API dump**
+- [ ] **Step 1: Generate the ABI dump**
 
-Run: `./gradlew :redux-kotlin-compose-saveable:apiDump`
-Expected: `BUILD SUCCESSFUL`; a new `redux-kotlin-compose-saveable/api/redux-kotlin-compose-saveable.api` file appears containing `StateSaver` and `rememberSaveableState` (and NOT `wireSaveable`, which is `internal`).
+Run: `./gradlew :redux-kotlin-compose-saveable:updateKotlinAbi`
+Expected: `BUILD SUCCESSFUL`; new files appear under `redux-kotlin-compose-saveable/api/` containing `StateSaver` and `rememberSaveableState` (and NOT `wireSaveable`, which is `internal`).
 
 - [ ] **Step 2: Verify the dump matches**
 
-Run: `./gradlew :redux-kotlin-compose-saveable:apiCheck`
+Run: `./gradlew :redux-kotlin-compose-saveable:checkKotlinAbi`
 Expected: `BUILD SUCCESSFUL` (committed dump matches the surface).
 
 - [ ] **Step 3: Commit**
 
 ```bash
 git add redux-kotlin-compose-saveable/api
-git commit -m "build(compose-saveable): commit public API dump"
+git commit -m "build(compose-saveable): commit public ABI dump"
 ```
 
 ---
@@ -601,7 +606,7 @@ Expected: `BUILD SUCCESSFUL` (commonTest + jvmTest green; native/iOS targets are
 
 - [ ] **Step 2: Run the lint + API gates across the tree**
 
-Run: `./gradlew detektAll apiCheck`
+Run: `./gradlew detektAll checkKotlinAbi`
 Expected: `BUILD SUCCESSFUL`. If detekt auto-corrects formatting (pre-commit hook), re-stage and re-commit.
 
 - [ ] **Step 3: Final verification commit (if the gates changed any files)**
