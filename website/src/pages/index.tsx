@@ -6,6 +6,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 
+import DevicesIcon from '@site/static/img/multiplatform-devices.svg';
 import CheckIcon from '@site/static/img/noun_Check_1870817.svg';
 import CubesIcon from '@site/static/img/cubes-solid.svg';
 
@@ -33,7 +34,7 @@ type SurveyBlock = {
 const FEATURES: Feature[] = [
   {
     title: 'Multiplatform',
-    image: 'img/multiplatform-screen-512.png',
+    Svg: DevicesIcon,
     description: (
       <>
         ReduxKotlin is written with multiplatform as the top priority. Supports every platform
