@@ -10,6 +10,18 @@ import kotlinx.serialization.json.Json
  *
  * Holds no Compose state — its serialization round-trip is unit-testable
  * without a composition. Reuse one instance across screens.
+ *
+ * Example:
+ * ```
+ * @Serializable
+ * data class UiSnapshot(val tab: Int, val query: String)
+ *
+ * val uiSaver = StateSaver(
+ *     serializer = UiSnapshot.serializer(),
+ *     save = { s: AppState -> UiSnapshot(s.tab, s.query) },
+ *     restore = { RehydrateUi(it.tab, it.query) }, // your reducer applies this action
+ * )
+ * ```
  */
 public class StateSaver<S, Snapshot : Any>(
     /** Serializer for the [Snapshot] type (e.g. `MySnapshot.serializer()`). */
