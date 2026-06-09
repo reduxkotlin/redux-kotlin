@@ -115,10 +115,11 @@ public class StateSaver<S, Snapshot : Any>(
  * screen).
  *
  * On a real restore (rotation or process death) the saved snapshot is
- * decoded and dispatched via [StateSaver.restore] exactly once, before
- * downstream bindings re-sample the store. On cold start nothing is
- * dispatched. While mounted, the latest projection is provided to the
- * registry and serialized only when the platform actually saves.
+ * decoded and dispatched via [StateSaver.restore] exactly once, so
+ * downstream bindings observe the rehydrated store (a single stale frame
+ * is possible before they re-sample). On cold start nothing is dispatched.
+ * While mounted, the latest projection is provided to the registry and
+ * serialized only when the platform actually saves.
  *
  * Returns [Unit]; named to pair with [fieldState]/[selectorState].
  *
@@ -165,28 +166,35 @@ public fun <S, Snapshot : Any> Store<S>.rememberSaveableState(
 ) {
     val store = this
     val registry = LocalSaveableStateRegistry.current
-    val finalKey = key ?: currentCompositeKeyHash.toString(radix = 36) // KMP-safe radix
+    // Positional key derived from the composite-key-hash API the pinned
+    // Compose version exposes (`currentCompositeKeyHash`; newer Compose may
+    // name it `currentCompositeKeyHashCode`). KMP-safe radix.
+    val finalKey = key ?: currentCompositeKeyHash.toString(radix = 36)
 
-    // Consume during composition (what rememberSaveable does internally).
-    // Defensive decode: schema drift across app versions → null → treated
-    // as a cold start instead of a crash.
-    val restored: Snapshot? = remember(store, finalKey) {
-        (registry?.consumeRestored(finalKey) as? String)?.let { encoded ->
-            runCatching { saver.json.decodeFromString(saver.serializer, encoded) }
-                .getOrNull()
-        }
-    }
-
+    // One effect does both halves; nothing here is used as a composition
+    // value, so consuming at commit (rather than during composition) is
+    // fine and removes the extra `remember`.
     DisposableEffect(store, registry, finalKey) {
-        // Dispatch ONLY on a real restore. Cold start dispatches nothing.
+        // Restore: consume the saved value (if any) and write it back into
+        // the store via dispatch — ONLY on a real restore. Cold start
+        // consumes null and dispatches nothing. Defensive decode: schema
+        // drift across app versions → null → treated as a cold start
+        // instead of a crash.
+        val restored = (registry?.consumeRestored(finalKey) as? String)?.let { encoded ->
+            runCatching { saver.json.decodeFromString(saver.serializer, encoded) }.getOrNull()
+        }
         if (restored != null) {
             store.dispatch(saver.restore(restored))
         }
-        // Provider is invoked by the platform at save time and samples
+        // Save: provider is invoked by the platform at save time and samples
         // store.state THEN — no steady-state subscription, no per-dispatch
-        // work, serialization only when actually saving.
+        // work, serialization only when actually saving. Defensive: a
+        // throwing save()/encode returns null (skip this save cycle) so it
+        // can never crash performSave.
         val entry = registry?.registerProvider(finalKey) {
-            saver.json.encodeToString(saver.serializer, saver.save(store.state))
+            runCatching {
+                saver.json.encodeToString(saver.serializer, saver.save(store.state))
+            }.getOrNull()
         }
         onDispose { entry?.unregister() }
     }
@@ -203,6 +211,9 @@ Three load-bearing properties:
    rehydrated store, not stale initial state.
 3. **Zero steady-state cost.** No subscription, no `MutableState` holder;
    `save()` + `encode` run only at save time (≈ once per backgrounding).
+   Both the restore decode and the save encode are wrapped in
+   `runCatching` so neither a corrupt restore nor a failing save can crash
+   the app.
 
 **Ordering / one-frame flash.** The rehydrate dispatch runs at commit
 (`DisposableEffect`). On restore there can be a single stale frame before
@@ -234,8 +245,11 @@ library adds no threading machinery of its own.
 - **Schema drift** (saved snapshot no longer matches the type): decode is
   wrapped in `runCatching → null`, so restore falls back to a clean cold
   start instead of crashing. Guidance: evolve the `@Serializable` snapshot
-  deliberately; consider `Json { ignoreUnknownKeys = true }` for additive
-  changes; treat restore as best-effort.
+  deliberately; pass `Json { ignoreUnknownKeys = true }` (via
+  `StateSaver.json`) for additive changes; for breaking changes include a
+  `version` field in the snapshot and ignore/branch on mismatch in
+  `restore`. Treat restore as best-effort — a dropped snapshot only means a
+  cold start, never a crash.
 - **Payload size:** Android `Bundle` has a ~500 KB `TransactionTooLarge`
   ceiling. The projection model structurally encourages "few fields"; the
   README states the limit.
@@ -258,25 +272,67 @@ no `SaveableStateRegistry` is present (`LocalSaveableStateRegistry.current
 - **Key collisions** — `registerProvider` throws on duplicate keys within
   a registry; positional auto-key disambiguates single-anchor use; lists /
   multiple anchors / nav require an explicit `key`. Documented.
+- **Auto-key stability** — the positional key is only stable across
+  process death if the call-site composition structure is identical on
+  restore (the same assumption `rememberSaveable` makes). For anchors
+  under conditional/dynamic structure, pass an explicit `key`.
 - **Multiple anchors** — each persists its own key; recommend a single
   root anchor for a whole-store snapshot.
 - **Decode failure** — cold start (see §8).
 
 ## 11. Testing strategy
 
-- **commonTest** — `StateSaver` round-trip: `encodeToString` →
+- **commonTest — `StateSaver` round-trip.** `encodeToString` →
   `decodeFromString` reproduces the snapshot; `restore(save(state))`
-  produces the expected action. No Compose needed (the value type holds no
-  composition state).
-- **jvmTest (desktop `compose.uiTest`)** — `StateRestorationTester`
-  emulates save → restore. Assert:
-  1. after restoration the store was rehydrated via the dispatched action;
-  2. a child `fieldState` shows the **restored** value, not the initial
-     value — i.e. the clobber is actually solved;
-  3. cold start dispatches **no** rehydrate action (spy/record dispatches).
-  Runs on the JVM/desktop host — no Android device required.
+  produces the expected action; a corrupt/old encoded string decodes to
+  `null`. No Compose needed (the value type holds no composition state).
+- **commonTest — manual registry round-trip (primary mechanism test).**
+  Drive the documented `SaveableStateRegistry` contract directly, no UI
+  harness: construct a registry, register the provider, call
+  `performSave()` to collect the encoded map, build a *second* registry
+  seeded with that map (simulating process death), and run the anchor's
+  restore path. Assert against a real `createStore`:
+  1. restore dispatches the rehydrate action and the store holds the
+     restored value;
+  2. **cold start** (empty restored map) dispatches **nothing** (record
+     dispatches via a spy middleware/subscriber);
+  3. a throwing `save()` yields a `null` provider value (no crash).
+  Deterministic and host-independent — this is where the correctness
+  guarantees are pinned.
+- **jvmTest (desktop `compose.uiTest`) — integration.**
+  `StateRestorationTester` (available in `ui-test` `commonMain`) emulates
+  save → restore through a real composition; assert a child `fieldState`
+  shows the **restored** value, not the initial one — i.e. the clobber is
+  solved end-to-end. Runs on the JVM/desktop host; no Android device.
 
-## 12. Out of scope / future
+## 12. Build & integration deliverables
+
+Beyond the source + tests, shipping a new published module requires:
+
+- **`settings.gradle.kts`** — `include(":redux-kotlin-compose-saveable")`.
+- **Public-API dump** — run `./gradlew apiDump` and commit the generated
+  `redux-kotlin-compose-saveable/api/*.api`; `apiCheck` (part of `build`)
+  guards it thereafter.
+- **`redux-kotlin-bom`** — add the new module as a constrained dependency
+  so BOM consumers get an aligned version.
+- **`redux-kotlin-bundle-compose` membership — decision required.**
+  `bundle-compose` is currently multimodel-centric (`redux-kotlin-bundle`
+  + `redux-kotlin-compose-multimodel`). Saveable composes with any
+  `Store<S>`, so including it is natural but is a product call: include vs
+  leave it à-la-carte. **Recommend include** (saved-state is a baseline
+  expectation for the Compose bundle). Confirm before implementation.
+- **Docs** — module entry in `CLAUDE.md` / `docs/agent/_fragments/
+  modules.md`, and a short usage page on the docs site.
+
+### Note: works with `ModelState` / multimodel
+
+The API is single-`Store<S>`, but `S` is unconstrained — including
+`ModelState`. The projection `save: (S) -> Snapshot` reads whatever fields
+matter (across models), and `restore` dispatches a single action the
+reducer applies. No multimodel-specific variant is needed; the
+`bundle-compose` (multimodel) audience is served by the same two symbols.
+
+## 13. Out of scope / future
 
 - **Reducer-combinator ergonomics** — a `withRehydrate(reducer) { snap,
   state -> … }` that removes the user-written action by intercepting an
