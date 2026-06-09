@@ -30,6 +30,7 @@ All share the core's group id `org.reduxkotlin` and version.
 | `redux-kotlin-multimodel-granular` | [Granular subscriptions for `ModelState`](../advanced/granular-subscriptions#multi-model-stores) — `subscribeTo(Model::field)` / `subscribeToModel(...)`. |
 | `redux-kotlin-compose` | [Compose integration](../advanced/compose-integration) — bind store fields to Compose `State<T>` with `fieldState` / `selectorState`. |
 | `redux-kotlin-compose-multimodel` | Compose `fieldState(Model::field)` bindings for `ModelState` stores. |
+| `redux-kotlin-compose-saveable` | `StateSaver` + `rememberSaveableState` store-anchored snapshot persistence for Compose (survives rotation + process death) via Compose `SaveableStateRegistry`. |
 
 ## Community
 

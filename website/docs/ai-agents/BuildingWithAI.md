@@ -48,6 +48,7 @@ implementation("org.reduxkotlin:redux-kotlin:0.6.1")
 - `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
 - `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
 - `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
+- `redux-kotlin-compose-saveable` — `StateSaver` + `Store<S>.rememberSaveableState` store-anchored snapshot persistence (rotation + process death) via `SaveableStateRegistry`.
 
 Full module → public-API index:
 https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/api-map.md

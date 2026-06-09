@@ -24,6 +24,7 @@ Read the committed `.api` dump for a module's public surface; regenerate with `.
 | `:redux-kotlin-multimodel-granular` | `redux-kotlin-multimodel-granular/api/redux-kotlin-multimodel-granular.klib.api` | Granular subscriptions for `ModelState`. |
 | `:redux-kotlin-compose` | `redux-kotlin-compose/api/redux-kotlin-compose.klib.api` | Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`). |
 | `:redux-kotlin-compose-multimodel` | `redux-kotlin-compose-multimodel/api/redux-kotlin-compose-multimodel.klib.api` | Compose bindings for `ModelState`. |
+| `:redux-kotlin-compose-saveable` | `redux-kotlin-compose-saveable/api/redux-kotlin-compose-saveable.klib.api` | `StateSaver<S,Snapshot>` + `Store<S>.rememberSaveableState` snapshot persistence for Compose via `SaveableStateRegistry` (survives rotation + process death). |
 | `:redux-kotlin-routing` | `redux-kotlin-routing/api/redux-kotlin-routing.klib.api` | Routing DSL + `@Reduce`/`@ReduxInitial` annotations and `ReduxModule` contribution surface. |
 | `:redux-kotlin-routing-codegen-sample` | `redux-kotlin-routing-codegen-sample/api/redux-kotlin-routing-codegen-sample.klib.api` | Sample showing KSP-generated routing wiring (`ReduxModule` output). |
 | `:redux-kotlin-bundle` | `redux-kotlin-bundle/api/redux-kotlin-bundle.klib.api` | One-call assembly of a concurrent `ModelState` store + registry + routing (`createConcurrentModelStore`, `getOrCreateConcurrentModelStore`). |

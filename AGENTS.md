@@ -13,7 +13,7 @@ same single `Store<S>` contract. Take the core, add only the companions you need
 
 ## Module map
 
-The nine published core modules (each "use for X"):
+The ten published core modules (each "use for X"):
 
 <!-- assemble:modules:start -->
 - `redux-kotlin` — core contract: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
@@ -25,6 +25,7 @@ The nine published core modules (each "use for X"):
 - `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
 - `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
 - `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
+- `redux-kotlin-compose-saveable` — `StateSaver` + `Store<S>.rememberSaveableState` store-anchored snapshot persistence (rotation + process death) via `SaveableStateRegistry`.
 <!-- assemble:modules:end -->
 
 More modules exist (routing/bundle/bom/devtools/codegen) → see `docs/agent/api-map.md`.
