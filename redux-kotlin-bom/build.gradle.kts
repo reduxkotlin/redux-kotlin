@@ -22,5 +22,6 @@ dependencies {
         api("$g:redux-kotlin-routing-codegen:$v")
         api("$g:redux-kotlin-bundle:$v")
         api("$g:redux-kotlin-bundle-compose:$v")
+        api("$g:redux-kotlin-compose-saveable:$v")
     }
 }
