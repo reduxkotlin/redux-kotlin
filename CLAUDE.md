@@ -7,7 +7,7 @@ gate and conventions that aren't obvious from the source.
 
 ## Modules
 
-Nine published library modules (each applies `convention.library-mpp-*` +
+Ten published library modules (each applies `convention.library-mpp-*` +
 `convention.publishing-mpp`):
 
 - `redux-kotlin` — core: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
@@ -19,6 +19,7 @@ Nine published library modules (each applies `convention.library-mpp-*` +
 - `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
 - `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
 - `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
+- `redux-kotlin-compose-saveable` — `rememberSaveableState` store-anchored snapshot persistence (survives rotation + process death) via Compose `SaveableStateRegistry` + kotlinx.serialization.
 
 `examples/` holds sample apps (`convention.control`, not published). `website/`
 is the Docusaurus docs site.

@@ -7,3 +7,4 @@
 - `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
 - `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
 - `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
+- `redux-kotlin-compose-saveable` — `StateSaver` + `Store<S>.rememberSaveableState` store-anchored snapshot persistence (rotation + process death) via `SaveableStateRegistry`.
