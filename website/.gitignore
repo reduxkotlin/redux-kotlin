@@ -1,2 +1,5 @@
 .now
 .vercel
+node_modules
+build
+.docusaurus
