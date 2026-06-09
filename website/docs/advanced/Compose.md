@@ -140,6 +140,120 @@ import org.reduxkotlin.compose.multimodel.fieldStateOf
 val displayName by store.fieldStateOf(LoggedInUserModel::class) { it.displayName }
 ```
 
+## Saving state across rotation & process death
+
+`redux-kotlin-compose-saveable` persists a slice of store state so it
+survives Android **configuration changes / rotation** and **process
+death**, restoring it when the app relaunches. It rides Compose's
+`SaveableStateRegistry` (the machinery behind `rememberSaveable`), so one
+mechanism covers both; on platforms without OS state restoration (desktop /
+JS / wasm) it is a safe no-op.
+
+```kotlin
+implementation("org.reduxkotlin:redux-kotlin-compose-saveable:<version>")
+```
+
+### Why a singleton store isn't enough
+
+A store held as a process/DI singleton already survives rotation — the
+process lives. But on **process death** the OS recreates the process, the
+singleton is rebuilt from its *initial* state, and that state is lost.
+And because the bindings above are one-directional (`store → State`),
+restoring a value only in a Composable would be **overwritten** by the
+store's initial state on the next subscription. The fix is to write the
+restored value back into the store the only way a store can change — by
+`dispatch`ing an action.
+
+### 1. Describe what to save with `StateSaver`
+
+A `StateSaver` is three things: a `@Serializable` snapshot of just the
+fields worth keeping (keep it small — it goes into the platform's saved
+instance state), a `save` projection from state, and a `restore` function
+that turns a decoded snapshot into an action your reducer applies.
+
+```kotlin
+import kotlinx.serialization.Serializable
+import org.reduxkotlin.compose.saveable.StateSaver
+
+@Serializable
+data class UiSnapshot(val tab: Int, val query: String)
+
+// An action your reducer handles:
+data class RehydrateUi(val tab: Int, val query: String)
+
+val uiSaver = StateSaver(
+    serializer = UiSnapshot.serializer(),
+    save = { s: AppState -> UiSnapshot(s.tab, s.query) },
+    restore = { RehydrateUi(it.tab, it.query) },
+)
+```
+
+The reducer applies the restore action like any other:
+
+```kotlin
+fun appReducer(state: AppState, action: Any): AppState = when (action) {
+    is RehydrateUi -> state.copy(tab = action.tab, query = action.query)
+    // … other cases
+    else -> state
+}
+```
+
+### 2. Anchor it with `rememberSaveableState`
+
+Place the anchor **once** per persisted scope — typically near the root,
+or once per screen:
+
+```kotlin
+import org.reduxkotlin.compose.saveable.rememberSaveableState
+
+@Composable
+fun App(store: Store<AppState>) {
+    store.rememberSaveableState(uiSaver)
+    // child fieldState / selectorState bindings observe the rehydrated store
+    Screen(store)
+}
+```
+
+On a real restore the snapshot is decoded and `RehydrateUi` is dispatched
+exactly once, before the bindings settle. On a normal cold start nothing is
+dispatched. The snapshot is serialized only when the platform actually
+saves (e.g. when the app is backgrounded) — there is no per-dispatch cost.
+
+### Lists, navigation & multiple anchors
+
+The anchor derives a key from its call-site position. If you persist
+several independent scopes, place anchors inside a list, or move across a
+navigation graph where positions can collide, pass an explicit, stable
+`key`:
+
+```kotlin
+store.rememberSaveableState(detailSaver, key = "board-$boardId")
+```
+
+### Versioning & failures
+
+Restore is **best-effort**: if a saved snapshot can't be decoded (e.g. a
+new app version ships an incompatible `UiSnapshot`), it is dropped and the
+app starts cold rather than crashing. For additive changes pass a lenient
+codec via `StateSaver(json = Json { ignoreUnknownKeys = true })`; for
+breaking changes, add a `version` field to the snapshot and branch on it
+inside `restore`.
+
+### Threading & platforms
+
+The snapshot is read and the restore action dispatched on the **main
+thread**, so the persisted store must accept main-thread reads and dispatch
+— the Compose-facing store (the concurrent/threadsafe bundle store, or a
+main-confined store). On Android the snapshot rides `savedInstanceState`
+(rotation + process death); iOS uses state restoration; desktop, JS and
+wasm have no OS restore concept, so the anchor is a no-op there.
+
+:::tip Bundled
+`redux-kotlin-compose-saveable` ships inside
+[`redux-kotlin-bundle-compose`](../introduction/ecosystem) — if you use the
+Compose bundle you already have it.
+:::
+
 ## Lifecycle and threading
 
 Each binding subscribes inside a `DisposableEffect` and unsubscribes in

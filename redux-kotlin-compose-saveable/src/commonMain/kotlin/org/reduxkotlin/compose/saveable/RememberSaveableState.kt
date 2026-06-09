@@ -25,6 +25,15 @@ private const val KEY_RADIX = 36
  * The persisted store must accept main-thread reads and dispatch (the
  * Compose-facing store: concurrent/threadsafe, or main-confined).
  *
+ * Example:
+ * ```
+ * @Composable
+ * fun App(store: Store<AppState>) {
+ *     store.rememberSaveableState(uiSaver)
+ *     // … screen content; child fieldState bindings see the rehydrated store
+ * }
+ * ```
+ *
  * [saver] describes the snapshot projection and restore action.
  * [key] is a stable registry key required when multiple anchors exist, inside
  * lists, or across navigation where positional keys collide. Defaults to the
