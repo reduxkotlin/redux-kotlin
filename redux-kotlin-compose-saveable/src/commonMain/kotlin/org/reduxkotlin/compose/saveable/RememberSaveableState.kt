@@ -2,7 +2,7 @@ package org.reduxkotlin.compose.saveable
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.currentCompositeKeyHashCode
+import androidx.compose.runtime.currentCompositeKeyHash
 import androidx.compose.runtime.saveable.LocalSaveableStateRegistry
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import org.reduxkotlin.Store
@@ -34,7 +34,7 @@ private const val KEY_RADIX = 36
 public fun <S, Snapshot : Any> Store<S>.rememberSaveableState(saver: StateSaver<S, Snapshot>, key: String? = null) {
     val store = this
     val registry = LocalSaveableStateRegistry.current
-    val finalKey = key ?: currentCompositeKeyHashCode.toString(radix = KEY_RADIX)
+    val finalKey = key ?: currentCompositeKeyHash.toString(KEY_RADIX)
     DisposableEffect(store, registry, finalKey) {
         val entry = wireSaveable(store, registry, finalKey, saver)
         onDispose { entry?.unregister() }
