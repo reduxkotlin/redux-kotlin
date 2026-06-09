@@ -16,6 +16,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
 import org.reduxkotlin.compose.fieldState
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalTestApi::class)
 class SaveableIntegrationTest {
@@ -82,5 +83,7 @@ class SaveableIntegrationTest {
 
         // The button was not clicked again; only rehydration can produce "7".
         onNodeWithTag("tab2").assertTextEquals("7")
+        // Also assert the store itself rehydrated — proves dispatch happened, not just render.
+        assertEquals(TestState(tab = 7, query = ""), freshStore!!.state)
     }
 }
