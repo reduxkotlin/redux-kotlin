@@ -315,12 +315,12 @@ Beyond the source + tests, shipping a new published module requires:
   guards it thereafter.
 - **`redux-kotlin-bom`** — add the new module as a constrained dependency
   so BOM consumers get an aligned version.
-- **`redux-kotlin-bundle-compose` membership — decision required.**
-  `bundle-compose` is currently multimodel-centric (`redux-kotlin-bundle`
-  + `redux-kotlin-compose-multimodel`). Saveable composes with any
-  `Store<S>`, so including it is natural but is a product call: include vs
-  leave it à-la-carte. **Recommend include** (saved-state is a baseline
-  expectation for the Compose bundle). Confirm before implementation.
+- **`redux-kotlin-bundle-compose` membership — DECIDED: include.**
+  `bundle-compose` is multimodel-centric today (`redux-kotlin-bundle` +
+  `redux-kotlin-compose-multimodel`); add
+  `api(project(":redux-kotlin-compose-saveable"))` so saved-state ships as
+  a baseline of the Compose bundle. (Saveable composes with any `Store<S>`
+  incl. `ModelState`, so this is consistent.)
 - **Docs** — module entry in `CLAUDE.md` / `docs/agent/_fragments/
   modules.md`, and a short usage page on the docs site.
 
