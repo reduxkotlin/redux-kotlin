@@ -6,11 +6,16 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 
+import CheckIcon from '@site/static/img/noun_Check_1870817.svg';
+import CubesIcon from '@site/static/img/cubes-solid.svg';
+
 import styles from './index.module.css';
 
 type Feature = {
   title: string;
-  image: string;
+  // One of `Svg` (inline, theme-reactive) or `image` (raster) must be set.
+  Svg?: React.ComponentType<React.ComponentProps<'svg'>>;
+  image?: string;
   description: ReactNode;
 };
 
@@ -38,7 +43,7 @@ const FEATURES: Feature[] = [
   },
   {
     title: 'Predictable',
-    image: 'img/noun_Check_1870817.svg',
+    Svg: CheckIcon,
     description: (
       <>
         Redux helps you write applications that <strong>behave consistently</strong> and are{' '}
@@ -48,7 +53,7 @@ const FEATURES: Feature[] = [
   },
   {
     title: 'Centralized',
-    image: 'img/cubes-solid.svg',
+    Svg: CubesIcon,
     description: (
       <>
         Centralizing your application's state and logic enables easy sharing state between
@@ -128,10 +133,15 @@ function HeroSplash(): ReactNode {
 }
 
 function FeatureCard({feature}: {feature: Feature}): ReactNode {
-  const imageUrl = useBaseUrl(feature.image);
+  const {Svg} = feature;
+  const imageUrl = useBaseUrl(feature.image ?? '');
   return (
     <div className={styles.featureCard}>
-      <img className={styles.featureImage} src={imageUrl} alt="" />
+      {Svg ? (
+        <Svg className={styles.featureImage} role="img" aria-hidden="true" />
+      ) : (
+        <img className={styles.featureImage} src={imageUrl} alt="" />
+      )}
       <Heading as="h3">{feature.title}</Heading>
       <p>{feature.description}</p>
     </div>

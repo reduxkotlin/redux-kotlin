@@ -4,6 +4,12 @@
   background: linear-gradient(180deg, var(--ifm-color-primary-lightest) 0%, transparent 100%);
 }
 
+/* In dark mode the lightest-primary band is too bright over the near-black
+   page and washes out the hero text. Use a low-alpha primary glow instead. */
+[data-theme='dark'] .heroBanner {
+  background: linear-gradient(180deg, rgba(74, 150, 251, 0.15) 0%, transparent 100%);
+}
+
 .heroTitle {
   display: flex;
   align-items: center;
@@ -47,9 +53,15 @@
 }
 
 .featureImage {
+  width: 120px;
+  height: 120px;
   max-width: 120px;
-  height: auto;
+  object-fit: contain;
   margin-bottom: 1rem;
+  /* Inline SVG icons inherit this via fill="currentColor" so they stay
+     visible (and on-brand) in both light and dark mode. The raster PNG
+     ignores it. */
+  color: var(--ifm-color-primary);
 }
 
 .librariesSection {
@@ -99,6 +111,17 @@
   padding: 1.5rem;
   background: var(--ifm-color-emphasis-100);
   border-radius: 0.5rem;
+}
+
+/* On the dark surface emphasis-100 is nearly the page color, so cards read
+   as floating text. Lift the surface and add a visible edge for separation. */
+[data-theme='dark'] .surveyCard {
+  background: var(--ifm-color-emphasis-200);
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .libraryCard {
+  border-color: var(--ifm-color-emphasis-400);
 }
 
 @media screen and (max-width: 996px) {

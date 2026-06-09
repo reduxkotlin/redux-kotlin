@@ -25,5 +25,7 @@
   --ifm-color-primary-light: #6baafc;
   --ifm-color-primary-lighter: #7cb4fc;
   --ifm-color-primary-lightest: #afcffe;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  /* A dark overlay on the already-dark code background is invisible; tint
+     light instead so highlighted lines are actually distinguishable. */
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.1);
 }
