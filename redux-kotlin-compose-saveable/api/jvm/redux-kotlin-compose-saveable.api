@@ -1,0 +1,14 @@
+public final class org/reduxkotlin/compose/saveable/RememberSaveableStateKt {
+	public static final fun rememberSaveableState (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/compose/saveable/StateSaver;Ljava/lang/String;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class org/reduxkotlin/compose/saveable/StateSaver {
+	public static final field $stable I
+	public fun <init> (Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlinx/serialization/json/Json;)V
+	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlinx/serialization/json/Json;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getJson ()Lkotlinx/serialization/json/Json;
+	public final fun getRestore ()Lkotlin/jvm/functions/Function1;
+	public final fun getSave ()Lkotlin/jvm/functions/Function1;
+	public final fun getSerializer ()Lkotlinx/serialization/KSerializer;
+}
+

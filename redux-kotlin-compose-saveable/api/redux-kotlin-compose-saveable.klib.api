@@ -1,0 +1,25 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, linuxX64, macosArm64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-compose-saveable>
+final class <#A: kotlin/Any?, #B: kotlin/Any> org.reduxkotlin.compose.saveable/StateSaver { // org.reduxkotlin.compose.saveable/StateSaver|null[0]
+    constructor <init>(kotlinx.serialization/KSerializer<#B>, kotlin/Function1<#A, #B>, kotlin/Function1<#B, kotlin/Any>, kotlinx.serialization.json/Json = ...) // org.reduxkotlin.compose.saveable/StateSaver.<init>|<init>(kotlinx.serialization.KSerializer<1:1>;kotlin.Function1<1:0,1:1>;kotlin.Function1<1:1,kotlin.Any>;kotlinx.serialization.json.Json){}[0]
+
+    final val json // org.reduxkotlin.compose.saveable/StateSaver.json|{}json[0]
+        final fun <get-json>(): kotlinx.serialization.json/Json // org.reduxkotlin.compose.saveable/StateSaver.json.<get-json>|<get-json>(){}[0]
+    final val restore // org.reduxkotlin.compose.saveable/StateSaver.restore|{}restore[0]
+        final fun <get-restore>(): kotlin/Function1<#B, kotlin/Any> // org.reduxkotlin.compose.saveable/StateSaver.restore.<get-restore>|<get-restore>(){}[0]
+    final val save // org.reduxkotlin.compose.saveable/StateSaver.save|{}save[0]
+        final fun <get-save>(): kotlin/Function1<#A, #B> // org.reduxkotlin.compose.saveable/StateSaver.save.<get-save>|<get-save>(){}[0]
+    final val serializer // org.reduxkotlin.compose.saveable/StateSaver.serializer|{}serializer[0]
+        final fun <get-serializer>(): kotlinx.serialization/KSerializer<#B> // org.reduxkotlin.compose.saveable/StateSaver.serializer.<get-serializer>|<get-serializer>(){}[0]
+}
+
+final val org.reduxkotlin.compose.saveable/org_reduxkotlin_compose_saveable_StateSaver$stableprop // org.reduxkotlin.compose.saveable/org_reduxkotlin_compose_saveable_StateSaver$stableprop|#static{}org_reduxkotlin_compose_saveable_StateSaver$stableprop[0]
+
+final fun <#A: kotlin/Any?, #B: kotlin/Any> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose.saveable/rememberSaveableState(org.reduxkotlin.compose.saveable/StateSaver<#A, #B>, kotlin/String?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // org.reduxkotlin.compose.saveable/rememberSaveableState|rememberSaveableState@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(org.reduxkotlin.compose.saveable.StateSaver<0:0,0:1>;kotlin.String?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any>}[0]
+final fun org.reduxkotlin.compose.saveable/org_reduxkotlin_compose_saveable_StateSaver$stableprop_getter(): kotlin/Int // org.reduxkotlin.compose.saveable/org_reduxkotlin_compose_saveable_StateSaver$stableprop_getter|org_reduxkotlin_compose_saveable_StateSaver$stableprop_getter(){}[0]
