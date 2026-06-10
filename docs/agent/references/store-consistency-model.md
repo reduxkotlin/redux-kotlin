@@ -1,0 +1,40 @@
+# Store consistency model (concurrent store + Compose)
+
+The concurrent store (`createConcurrentStore` / `createConcurrentModelStore`, the bundle default)
+separates two things:
+
+- **State writes are synchronous.** `dispatch` runs the reducer under a writer lock and publishes the
+  state mirror *before it returns*. Immediately after `dispatch`, `getState()` / `getModel<T>()` return
+  the new state.
+- **Subscriber notifications follow the `NotificationContext`.** With a posting context (e.g. a bare
+  `Handler.post` on Android), callbacks run on a *later* loop iteration — eventual consistency.
+
+## Don't branch on a binding right after dispatch
+
+`selectorState` / `fieldState` are driven by the subscription. As of the lag-free rewrite they read
+`getState()` synchronously on every read (the subscription only schedules recomposition), so a binding
+value is always current at read time. But if you mix a *synchronously-flipped* flag with a value
+derived from the store, read the value via `getState()` / `getModel()` — not a stale local copy.
+
+## Rehydrate via preloadedState, not a post-paint dispatch
+
+Seed restored state at construction so the first render is correct (no intermediate flash):
+
+    createConcurrentModelStore(
+        preloadedState = ModelState.of(NavModel(restoredStack), FilterModel(restoredQuery)),
+    ) { /* model(...) declarations */ }
+
+`preloadedState`'s key set must be a subset of the declared models (it overlays them via
+`ModelState.withAll`).
+
+## Main-thread notifications
+
+Wrap your platform main-thread post with `coalescingNotificationContext`:
+
+    coalescingNotificationContext(
+        isOnTargetThread = { isOnMainThread() },
+        post = { block -> handler.post(block) },
+    )
+
+A main-thread dispatch then notifies subscribers inline (no extra frame of latency), while off-main
+dispatches still marshal to the main thread.
