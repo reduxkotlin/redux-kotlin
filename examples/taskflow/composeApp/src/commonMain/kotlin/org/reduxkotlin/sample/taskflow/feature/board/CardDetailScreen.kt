@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -155,15 +156,18 @@ private fun CardDetailContainer(compact: Boolean, content: @Composable () -> Uni
 }
 
 /**
- * Create mode: a blank title field + a [MarkdownEditor] whose text lives in local `remember` (Rule C
- * — keystrokes never touch the store). Save is enabled only when the title is non-blank; it mints a
+ * Create mode: a blank title field + a [MarkdownEditor] whose text lives in local `rememberSaveable`
+ * (Rule C — keystrokes never touch the store; the draft rides the SavedStateRegistry so it survives
+ * process death / config change). Save is enabled only when the title is non-blank; it mints a
  * fresh card id + op id + clock at the dispatch site, dispatches [AddCard] into the target [columnId],
  * then [CancelCreateCard] to dismiss. Cancel dispatches [CancelCreateCard].
  */
 @Composable
 private fun CreateMode(store: Store<ModelState>, columnId: ColumnId) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    // rememberSaveable: the in-progress draft rides the SavedStateRegistry so it survives process
+    // death / config change (Rule C still holds — keystrokes stay local, never touch the store).
+    var title by rememberSaveable { mutableStateOf("") }
+    var description by rememberSaveable { mutableStateOf("") }
     val idGen = LocalIdGenerator.current
     val clock = LocalClock.current
 
