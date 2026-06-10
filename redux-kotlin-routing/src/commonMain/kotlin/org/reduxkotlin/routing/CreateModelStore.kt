@@ -29,6 +29,10 @@ public typealias OnWrite = (action: Any, modelClass: KClass<*>, prev: Any, next:
  *   would fire subscribers spuriously).
  * @param onWrite optional [OnWrite] observer for tracing/conflict
  *   detection.
+ * @param preloadedState optional restored/persisted models overlaid onto
+ *   the declared defaults at construction (its key set must be a subset
+ *   of the declared models). Use to rehydrate state synchronously instead
+ *   of dispatching after first render.
  * @param block the routing configuration: model and handler
  *   registrations applied to a [RoutingBuilder].
  */
@@ -36,11 +40,13 @@ public fun createModelStore(
     enhancer: StoreEnhancer<ModelState>? = null,
     devChecks: Boolean = false,
     onWrite: OnWrite? = null,
+    preloadedState: ModelState? = null,
     block: RoutingBuilder.() -> Unit,
 ): Store<ModelState> {
     val builder = RoutingBuilder()
     builder.block()
-    val initialState = builder.buildInitialState()
+    val declared = builder.buildInitialState()
+    val initialState = if (preloadedState == null) declared else declared.withAll(preloadedState)
     val reducer = builder.buildReducer(devChecks, onWrite)
     return createStore(reducer, initialState, enhancer)
 }

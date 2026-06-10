@@ -1,6 +1,6 @@
 public final class org/reduxkotlin/routing/CreateModelStoreKt {
-	public static final fun createModelStore (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
-	public static synthetic fun createModelStore$default (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
+	public static final fun createModelStore (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lorg/reduxkotlin/multimodel/ModelState;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/TypedStore;
+	public static synthetic fun createModelStore$default (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function5;Lorg/reduxkotlin/multimodel/ModelState;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/TypedStore;
 }
 
 public final class org/reduxkotlin/routing/ModelHandlerScope {
