@@ -5,7 +5,6 @@ import app.cash.sqldelight.async.coroutines.awaitAsOne
 import app.cash.sqldelight.async.coroutines.awaitAsOneOrNull
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
 import org.reduxkotlin.sample.taskflow.core.AccountId
@@ -23,9 +22,7 @@ import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
 import org.reduxkotlin.sample.taskflow.core.Label
 import org.reduxkotlin.sample.taskflow.core.LabelId
-import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.OpId
-import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.core.Theme
 import org.reduxkotlin.sample.taskflow.db.TaskFlowDb
 import org.reduxkotlin.sample.taskflow.infra.SeedData
@@ -39,11 +36,6 @@ private const val ATTACHMENT_KIND_IMAGE = "image"
 private const val ATTACHMENT_KIND_LINK = "link"
 private const val ACTIVITY_LIMIT = 50L
 private const val ARGB_MASK = 0xFFFFFFFFL
-
-private const val ROUTE_BOARD_LIST = "BoardList"
-private const val ROUTE_BOARD = "Board"
-private const val ROUTE_PROFILE = "Profile"
-private const val ROUTE_SETTINGS = "Settings"
 
 /**
  * The durable [LocalStore], backed by the generated SQLDelight [TaskFlowDb]. Instant reads/writes
@@ -132,31 +124,6 @@ public class SqlDelightLocalStore(private val db: TaskFlowDb) : LocalStore {
         return Board(boardId = boardRow.id, columns = columns, cards = cards)
     }
 
-    override suspend fun loadNav(accountId: AccountId): NavModel {
-        val row = q.selectNav(accountId).awaitAsOneOrNull() ?: return NavModel()
-        // Reconstruct the stack from the persisted (route_tag, boardId, openCardId) triple.
-        // Board(id) sits on top of BoardList so back from a board returns to the list (matches the
-        // in-memory navReducer's Navigate(Board) rule). An open card pushes a CardDetail(View) frame.
-        // We do not persist edit mode (always restore to view) or the transient ComposeCard state.
-        val base: PersistentList<Route> = when (row.route) {
-            ROUTE_BOARD ->
-                row.boardId
-                    ?.let { persistentListOf<Route>(Route.BoardList, Route.Board(it)) }
-                    ?: persistentListOf<Route>(Route.BoardList)
-
-            ROUTE_PROFILE -> persistentListOf<Route>(Route.Profile)
-
-            ROUTE_SETTINGS -> persistentListOf<Route>(Route.Settings)
-
-            else -> persistentListOf<Route>(Route.BoardList)
-        }
-        val stack = row.openCardId
-            ?.takeIf { row.route == ROUTE_BOARD && row.boardId != null }
-            ?.let { base.add(Route.CardDetail(it)) }
-            ?: base
-        return NavModel(stack)
-    }
-
     override suspend fun loadCollaborators(accountId: AccountId): PersistentMap<AccountId, AccountSummary> =
         q.selectCollaborators(accountId).awaitAsList()
             .associate { it.id to AccountSummary(it.id, it.displayName, it.email, it.avatarUrl) }
@@ -189,37 +156,6 @@ public class SqlDelightLocalStore(private val db: TaskFlowDb) : LocalStore {
     override suspend fun saveActiveAccountId(accountId: AccountId?) {
         if (q.selectSettings().awaitAsOneOrNull() == null) saveSettings(AppSettingsModel())
         q.setActiveAccountId(accountId)
-    }
-
-    override suspend fun saveNav(accountId: AccountId, nav: NavModel) {
-        // Persist the lowest-level destination (the most-recent TopLevel) + the active board id +
-        // any open card. Card-detail edit mode and the transient ComposeCard are intentionally
-        // dropped — those are session state, not durable nav.
-        val baseTopLevel = nav.stack.last { it is Route.TopLevel } as Route.TopLevel
-        val tag: String
-        val boardId: BoardId?
-        when (baseTopLevel) {
-            is Route.Board -> {
-                tag = ROUTE_BOARD
-                boardId = baseTopLevel.boardId
-            }
-
-            Route.BoardList -> {
-                tag = ROUTE_BOARD_LIST
-                boardId = null
-            }
-
-            Route.Profile -> {
-                tag = ROUTE_PROFILE
-                boardId = null
-            }
-
-            Route.Settings -> {
-                tag = ROUTE_SETTINGS
-                boardId = null
-            }
-        }
-        q.upsertNav(accountId, tag, boardId, nav.openCardId)
     }
 
     override suspend fun moveCard(boardId: BoardId, cardId: CardId, toColumn: ColumnId, toIndex: Int) {
