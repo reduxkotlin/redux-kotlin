@@ -1,6 +1,7 @@
 package org.reduxkotlin.sample.taskflow.infra.platform
 
 import org.reduxkotlin.concurrent.NotificationContext
+import org.reduxkotlin.concurrent.coalescingNotificationContext
 import javax.swing.SwingUtilities
 
 /**
@@ -12,10 +13,7 @@ import javax.swing.SwingUtilities
  *
  * @return a [NotificationContext] that runs callbacks on the EDT.
  */
-public actual fun mainNotificationContext(): NotificationContext = NotificationContext { block ->
-    if (SwingUtilities.isEventDispatchThread()) {
-        block()
-    } else {
-        SwingUtilities.invokeLater(block)
-    }
-}
+public actual fun mainNotificationContext(): NotificationContext = coalescingNotificationContext(
+    isOnTargetThread = { SwingUtilities.isEventDispatchThread() },
+    post = { block -> SwingUtilities.invokeLater(block) },
+)
