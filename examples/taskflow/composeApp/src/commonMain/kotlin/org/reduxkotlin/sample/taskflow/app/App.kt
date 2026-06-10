@@ -183,16 +183,15 @@ private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry
     val accountStore = handle.store
 
     // Restore volatile UI (nav + filter) saved across process death / config change (saveable plan).
-    // `applied` is false only while a saved snapshot is still pending, so we can withhold the first
-    // paint and never flash the default [BoardList] before the saved stack lands.
-    val applied = rememberUiRestore(accountStore = accountStore, key = activeId)
+    // Applied SYNCHRONOUSLY here, BEFORE the nav read below — the concurrent store's subscriber
+    // callbacks are async (Handler.post), so dispatching from an effect would let the default
+    // [BoardList] nav paint for a frame; a synchronous apply makes the first nav read already correct.
+    rememberUiRestore(accountStore = accountStore, key = activeId)
 
     val nav by rememberStableStore(accountStore).value.fieldStateOf(NavModel::class) { it }
 
     // Lifecycle effects key on the *active board* (the lowest Board in the stack), not the top of
     // the stack — so drilling into CardDetail/ComposeCard keeps the board loaded and the sync ticking.
-    // Declared above the restore gate so the board loads lazily in the background while the spinner
-    // shows (the add-card overlay paints over it; board/card top screens use their own skeletons).
     BoardLifecycleEffect(
         accountStore = accountStore,
         registry = registry,
@@ -200,15 +199,6 @@ private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry
         activeBoardId = nav.activeBoardId,
     )
     PeriodicSyncEffect(appStore = appStore, accountStore = accountStore, activeBoardId = nav.activeBoardId)
-
-    if (!applied) {
-        // Restore pending: hold the first paint (folds into the existing driver spinner) so the
-        // restored stack appears directly — no [BoardList] / half-loaded board flash in between.
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-        return
-    }
 
     var showSwitcher by remember { mutableStateOf(false) }
 

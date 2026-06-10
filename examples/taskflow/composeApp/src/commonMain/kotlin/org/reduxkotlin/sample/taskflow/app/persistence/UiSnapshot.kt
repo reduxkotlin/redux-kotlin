@@ -1,8 +1,6 @@
 package org.reduxkotlin.sample.taskflow.app.persistence
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -134,9 +132,6 @@ internal fun decodeUiSnapshot(json: String): RestoreUiState {
 
 /** One-shot carrier for a restored snapshot JSON; [consume] returns it exactly once. */
 internal class RestoreSlot(private var pending: String?) {
-    /** Non-consuming peek: true while a restored snapshot is still waiting to be applied. */
-    fun hasPending(): Boolean = pending != null
-
     /** Returns the pending snapshot JSON once (then null), so restore replays exactly once. */
     fun consume(): String? {
         val p = pending
@@ -146,27 +141,28 @@ internal class RestoreSlot(private var pending: String?) {
 }
 
 /**
- * Restores the active account's volatile UI (nav + filter) saved across process death / config
- * change, and reports whether that restore has been applied yet.
+ * Restores the active account's volatile UI (nav + filter) saved across process death / config change.
+ *
+ * **Call this BEFORE the caller first reads nav/filter** via `selectorState`/`fieldStateOf`. The
+ * snapshot is applied **synchronously during composition** (the concurrent-store `dispatch` is
+ * synchronous — state is updated before it returns), so the selector's initial `store.state` read
+ * already reflects the restored stack and the very first paint is correct.
+ *
+ * Why not a `LaunchedEffect`: the concurrent store delivers subscriber callbacks **asynchronously**
+ * (`notificationContext` = `Handler.post` on Android), so a `selectorState` only observes a
+ * post-dispatch change one main-looper message later. Dispatching the restore from an effect would
+ * therefore let the default `[BoardList]` nav paint for a frame before the saved stack lands — the
+ * intermittent board-list / board flash. Applying synchronously here closes that window entirely.
  *
  * At save time the [Saver] reads [accountStore] directly (lock-free `getState` mirror) and serializes
- * the snapshot into the Activity `SavedStateRegistry`. On restore the JSON is parked in a [RestoreSlot]
- * and replayed exactly once from a [LaunchedEffect] (off the composition/dispatch path) via
- * [RestoreUiState]; board content then reloads via the existing board-lifecycle effect.
- *
- * The returned flag lets the caller withhold the first account-UI paint until the restore has landed,
- * so the default `[BoardList]` nav never flashes before the saved stack settles. It is `true`
- * immediately when nothing is pending (a fresh launch / ordinary navigation is never gated) and flips
- * `true` once a pending snapshot has been dispatched.
+ * the snapshot into the Activity `SavedStateRegistry`. [consume] makes the replay happen exactly once
+ * per restored [RestoreSlot]; board content then reloads via the existing board-lifecycle effect.
  *
  * @param accountStore the active account's store.
- * @param key the active account id — scopes the saved slot per account via [rememberSaveable]. The
- *   [LaunchedEffect] keys on the [RestoreSlot] instance itself so an in-place restore (where [key] is
- *   unchanged) still triggers the effect.
- * @return `true` once the restore (if any) has been applied; `true` immediately when none is pending.
+ * @param key the active account id — scopes the saved slot per account via [rememberSaveable].
  */
 @Composable
-internal fun rememberUiRestore(accountStore: Store<ModelState>, key: Any): Boolean {
+internal fun rememberUiRestore(accountStore: Store<ModelState>, key: Any) {
     val slot = rememberSaveable(
         key,
         saver = Saver<RestoreSlot, String>(
@@ -175,13 +171,6 @@ internal fun rememberUiRestore(accountStore: Store<ModelState>, key: Any): Boole
         ),
     ) { RestoreSlot(null) }
 
-    // Gate (applied == false) only while a real snapshot is pending; re-evaluated per slot instance so
-    // an in-place restore (new slot) re-gates, while fresh launches / ordinary nav start applied.
-    val applied = remember(slot) { mutableStateOf(!slot.hasPending()) }
-
-    LaunchedEffect(slot) {
-        slot.consume()?.let { accountStore.dispatch(decodeUiSnapshot(it)) }
-        applied.value = true
-    }
-    return applied.value
+    // Apply once, synchronously, during composition — before nav/filter are first read (see KDoc).
+    remember(slot) { slot.consume()?.let { accountStore.dispatch(decodeUiSnapshot(it)) } }
 }
