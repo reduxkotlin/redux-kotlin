@@ -2,6 +2,7 @@ package org.reduxkotlin.compose
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.onAllNodesWithText
@@ -21,6 +22,39 @@ private fun reducer(state: CounterState, action: Any): CounterState = when (acti
 }
 
 private fun newStore(): Store<CounterState> = createStore(::reducer, CounterState())
+
+// Models a concurrent store: state writes apply synchronously, but
+// subscriber notifications are deferred (posted, drained later).
+private class DeferredNotifyStore<S>(initial: S) : org.reduxkotlin.Store<S> {
+    private var current: S = initial
+    private val listeners = mutableListOf<org.reduxkotlin.StoreSubscriber>()
+    private val pending = mutableListOf<() -> Unit>()
+
+    fun drain() {
+        val copy = pending.toList()
+        pending.clear()
+        copy.forEach { it() }
+    }
+
+    override val store: org.reduxkotlin.Store<S> = this
+    override val getState: org.reduxkotlin.GetState<S> = { current }
+    override var dispatch: org.reduxkotlin.Dispatcher = { action ->
+        @Suppress("UNCHECKED_CAST")
+        run { current = action as S }
+        val snapshot = listeners.toList()
+        snapshot.forEach { l -> pending.add { l() } }
+        action
+    }
+    override val subscribe: (org.reduxkotlin.StoreSubscriber) -> org.reduxkotlin.StoreSubscription = { l ->
+        listeners.add(l)
+        val unsubscribe: org.reduxkotlin.StoreSubscription = {
+            listeners.remove(l)
+            Unit
+        }
+        unsubscribe
+    }
+    override val replaceReducer: (org.reduxkotlin.Reducer<S>) -> Unit = { }
+}
 
 @OptIn(ExperimentalTestApi::class)
 class FieldStateTest {
@@ -128,6 +162,24 @@ class FieldStateTest {
         // dispatch arrived. With the re-sample inside DisposableEffect,
         // we pick up the in-flight increment immediately.
         onAllNodesWithText("race=7").assertCountEquals(1)
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun selectorStateReadsFreshStateWhenRecomposedBeforeAsyncNotifyDrains() = runComposeUiTest {
+        val store = DeferredNotifyStore("a")
+        val external = mutableStateOf(0)
+        setContent {
+            val tick = external.value
+            val value by store.selectorState { it }
+            Text("v=$value t=$tick")
+        }
+        waitForIdle()
+        onAllNodesWithText("v=a t=0").assertCountEquals(1)
+        store.dispatch("b") // state updated synchronously; notification NOT drained
+        external.value = 1 // force recomposition via external state
+        waitForIdle()
+        onAllNodesWithText("v=b t=1").assertCountEquals(1) // must be fresh "b", not stale "a"
     }
 
     @Test
