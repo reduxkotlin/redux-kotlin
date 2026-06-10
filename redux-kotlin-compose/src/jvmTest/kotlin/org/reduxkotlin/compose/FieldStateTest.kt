@@ -137,30 +137,25 @@ class FieldStateTest {
 
     @Test
     fun fieldState_b3_race_window_picks_up_dispatch_between_remember_and_effect() = runComposeUiTest {
-        // The granular subscription is installed inside DisposableEffect,
-        // which fires at commit. If the store dispatches between the
-        // `remember { mutableStateOf(...) }` (composition time) and the
-        // effect (commit time), and if we DIDN'T re-sample under the
-        // effect, the first observed frame would be stale until the
-        // next dispatch fired the subscriber.
+        // Mid-composition dispatch: the store state changes between the binding's creation and
+        // the first read. Because the returned State reads `store.state` live in its getter
+        // (not a cached snapshot), the first composed value already reflects the dispatch —
+        // no stale initial value, no need for a re-sample.
         //
-        // We simulate this by dispatching DURING setContent's body, then
-        // assert the first observable frame reflects the post-dispatch
-        // value. The runComposeUiTest harness drives composition and
-        // effects synchronously enough for this to be deterministic.
+        // We simulate this by dispatching DURING setContent's body, then assert the first
+        // observable frame reflects the post-dispatch value. The runComposeUiTest harness
+        // drives composition and effects synchronously enough for this to be deterministic.
         val store = newStore()
         setContent {
-            // Dispatch happens during composition body — i.e. AFTER
-            // remember { mutableStateOf(property.get(store.state)) } has
-            // already captured counter=0.
+            // Dispatch during composition body — store.state is already counter=7 by the time
+            // fieldState's getter runs its first read.
             store.dispatch(Increment(amount = 7))
             val counter by store.fieldState(CounterState::counter)
             Text(text = "race=$counter")
         }
         waitForIdle()
-        // Without the B3 re-sample, this would be "race=0" until another
-        // dispatch arrived. With the re-sample inside DisposableEffect,
-        // we pick up the in-flight increment immediately.
+        // The getter reads store.state live, so "race=7" is visible immediately —
+        // no stale initial value, no extra dispatch needed.
         onAllNodesWithText("race=7").assertCountEquals(1)
     }
 
