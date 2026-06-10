@@ -51,10 +51,15 @@ internal sealed interface RouteDto {
     @SerialName("settings")
     data object Settings : RouteDto
 
-    /** @see Route.CardDetail */
+    /**
+     * @see Route.CardDetail
+     *
+     * Note: edit mode is intentionally not persisted — CardDetail always restores to View mode.
+     * Edit is a transient inline-edit state with no durable buffer to recover.
+     */
     @Serializable
     @SerialName("cardDetail")
-    data class CardDetail(val cardId: String, val edit: Boolean) : RouteDto
+    data class CardDetail(val cardId: String) : RouteDto
 
     /** @see Route.ComposeCard */
     @Serializable
@@ -78,22 +83,16 @@ private fun Route.toDto(): RouteDto = when (this) {
     is Route.Board -> RouteDto.Board(boardId.v)
     is Route.Profile -> RouteDto.Profile
     is Route.Settings -> RouteDto.Settings
-    is Route.CardDetail -> RouteDto.CardDetail(cardId.v, mode == Route.CardDetail.Mode.Edit)
+    is Route.CardDetail -> RouteDto.CardDetail(cardId.v)
     is Route.ComposeCard -> RouteDto.ComposeCard(columnId.v)
 }
 
 private fun RouteDto.toRoute(): Route = when (this) {
     is RouteDto.BoardList -> Route.BoardList
-
     is RouteDto.Board -> Route.Board(BoardId(boardId))
-
     is RouteDto.Profile -> Route.Profile
-
     is RouteDto.Settings -> Route.Settings
-
-    is RouteDto.CardDetail ->
-        Route.CardDetail(CardId(cardId), if (edit) Route.CardDetail.Mode.Edit else Route.CardDetail.Mode.View)
-
+    is RouteDto.CardDetail -> Route.CardDetail(CardId(cardId), Route.CardDetail.Mode.View)
     is RouteDto.ComposeCard -> Route.ComposeCard(ColumnId(columnId))
 }
 

@@ -12,6 +12,7 @@ import org.reduxkotlin.sample.taskflow.core.Route
 import org.reduxkotlin.sample.taskflow.feature.board.FilterModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class UiSnapshotTest {
 
@@ -21,7 +22,7 @@ class UiSnapshotTest {
             persistentListOf(
                 Route.BoardList,
                 Route.Board(BoardId("b1")),
-                Route.CardDetail(CardId("c9"), Route.CardDetail.Mode.Edit),
+                Route.CardDetail(CardId("c9"), Route.CardDetail.Mode.View),
             ),
         )
         val filter = FilterModel(
@@ -75,5 +76,19 @@ class UiSnapshotTest {
         val action = decodeUiSnapshot(encodeUiSnapshot(nav, filter))
         assertEquals(BoardId("b7"), action.nav.activeBoardId)
         assertEquals("q", action.filter.query)
+    }
+
+    @Test
+    fun cardDetailEditModeRestoresAsView() {
+        val nav = NavModel(
+            persistentListOf(
+                Route.BoardList,
+                Route.Board(BoardId("b1")),
+                Route.CardDetail(CardId("c9"), Route.CardDetail.Mode.Edit),
+            ),
+        )
+        val restored = decodeUiSnapshot(encodeUiSnapshot(nav, FilterModel())).nav
+        val top = restored.stack.last()
+        assertTrue(top is Route.CardDetail && top.mode == Route.CardDetail.Mode.View)
     }
 }
