@@ -3,7 +3,9 @@ package org.reduxkotlin.sample.taskflow.app
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -22,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.window.Dialog
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.delay
@@ -144,6 +147,19 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
     val theme by rememberStableStore(appStore).value.fieldStateOf(AppSettingsModel::class) { it.theme }
     val activeId by rememberStableStore(appStore).value.fieldStateOf(AccountsModel::class) { it.activeAccountId }
 
+    // Hold the first content paint until the window insets have been dispatched. On a process-death
+    // restore the OS delivers `systemBars` insets a frame AFTER the first composition, so edge-to-edge
+    // content (e.g. the restored add-card screen) would draw once at inset 0 and then snap down when
+    // the status-bar inset resolves. Latch on the first non-zero status-bar inset; a short fallback
+    // covers configs with no status bar (desktop / some landscape) so the splash can never hang.
+    val statusBarTop = WindowInsets.systemBars.getTop(LocalDensity.current)
+    var insetsReady by remember(localStore) { mutableStateOf(false) }
+    LaunchedEffect(statusBarTop) { if (statusBarTop > 0) insetsReady = true }
+    LaunchedEffect(localStore) {
+        delay(INSETS_DISPATCH_FALLBACK_MS)
+        insetsReady = true
+    }
+
     TaskFlowTheme(theme = theme) {
         CompositionLocalProvider(
             LocalIdGenerator provides DefaultIdGenerator(),
@@ -159,9 +175,10 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
             Surface(modifier = Modifier.fillMaxSize()) {
                 val id = activeId
                 when {
-                    !booted -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
+                    !booted || !insetsReady ->
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
 
                     id == null -> LoginScreen(appStore)
 
@@ -404,6 +421,9 @@ private fun OverlayWithPredictiveBack(
 }
 
 private enum class PredictiveBackKind { Pop, ModeFlip }
+
+/** Fallback wait before revealing content if no status-bar inset ever arrives (insetless configs). */
+private const val INSETS_DISPATCH_FALLBACK_MS = 150L
 
 private const val OVERLAY_BACK_SCALE = 0.05f
 private const val OVERLAY_BACK_ALPHA = 0.4f
