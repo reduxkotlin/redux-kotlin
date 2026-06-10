@@ -25,8 +25,9 @@ public fun <K : Any> StoreRegistry<K, ModelState>.getOrCreateConcurrentModelStor
     devChecks: Boolean = false,
     onWrite: OnWrite? = null,
     block: RoutingBuilder.() -> Unit,
-): Store<ModelState> =
-    getOrCreate(id) { createConcurrentModelStore(enhancer, notificationContext, onError, devChecks, onWrite, block) }
+): Store<ModelState> = getOrCreate(
+        id,
+    ) { createConcurrentModelStore(enhancer, notificationContext, onError, devChecks, onWrite, block = block) }
 
 /**
  * [TypedStoreRegistry] variant keyed by a typed [StoreKey]
@@ -41,5 +42,6 @@ public fun <K : Any> TypedStoreRegistry.getOrCreateConcurrentModelStore(
     devChecks: Boolean = false,
     onWrite: OnWrite? = null,
     block: RoutingBuilder.() -> Unit,
-): Store<ModelState> =
-    getOrCreate(key) { createConcurrentModelStore(enhancer, notificationContext, onError, devChecks, onWrite, block) }
+): Store<ModelState> = getOrCreate(
+        key,
+    ) { createConcurrentModelStore(enhancer, notificationContext, onError, devChecks, onWrite, block = block) }
