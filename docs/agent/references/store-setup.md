@@ -90,12 +90,12 @@ Both factories default their notification context to
 `examples/taskflow/composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/infra/platform/Notification.kt → mainNotificationContext`,
 a platform shim (see [platform-shims.md](./platform-shims.md)) that marshals subscriber callbacks to
 the UI main thread. This is what lets effects dispatch from a background scope with **no explicit main
-hop**: the write runs serialized, and the store notifies subscribers through the context, which posts
-them to main. Tests override it with an inline context to dispatch synchronously on the caller thread.
-For a lag-free variant, build the context with
+hop**: the write runs serialized, and the store notifies subscribers through the context, which
+delivers them on main. Tests override it with an inline context to dispatch synchronously on the
+caller thread. The platform actuals build `mainNotificationContext` on
 `redux-kotlin-concurrent/src/commonMain/kotlin/org/reduxkotlin/concurrent/NotificationContext.kt → coalescingNotificationContext`
-— it runs the callback inline when the dispatch is already on the target (main) thread and posts
-otherwise, so a main-thread dispatch never waits a loop iteration (see
+— callbacks run inline when the dispatch is already on main and are posted otherwise, so a
+main-thread dispatch never waits a loop iteration while off-main dispatches still marshal (see
 [store-consistency-model.md](./store-consistency-model.md)).
 
 ## Per-account lifecycle — the registry

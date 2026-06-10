@@ -29,6 +29,17 @@ separates two things:
 - **Subscriber notifications follow the `NotificationContext`.** With a posting context (e.g. a bare
   `Handler.post` on Android), callbacks run on a *later* loop iteration — eventual consistency.
 
+Exact ordering inside one dispatch: reducer commits to the inner store → listeners are notified
+through the context → the read mirror is published → the writer lock releases. Consequences worth
+knowing:
+
+- With an **inline** context, all subscriber callbacks run *while the writer lock is held* (a slow
+  subscriber delays other dispatchers, never readers), and the dispatching thread sees the new state
+  inside callbacks while other threads still read the previous mirror until publish.
+- With a **posting** context, a posted callback can be scheduled *before* the mirror publish and
+  read pre-dispatch state — callbacks must pull current state via `getState()`/`getModel()` and treat
+  a notification as "something may have changed", never as a payload.
+
 ## Don't branch on a binding right after dispatch
 
 `selectorState` / `fieldState` are driven by the subscription. As of the lag-free rewrite they read
