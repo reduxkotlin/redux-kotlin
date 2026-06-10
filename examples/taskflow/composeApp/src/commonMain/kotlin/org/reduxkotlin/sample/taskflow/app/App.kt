@@ -36,7 +36,7 @@ import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.app.nav.AdaptiveNav
 import org.reduxkotlin.sample.taskflow.app.nav.Back
 import org.reduxkotlin.sample.taskflow.app.nav.Navigate
-import org.reduxkotlin.sample.taskflow.app.persistence.RestoreUiStateEffect
+import org.reduxkotlin.sample.taskflow.app.persistence.rememberUiRestore
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -183,12 +183,16 @@ private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry
     val accountStore = handle.store
 
     // Restore volatile UI (nav + filter) saved across process death / config change (saveable plan).
-    RestoreUiStateEffect(accountStore = accountStore, key = activeId)
+    // `applied` is false only while a saved snapshot is still pending, so we can withhold the first
+    // paint and never flash the default [BoardList] before the saved stack lands.
+    val applied = rememberUiRestore(accountStore = accountStore, key = activeId)
 
     val nav by rememberStableStore(accountStore).value.fieldStateOf(NavModel::class) { it }
 
     // Lifecycle effects key on the *active board* (the lowest Board in the stack), not the top of
     // the stack — so drilling into CardDetail/ComposeCard keeps the board loaded and the sync ticking.
+    // Declared above the restore gate so the board loads lazily in the background while the spinner
+    // shows (the add-card overlay paints over it; board/card top screens use their own skeletons).
     BoardLifecycleEffect(
         accountStore = accountStore,
         registry = registry,
@@ -196,6 +200,15 @@ private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry
         activeBoardId = nav.activeBoardId,
     )
     PeriodicSyncEffect(appStore = appStore, accountStore = accountStore, activeBoardId = nav.activeBoardId)
+
+    if (!applied) {
+        // Restore pending: hold the first paint (folds into the existing driver spinner) so the
+        // restored stack appears directly — no [BoardList] / half-loaded board flash in between.
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
 
     var showSwitcher by remember { mutableStateOf(false) }
 
