@@ -134,7 +134,7 @@ internal fun decodeUiSnapshot(json: String): RestoreUiState {
 /** One-shot carrier for a restored snapshot JSON; [consume] returns it exactly once. */
 internal class RestoreSlot(private var pending: String?) {
     /** Returns the pending snapshot JSON once (then null), so restore replays exactly once. */
-    internal fun consume(): String? {
+    fun consume(): String? {
         val p = pending
         pending = null
         return p
@@ -150,7 +150,9 @@ internal class RestoreSlot(private var pending: String?) {
  * via [RestoreUiState]. Board content reloads via the existing board-lifecycle effect.
  *
  * @param accountStore the active account's store.
- * @param key the active account id — re-scopes the saved slot per account.
+ * @param key the active account id — scopes the saved slot per account via [rememberSaveable].
+ *   The [LaunchedEffect] keys on the [RestoreSlot] instance itself so an in-place
+ *   [rememberSaveable] restore (where [key] is unchanged) still triggers the effect.
  */
 @Composable
 internal fun RestoreUiStateEffect(accountStore: Store<ModelState>, key: Any) {
@@ -162,7 +164,7 @@ internal fun RestoreUiStateEffect(accountStore: Store<ModelState>, key: Any) {
         ),
     ) { RestoreSlot(null) }
 
-    LaunchedEffect(key) {
+    LaunchedEffect(slot) {
         val json = slot.consume() ?: return@LaunchedEffect
         accountStore.dispatch(decodeUiSnapshot(json))
     }
