@@ -27,6 +27,7 @@ final class org.reduxkotlin.multimodel/ModelState { // org.reduxkotlin.multimode
     final fun hashCode(): kotlin/Int // org.reduxkotlin.multimodel/ModelState.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.multimodel/ModelState.toString|toString(){}[0]
     final fun withAll(kotlin.collections/Map<kotlin.reflect/KClass<*>, kotlin/Any>): org.reduxkotlin.multimodel/ModelState // org.reduxkotlin.multimodel/ModelState.withAll|withAll(kotlin.collections.Map<kotlin.reflect.KClass<*>,kotlin.Any>){}[0]
+    final fun withAll(org.reduxkotlin.multimodel/ModelState): org.reduxkotlin.multimodel/ModelState // org.reduxkotlin.multimodel/ModelState.withAll|withAll(org.reduxkotlin.multimodel.ModelState){}[0]
     final inline fun <#A1: reified kotlin/Any> get(): #A1 // org.reduxkotlin.multimodel/ModelState.get|get(){0§<kotlin.Any>}[0]
     final inline fun <#A1: reified kotlin/Any> with(#A1): org.reduxkotlin.multimodel/ModelState // org.reduxkotlin.multimodel/ModelState.with|with(0:0){0§<kotlin.Any>}[0]
 

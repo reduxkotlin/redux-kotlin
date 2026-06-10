@@ -108,6 +108,18 @@ public class ModelState @PublishedApi internal constructor(@PublishedApi interna
         return ModelState(models + changes)
     }
 
+    /**
+     * Returns a copy with every slot present in [other] overridden by [other]'s value, leaving all
+     * other slots untouched. The key set is unchanged: every model class in [other] must already be
+     * declared in this [ModelState]. Typical use: overlaying restored/persisted values onto a
+     * freshly-built default state.
+     *
+     * @param other the models to overlay; its key set must be a subset of this state's key set.
+     * @return a new [ModelState] with [other]'s slots applied.
+     * @throws IllegalStateException if [other] contains a model class not declared here.
+     */
+    public fun withAll(other: ModelState): ModelState = withAll(other.models)
+
     override fun equals(other: Any?): Boolean = other is ModelState && other.models == models
 
     override fun hashCode(): Int = models.hashCode()

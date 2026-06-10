@@ -72,4 +72,21 @@ class ModelStateTest {
         assertEquals(a, b)
         assertEquals(a.hashCode(), b.hashCode())
     }
+
+    @Test
+    fun withAllFromAnotherModelStateOverridesMatchingSlots() {
+        val base = ModelState.of(MsUser(displayName = "x"), MsFeed(items = emptyList()))
+        val overrides = ModelState.of(MsUser(displayName = "y", isLoggedIn = true))
+        val merged = base.withAll(overrides)
+        assertEquals("y", merged.get<MsUser>().displayName)
+        assertEquals(true, merged.get<MsUser>().isLoggedIn)
+        assertEquals(emptyList(), merged.get<MsFeed>().items) // untouched slot preserved
+    }
+
+    @Test
+    fun withAllFromModelStateRejectsUndeclaredKey() {
+        val base = ModelState.of(MsUser())
+        val foreign = ModelState.of(MsUnregistered(7))
+        assertFailsWith<IllegalStateException> { base.withAll(foreign) }
+    }
 }
