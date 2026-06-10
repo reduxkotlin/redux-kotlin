@@ -625,6 +625,28 @@ erDiagram
   account ||--o{ pending_op : queues
 ```
 
+### Volatile UI persistence (`redux-kotlin-compose-saveable`)
+
+Domain data and `activeAccountId` are durable in SQLDelight — the single source of truth.
+The active account's *volatile* UI state (nav stack + board filter) persists across process
+death via `redux-kotlin-compose-saveable`:
+
+- A single `accountUiSaver: StateSaver<ModelState, UiSnapshot>` (`app/persistence/UiSnapshot.kt`)
+  maps the relevant `ModelState` slots to a `@Parcelize` / `@Serializable` snapshot.
+- `ActiveAccount` calls `accountStore.rememberSaveableState(accountUiSaver, key = "account-ui-<id>")`.
+  The library restores the snapshot **synchronously during composition** (before the nav
+  binding reads the stack), so the correct route is present on the first frame — no flash
+  or one-frame-wrong-screen.
+- Restore overlays the nav stack and filter via a `RestoreUiState` action routed onto those
+  slots. `CardDetail` always restores in **View** mode (Edit is transient UI state, Rule C).
+- The new-card draft survives via plain `rememberSaveable` (Compose-local, no store
+  involvement — Rule C).
+- `AppShell` gates the first paint behind a `booted` flag until the account directory loads
+  from SQLDelight, preventing a Login-screen flash for returning users. `activeAccountId` is
+  read via `fieldStateOf` (lock-free, lag-free).
+- Subscriber callbacks use `coalescingNotificationContext` (inline when already on main,
+  otherwise posts to main) so bindings never lag a dispatch.
+
 ---
 
 ## 12. The bot collaborator
