@@ -1,8 +1,10 @@
 package org.reduxkotlin.compose
 
 import androidx.compose.material.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.onAllNodesWithText
@@ -147,9 +149,10 @@ class FieldStateTest {
         // drives composition and effects synchronously enough for this to be deterministic.
         val store = newStore()
         setContent {
-            // Dispatch during composition body — store.state is already counter=7 by the time
-            // fieldState's getter runs its first read.
-            store.dispatch(Increment(amount = 7))
+            // Dispatch ONCE during the first composition (in a remember, not every recomposition).
+            // The binding now re-samples at subscribe (triggerOnSubscribe), so an unconditional in-body
+            // dispatch would recompose → dispatch → loop. store.state is counter=7 by the first read.
+            remember { store.dispatch(Increment(amount = 7)) }
             val counter by store.fieldState(CounterState::counter)
             Text(text = "race=$counter")
         }
@@ -175,6 +178,25 @@ class FieldStateTest {
         external.value = 1 // force recomposition via external state
         waitForIdle()
         onAllNodesWithText("v=b t=1").assertCountEquals(1) // must be fresh "b", not stale "a"
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun bindingCatchesChangeThatLandedBeforeItSubscribed() = runComposeUiTest {
+        val store = DeferredNotifyStore("a")
+        setContent {
+            // Runs at commit, in composition order BEFORE the binding's DisposableEffect below →
+            // changes state after the binding's first composition but before it subscribes. The store
+            // defers notifications (never drained here), so only the subscribe-time re-sample can catch it.
+            DisposableEffect(Unit) {
+                store.dispatch("b")
+                onDispose {}
+            }
+            val value by store.selectorState { it }
+            Text("v=$value")
+        }
+        waitForIdle()
+        onAllNodesWithText("v=b").assertCountEquals(1) // must reflect "b", not stale "a"
     }
 
     @Test
