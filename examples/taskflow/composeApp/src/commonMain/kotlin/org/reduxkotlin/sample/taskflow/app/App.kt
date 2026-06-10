@@ -30,12 +30,14 @@ import kotlinx.coroutines.launch
 import org.reduxkotlin.Store
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.saveable.rememberSaveableState
 import org.reduxkotlin.devtools.inapp.InAppConfig
 import org.reduxkotlin.devtools.inapp.ReduxDevToolsHost
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.app.nav.AdaptiveNav
 import org.reduxkotlin.sample.taskflow.app.nav.Back
 import org.reduxkotlin.sample.taskflow.app.nav.Navigate
+import org.reduxkotlin.sample.taskflow.app.persistence.accountUiSaver
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -126,6 +128,9 @@ public fun App() {
 @Composable
 private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
     val registry = remember(localStore) { AccountRegistry(appStore, localStore) }
+    // Gate the first paint until the account directory is loaded — otherwise the read below sees
+    // the empty initial AccountsModel and flashes Login during the disk read.
+    var booted by remember(localStore) { mutableStateOf(false) }
 
     // Bootstrap once: ensure seed data, then rehydrate the account directory + active id (§13e).
     LaunchedEffect(localStore) {
@@ -133,6 +138,7 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
         val activeId = localStore.loadActiveAccountId()
         val accounts = localStore.loadAccounts()
         appStore.dispatch(LoadAccountsSucceeded(accounts, activeId))
+        booted = true
     }
 
     val theme by rememberStableStore(appStore).value.fieldStateOf(AppSettingsModel::class) { it.theme }
@@ -152,12 +158,18 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
             // root or insets would be applied twice.
             Surface(modifier = Modifier.fillMaxSize()) {
                 val id = activeId
-                if (id == null) {
-                    LoginScreen(appStore)
-                } else {
-                    // Persist the active account id for process-death rehydration (§13e).
-                    LaunchedEffect(id) { localStore.saveActiveAccountId(id) }
-                    ActiveAccount(appStore = appStore, registry = registry, activeId = id)
+                when {
+                    !booted -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+
+                    id == null -> LoginScreen(appStore)
+
+                    else -> {
+                        // Persist the active account id for process-death rehydration (§13e).
+                        LaunchedEffect(id) { localStore.saveActiveAccountId(id) }
+                        ActiveAccount(appStore = appStore, registry = registry, activeId = id)
+                    }
                 }
             }
         }
@@ -180,6 +192,12 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
 private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry, activeId: AccountId) {
     val handle = remember(activeId) { registry.getOrCreate(activeId, SeedData.accountDetail(activeId)) }
     val accountStore = handle.store
+
+    // Persist + restore this account's volatile UI (nav + filter) across process death / config change.
+    // The library applies the restore synchronously in composition (before the nav read below), so the
+    // first frame already shows the restored stack. Account-scoped key — the default composite key
+    // collides across accounts at this same call site.
+    accountStore.rememberSaveableState(accountUiSaver, key = "account-ui-${activeId.v}")
 
     val nav by rememberStableStore(accountStore).value.fieldStateOf(NavModel::class) { it }
 
