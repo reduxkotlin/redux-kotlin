@@ -36,6 +36,7 @@ import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.app.nav.AdaptiveNav
 import org.reduxkotlin.sample.taskflow.app.nav.Back
 import org.reduxkotlin.sample.taskflow.app.nav.Navigate
+import org.reduxkotlin.sample.taskflow.app.persistence.RestoreUiStateEffect
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -180,6 +181,9 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
 private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry, activeId: AccountId) {
     val handle = remember(activeId) { registry.getOrCreate(activeId, SeedData.accountDetail(activeId)) }
     val accountStore = handle.store
+
+    // Restore volatile UI (nav + filter) saved across process death / config change (saveable plan).
+    RestoreUiStateEffect(accountStore = accountStore, key = activeId)
 
     val nav by rememberStableStore(accountStore).value.fieldStateOf(NavModel::class) { it }
 

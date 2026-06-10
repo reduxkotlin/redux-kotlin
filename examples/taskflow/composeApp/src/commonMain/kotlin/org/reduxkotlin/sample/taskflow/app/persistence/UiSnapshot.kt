@@ -1,5 +1,9 @@
 package org.reduxkotlin.sample.taskflow.app.persistence
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.serialization.SerialName
@@ -125,4 +129,41 @@ internal fun decodeUiSnapshot(json: String): RestoreUiState {
         labelIds = snapshot.filterLabelIds.map { LabelId(it) }.toPersistentSet(),
     )
     return RestoreUiState(nav, filter)
+}
+
+/** One-shot carrier for a restored snapshot JSON; [consume] returns it exactly once. */
+internal class RestoreSlot(private var pending: String?) {
+    /** Returns the pending snapshot JSON once (then null), so restore replays exactly once. */
+    internal fun consume(): String? {
+        val p = pending
+        pending = null
+        return p
+    }
+}
+
+/**
+ * Persists the active account's volatile UI (nav + filter) across process death / config change.
+ *
+ * At save time the [Saver] reads [accountStore] directly (lock-free `getState` mirror) and serializes
+ * the current snapshot into the Activity `SavedStateRegistry`. On restore, the JSON is parked in a
+ * [RestoreSlot] and replayed exactly once from a [LaunchedEffect] (off the composition/dispatch path)
+ * via [RestoreUiState]. Board content reloads via the existing board-lifecycle effect.
+ *
+ * @param accountStore the active account's store.
+ * @param key the active account id — re-scopes the saved slot per account.
+ */
+@Composable
+internal fun RestoreUiStateEffect(accountStore: Store<ModelState>, key: Any) {
+    val slot = rememberSaveable(
+        key,
+        saver = Saver<RestoreSlot, String>(
+            save = { encodeUiSnapshot(accountStore) },
+            restore = { json -> RestoreSlot(json) },
+        ),
+    ) { RestoreSlot(null) }
+
+    LaunchedEffect(key) {
+        val json = slot.consume() ?: return@LaunchedEffect
+        accountStore.dispatch(decodeUiSnapshot(json))
+    }
 }
