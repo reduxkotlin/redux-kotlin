@@ -23,7 +23,9 @@ import org.reduxkotlin.sample.taskflow.app.nav.EnterEditMode
 import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.app.nav.OpenCard
 import org.reduxkotlin.sample.taskflow.app.nav.navReducer
+import org.reduxkotlin.sample.taskflow.app.persistence.RestoreUiState
 import org.reduxkotlin.sample.taskflow.core.AccountDetail
+import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
@@ -203,6 +205,7 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
         on<CloseCard> { s, a -> navReducer(s, a) }
         on<StartCreateCard> { s, a -> navReducer(s, a) }
         on<CancelCreateCard> { s, a -> navReducer(s, a) }
+        on<RestoreUiState> { _, a -> a.nav }
     }
     model(BoardListModel()) {
         on<LoadBoardListSucceeded> { s, a -> boardListReducer(s, a) }
@@ -211,6 +214,16 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
     model(CollaboratorsModel(seedCollaborators(detail))) {
         on<EditProfile> { s, a -> collaboratorsReducer(s, a, selfId) }
     }
+    declareBoardModels(selfId)
+}
+
+/**
+ * Declares the board-side model slots: [BoardModel], [FilterModel], [UndoModel], [SyncModel], and
+ * [ActivityModel]. Extracted to keep [declareAccountModels] within the line-length budget.
+ *
+ * @param selfId the owning account; forwarded to reducers that need it.
+ */
+private fun RoutingBuilder.declareBoardModels(selfId: AccountId) {
     model(BoardModel()) {
         on<LoadBoardSucceeded> { s, a -> boardReducer(s, a, selfId) }
         on<CardMoveRequested> { s, a -> boardReducer(s, a, selfId) }
@@ -229,6 +242,7 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
         on<SetFilterAssignee> { s, a -> filterReducer(s, a) }
         on<ToggleFilterLabel> { s, a -> filterReducer(s, a) }
         on<BoardClosed> { s, a -> filterReducer(s, a) }
+        on<RestoreUiState> { _, a -> a.filter }
     }
     model(UndoModel()) {
         on<PushUndo> { s, a -> undoModelReducer(s, a) }
