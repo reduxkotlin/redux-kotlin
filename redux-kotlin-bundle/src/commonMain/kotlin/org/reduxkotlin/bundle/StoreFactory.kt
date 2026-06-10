@@ -35,10 +35,10 @@ public fun createConcurrentModelStore(
     preloadedState: ModelState? = null,
     block: RoutingBuilder.() -> Unit,
 ): ConcurrentStore<ModelState> = createModelStore(
-        enhancer = enhancer,
-        devChecks = devChecks,
-        onWrite = onWrite,
-        preloadedState = preloadedState,
-        block = block,
-    )
-        .asConcurrent(notificationContext, onError)
+    enhancer = enhancer,
+    devChecks = devChecks,
+    onWrite = onWrite,
+    preloadedState = preloadedState,
+    block = block,
+)
+    .asConcurrent(notificationContext, onError)
