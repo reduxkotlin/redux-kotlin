@@ -36,6 +36,8 @@ import kotlin.reflect.KProperty1
  * outer state is **frozen at first composition** — use
  * [fieldState] with a property reference instead, or unsubscribe and
  * resubscribe by hand inside a `LaunchedEffect` keyed on the variable.
+ *
+ * The [selector] runs on every read; if it is expensive, hoist/memoize it outside the composable.
  */
 @Composable
 public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
@@ -55,6 +57,9 @@ public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
         object : State<F> {
             override val value: F
                 get() {
+                    // Observe the tick so this read recomposes when the subscription reports a change;
+                    // the value itself is always read fresh from getState() below.
+                    @Suppress("UNUSED_EXPRESSION")
                     tick.intValue
                     return rememberedSelector(store.state)
                 }
@@ -94,6 +99,9 @@ public fun <S, F> Store<S>.fieldState(property: KProperty1<S, F>): State<F> {
         object : State<F> {
             override val value: F
                 get() {
+                    // Observe the tick so this read recomposes when the subscription reports a change;
+                    // the value itself is always read fresh from getState() below.
+                    @Suppress("UNUSED_EXPRESSION")
                     tick.intValue
                     return property.get(store.state)
                 }
