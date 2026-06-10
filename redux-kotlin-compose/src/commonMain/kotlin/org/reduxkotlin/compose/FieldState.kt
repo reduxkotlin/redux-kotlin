@@ -30,6 +30,16 @@ import kotlin.reflect.KProperty1
  * state change — reads the freshest store state, never a stale cached
  * snapshot lagging a frame behind the notification.
  *
+ * The subscription is installed with `triggerOnSubscribe = true`, so it
+ * fires the listener once at subscribe time. This re-samples at commit:
+ * if the store changed between the binding's first composition and the
+ * [DisposableEffect] subscribe-commit, no real notification is delivered
+ * for that change, so the one-shot subscribe fire is what bumps the tick
+ * and schedules the recomposition that re-reads `store.state`. Without it
+ * the binding would stay stuck on the first-frame value forever (this
+ * replaces the removed explicit B3 re-sample). The listener ignores
+ * old/new and always bumps, so it fires exactly once on subscribe.
+ *
  * The captured [selector] lambda is stable across recompositions: it
  * is remembered against `this` (the store). If the selector closes
  * over outer Composable state that should refresh the binding, the
@@ -47,7 +57,7 @@ public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
     DisposableEffect(store, rememberedSelector) {
         val sub = store.subscribeTo(
             selector = rememberedSelector,
-            triggerOnSubscribe = false,
+            triggerOnSubscribe = true,
         ) { _, _ ->
             tick.intValue++
         }
@@ -76,7 +86,9 @@ public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
  * `store.state` on every [State.value] access; the subscription only
  * schedules recomposition, so the value is correct even when the store
  * delivers notifications asynchronously (e.g. a concurrent store posting
- * to the main thread).
+ * to the main thread). The subscription uses `triggerOnSubscribe = true`
+ * to re-sample at commit, catching a change that landed between first
+ * composition and the effect commit (replaces the removed B3 re-sample).
  *
  * Hidden from Swift via [HiddenFromObjC] (KProperty1 is Kotlin-only).
  */
@@ -89,7 +101,7 @@ public fun <S, F> Store<S>.fieldState(property: KProperty1<S, F>): State<F> {
     DisposableEffect(store, property) {
         val sub = store.subscribeTo(
             property = property,
-            triggerOnSubscribe = false,
+            triggerOnSubscribe = true,
         ) { _, _ ->
             tick.intValue++
         }
