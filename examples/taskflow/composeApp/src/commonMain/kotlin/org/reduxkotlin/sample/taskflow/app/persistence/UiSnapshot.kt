@@ -5,6 +5,9 @@ import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.reduxkotlin.Store
+import org.reduxkotlin.multimodel.ModelState
+import org.reduxkotlin.sample.taskflow.app.getModel
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.Action
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -100,6 +103,10 @@ internal fun encodeUiSnapshot(nav: NavModel, filter: FilterModel): String {
     )
     return snapshotJson.encodeToString(UiSnapshot.serializer(), snapshot)
 }
+
+/** Reads the live per-account [store]'s [NavModel] + [FilterModel] (lock-free) into a snapshot string. */
+internal fun encodeUiSnapshot(store: Store<ModelState>): String =
+    encodeUiSnapshot(store.getModel<NavModel>(), store.getModel<FilterModel>())
 
 /**
  * Parses a JSON snapshot into a [RestoreUiState]. Defensive: a malformed snapshot, or one whose
