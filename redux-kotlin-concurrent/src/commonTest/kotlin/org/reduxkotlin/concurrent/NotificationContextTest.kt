@@ -2,6 +2,7 @@ package org.reduxkotlin.concurrent
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class NotificationContextTest {
@@ -13,6 +14,28 @@ class NotificationContextTest {
         NotificationContext.Inline.post { log.add("during") }
         log.add("after")
         assertEquals(listOf("before", "during", "after"), log)
+    }
+
+    @Test
+    fun coalescingRunsInlineWhenOnTargetThread() {
+        val posted = mutableListOf<() -> Unit>()
+        val ctx = coalescingNotificationContext(isOnTargetThread = { true }, post = { posted.add(it) })
+        var ran = false
+        ctx.post { ran = true }
+        assertTrue(ran, "on the target thread the block runs inline")
+        assertEquals(0, posted.size, "nothing is deferred when inline")
+    }
+
+    @Test
+    fun coalescingDefersWhenOffTargetThread() {
+        val posted = mutableListOf<() -> Unit>()
+        val ctx = coalescingNotificationContext(isOnTargetThread = { false }, post = { posted.add(it) })
+        var ran = false
+        ctx.post { ran = true }
+        assertFalse(ran, "off the target thread the block is deferred to post")
+        assertEquals(1, posted.size)
+        posted.single().invoke()
+        assertTrue(ran)
     }
 
     @Test
