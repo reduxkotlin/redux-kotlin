@@ -26,7 +26,6 @@ import org.reduxkotlin.sample.taskflow.core.ColumnId
 import org.reduxkotlin.sample.taskflow.core.DeleteCard
 import org.reduxkotlin.sample.taskflow.core.EditCard
 import org.reduxkotlin.sample.taskflow.core.InverseOp
-import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.infra.data.local.LocalStore
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteApi
@@ -198,9 +197,6 @@ public class SyncRepository(
 
     /** Reassembles the full normalized [Board] for [boardId], or null if absent. */
     public suspend fun loadBoard(boardId: BoardId): Board? = local.loadBoard(boardId)
-
-    /** The persisted nav state for [accountId] (defaults if never saved). */
-    public suspend fun loadNav(accountId: AccountId): NavModel = local.loadNav(accountId)
 
     /** The newest-first activity feed for [accountId]. */
     public suspend fun loadActivity(accountId: AccountId): PersistentList<ActivityEntry> = local.loadActivity(accountId)

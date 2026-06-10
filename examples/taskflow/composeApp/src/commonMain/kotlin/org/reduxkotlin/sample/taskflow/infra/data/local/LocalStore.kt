@@ -13,7 +13,6 @@ import org.reduxkotlin.sample.taskflow.core.Card
 import org.reduxkotlin.sample.taskflow.core.CardId
 import org.reduxkotlin.sample.taskflow.core.Column
 import org.reduxkotlin.sample.taskflow.core.ColumnId
-import org.reduxkotlin.sample.taskflow.core.NavModel
 import org.reduxkotlin.sample.taskflow.core.OpId
 import org.reduxkotlin.sample.taskflow.infra.data.remote.RemoteChange
 import org.reduxkotlin.sample.taskflow.infra.data.remote.SyncOp
@@ -45,9 +44,6 @@ public interface LocalStore {
     /** Reassembles the full normalized [Board] for [boardId], or null if absent. */
     public suspend fun loadBoard(boardId: BoardId): Board?
 
-    /** The persisted nav state for [accountId] (defaults if never saved). */
-    public suspend fun loadNav(accountId: AccountId): NavModel
-
     /** Collaborators referenceable on [accountId]'s cards, by id (includes self + bot). */
     public suspend fun loadCollaborators(accountId: AccountId): PersistentMap<AccountId, AccountSummary>
 
@@ -61,9 +57,6 @@ public interface LocalStore {
 
     /** Persists the active [accountId] (or clears it when null). */
     public suspend fun saveActiveAccountId(accountId: AccountId?)
-
-    /** Persists [nav] for [accountId]. */
-    public suspend fun saveNav(accountId: AccountId, nav: NavModel)
 
     /** Moves [cardId] within [boardId] to [toColumn] at [toIndex], re-sequencing the column. */
     public suspend fun moveCard(boardId: BoardId, cardId: CardId, toColumn: ColumnId, toIndex: Int)
