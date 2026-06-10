@@ -67,4 +67,13 @@ class UiSnapshotTest {
         assertEquals(NavModel(), restored.nav)
         assertEquals(FilterModel(), restored.filter)
     }
+
+    @Test
+    fun restoreUiStateCarriesExactNavAndFilterSlices() {
+        val nav = NavModel(persistentListOf(Route.BoardList, Route.Board(BoardId("b7"))))
+        val filter = FilterModel(query = "q")
+        val action = decodeUiSnapshot(encodeUiSnapshot(nav, filter))
+        assertEquals(BoardId("b7"), action.nav.activeBoardId)
+        assertEquals("q", action.filter.query)
+    }
 }

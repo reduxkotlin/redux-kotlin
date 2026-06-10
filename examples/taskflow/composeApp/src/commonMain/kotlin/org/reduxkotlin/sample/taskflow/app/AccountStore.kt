@@ -23,7 +23,9 @@ import org.reduxkotlin.sample.taskflow.app.nav.EnterEditMode
 import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.app.nav.OpenCard
 import org.reduxkotlin.sample.taskflow.app.nav.navReducer
+import org.reduxkotlin.sample.taskflow.app.persistence.RestoreUiState
 import org.reduxkotlin.sample.taskflow.core.AccountDetail
+import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AddCard
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.CardMoveRequested
@@ -203,6 +205,7 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
         on<CloseCard> { s, a -> navReducer(s, a) }
         on<StartCreateCard> { s, a -> navReducer(s, a) }
         on<CancelCreateCard> { s, a -> navReducer(s, a) }
+        on<RestoreUiState> { _, a -> a.nav }
     }
     model(BoardListModel()) {
         on<LoadBoardListSucceeded> { s, a -> boardListReducer(s, a) }
@@ -211,24 +214,13 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
     model(CollaboratorsModel(seedCollaborators(detail))) {
         on<EditProfile> { s, a -> collaboratorsReducer(s, a, selfId) }
     }
-    model(BoardModel()) {
-        on<LoadBoardSucceeded> { s, a -> boardReducer(s, a, selfId) }
-        on<CardMoveRequested> { s, a -> boardReducer(s, a, selfId) }
-        on<AddCard> { s, a -> boardReducer(s, a, selfId) }
-        on<AddColumn> { s, a -> boardReducer(s, a, selfId) }
-        on<EditCard> { s, a -> boardReducer(s, a, selfId) }
-        on<DeleteCard> { s, a -> boardReducer(s, a, selfId) }
-        on<CardOpFailed> { s, a -> boardReducer(s, a, selfId) }
-        on<BotMovedCard> { s, a -> boardReducer(s, a, selfId) }
-        on<BotAddedCard> { s, a -> boardReducer(s, a, selfId) }
-        on<BoardClosed> { s, a -> boardReducer(s, a, selfId) }
-        on<BoardRestored> { s, a -> boardReducer(s, a, selfId) }
-    }
+    declareBoardModel(selfId)
     model(FilterModel()) {
         on<SetFilterQuery> { s, a -> filterReducer(s, a) }
         on<SetFilterAssignee> { s, a -> filterReducer(s, a) }
         on<ToggleFilterLabel> { s, a -> filterReducer(s, a) }
         on<BoardClosed> { s, a -> filterReducer(s, a) }
+        on<RestoreUiState> { _, a -> a.filter }
     }
     model(UndoModel()) {
         on<PushUndo> { s, a -> undoModelReducer(s, a) }
@@ -247,6 +239,23 @@ private fun RoutingBuilder.declareAccountModels(detail: AccountDetail) {
     }
     model(ActivityModel()) {
         on<RecordActivity> { s, a -> activityReducer(s, a) }
+    }
+}
+
+/** Routes all board-level actions through [boardReducer] for the given [selfId] account. */
+private fun RoutingBuilder.declareBoardModel(selfId: AccountId) {
+    model(BoardModel()) {
+        on<LoadBoardSucceeded> { s, a -> boardReducer(s, a, selfId) }
+        on<CardMoveRequested> { s, a -> boardReducer(s, a, selfId) }
+        on<AddCard> { s, a -> boardReducer(s, a, selfId) }
+        on<AddColumn> { s, a -> boardReducer(s, a, selfId) }
+        on<EditCard> { s, a -> boardReducer(s, a, selfId) }
+        on<DeleteCard> { s, a -> boardReducer(s, a, selfId) }
+        on<CardOpFailed> { s, a -> boardReducer(s, a, selfId) }
+        on<BotMovedCard> { s, a -> boardReducer(s, a, selfId) }
+        on<BotAddedCard> { s, a -> boardReducer(s, a, selfId) }
+        on<BoardClosed> { s, a -> boardReducer(s, a, selfId) }
+        on<BoardRestored> { s, a -> boardReducer(s, a, selfId) }
     }
 }
 
