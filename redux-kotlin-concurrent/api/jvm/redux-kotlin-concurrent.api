@@ -33,6 +33,7 @@ public final class org/reduxkotlin/concurrent/NotificationContext$Companion {
 }
 
 public final class org/reduxkotlin/concurrent/NotificationContextKt {
+	public static final fun coalescingNotificationContext (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/concurrent/NotificationContext;
 	public static final fun getLogAndContinue ()Lkotlin/jvm/functions/Function1;
 }
 
