@@ -128,16 +128,27 @@ public fun App() {
 private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
     val registry = remember(localStore) { AccountRegistry(appStore, localStore) }
 
+    // `booted` gates the first paint until the account directory has been read from disk. Without it,
+    // the root store's default `activeAccountId == null` paints LoginScreen for the whole disk-load
+    // window (≈200 ms) before rehydration lands — a flash on every cold start / process-death restore.
+    var booted by remember(localStore) { mutableStateOf(false) }
+
     // Bootstrap once: ensure seed data, then rehydrate the account directory + active id (§13e).
     LaunchedEffect(localStore) {
         localStore.ensureSeeded()
         val activeId = localStore.loadActiveAccountId()
         val accounts = localStore.loadAccounts()
         appStore.dispatch(LoadAccountsSucceeded(accounts, activeId))
+        booted = true
     }
 
     val theme by rememberStableStore(appStore).value.fieldStateOf(AppSettingsModel::class) { it.theme }
-    val activeId by rememberStableStore(appStore).value.fieldStateOf(AccountsModel::class) { it.activeAccountId }
+
+    // Subscribe to activeAccountId so login / logout / account-switch recompose. The value itself is
+    // read synchronously at the decision site (below) rather than from this State: the concurrent
+    // store posts subscriber callbacks asynchronously, so this State lags the just-dispatched value by
+    // a frame — reading it directly would flash LoginScreen for a frame on a process-death restore.
+    val activeIdSignal = rememberStableStore(appStore).value.fieldStateOf(AccountsModel::class) { it.activeAccountId }
 
     TaskFlowTheme(theme = theme) {
         CompositionLocalProvider(
@@ -152,13 +163,24 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
             // via their default `windowInsets`. Screens must NOT reapply safeDrawing at their
             // root or insets would be applied twice.
             Surface(modifier = Modifier.fillMaxSize()) {
-                val id = activeId
-                if (id == null) {
-                    LoginScreen(appStore)
-                } else {
-                    // Persist the active account id for process-death rehydration (§13e).
-                    LaunchedEffect(id) { localStore.saveActiveAccountId(id) }
-                    ActiveAccount(appStore = appStore, registry = registry, activeId = id)
+                val id = run {
+                    activeIdSignal.value // touch the State to subscribe (recompose on change)
+                    appStore.getModel<AccountsModel>().activeAccountId // authoritative, lag-free read
+                }
+                when {
+                    // Hold the first paint until the directory is loaded — no LoginScreen flash before
+                    // the persisted active id rehydrates (folds into the existing driver splash).
+                    !booted -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+
+                    id == null -> LoginScreen(appStore)
+
+                    else -> {
+                        // Persist the active account id for process-death rehydration (§13e).
+                        LaunchedEffect(id) { localStore.saveActiveAccountId(id) }
+                        ActiveAccount(appStore = appStore, registry = registry, activeId = id)
+                    }
                 }
             }
         }
