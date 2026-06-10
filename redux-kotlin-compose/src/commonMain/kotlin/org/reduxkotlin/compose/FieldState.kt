@@ -30,15 +30,12 @@ import kotlin.reflect.KProperty1
  * state change — reads the freshest store state, never a stale cached
  * snapshot lagging a frame behind the notification.
  *
- * The subscription is installed with `triggerOnSubscribe = true`, so it
- * fires the listener once at subscribe time. This re-samples at commit:
- * if the store changed between the binding's first composition and the
- * [DisposableEffect] subscribe-commit, no real notification is delivered
- * for that change, so the one-shot subscribe fire is what bumps the tick
- * and schedules the recomposition that re-reads `store.state`. Without it
- * the binding would stay stuck on the first-frame value forever (this
- * replaces the removed explicit B3 re-sample). The listener ignores
- * old/new and always bumps, so it fires exactly once on subscribe.
+ * A B3 re-sample runs inside the [DisposableEffect]: it compares the value at first composition
+ * against the value at the effect's commit and bumps the tick **only if it changed**. This catches a
+ * change that landed between first composition and subscribe (e.g. a fast async load), for which no
+ * real notification is delivered — without it the binding would stay stuck on the first-frame value.
+ * Because the bump is conditional, an unchanged value adds no mount-time recomposition (so render
+ * isolation is preserved: a binding only recomposes when its selected value actually moves).
  *
  * The captured [selector] lambda is stable across recompositions: it
  * is remembered against `this` (the store). If the selector closes
@@ -54,10 +51,17 @@ public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
     val store = this
     val rememberedSelector = remember(store) { selector }
     val tick = remember(store, rememberedSelector) { mutableIntStateOf(0) }
+    // Value observed at first composition; the effect compares against it to detect a change that
+    // landed before the subscription was installed.
+    val initial = remember(store, rememberedSelector) { rememberedSelector(store.state) }
     DisposableEffect(store, rememberedSelector) {
+        // B3 re-sample: if the selected value changed between first composition and this effect's
+        // commit (e.g. a fast async load), bump the tick so the getter re-reads. Conditional, so an
+        // unchanged value adds no mount-time recomposition (preserves render isolation).
+        if (rememberedSelector(store.state) != initial) tick.intValue++
         val sub = store.subscribeTo(
             selector = rememberedSelector,
-            triggerOnSubscribe = true,
+            triggerOnSubscribe = false,
         ) { _, _ ->
             tick.intValue++
         }
@@ -86,9 +90,8 @@ public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
  * `store.state` on every [State.value] access; the subscription only
  * schedules recomposition, so the value is correct even when the store
  * delivers notifications asynchronously (e.g. a concurrent store posting
- * to the main thread). The subscription uses `triggerOnSubscribe = true`
- * to re-sample at commit, catching a change that landed between first
- * composition and the effect commit (replaces the removed B3 re-sample).
+ * to the main thread). Like [selectorState] it runs a conditional B3 re-sample in the effect to
+ * catch a change that landed between first composition and the effect commit.
  *
  * Hidden from Swift via [HiddenFromObjC] (KProperty1 is Kotlin-only).
  */
@@ -98,10 +101,16 @@ public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
 public fun <S, F> Store<S>.fieldState(property: KProperty1<S, F>): State<F> {
     val store = this
     val tick = remember(store, property) { mutableIntStateOf(0) }
+    // Value observed at first composition; the effect compares against it to detect a change that
+    // landed before the subscription was installed.
+    val initial = remember(store, property) { property.get(store.state) }
     DisposableEffect(store, property) {
+        // B3 re-sample (see selectorState): bump only if the value changed between first composition
+        // and commit, so an unchanged value adds no mount-time recomposition.
+        if (property.get(store.state) != initial) tick.intValue++
         val sub = store.subscribeTo(
             property = property,
-            triggerOnSubscribe = true,
+            triggerOnSubscribe = false,
         ) { _, _ ->
             tick.intValue++
         }
