@@ -17,6 +17,7 @@ checked to resolve (path exists, symbol present). See [_template.md](./_template
 | The 5 platform shims | [platform-shims.md](./platform-shims.md) | ✅ |
 | Modularization | [modularization.md](./modularization.md) | ✅ |
 | Store consistency model | [store-consistency-model.md](./store-consistency-model.md) | ✅ |
+| State persistence & restore | [state-persistence.md](./state-persistence.md) | ✅ |
 
 Tiers: **T0** = rules card + module map + commands (assembled into `AGENTS.md`). **T1** = these guides.
 **T2** = [`examples/taskflow/ARCHITECTURE.md`](../../../examples/taskflow/ARCHITECTURE.md) + committed `.api` dumps.

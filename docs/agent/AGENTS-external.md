@@ -71,6 +71,8 @@ nav), and `ui` (theme, locals, widgets).
 - Platform shims (expect/actual) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/platform-shims.md
 - Modularization (which module when) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/modularization.md
 - DevTools debugging loop — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
+- Store consistency model (sync writes, async notify) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/store-consistency-model.md
+- State persistence & restore (process death, preloadedState, saveable) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/state-persistence.md
 
 ## Verify loop
 

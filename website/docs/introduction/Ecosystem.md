@@ -30,7 +30,14 @@ All share the core's group id `org.reduxkotlin` and version.
 | `redux-kotlin-multimodel-granular` | [Granular subscriptions for `ModelState`](../advanced/granular-subscriptions#multi-model-stores) — `subscribeTo(Model::field)` / `subscribeToModel(...)`. |
 | `redux-kotlin-compose` | [Compose integration](../advanced/compose-integration) — bind store fields to Compose `State<T>` with `fieldState` / `selectorState`. |
 | `redux-kotlin-compose-multimodel` | Compose `fieldState(Model::field)` bindings for `ModelState` stores. |
-| `redux-kotlin-compose-saveable` | `StateSaver` + `rememberSaveableState` store-anchored snapshot persistence for Compose (survives rotation + process death) via Compose `SaveableStateRegistry`. |
+| `redux-kotlin-compose-saveable` | [`StateSaver` + `rememberSaveableState`](../advanced/compose-integration#saving-state-across-rotation--process-death) store-anchored snapshot persistence for Compose (survives rotation + process death) via Compose `SaveableStateRegistry`. |
+| `redux-kotlin-concurrent` | `createConcurrentStore` — lock-free reads with caller-serialized writes; `NotificationContext` controls where subscriber callbacks run (incl. `coalescingNotificationContext` for lag-free main-thread notify). |
+| `redux-kotlin-routing` | Routed `(model, action)` dispatch over `ModelState` — declare each slot with `model(initial) { on<Action> { … } }` instead of a `when(action)` cascade; optional `preloadedState` overlays restored models at construction. |
+| `redux-kotlin-routing-codegen` | KSP processor for the routing DSL — `@Reduce` / `@ReduxInitial` annotations generate the `ReduxModule` wiring. |
+| `redux-kotlin-bundle` | One-dependency assembly of the concurrent `ModelState` stack (`createConcurrentModelStore`, registry helpers) — concurrent + multimodel + granular + routing in one artifact. |
+| `redux-kotlin-bundle-compose` | The bundle plus the Compose bindings and `redux-kotlin-compose-saveable` — the single dependency for Compose Multiplatform apps. |
+| `redux-kotlin-bom` | Maven BOM aligning the versions of every `org.reduxkotlin` module. |
+| `redux-kotlin-devtools-*` | DevTools family (`core`, `bridge`, `remote`, `inapp`, `ui`, `cli`, `standalone`) — action/state inspection and diffing for a running app. |
 
 ## Community
 

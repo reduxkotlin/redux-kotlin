@@ -23,7 +23,12 @@ The rest of this doc applies to all `createStore` functions.
    [action](../glossary#action) to handle.
 
 2. [`preloadedState`] _(State)_: The initial state. You may optionally specify it to hydrate the 
-   state from the server, or to restore a previously serialized user session. 
+   state from the server, or to restore a previously serialized user session. Seeding restored
+   state here (rather than dispatching it after creation) means the first read already sees the
+   rehydrated state. For restoring state across rotation and process death in Compose apps — and
+   the equivalent `preloadedState` parameter on the routed-store factories (`createModelStore` /
+   `createConcurrentModelStore`) — see
+   [Saving state across rotation & process death](../advanced/compose-integration#saving-state-across-rotation--process-death).
 
 3. [`enhancer`] _(StoreEnhancer)_: The store enhancer. You may optionally specify it to enhance the 
    store with third-party capabilities such as middleware, time travel, persistence, etc. The only 
