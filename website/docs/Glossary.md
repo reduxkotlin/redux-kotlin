@@ -173,6 +173,23 @@ There should only be a single store in a Redux app, as the composition happens o
 
 See the complete [store API reference](/api/store-api#dispatchaction-any-any) for more details.
 
+## Preloaded State
+
+The optional initial state passed to a store factory
+([`createStore(reducer, preloadedState)`](/api/createstore), or the
+`preloadedState` parameter of the routed-store factories `createModelStore` /
+`createConcurrentModelStore`). Use it to seed the store with restored or
+server-provided state at construction, so the first read already reflects it —
+see [Saving state across rotation & process death](/advanced/compose-integration#saving-state-across-rotation--process-death).
+
+## State Snapshot (`StateSaver`)
+
+A small `@Serializable` projection of just the store fields worth persisting
+across rotation and process death. `StateSaver` (from
+`redux-kotlin-compose-saveable`) pairs the snapshot with a `save` projection and
+a `restore` function that turns a decoded snapshot back into an action;
+`rememberSaveableState` anchors it to Compose's `SaveableStateRegistry`.
+
 ## Store creator
 
 ```kotlin

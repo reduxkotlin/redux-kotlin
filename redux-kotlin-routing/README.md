@@ -45,7 +45,23 @@ val store = createModelStore {
   belong in middleware). The same applies to the `onWrite` observer.
 - **All-or-nothing.** A handler that throws aborts the whole dispatch;
   no partial commit.
+- **Rehydration at construction.** The optional `preloadedState:
+  ModelState?` parameter overlays restored/persisted models onto the
+  declared defaults (its key set must be a subset of the declared
+  slots), so the first `getState()` already reflects restored state —
+  no post-paint dispatch.
 
 Built on `redux-kotlin` + `redux-kotlin-multimodel`. Wrap with
-`createThreadSafeStore` for cross-thread access; composes with
-`redux-kotlin-granular` and the Compose bindings unchanged.
+`createThreadSafeStore` for cross-thread access (or use
+`redux-kotlin-bundle`'s `createConcurrentModelStore` for the concurrent
+variant); composes with `redux-kotlin-granular` and the Compose bindings
+unchanged.
+
+## See also
+
+- [`docs/agent/references/store-setup.md`](../docs/agent/references/store-setup.md) —
+  store topology and the routing DSL in a full app.
+- [`docs/agent/references/state-persistence.md`](../docs/agent/references/state-persistence.md) —
+  `preloadedState` rehydration and saveable UI persistence.
+- [`redux-kotlin-routing-codegen/README.md`](../redux-kotlin-routing-codegen/README.md) —
+  the KSP processor for `@Reduce` / `@ReduxInitial` annotation-driven wiring.

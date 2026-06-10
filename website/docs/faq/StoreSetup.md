@@ -10,6 +10,7 @@ sidebar_label: Store Setup
 
 - [Is it OK to have more than one middleware chain in my store enhancer? What is the difference between next and dispatch in a middleware function?](#is-it-ok-to-have-more-than-one-middleware-chain-in-my-store-enhancer-what-is-the-difference-between-next-and-dispatch-in-a-middleware-function)
 - [How do I subscribe to only a portion of the state? Can I get the dispatched action as part of the subscription?](#how-do-i-subscribe-to-only-a-portion-of-the-state-can-i-get-the-dispatched-action-as-part-of-the-subscription)
+- [How do I persist store state and restore it on the next launch?](#how-do-i-persist-store-state-and-restore-it-on-the-next-launch)
 
 ## Store Setup
 
@@ -73,3 +74,36 @@ the action. Middleware can be used if the action is important and needs to be ha
 **Libraries**
 
 - [Redux Addons Catalog: Store Change Subscriptions](https://github.com/markerikson/redux-ecosystem-links/blob/master/store#store-change-subscriptions)
+
+### How do I persist store state and restore it on the next launch?
+
+Two mechanisms, depending on who owns the storage:
+
+- **State the OS saves for you** (rotation + process death on Android/iOS):
+  use `redux-kotlin-compose-saveable` — describe the slice worth keeping with
+  a `StateSaver` and anchor it with `rememberSaveableState`. The snapshot
+  rides Compose's `SaveableStateRegistry`, and on restore the library
+  dispatches your restore action synchronously during composition, so the
+  first frame already shows the rehydrated state.
+- **State you persist yourself** (a database, files, a server session): load
+  it before creating the store and seed it via `preloadedState` —
+  `createStore(reducer, restoredState)` for the core store, or the
+  `preloadedState` parameter on `createModelStore` /
+  `createConcurrentModelStore` for routed `ModelState` stores, which overlays
+  the restored models onto the declared defaults.
+
+Don't restore by dispatching after the UI is up — the first frame renders the
+initial state and then visibly jumps.
+
+#### Further information
+
+**Documentation**
+
+- [Advanced: Saving state across rotation & process death](../advanced/compose-integration#saving-state-across-rotation--process-death)
+- [API: createStore](../api/createstore)
+- [Troubleshooting: State persistence & restore](../troubleshooting#state-persistence--restore)
+
+**Example**
+
+- [TaskFlow](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/taskflow) — durable
+  domain state in SQLDelight + volatile UI state via `rememberSaveableState`.

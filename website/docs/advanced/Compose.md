@@ -239,6 +239,33 @@ codec via `StateSaver(json = Json { ignoreUnknownKeys = true })`; for
 breaking changes, add a `version` field to the snapshot and branch on it
 inside `restore`.
 
+### What to persist — and what not to
+
+Persist the **volatile UI state a user would miss**: the current route or
+tab, an active filter or query, a selected item. Leave out anything that
+is *transient* interaction state:
+
+- **Modes and overlays** — if a detail screen was in an *edit* mode when
+  the process died, restore it in *view* mode. Persisting the mode makes
+  interrupted interactions feel sticky; the snapshot type simply doesn't
+  carry the field.
+- **Text drafts local to one Composable** — keep them out of the store
+  entirely. A plain `rememberSaveable { mutableStateOf("") }` rides the
+  same `SaveableStateRegistry` with zero store involvement.
+- **Anything durable** — data that must survive a normal app restart
+  (not just process death) belongs in real storage (a database, files),
+  restored via [`preloadedState`](#rehydrating-at-construction-preloadedstate)
+  below.
+
+### Restore order & the first frame
+
+The restore action is dispatched **synchronously during composition** of
+the anchor, before any child binding reads the store — so on a
+synchronous-dispatch store the very first frame already shows the
+rehydrated state. There is no intermediate frame rendered from the
+store's initial state. Place the anchor *above* the Composables that
+read the restored slice.
+
 ### Threading & platforms
 
 The snapshot is read and the restore action dispatched on the **main
@@ -254,6 +281,61 @@ wasm have no OS restore concept, so the anchor is a no-op there.
 Compose bundle you already have it.
 :::
 
+## Rehydrating at construction: `preloadedState`
+
+`rememberSaveableState` covers state the *OS* saves for you. For state
+**you** persist — a session loaded from disk, models read from a local
+database — seed the store with it at construction instead of dispatching
+it after the UI is up:
+
+```kotlin
+// Core store: pass the restored state as the initial state.
+val store = createStore(::appReducer, restoredAppState)
+
+// Routed ModelState store (routing / bundle modules): overlay restored
+// models onto the declared defaults with `preloadedState`.
+val store = createConcurrentModelStore(
+    preloadedState = ModelState.of(
+        NavModel(restoredStack),
+        FilterModel(restoredQuery),
+    ),
+) {
+    model(NavModel()) { /* handlers */ }
+    model(FilterModel()) { /* handlers */ }
+    model(BoardModel()) { /* handlers */ }   // not preloaded — keeps its default
+}
+```
+
+`preloadedState` overlays the declared defaults via
+`ModelState.withAll(other)` — its key set must be a **subset** of the
+declared models, and every slot you don't preload keeps its declared
+initial value. Because the store is *born* rehydrated, the first
+`getState()` / first render is already correct: no post-paint dispatch,
+no flash of initial state.
+
+**Choosing between the two:** they compose, and a real app often uses
+both —
+
+| | `rememberSaveableState` | `preloadedState` |
+|---|---|---|
+| Storage | OS saved-instance state | Your own (DB, files, server) |
+| Survives | Rotation + process death | Anything, incl. normal restart |
+| Size | Small snapshots only | Whatever you load |
+| Restore point | First composition of the anchor | Store construction |
+
+:::info Real-world example — TaskFlow
+The [TaskFlow sample](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/taskflow)
+([ARCHITECTURE.md](https://github.com/reduxkotlin/redux-kotlin/blob/master/examples/taskflow/ARCHITECTURE.md))
+splits persistence exactly this way: boards/cards/accounts are durable in
+SQLDelight (domain state, restored at store construction), while the
+per-account nav stack + board filter ride a single
+`StateSaver<ModelState, UiSnapshot>` anchored with an account-scoped key
+(`key = "account-ui-$accountId"`), restoring in view mode and keeping
+new-card drafts in plain `rememberSaveable`.
+:::
+
+## Lifecycle and threading
+
 ## Lifecycle and threading
 
 Each binding subscribes inside a `DisposableEffect` and unsubscribes in
@@ -262,6 +344,16 @@ automatically — no manual tear-down. The underlying granular
 subscription inherits the store's threading guarantees; pair the bridge
 with [`createThreadSafeStore`](../api/createthreadsafestore) if you
 dispatch from multiple threads.
+
+Bindings are **lag-free by construction**: `fieldState` / `selectorState`
+read `store.state` synchronously on every read — the subscription only
+schedules recomposition — so a binding never shows a stale value even
+when the store delivers notifications asynchronously. With a concurrent
+store that posts notifications to the main thread, wrap the post in
+`coalescingNotificationContext(isOnTargetThread, post)` (from
+`redux-kotlin-concurrent`): a main-thread dispatch then notifies
+subscribers inline with no extra frame of latency, while off-main
+dispatches still marshal to main.
 
 ## See also
 

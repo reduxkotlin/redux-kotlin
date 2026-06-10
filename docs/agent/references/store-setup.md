@@ -37,6 +37,13 @@ A single `createConcurrentModelStore(...) { declare slots }` call with one slot 
 not need any of the topology below for a one-screen app. The module that supplies it is the bundle —
 see [modularization.md](./modularization.md).
 
+Both `createModelStore` and `createConcurrentModelStore` take an optional `preloadedState:
+ModelState?` that overlays restored/persisted models onto the declared defaults at construction
+(key set must be a subset of the declared slots), so the first read already reflects rehydrated
+state — use it instead of a post-paint dispatch. Full treatment →
+[state-persistence.md](./state-persistence.md) and
+[store-consistency-model.md](./store-consistency-model.md).
+
 ## One store vs. two
 
 Taskflow runs **N+1 stores**: one root store plus one store per logged-in account.
@@ -85,6 +92,11 @@ a platform shim (see [platform-shims.md](./platform-shims.md)) that marshals sub
 the UI main thread. This is what lets effects dispatch from a background scope with **no explicit main
 hop**: the write runs serialized, and the store notifies subscribers through the context, which posts
 them to main. Tests override it with an inline context to dispatch synchronously on the caller thread.
+For a lag-free variant, build the context with
+`redux-kotlin-concurrent/src/commonMain/kotlin/org/reduxkotlin/concurrent/NotificationContext.kt → coalescingNotificationContext`
+— it runs the callback inline when the dispatch is already on the target (main) thread and posts
+otherwise, so a main-thread dispatch never waits a loop iteration (see
+[store-consistency-model.md](./store-consistency-model.md)).
 
 ## Per-account lifecycle — the registry
 
