@@ -625,6 +625,17 @@ erDiagram
   account ||--o{ pending_op : queues
 ```
 
+### Volatile UI persistence (Saveable)
+
+Domain data is durable via SQLDelight (`LocalStore`). The active account's *volatile* UI — the
+navigation stack and board filter — is additionally snapshotted into the Android
+`SavedStateRegistry` via `RestoreUiStateEffect` (`app/persistence/UiSnapshot.kt`) so it
+survives process death and configuration changes. The snapshot carries UI state only;
+`activeAccountId` and all domain data stay owned by SQLDelight (single source of truth —
+restoring `activeAccountId` from two places would race the disk load). Restoring the nav stack
+reloads the board through the existing board-lifecycle effect. CardDetail **Edit** mode is
+intentionally restored as **View**.
+
 ---
 
 ## 12. The bot collaborator
