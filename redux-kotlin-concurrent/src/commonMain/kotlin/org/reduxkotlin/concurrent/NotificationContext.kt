@@ -11,8 +11,12 @@ package org.reduxkotlin.concurrent
  * UI state never run off-main.
  *
  * Note: a non-[Inline] (asynchronous) context relaxes the no-mid-listener-tear
- * guarantee to eventual consistency — the mirror is published when the reducer
- * completes, while listeners arrive later on the target dispatcher.
+ * guarantee to eventual consistency — the mirror is published when the
+ * dispatch's write section completes, while listeners run whenever the target
+ * dispatcher schedules them. That is usually after the publish, but a posted
+ * callback can also win the race and still observe the previous mirror, so
+ * callbacks must pull current state via `getState` and treat a notification as
+ * "something may have changed", never as a payload.
  */
 public fun interface NotificationContext {
     /**

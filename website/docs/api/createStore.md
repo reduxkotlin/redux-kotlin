@@ -11,8 +11,10 @@ There should only be a single store in your app.
 
 If using `createStore` directly, it will not be threadsafe.
 
-It is ***STRONGLY*** recommended that [`createThreadSafeStore()`](./createthreadsafestore) is used unless there is
- good reason to do otherwise.
+On multi-threaded platforms it is ***STRONGLY*** recommended to use a thread-safe variant:
+a concurrent store (`createConcurrentStore` from `redux-kotlin-concurrent` — lock-free reads,
+serialized writes; see [Threading](../introduction/threading)) or the fully-synchronized
+[`createThreadSafeStore()`](./createthreadsafestore).
 
 The rest of this doc applies to all `createStore` functions.
 

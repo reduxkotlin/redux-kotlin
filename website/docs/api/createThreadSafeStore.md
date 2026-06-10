@@ -8,7 +8,11 @@ sidebar_label: createThreadSafeStore
 
 Creates a Redux [store](./store-api) that is may be accessed from any thread.
 
-***This is the recommended way to create a store.***
+***This is the simplest thread-safe way to create a store*** — every store
+function is synchronized on one lock. If you want reads that never block
+(lock-free `getState`/`subscribe` with serialized writes), use
+`createConcurrentStore` from `redux-kotlin-concurrent` instead — see
+[Threading](../introduction/threading).
 
 There is some performance overhead in using `createThreadSafeStore()` due to
 synchronization, however it is small and mostly likely not impact UI.
