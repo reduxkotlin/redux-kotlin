@@ -10,7 +10,9 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
@@ -85,5 +87,39 @@ class SaveableIntegrationTest {
         onNodeWithTag("tab2").assertTextEquals("7")
         // Also assert the store itself rehydrated — proves dispatch happened, not just render.
         assertEquals(TestState(tab = 7, query = ""), freshStore!!.state)
+    }
+
+    /**
+     * Proves the restore is applied SYNCHRONOUSLY during composition: a child
+     * reading `store.state` during its first composition already sees the
+     * rehydrated value. This only holds if restore runs in a `remember` block;
+     * with a post-composition [androidx.compose.runtime.DisposableEffect] the
+     * first read would still observe the default state (a stale first frame).
+     */
+    @Test
+    fun restoreIsAppliedSynchronouslyBeforeFirstChildRead() = runComposeUiTest {
+        // Phase 1: produce a saved snapshot from a source store.
+        val source = newTestStore(TestState(tab = 7, query = "z"))
+        val reg1 = SaveableStateRegistry(restoredValues = null) { true }
+        wireSaveable(source, reg1, "k", testSaver)
+        val saved = reg1.performSave()
+
+        // Phase 2: fresh store + a registry pre-seeded with the saved values (simulates restore).
+        val fresh = newTestStore(TestState())
+        val reg2 = SaveableStateRegistry(restoredValues = saved) { true }
+
+        var firstChildObservedTab: Int? = null
+        setContent {
+            CompositionLocalProvider(LocalSaveableStateRegistry provides reg2) {
+                fresh.rememberSaveableState(testSaver, key = "k")
+                // Child reads store state during ITS first composition. With a synchronous restore the
+                // value is already rehydrated; with a post-composition effect it would still be default.
+                if (firstChildObservedTab == null) firstChildObservedTab = fresh.state.tab
+                BasicText("tab=${fresh.state.tab}")
+            }
+        }
+        waitForIdle()
+        assertEquals(7, firstChildObservedTab) // restore happened during composition, not after
+        onAllNodesWithText("tab=7").assertCountEquals(1)
     }
 }
