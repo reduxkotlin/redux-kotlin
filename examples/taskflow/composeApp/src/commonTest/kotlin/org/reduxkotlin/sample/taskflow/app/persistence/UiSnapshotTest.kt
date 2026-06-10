@@ -47,4 +47,24 @@ class UiSnapshotTest {
         assertEquals(nav, restored.nav)
         assertEquals(filter, restored.filter)
     }
+
+    @Test
+    fun cardDetailViewModeRoundTrips() {
+        val nav = NavModel(
+            persistentListOf(
+                Route.BoardList,
+                Route.Board(BoardId("b2")),
+                Route.CardDetail(CardId("c1"), Route.CardDetail.Mode.View),
+            ),
+        )
+        val restored = decodeUiSnapshot(encodeUiSnapshot(nav, FilterModel()))
+        assertEquals(nav, restored.nav)
+    }
+
+    @Test
+    fun malformedJsonFallsBackToDefaults() {
+        val restored = decodeUiSnapshot("not json {{{")
+        assertEquals(NavModel(), restored.nav)
+        assertEquals(FilterModel(), restored.filter)
+    }
 }

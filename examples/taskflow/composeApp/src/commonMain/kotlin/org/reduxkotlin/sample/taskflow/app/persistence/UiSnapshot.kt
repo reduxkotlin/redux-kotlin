@@ -102,12 +102,14 @@ internal fun encodeUiSnapshot(nav: NavModel, filter: FilterModel): String {
 }
 
 /**
- * Parses a JSON snapshot into a [RestoreUiState]. An empty restored stack falls back to the
- * [NavModel] default (`[BoardList]`) so a malformed/empty snapshot can never strand the user on a
- * blank stack.
+ * Parses a JSON snapshot into a [RestoreUiState]. Defensive: a malformed snapshot, or one whose
+ * stack decodes empty, falls back to the [NavModel] default (`[BoardList]`) + an empty [FilterModel]
+ * so a corrupt/truncated save can never strand the user on a blank stack.
  */
 internal fun decodeUiSnapshot(json: String): RestoreUiState {
-    val snapshot = snapshotJson.decodeFromString(UiSnapshot.serializer(), json)
+    val snapshot = runCatching { snapshotJson.decodeFromString(UiSnapshot.serializer(), json) }
+        .getOrNull()
+        ?: return RestoreUiState(NavModel(), FilterModel())
     val stack = snapshot.stack.map { it.toRoute() }.toPersistentList()
     val nav = if (stack.isEmpty()) NavModel() else NavModel(stack)
     val filter = FilterModel(
