@@ -664,9 +664,14 @@ scope.launch {
 }
 ```
 
-It picks a non-terminal column with cards and advances one card to the next column,
-dispatching **`BotMovedCard`** (not `Undoable`, so it never enters user undo history, and
-it triggers no sync — it represents server truth). The bot is started/stopped by
+It picks a card from any populated column and moves it one column forward or backward
+(direction uniform among the valid neighbours, clamped at the ends), dispatching
+**`BotMovedCard`** (not `Undoable`, so it never enters user undo history, and
+it triggers no sync — it represents server truth). The backward moves matter: a
+forward-only bot makes the terminal column an absorbing state, so within minutes every
+card piles up in "Done" and the earlier columns render their empty state — which reads
+as data loss (it surfaced as a "no cards after process-death restore" bug report). The
+bot is started/stopped by
 `AccountRegistry.startBot/stopBot`, driven by `app/App.kt`'s `BoardLifecycleEffect` (start on
 board open, stop on dispose). Defaults: every 4 s, toggleable via Settings.
 

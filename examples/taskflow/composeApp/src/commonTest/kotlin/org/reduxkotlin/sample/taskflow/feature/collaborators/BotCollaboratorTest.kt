@@ -138,6 +138,34 @@ class BotCollaboratorTest {
         assertEquals(afterFirst, total, "no further dispatches after cancel: ${store.dispatched}")
     }
 
+    /**
+     * The terminal column must not be an absorbing state: when every card has piled up in Done,
+     * the bot must move one BACK out (otherwise the board permanently drains into Done and the
+     * earlier columns render "No cards" — perceived data loss, see the death-restore bug).
+     */
+    @Test
+    fun terminalPileUpIsNotAbsorbing_botMovesACardBackOut() = runTest {
+        val c1 = card("c1")
+        val c2 = card("c2")
+        val allDone = Board(
+            boardId = BoardId("b1"),
+            columns = persistentListOf(
+                Column(todo, "To Do", persistentListOf()),
+                Column(doing, "Doing", persistentListOf()),
+                Column(done, "Done", persistentListOf(c1.id, c2.id)),
+            ),
+            cards = persistentMapOf(c1.id to c1, c2.id to c2),
+        )
+        val store = storeFor(allDone)
+        startBot(backgroundScope, store, { config(enabled = true) }, rngSeed = 1L)
+
+        advanceTimeBy(intervalMs.toLong())
+        runCurrent()
+
+        val move = store.dispatched.filterIsInstance<BotMovedCard>().single()
+        assertEquals(doing, move.to, "the only legal move from an all-in-Done board is back to Doing")
+    }
+
     @Test
     fun noBoardLoadedSkipsDispatch() = runTest {
         val store = RecordingStore(ModelState.of(BoardModel(null)))
