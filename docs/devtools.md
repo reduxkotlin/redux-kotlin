@@ -198,8 +198,8 @@ from a physical device. The in-app Outputs tab can also toggle this at runtime.
 ### Customizing the drawer
 
 ```kotlin
-import org.reduxkotlin.devtools.inapp.DevToolsTab
-import org.reduxkotlin.devtools.inapp.DevToolsThemeMode
+import org.reduxkotlin.devtools.ui.DevToolsTab
+import org.reduxkotlin.devtools.ui.DevToolsThemeMode
 import org.reduxkotlin.devtools.inapp.DevToolsTrigger
 import org.reduxkotlin.devtools.inapp.InAppConfig
 

@@ -9,18 +9,18 @@ public final class org/reduxkotlin/devtools/inapp/DevToolsTrigger : java/lang/En
 public final class org/reduxkotlin/devtools/inapp/InAppConfig {
 	public static final field $stable I
 	public fun <init> ()V
-	public fun <init> (Ljava/util/Set;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/util/Set;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/Set;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/Set;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/Set;
-	public final fun component2 ()Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
-	public final fun component3 ()Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public final fun component2 ()Lorg/reduxkotlin/devtools/ui/DevToolsTab;
+	public final fun component3 ()Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;
 	public final fun component4 ()Ljava/lang/String;
-	public final fun copy (Ljava/util/Set;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/InAppConfig;
-	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/InAppConfig;Ljava/util/Set;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;Ljava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/InAppConfig;
+	public final fun copy (Ljava/util/Set;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/InAppConfig;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/InAppConfig;Ljava/util/Set;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;Ljava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/InAppConfig;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getInstanceId ()Ljava/lang/String;
-	public final fun getStartTab ()Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
-	public final fun getTheme ()Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public final fun getStartTab ()Lorg/reduxkotlin/devtools/ui/DevToolsTab;
+	public final fun getTheme ()Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;
 	public final fun getTriggers ()Ljava/util/Set;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

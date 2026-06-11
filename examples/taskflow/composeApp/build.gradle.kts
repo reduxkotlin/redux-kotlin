@@ -2,12 +2,7 @@ import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-
-val hasAndroidSdk: Boolean = run {
-    val p = rootProject.file("local.properties")
-    (p.exists() && p.readText().lineSequence().any { it.trim().startsWith("sdk.dir=") }) ||
-        !System.getenv("ANDROID_HOME").isNullOrBlank() || !System.getenv("ANDROID_SDK_ROOT").isNullOrBlank()
-}
+import util.hasAndroidSdk
 
 plugins {
     id("convention.control")

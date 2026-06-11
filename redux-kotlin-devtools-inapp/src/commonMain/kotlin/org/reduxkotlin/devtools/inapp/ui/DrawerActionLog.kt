@@ -14,11 +14,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import org.reduxkotlin.devtools.inapp.model.ActionLogRow
-import org.reduxkotlin.devtools.inapp.model.actionType
-import org.reduxkotlin.devtools.inapp.model.haystackMatches
-import org.reduxkotlin.devtools.inapp.model.searchHaystack
-import org.reduxkotlin.devtools.inapp.theme.RkTokens
+import org.reduxkotlin.devtools.ui.model.ActionLogRow
+import org.reduxkotlin.devtools.ui.model.actionType
+import org.reduxkotlin.devtools.ui.model.haystackMatches
+import org.reduxkotlin.devtools.ui.model.searchHaystack
+import org.reduxkotlin.devtools.ui.theme.RkTokens
 
 /**
  * The drawer's action log: a filter field over a tappable, store-tagged action list. Renders the

@@ -1,5 +1,8 @@
 package org.reduxkotlin.devtools.inapp
 
+import org.reduxkotlin.devtools.ui.DevToolsTab
+import org.reduxkotlin.devtools.ui.DevToolsThemeMode
+
 /** Which built-in triggers open the drawer. */
 public enum class DevToolsTrigger {
     /** A floating, draggable bubble (tap to open). Default on. */

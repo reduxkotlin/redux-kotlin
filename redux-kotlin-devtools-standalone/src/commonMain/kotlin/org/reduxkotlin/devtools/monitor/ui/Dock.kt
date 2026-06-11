@@ -22,10 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.reduxkotlin.devtools.inapp.ui.tabs.DiffTab
-import org.reduxkotlin.devtools.inapp.ui.tabs.PipelineTab
-import org.reduxkotlin.devtools.inapp.ui.tabs.StateTab
 import org.reduxkotlin.devtools.monitor.MonitorState
+import org.reduxkotlin.devtools.ui.tabs.DiffTab
+import org.reduxkotlin.devtools.ui.tabs.PipelineTab
+import org.reduxkotlin.devtools.ui.tabs.StateTab
 
 private val RAIL_WIDTH = 208.dp
 private val LOG_WIDTH = 312.dp

@@ -12,10 +12,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import org.reduxkotlin.devtools.DevToolsHub
 import org.reduxkotlin.devtools.DevToolsSession
-import org.reduxkotlin.devtools.inapp.model.InAppModel
-import org.reduxkotlin.devtools.inapp.model.OutputRow
-import org.reduxkotlin.devtools.inapp.model.StoreRef
-import org.reduxkotlin.devtools.inapp.model.StoreRegistryModel
+import org.reduxkotlin.devtools.ui.DevToolsTab
+import org.reduxkotlin.devtools.ui.model.InAppModel
+import org.reduxkotlin.devtools.ui.model.OutputRow
+import org.reduxkotlin.devtools.ui.model.StoreRef
+import org.reduxkotlin.devtools.ui.model.StoreRegistryModel
 
 /**
  * Process-global invalidation tick for output running-state. [DevToolsHub.outputsFlow] emits when

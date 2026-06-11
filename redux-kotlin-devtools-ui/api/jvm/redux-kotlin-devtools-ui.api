@@ -1,41 +1,41 @@
-public final class org/reduxkotlin/devtools/inapp/DevToolsTab : java/lang/Enum {
-	public static final field ACTIONS Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
-	public static final field DIFF Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
-	public static final field OUTPUTS Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
-	public static final field PIPELINE Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
-	public static final field STATE Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+public final class org/reduxkotlin/devtools/ui/DevToolsTab : java/lang/Enum {
+	public static final field ACTIONS Lorg/reduxkotlin/devtools/ui/DevToolsTab;
+	public static final field DIFF Lorg/reduxkotlin/devtools/ui/DevToolsTab;
+	public static final field OUTPUTS Lorg/reduxkotlin/devtools/ui/DevToolsTab;
+	public static final field PIPELINE Lorg/reduxkotlin/devtools/ui/DevToolsTab;
+	public static final field STATE Lorg/reduxkotlin/devtools/ui/DevToolsTab;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
-	public static fun values ()[Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/ui/DevToolsTab;
+	public static fun values ()[Lorg/reduxkotlin/devtools/ui/DevToolsTab;
 }
 
-public final class org/reduxkotlin/devtools/inapp/DevToolsThemeMode : java/lang/Enum {
-	public static final field DARK Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
-	public static final field LIGHT Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
-	public static final field SYSTEM Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+public final class org/reduxkotlin/devtools/ui/DevToolsThemeMode : java/lang/Enum {
+	public static final field DARK Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;
+	public static final field LIGHT Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;
+	public static final field SYSTEM Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
-	public static fun values ()[Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;
+	public static fun valueOf (Ljava/lang/String;)Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;
+	public static fun values ()[Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/ActionLogKt {
-	public static final fun actionLogRows (Lorg/reduxkotlin/devtools/inapp/model/InAppState;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
-	public static final fun actionLogRows (Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;Ljava/lang/String;)Ljava/util/List;
+public final class org/reduxkotlin/devtools/ui/model/ActionLogKt {
+	public static final fun actionLogRows (Lorg/reduxkotlin/devtools/ui/model/InAppState;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public static final fun actionLogRows (Lorg/reduxkotlin/devtools/ui/model/StoreRegistryState;Ljava/lang/String;)Ljava/util/List;
 	public static final fun haystackMatches (Ljava/lang/String;Ljava/lang/String;Z)Z
-	public static final fun matches (Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;Ljava/lang/String;Z)Z
+	public static final fun matches (Lorg/reduxkotlin/devtools/ui/model/ActionLogRow;Ljava/lang/String;Z)Z
 	public static final fun payloadPreview (Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Ljava/lang/String;
-	public static final fun searchHaystack (Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;)Ljava/lang/String;
+	public static final fun searchHaystack (Lorg/reduxkotlin/devtools/ui/model/ActionLogRow;)Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/ActionLogRow {
+public final class org/reduxkotlin/devtools/ui/model/ActionLogRow {
 	public static final field $stable I
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Z
 	public final fun component4 ()Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;
-	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;Ljava/lang/String;Ljava/lang/String;ZLorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Lorg/reduxkotlin/devtools/ui/model/ActionLogRow;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/ui/model/ActionLogRow;Ljava/lang/String;Ljava/lang/String;ZLorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/ui/model/ActionLogRow;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEvent ()Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;
 	public final fun getMerged ()Z
@@ -45,7 +45,7 @@ public final class org/reduxkotlin/devtools/inapp/model/ActionLogRow {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/InAppModel {
+public final class org/reduxkotlin/devtools/ui/model/InAppModel {
 	public static final field $stable I
 	public fun <init> ()V
 	public fun <init> (I)V
@@ -55,27 +55,27 @@ public final class org/reduxkotlin/devtools/inapp/model/InAppModel {
 	public final fun select (I)V
 	public final fun setFilter (Ljava/lang/String;)V
 	public final fun setOutputs (Ljava/util/List;)V
-	public final fun setTab (Lorg/reduxkotlin/devtools/inapp/DevToolsTab;)V
+	public final fun setTab (Lorg/reduxkotlin/devtools/ui/DevToolsTab;)V
 	public final fun submit (Lorg/reduxkotlin/devtools/DevToolsEvent;)V
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/InAppState {
+public final class org/reduxkotlin/devtools/ui/model/InAppState {
 	public static final field $stable I
 	public fun <init> ()V
-	public fun <init> (Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/Map;Ljava/util/List;)V
-	public synthetic fun <init> (Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/Map;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/Map;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/Map;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Ljava/lang/Integer;
 	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public final fun component4 ()Lorg/reduxkotlin/devtools/ui/DevToolsTab;
 	public final fun component5 ()Lorg/reduxkotlin/devtools/PipelineStructure;
 	public final fun component6 ()Ljava/util/Map;
 	public final fun component7 ()Ljava/util/List;
-	public final fun copy (Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/Map;Ljava/util/List;)Lorg/reduxkotlin/devtools/inapp/model/InAppState;
-	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/InAppState;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/reduxkotlin/devtools/inapp/DevToolsTab;Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/Map;Ljava/util/List;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/InAppState;
+	public final fun copy (Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/Map;Ljava/util/List;)Lorg/reduxkotlin/devtools/ui/model/InAppState;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/ui/model/InAppState;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/PipelineStructure;Ljava/util/Map;Ljava/util/List;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/ui/model/InAppState;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getActions ()Ljava/util/List;
-	public final fun getActiveTab ()Lorg/reduxkotlin/devtools/inapp/DevToolsTab;
+	public final fun getActiveTab ()Lorg/reduxkotlin/devtools/ui/DevToolsTab;
 	public final fun getFilter ()Ljava/lang/String;
 	public final fun getFilteredActions ()Ljava/util/List;
 	public final fun getOutputs ()Ljava/util/List;
@@ -87,19 +87,19 @@ public final class org/reduxkotlin/devtools/inapp/model/InAppState {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/InAppStateKt {
+public final class org/reduxkotlin/devtools/ui/model/InAppStateKt {
 	public static final fun actionType (Lkotlinx/serialization/json/JsonElement;)Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/OutputRow {
+public final class org/reduxkotlin/devtools/ui/model/OutputRow {
 	public static final field $stable I
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZZ)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Z
 	public final fun component4 ()Z
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZZ)Lorg/reduxkotlin/devtools/inapp/model/OutputRow;
-	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/OutputRow;Ljava/lang/String;Ljava/lang/String;ZZILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/OutputRow;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZZ)Lorg/reduxkotlin/devtools/ui/model/OutputRow;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/ui/model/OutputRow;Ljava/lang/String;Ljava/lang/String;ZZILjava/lang/Object;)Lorg/reduxkotlin/devtools/ui/model/OutputRow;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEnabled ()Z
 	public final fun getId ()Ljava/lang/String;
@@ -109,14 +109,14 @@ public final class org/reduxkotlin/devtools/inapp/model/OutputRow {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/StoreActionRow {
+public final class org/reduxkotlin/devtools/ui/model/StoreActionRow {
 	public static final field $stable I
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Lorg/reduxkotlin/devtools/inapp/model/StoreActionRow;
-	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/StoreActionRow;Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/StoreActionRow;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Lorg/reduxkotlin/devtools/ui/model/StoreActionRow;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/ui/model/StoreActionRow;Ljava/lang/String;Ljava/lang/String;Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/ui/model/StoreActionRow;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEvent ()Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;
 	public final fun getStoreId ()Ljava/lang/String;
@@ -125,27 +125,27 @@ public final class org/reduxkotlin/devtools/inapp/model/StoreActionRow {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/StoreEntry {
+public final class org/reduxkotlin/devtools/ui/model/StoreEntry {
 	public static final field $stable I
-	public fun <init> (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppState;)V
-	public final fun component1 ()Lorg/reduxkotlin/devtools/inapp/model/StoreRef;
-	public final fun component2 ()Lorg/reduxkotlin/devtools/inapp/model/InAppState;
-	public final fun copy (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppState;)Lorg/reduxkotlin/devtools/inapp/model/StoreEntry;
-	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/StoreEntry;Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppState;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/StoreEntry;
+	public fun <init> (Lorg/reduxkotlin/devtools/ui/model/StoreRef;Lorg/reduxkotlin/devtools/ui/model/InAppState;)V
+	public final fun component1 ()Lorg/reduxkotlin/devtools/ui/model/StoreRef;
+	public final fun component2 ()Lorg/reduxkotlin/devtools/ui/model/InAppState;
+	public final fun copy (Lorg/reduxkotlin/devtools/ui/model/StoreRef;Lorg/reduxkotlin/devtools/ui/model/InAppState;)Lorg/reduxkotlin/devtools/ui/model/StoreEntry;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/ui/model/StoreEntry;Lorg/reduxkotlin/devtools/ui/model/StoreRef;Lorg/reduxkotlin/devtools/ui/model/InAppState;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/ui/model/StoreEntry;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getRef ()Lorg/reduxkotlin/devtools/inapp/model/StoreRef;
-	public final fun getState ()Lorg/reduxkotlin/devtools/inapp/model/InAppState;
+	public final fun getRef ()Lorg/reduxkotlin/devtools/ui/model/StoreRef;
+	public final fun getState ()Lorg/reduxkotlin/devtools/ui/model/InAppState;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/StoreRef {
+public final class org/reduxkotlin/devtools/ui/model/StoreRef {
 	public static final field $stable I
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/model/StoreRef;
-	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/StoreRef;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/reduxkotlin/devtools/ui/model/StoreRef;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/ui/model/StoreRef;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/ui/model/StoreRef;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getId ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
@@ -153,45 +153,61 @@ public final class org/reduxkotlin/devtools/inapp/model/StoreRef {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/StoreRegistryModel {
+public final class org/reduxkotlin/devtools/ui/model/StoreRegistryModel {
 	public static final field $stable I
 	public fun <init> ()V
 	public final fun focus (Ljava/lang/String;)V
 	public final fun getState ()Lkotlinx/coroutines/flow/StateFlow;
-	public final fun modelFor (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/model/InAppModel;
-	public final fun put (Lorg/reduxkotlin/devtools/inapp/model/StoreRef;Lorg/reduxkotlin/devtools/inapp/model/InAppModel;)V
+	public final fun modelFor (Ljava/lang/String;)Lorg/reduxkotlin/devtools/ui/model/InAppModel;
+	public final fun put (Lorg/reduxkotlin/devtools/ui/model/StoreRef;Lorg/reduxkotlin/devtools/ui/model/InAppModel;)V
 	public final fun refresh ()V
 	public final fun remove (Ljava/lang/String;)V
 	public final fun select (Ljava/util/Set;)V
 	public final fun selectAll ()V
 }
 
-public final class org/reduxkotlin/devtools/inapp/model/StoreRegistryState {
+public final class org/reduxkotlin/devtools/ui/model/StoreRegistryState {
 	public static final field $stable I
 	public fun <init> ()V
 	public fun <init> (Ljava/util/List;Ljava/util/Set;)V
 	public synthetic fun <init> (Ljava/util/List;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Ljava/util/Set;
-	public final fun copy (Ljava/util/List;Ljava/util/Set;)Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;
-	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;Ljava/util/List;Ljava/util/Set;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;
+	public final fun copy (Ljava/util/List;Ljava/util/Set;)Lorg/reduxkotlin/devtools/ui/model/StoreRegistryState;
+	public static synthetic fun copy$default (Lorg/reduxkotlin/devtools/ui/model/StoreRegistryState;Ljava/util/List;Ljava/util/Set;ILjava/lang/Object;)Lorg/reduxkotlin/devtools/ui/model/StoreRegistryState;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getMerged ()Z
 	public final fun getMergedRows ()Ljava/util/List;
 	public final fun getSelectedIds ()Ljava/util/Set;
 	public final fun getStores ()Ljava/util/List;
 	public fun hashCode ()I
-	public final fun resolveActive (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/model/StoreEntry;
+	public final fun resolveActive (Ljava/lang/String;)Lorg/reduxkotlin/devtools/ui/model/StoreEntry;
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/reduxkotlin/devtools/inapp/theme/ReduxKotlinDevToolsThemeKt {
-	public static final fun ReduxKotlinDevToolsTheme (Lorg/reduxkotlin/devtools/inapp/DevToolsThemeMode;ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+public final class org/reduxkotlin/devtools/ui/tabs/DiffTabKt {
+	public static final fun DiffTab (Ljava/util/List;Landroidx/compose/runtime/Composer;I)V
 }
 
-public final class org/reduxkotlin/devtools/inapp/theme/RkTokens {
+public final class org/reduxkotlin/devtools/ui/tabs/OutputsTabKt {
+	public static final fun OutputsTab (Ljava/util/List;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class org/reduxkotlin/devtools/ui/tabs/PipelineTabKt {
+	public static final fun PipelineTab (Lorg/reduxkotlin/devtools/PipelineStructure;Lorg/reduxkotlin/devtools/PipelineTrace;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class org/reduxkotlin/devtools/ui/tabs/StateTabKt {
+	public static final fun StateTab (Lkotlinx/serialization/json/JsonElement;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class org/reduxkotlin/devtools/ui/theme/ReduxKotlinDevToolsThemeKt {
+	public static final fun ReduxKotlinDevToolsTheme (Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class org/reduxkotlin/devtools/ui/theme/RkTokens {
 	public static final field $stable I
-	public static final field INSTANCE Lorg/reduxkotlin/devtools/inapp/theme/RkTokens;
+	public static final field INSTANCE Lorg/reduxkotlin/devtools/ui/theme/RkTokens;
 	public final fun getAmber-0d7_KjU ()J
 	public final fun getBlue-0d7_KjU ()J
 	public final fun getBlueLight-0d7_KjU ()J
@@ -207,21 +223,5 @@ public final class org/reduxkotlin/devtools/inapp/theme/RkTokens {
 	public final fun getPurple-0d7_KjU ()J
 	public final fun getRed-0d7_KjU ()J
 	public final fun getSheetCorner-D9Ej5fM ()F
-}
-
-public final class org/reduxkotlin/devtools/inapp/ui/tabs/DiffTabKt {
-	public static final fun DiffTab (Ljava/util/List;Landroidx/compose/runtime/Composer;I)V
-}
-
-public final class org/reduxkotlin/devtools/inapp/ui/tabs/OutputsTabKt {
-	public static final fun OutputsTab (Ljava/util/List;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
-}
-
-public final class org/reduxkotlin/devtools/inapp/ui/tabs/PipelineTabKt {
-	public static final fun PipelineTab (Lorg/reduxkotlin/devtools/PipelineStructure;Lorg/reduxkotlin/devtools/PipelineTrace;Landroidx/compose/runtime/Composer;I)V
-}
-
-public final class org/reduxkotlin/devtools/inapp/ui/tabs/StateTabKt {
-	public static final fun StateTab (Lkotlinx/serialization/json/JsonElement;Landroidx/compose/runtime/Composer;I)V
 }
 

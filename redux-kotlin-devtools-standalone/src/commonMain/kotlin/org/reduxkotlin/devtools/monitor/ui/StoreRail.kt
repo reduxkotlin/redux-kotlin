@@ -25,9 +25,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.reduxkotlin.devtools.inapp.model.StoreEntry
 import org.reduxkotlin.devtools.monitor.ClientGroup
 import org.reduxkotlin.devtools.monitor.MonitorState
+import org.reduxkotlin.devtools.ui.model.StoreEntry
 
 /** The left rail: "CLIENTS & STORES", an "All stores" row, then per-client store rows + footer. */
 @Composable
