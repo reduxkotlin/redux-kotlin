@@ -336,24 +336,26 @@ new-card drafts in plain `rememberSaveable`.
 
 ## Lifecycle and threading
 
-## Lifecycle and threading
-
 Each binding subscribes inside a `DisposableEffect` and unsubscribes in
 `onDispose`, so subscriptions follow the Composable's lifecycle
 automatically — no manual tear-down. The underlying granular
-subscription inherits the store's threading guarantees; pair the bridge
-with [`createThreadSafeStore`](../api/createthreadsafestore) if you
-dispatch from multiple threads.
+subscription inherits the store's threading guarantees; if you dispatch
+from multiple threads, use a concurrent store (the bundle's
+`createConcurrentModelStore`, or `createConcurrentStore` from
+`redux-kotlin-concurrent`) or wrap the store with
+[`createThreadSafeStore`](../api/createthreadsafestore).
 
-Bindings are **lag-free by construction**: `fieldState` / `selectorState`
-read `store.state` synchronously on every read — the subscription only
-schedules recomposition — so a binding never shows a stale value even
-when the store delivers notifications asynchronously. With a concurrent
-store that posts notifications to the main thread, wrap the post in
-`coalescingNotificationContext(isOnTargetThread, post)` (from
-`redux-kotlin-concurrent`): a main-thread dispatch then notifies
-subscribers inline with no extra frame of latency, while off-main
-dispatches still marshal to main.
+`fieldState` / `selectorState` read `store.state` synchronously on every
+read — the subscription only *schedules recomposition*, it never caches a
+value. So whenever a binding is read (any recomposition, however
+triggered), it returns the store's current state, not a stale snapshot.
+The recomposition that a dispatch itself triggers rides the store's
+notification: inline contexts deliver it synchronously; a posting context
+delivers it on a later main-loop iteration. With a concurrent store, wrap
+the main-thread post in `coalescingNotificationContext(isOnTargetThread,
+post)` (from `redux-kotlin-concurrent`): a **main-thread** dispatch then
+notifies subscribers inline with no extra frame of latency, while
+off-main dispatches still marshal to main (at most one loop hop).
 
 ## See also
 

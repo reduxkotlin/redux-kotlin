@@ -64,6 +64,8 @@ With a concurrent store whose `NotificationContext` always *posts* to the
 main thread, a main-thread dispatch is observed one loop iteration later.
 Wrap the post with `coalescingNotificationContext(isOnTargetThread, post)`
 from `redux-kotlin-concurrent`: main-thread dispatches notify inline,
-off-main dispatches still marshal to main. (The Compose bindings themselves
-read the store synchronously, so they never *render* stale state — the lag
-only affects subscription-driven recomposition timing.)
+off-main dispatches still marshal to main (at most one loop hop — that part
+is inherent to posting). The Compose bindings read the store synchronously
+on every read, so any recomposition that does run renders current state;
+the lag affects *when* the dispatch-triggered recomposition is scheduled,
+not what a recomposition reads.

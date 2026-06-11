@@ -20,10 +20,15 @@ import org.reduxkotlin.typedReducer
  * @param State the application state type.
  * @param reducer the root reducer.
  * @param preloadedState the initial state. Must be deeply immutable.
- * @param notificationContext where listener callbacks and [onError] run; default
- *  runs them synchronously on the dispatching thread. UI consumers should pass a
- *  main-thread context.
- * @param onError isolates listener throwables (default logs and continues).
+ * @param notificationContext where listener callbacks and [onError] run; the
+ *  default [NotificationContext.Inline] runs every subscriber while the writer
+ *  lock is held — a slow subscriber delays concurrent dispatchers (and
+ *  `replaceReducer`), never readers. UI consumers should pass a main-thread
+ *  context (e.g. [coalescingNotificationContext]); supply a posting/coalescing
+ *  context if subscribers can be slow.
+ * @param onError isolates listener throwables (default logs and continues). Must
+ *  not throw; a throw from the handler itself is printed and swallowed — dispatch
+ *  and delivery to remaining subscribers always proceed.
  * @param enhancer optional store enhancer (e.g. `applyMiddleware(...)`).
  */
 public fun <State> createConcurrentStore(
@@ -62,6 +67,9 @@ public inline fun <State, reified Action : Any> createTypedConcurrentStore(
  * Caveat (same as core Redux): middleware that captured the dispatch *function by
  * value* at construction, or captured a foreign store object, is not intercepted.
  * Prefer the [enhancer] argument of [createConcurrentStore].
+ *
+ * [notificationContext] and [onError] carry the same contracts as on
+ * [createConcurrentStore].
  */
 public fun <State> Store<State>.asConcurrent(
     notificationContext: NotificationContext = NotificationContext.Inline,

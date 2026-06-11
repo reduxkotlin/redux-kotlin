@@ -4,15 +4,26 @@ package org.reduxkotlin.concurrent
  * Decides on which thread/dispatcher a [ConcurrentStore]'s listener callbacks
  * (and the store's `onError` handler) are invoked.
  *
- * The default [Inline] runs the callback synchronously on the dispatching
- * thread, which preserves the store's publish-after-notify read ordering. UI
- * consumers should supply a context that marshals to the main thread (e.g. a
- * wrapper around the platform main dispatcher), so subscribers that touch
- * UI state never run off-main.
+ * The store publishes its read mirror **before** signaling listeners, so a
+ * callback — inline or posted — always observes state at least as new as the
+ * dispatch that triggered it. Callbacks must pull current state via
+ * `getState`; a notification is a signal that something may have changed,
+ * never a payload (later dispatches may already have landed).
  *
- * Note: a non-[Inline] (asynchronous) context relaxes the no-mid-listener-tear
- * guarantee to eventual consistency — the mirror is published when the reducer
- * completes, while listeners arrive later on the target dispatcher.
+ * Implementations MUST execute posted blocks for a given store one at a time,
+ * in post order, with a happens-before edge between consecutive blocks (any
+ * single-threaded executor, main-thread post, or inline execution qualifies).
+ * Handing blocks to a multi-threaded executor is unsupported: diff-based
+ * consumers (redux-kotlin-granular's per-entry last value, and therefore
+ * `selectorState`/`fieldState`) assume serial notification and will lose or
+ * duplicate diffs otherwise.
+ *
+ * The default [Inline] runs every callback synchronously on the dispatching
+ * thread while the writer lock is held — a slow subscriber delays concurrent
+ * dispatchers (and `replaceReducer`), never readers. UI consumers should
+ * supply a context that marshals to the main thread (e.g.
+ * [coalescingNotificationContext] around the platform main dispatcher), so
+ * subscribers that touch UI state never run off-main.
  */
 public fun interface NotificationContext {
     /**
@@ -23,7 +34,12 @@ public fun interface NotificationContext {
 
     /** Built-in contexts. */
     public companion object {
-        /** Runs the block synchronously on the calling (dispatching) thread. */
+        /**
+         * Runs the block synchronously on the calling (dispatching) thread,
+         * while the writer lock is still held — slow subscribers delay other
+         * dispatchers, never readers. Supply a posting or coalescing context
+         * if subscribers can be slow.
+         */
         public val Inline: NotificationContext = NotificationContext { block -> block() }
     }
 }
@@ -38,6 +54,9 @@ public fun interface NotificationContext {
  * on the target thread keeps the subscriber synchronous with the dispatch (matching a plain
  * synchronous store), while off-thread dispatches still marshal via [post] (preserving the
  * off-main-effects rule).
+ *
+ * "Coalescing" refers to this inline-vs-marshal routing only — bursts are NOT collapsed: every
+ * dispatch still delivers exactly one callback per subscriber.
  *
  * @param isOnTargetThread returns true when the calling thread is the target (e.g. the main thread).
  * @param post marshals [block] to the target thread (e.g. `handler::post`); used only when
@@ -55,6 +74,9 @@ public fun coalescingNotificationContext(
  * Default `onError` handler for [createConcurrentStore]: prints the throwable and
  * continues, so one failing listener never aborts delivery to the others or
  * corrupts the store. Override to forward to your own logging.
+ *
+ * A handler must not throw; if it does, the throwable is printed and swallowed —
+ * dispatch and delivery to the remaining subscribers always proceed.
  */
 public val LogAndContinue: (Throwable) -> Unit = { throwable ->
     println("redux-kotlin-concurrent: listener threw and was isolated: $throwable")

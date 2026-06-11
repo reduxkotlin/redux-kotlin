@@ -6,7 +6,10 @@ sidebar_label: Threading
 
 # Redux on Multi-threaded Platforms
 
-TLDR; use [createThreadSafeStore()](../api/createthreadsafestore), unless your app is Javascript only.
+TLDR; use a **concurrent store** (`createConcurrentStore` from
+`redux-kotlin-concurrent`, or the bundle's `createConcurrentModelStore`) or the
+fully-synchronized [createThreadSafeStore()](../api/createthreadsafestore),
+unless your app is Javascript only.
 
 Redux in multi-threaded environments brings additional concerns that are not present in redux
 for Javascript.  Javascript is single threaded, so Redux.js did not have to address the issue.
@@ -16,19 +19,43 @@ In a multi-threaded system invalid states and race conditions can happen.
 For example if `getState` was called at the same time as a dispatch, the state could represent a past
 state.  Or 2 actions dispatched concurrently could cause an invalid state.
 
-**So you there are 3 options:**
+**So there are 4 options:**
 
-1) Synchronize access to the store  - [createThreadSafeStore()](../api/createthreadsafestore)
-2) Only access the store from the same thread - [createSameThreadEnforcedStore()](../api/createsamethreadenforcedstore)
-3) Live in the wild west and access store anytime, any thread
+1) Lock-free reads + serialized writes - `createConcurrentStore` (`redux-kotlin-concurrent`)
+2) Synchronize all access to the store  - [createThreadSafeStore()](../api/createthreadsafestore)
+3) Only access the store from the same thread - [createSameThreadEnforcedStore()](../api/createsamethreadenforcedstore)
+4) Live in the wild west and access store anytime, any thread
     and live with consequences - NOT_RECOMMENDED - [createStore()](../api/createstore)
 
-ReduxKotlin allows all these, but most cases will fall into #1.
+ReduxKotlin allows all of these; most apps will use #1 or #2.
+
+## Concurrent store
+
+`redux-kotlin-concurrent` (and the `redux-kotlin-bundle`, which builds on it)
+provides the `CallerSerialized` strategy: `getState` and `subscribe` are
+**lock-free** — they never block, even during an in-flight dispatch — while
+writes (`dispatch`) are serialized through a reentrant writer lock. Reads off
+the dispatching thread return an atomic state mirror published at the end of
+each dispatch; reads on the dispatching thread see the in-progress state,
+matching core Redux. A `NotificationContext` controls which thread subscriber
+callbacks run on (UI apps marshal them to the main thread — see
+[Compose integration](../advanced/compose-integration#lifecycle-and-threading)).
+
+```kotlin
+val store = createConcurrentStore(reducer, initialState)
+```
+
+This trades strict read synchronization for non-blocking reads: off-thread
+reads are eventually consistent (they may briefly observe the previous state
+while a dispatch is completing). If you want every read fully synchronized
+instead, use `createThreadSafeStore`.
 
 ## ThreadSafe
 
 Starting with ReduxKotlin 0.5.0 there is a threadsafe store which uses synchronization (AtomicFu library)
-to allow safe access to all the functions on the store.  This is the recommended usage for 90% of use cases.
+to allow safe access to all the functions on the store.  It is the simplest fully-synchronized option:
+every read and write takes the same lock, so reads block during an in-flight dispatch (which the
+concurrent store above avoids).
 
 ```kotlin
     val store = createThreadSafeStore(reducer, state)

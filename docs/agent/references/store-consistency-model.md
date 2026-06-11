@@ -29,6 +29,25 @@ separates two things:
 - **Subscriber notifications follow the `NotificationContext`.** With a posting context (e.g. a bare
   `Handler.post` on Android), callbacks run on a *later* loop iteration — eventual consistency.
 
+Exact per-dispatch ordering: reducer commits to the inner store → the read mirror is published →
+listeners are signaled through the context → the writer lock releases. Consequences:
+
+- **A callback always observes state at least as new as its triggering dispatch** (the mirror is
+  published before the signal). Later dispatches may already have landed, so callbacks must pull
+  current state via `getState()`/`getModel()` and treat a notification as "something may have
+  changed", never as a payload.
+- With an **inline** context, all subscriber callbacks run *while the writer lock is held* — a slow
+  subscriber delays other dispatchers, never readers — and other threads already see the new mirror
+  while listeners run (there is no "listeners finished" barrier).
+- **Notification contexts must deliver serially** (one block at a time, in post order, with a
+  happens-before edge between blocks). Multi-threaded executors are unsupported: the granular diff
+  layer (and therefore `selectorState`/`fieldState`) assumes serial delivery.
+- **After `unsubscribe()` returns, no new callback invocation begins**; one already executing on
+  another thread may complete. With an inline context a peer unsubscribed earlier in the same
+  fan-out is skipped (deliberate divergence from core Redux snapshot delivery).
+- **`dispatch` from inside a reducer throws** on every store flavor (core guard) — reducers are
+  pure; follow-ups belong in middleware or subscribers.
+
 ## Don't branch on a binding right after dispatch
 
 `selectorState` / `fieldState` are driven by the subscription. As of the lag-free rewrite they read
