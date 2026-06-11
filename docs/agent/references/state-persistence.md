@@ -107,10 +107,12 @@ account's snapshot can never restore into another.
 With a concurrent store, writes are synchronous but subscriber callbacks follow the
 `NotificationContext`. Wrap the platform main-thread post with
 `redux-kotlin-concurrent/src/commonMain/kotlin/org/reduxkotlin/concurrent/NotificationContext.kt → coalescingNotificationContext`
-(`isOnTargetThread` + `post`): main-thread dispatches (including the restore dispatch) notify
-inline with no extra frame of latency, while off-main effect dispatches still marshal to main.
-The Compose bindings themselves read `getState()` synchronously on every read, so they never
-*render* stale state either way — see [store-consistency-model.md](./store-consistency-model.md).
+(`isOnTargetThread` + `post`): **main-thread** dispatches (including the restore dispatch) notify
+inline with no extra frame of latency; off-main effect dispatches still marshal to main, arriving
+on a later loop iteration (that lag is inherent to posting, not removed by coalescing). The Compose
+bindings read `getState()` synchronously on every read, so any recomposition renders current state;
+the notification only schedules recomposition — see
+[store-consistency-model.md](./store-consistency-model.md) for the exact publish/notify ordering.
 
 ## TaskFlow integration (lessons)
 
@@ -126,8 +128,8 @@ Its hard-won lessons, in checklist form:
 5. First paint gated on app bootstrap (account directory loaded from db) so returning users never
    see a Login flash; on Android, also gated on window-insets dispatch to avoid a status-bar jump
    on process-death restore.
-6. `coalescingNotificationContext` as the main `NotificationContext` so off-main sync/effects
-   dispatches never leave bindings a frame behind.
+6. `coalescingNotificationContext` as the main `NotificationContext` so main-thread dispatches
+   notify inline (no lag frame); off-main sync/effects dispatches marshal to main as before.
 
 ## Verify loop
 
