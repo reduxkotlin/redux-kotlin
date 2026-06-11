@@ -18,6 +18,7 @@ companion modules on one `Store<S>` contract. Recommended app organization is **
 - **Rule F — Delta-only status.** `SyncEngine` emits `onStatus` only on a real `SyncStatus` change.
 - **Rule G — Mint at the edge.** Ids and timestamps come from `LocalIdGenerator`/`LocalClock` at the dispatch site, never from a reducer.
 - **Rule H — Single inset point.** Window insets are applied once at the shell root.
+- **Rule I — State-keyed lifecycle effects.** Screen-data loads key on **state** (the nav-derived slice, e.g. `BoardLifecycleEffect` on `nav.activeBoardId`), never on navigation events — state-only entry points (process-death restore, deep links, DevTools time-travel, account-switch hydration) set state without replaying events, so an event-keyed load silently never runs. Fallback: match the hydrating action in middleware.
 <!-- assemble:rules:end -->
 
 ## Decision routing
@@ -32,7 +33,7 @@ companion modules on one `Store<S>` contract. Recommended app organization is **
 | The 5 **platform shims** | [`platform-shims.md`](../../../docs/agent/references/platform-shims.md) |
 | **Modularization** | [`modularization.md`](../../../docs/agent/references/modularization.md) |
 | **Debugging** a running app (actions/state/diffs) | [`devtools.md`](../../../docs/agent/references/devtools.md) |
-| **Persisting/restoring state** (process death, `preloadedState`, saveable) | [`state-persistence.md`](../../../docs/agent/references/state-persistence.md) |
+| **Persisting/restoring state** (process death, `preloadedState`, saveable, restored-screen-has-no-data) | [`state-persistence.md`](../../../docs/agent/references/state-persistence.md) |
 | **Store consistency model** (sync writes, async notify, timing) | [`store-consistency-model.md`](../../../docs/agent/references/store-consistency-model.md) |
 
 ## Pointers

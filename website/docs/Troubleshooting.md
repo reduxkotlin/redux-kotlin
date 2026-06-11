@@ -36,6 +36,31 @@ Things to check, in order:
    saved-instance state — the anchor does nothing there. Test on Android
    (e.g. *"Don't keep activities"* or `adb shell am kill`) or iOS.
 
+### A restored screen renders, but its data never loads
+
+The nav stack (or route) comes back after process death, yet the screen is
+empty — lists render their empty state, detail screens show a skeleton.
+
+Restore dispatches exactly **one** action; it does not replay the events
+that originally led to the screen. If your data load is triggered by a
+navigation *event* (dispatched alongside `Navigate` in a click handler),
+the restore path never runs it — the same way a page that fetches in a
+click handler breaks on browser refresh. Fix one of two ways:
+
+- **Key the load on state, not events**: an effect keyed on the restored
+  route/selection (e.g. `DisposableEffect(route)` or a middleware watching
+  the slice) fires for a real navigation *and* for a restore — and also for
+  DevTools time-travel and any other state hydration.
+- **Handle the restore action in middleware**: the restore action flows
+  through the full middleware chain like any dispatch, so an effects
+  middleware can match it and start the loads.
+
+Also check what the data *should* be: restoration can be innocent. Verify
+the store contents (e.g. with the DevTools action log) before concluding
+state was lost — a background actor or sync may have legitimately moved the
+data. See
+[Restoration replays no events](/advanced/compose-integration#restoration-replays-no-events--key-effects-on-state).
+
 ### A restored value appears, then reverts to the initial value
 
 Compose bindings are one-directional (`store → State`). If you restore a

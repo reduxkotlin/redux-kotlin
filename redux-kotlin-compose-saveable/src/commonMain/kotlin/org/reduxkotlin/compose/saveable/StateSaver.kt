@@ -11,6 +11,18 @@ import kotlinx.serialization.json.Json
  * Holds no Compose state — its serialization round-trip is unit-testable
  * without a composition. Reuse one instance across screens.
  *
+ * Restore-action contract:
+ * - The action returned by [restore] is dispatched like any other — it flows
+ *   through the **full middleware chain**, so an effects middleware may match
+ *   it to re-trigger loads (the alternative is keying load effects on the
+ *   restored state itself; see `rememberSaveableState`'s docs).
+ * - A restore replays **only** this one action; the events that originally
+ *   produced the saved state are not replayed.
+ * - A snapshot can outlive the data it references (a deleted item, a removed
+ *   screen target). Whatever handles the restore action — and anything loaded
+ *   from it — must tolerate stale references: treat "not found" as an empty
+ *   state or a navigation back, never a crash.
+ *
  * Example:
  * ```
  * @Serializable

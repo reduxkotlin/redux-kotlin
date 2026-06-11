@@ -10,7 +10,7 @@ derives_from:
   - examples/taskflow/composeApp/src/jvmTest/kotlin/org/reduxkotlin/sample/taskflow/app/AccountRegistryTest.kt → AccountRegistryTest
 assembles_into: [AGENTS.md, claude-skill]
 rules: [C]
-last_verified: { commit: 3c1cd67, date: 2026-06-04 }
+last_verified: { commit: ab2fb5b, date: 2026-06-11 }
 ---
 
 # Testing & the verify loop
@@ -75,6 +75,18 @@ every host.
 
 - Putting a SQLDelight or coroutine-virtual-time test in `commonTest` — it will fail to run on
   native/JS. Keep it in `jvmTest`.
+- Launching effect coroutines on `TestScope.backgroundScope` and driving the test with
+  `advanceUntilIdle()` — `advanceUntilIdle` only drains until no FOREGROUND tasks remain, so
+  background-only work is silently skipped: the effect never runs and the test "proves" a bug that
+  doesn't exist. Give effects a foreground scope —
+  `CoroutineScope(SupervisorJob() + StandardTestDispatcher(testScheduler))` — or drive with
+  `runCurrent()`, which runs current-time tasks regardless of the foreground/background flag.
+- Testing process-death restore by dispatching the restore action by hand only — that skips the
+  registry/decode path. Prime a real registry instead:
+  `SaveableStateRegistry(restoredValues = saved) { true }` provided via `LocalSaveableStateRegistry`
+  inside `runComposeUiTest` exercises the exact mechanism the anchor uses (see
+  `redux-kotlin-compose-saveable/src/jvmTest/kotlin/org/reduxkotlin/compose/saveable/RestoreRetriggersEffectsTest.kt → RestoreRetriggersEffectsTest`
+  and [state-persistence.md](./state-persistence.md)).
 - Asserting on a board snapshot after a rejected op instead of asserting the single reverted op — masks
   whether the per-op inverse is correct.
 - Writing recomposition-count state into a snapshot-backed `mutableStateOf` — it perturbs the very
@@ -85,4 +97,5 @@ every host.
 - [feature-slice.md](./feature-slice.md) — the reducer/selector tests each slice ships.
 - [effects-sync.md](./effects-sync.md) — the virtual-time sync E2E.
 - [compose-binding.md](./compose-binding.md) — the render-isolation proof.
+- [state-persistence.md](./state-persistence.md) — restore-path testing (registry-primed restore).
 - [README](./README.md)

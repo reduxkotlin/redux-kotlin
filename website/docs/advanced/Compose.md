@@ -266,6 +266,45 @@ rehydrated state. There is no intermediate frame rendered from the
 store's initial state. Place the anchor *above* the Composables that
 read the restored slice.
 
+### Restoration replays no events — key effects on state
+
+A restore dispatches exactly **one** action (your `restore` action). None
+of the user events that originally produced the saved state are replayed:
+no clicks, no `Navigate`-style actions. Anything your app loads *in
+response to an event* therefore never loads on the restore path.
+
+This is the same bug class as a web page that fetches in a click handler
+and breaks on browser refresh: restoration — like a deep link — enters a
+screen without the events that normally precede it. Redux adds more entry
+points with the same shape: DevTools time-travel, replay, and hydrating an
+account switch all *set* state without re-running events.
+
+Two patterns survive all of them:
+
+- **Derive the effect from state** (preferred). Key the load on the state
+  the restore produces, not on the action that usually produces it:
+
+  ```kotlin
+  val route by store.fieldState(NavState::route)
+  DisposableEffect(route) {
+      if (route is Route.Detail) store.dispatch(LoadDetailRequested(route.id))
+      onDispose { /* cancel / close */ }
+  }
+  ```
+
+  Because the restore is applied synchronously during composition, the
+  effect's first key evaluation already sees the restored route and the
+  load fires — exactly as it would after a real navigation.
+
+- **React to the restore action in middleware** (fallback). The restore
+  action is a normal dispatch through the **full middleware chain**, so an
+  effects middleware can match it and kick the loads explicitly.
+
+Either way, write the `restore` action's downstream handling to tolerate
+**stale references** — a snapshot can outlive the data it points at (a
+deleted item, a removed board). Treat "referenced entity not found" as a
+navigate-away or empty state, never a crash.
+
 ### Threading & platforms
 
 The snapshot is read and the restore action dispatched on the **main

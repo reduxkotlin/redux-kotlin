@@ -55,6 +55,7 @@ does not auto-correct. Full gate detail → `CLAUDE.md`.
 - **Rule F — Delta-only status.** `SyncEngine` emits `onStatus` only on a real `SyncStatus` change.
 - **Rule G — Mint at the edge.** Ids and timestamps come from `LocalIdGenerator`/`LocalClock` at the dispatch site, never from a reducer.
 - **Rule H — Single inset point.** Window insets are applied once at the shell root.
+- **Rule I — State-keyed lifecycle effects.** Screen-data loads key on **state** (the nav-derived slice, e.g. `BoardLifecycleEffect` on `nav.activeBoardId`), never on navigation events — state-only entry points (process-death restore, deep links, DevTools time-travel, account-switch hydration) set state without replaying events, so an event-keyed load silently never runs. Fallback: match the hydrating action in middleware.
 <!-- assemble:rules:end -->
 
 Full text → `examples/taskflow/ARCHITECTURE.md`.
