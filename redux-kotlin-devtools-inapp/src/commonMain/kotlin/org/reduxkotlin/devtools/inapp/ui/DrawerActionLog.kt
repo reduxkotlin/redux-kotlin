@@ -10,12 +10,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.devtools.inapp.model.ActionLogRow
 import org.reduxkotlin.devtools.inapp.model.actionType
-import org.reduxkotlin.devtools.inapp.model.matches
+import org.reduxkotlin.devtools.inapp.model.haystackMatches
+import org.reduxkotlin.devtools.inapp.model.searchHaystack
 import org.reduxkotlin.devtools.inapp.theme.RkTokens
 
 /**
@@ -33,7 +35,12 @@ internal fun DrawerActionLog(
     selectedActionId: Int?,
     onSelect: (storeId: String, actionId: Int) -> Unit,
 ) {
-    val shown = rows.filter { it.matches(filter, regex = false) }
+    // Memoize the per-row serialized haystack: building it serializes the whole state JSON, so
+    // recomputing it for every row on every keystroke is the expensive part of filtering.
+    val haystacks = remember(rows) { rows.map { it.searchHaystack() } }
+    val shown = remember(rows, filter) {
+        rows.filterIndexed { index, _ -> haystackMatches(haystacks[index], filter, regex = false) }
+    }
     Column(Modifier.fillMaxWidth()) {
         OutlinedTextField(
             value = filter,

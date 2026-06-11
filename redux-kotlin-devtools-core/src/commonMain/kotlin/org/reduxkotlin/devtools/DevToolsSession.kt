@@ -33,6 +33,12 @@ public class DevToolsSession private constructor(
     private val denyRegex = config.denylist.map(::Regex)
     private val allowRegex = config.allowlist.map(::Regex)
 
+    /**
+     * The session's retention bound ([DevToolsConfig.maxAge]): how many recorded actions [history]
+     * keeps. UIs size their own ring buffers from this so they show everything the session recorded.
+     */
+    public val maxAge: Int get() = config.maxAge
+
     // DROP_OLDEST: under sustained burst we drop the oldest pending capture rather than block
     // dispatch (newest wins). The displaced element is handed to onUndeliveredElement on the
     // sender, where we count it and warn (throttled) so silent history gaps stay visible.

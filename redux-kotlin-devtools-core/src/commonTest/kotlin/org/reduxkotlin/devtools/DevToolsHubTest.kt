@@ -44,6 +44,21 @@ class DevToolsHubTest {
     }
 
     @Test
+    fun outputsFlow_publishes_registration_and_reset() {
+        val out = object : DevToolsOutput {
+            override val id = "remote"
+            override val label = "Remote"
+            override fun start(session: DevToolsSession) = Unit
+            override fun stop() = Unit
+        }
+        assertTrue(DevToolsHub.outputsFlow.value.isEmpty())
+        DevToolsHub.registerOutput(out)
+        assertTrue(DevToolsHub.outputsFlow.value.any { it.id == "remote" })
+        DevToolsHub.reset()
+        assertTrue(DevToolsHub.outputsFlow.value.isEmpty())
+    }
+
+    @Test
     fun outputs_sharing_an_id_both_register_and_both_receive_events() = runTest {
         // BridgeOutput/RemoteOutput use constant ids ("bridge"/"remote") but are per-store
         // instances; deduping by id would silently drop every store's output after the first.

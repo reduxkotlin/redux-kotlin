@@ -44,6 +44,13 @@ kotlin {
                 implementation(compose.foundation)
             }
         }
+        named("jvmTest") {
+            dependencies {
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.uiTest)
+                implementation(compose.desktop.currentOs)
+            }
+        }
         named("jsMain") {
             dependencies {
                 implementation(compose.foundation)

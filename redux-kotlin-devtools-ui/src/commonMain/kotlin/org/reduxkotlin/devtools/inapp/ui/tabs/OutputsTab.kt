@@ -13,7 +13,11 @@ import androidx.compose.ui.unit.dp
 import org.reduxkotlin.devtools.inapp.model.OutputRow
 import org.reduxkotlin.devtools.inapp.theme.RkTokens
 
-/** The Outputs tab: one integration, multiple outputs. In-app is locked on; remote/file toggle. */
+/**
+ * The Outputs tab: one integration, multiple outputs. In-app is locked on; remote/file toggle.
+ * Outputs are registered process-globally — toggling one here affects every store, not just the
+ * store whose panel is showing.
+ */
 @Composable
 public fun OutputsTab(outputs: List<OutputRow>, onToggle: (String, Boolean) -> Unit) {
     Column {
@@ -37,7 +41,8 @@ public fun OutputsTab(outputs: List<OutputRow>, onToggle: (String, Boolean) -> U
             }
         }
         Text(
-            "Remote streaming leaves the device over WebSocket — off by default. The in-app drawer keeps all data in-process.",
+            "Outputs are global: toggling one affects every store. Remote streaming leaves the device " +
+                "over WebSocket — off by default. The in-app drawer keeps all data in-process.",
             color = RkTokens.InkFaint,
             modifier = Modifier.padding(16.dp),
         )

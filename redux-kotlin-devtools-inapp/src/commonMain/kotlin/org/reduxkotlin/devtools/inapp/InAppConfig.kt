@@ -5,7 +5,7 @@ public enum class DevToolsTrigger {
     /** A floating, draggable bubble (tap to open). Default on. */
     BUBBLE,
 
-    /** A right-edge swipe/tab. Default on. */
+    /** A right-edge tab; tap it or swipe it leftward to open. Default on. */
     EDGE_SWIPE,
 }
 

@@ -17,6 +17,13 @@ class DevToolsSessionTest {
     private object Noise
 
     @Test
+    fun maxAge_exposes_the_configs_retention_bound() {
+        val session = DevToolsSession.create(DevToolsConfig(name = "bounded", maxAge = 7))
+        assertEquals(7, session.maxAge)
+        session.close()
+    }
+
+    @Test
     fun init_then_record_emits_initialized_then_action_with_diff() = runTest {
         val dispatcher = StandardTestDispatcher(testScheduler)
         val session = DevToolsSession.create(DevToolsConfig(name = "s"), dispatcher)

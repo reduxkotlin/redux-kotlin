@@ -21,6 +21,7 @@ public object DevToolsHub {
     private val configsById = LinkedHashMap<String, DevToolsConfig>()
     private val registeredOutputs = ArrayList<DevToolsOutput>()
     private val sessionsFlowState = MutableStateFlow<List<DevToolsSession>>(emptyList())
+    private val outputsFlowState = MutableStateFlow<List<DevToolsOutput>>(emptyList())
 
     /**
      * Observable view of the active sessions. The in-app drawer's multi-store picker collects this so
@@ -28,6 +29,14 @@ public object DevToolsHub {
      * shows up without recreating the drawer. Emits a new snapshot on every create/remove/reset.
      */
     public val sessionsFlow: StateFlow<List<DevToolsSession>> = sessionsFlowState.asStateFlow()
+
+    /**
+     * Observable view of the registered outputs (same snapshot as [outputs]). The in-app drawer's
+     * Outputs tab collects this so an output registered *after* the drawer first composed still
+     * appears. Emits on every [registerOutput]/[reset]; it does **not** re-emit when an output's
+     * [DevToolsOutput.isRunning] changes — collectors re-read that on their own invalidation.
+     */
+    public val outputsFlow: StateFlow<List<DevToolsOutput>> = outputsFlowState.asStateFlow()
 
     /**
      * Returns the existing session for the config's id, or creates and registers a new one.
@@ -92,7 +101,10 @@ public object DevToolsHub {
      * the id `"bridge"` — so deduping by id would silently drop every store's output but the first.
      */
     public fun registerOutput(output: DevToolsOutput): Unit = synchronized(lock) {
-        if (registeredOutputs.none { it === output }) registeredOutputs.add(output)
+        if (registeredOutputs.none { it === output }) {
+            registeredOutputs.add(output)
+            publishOutputs()
+        }
     }
 
     /** A snapshot of all registered outputs (the Outputs tab source). */
@@ -105,10 +117,16 @@ public object DevToolsHub {
         configsById.clear()
         registeredOutputs.clear()
         publishSessions()
+        publishOutputs()
     }
 
     /** Re-publishes the session snapshot to [sessionsFlow]. Callers must hold [lock]. */
     private fun publishSessions() {
         sessionsFlowState.value = sessionsById.values.toList()
+    }
+
+    /** Re-publishes the output snapshot to [outputsFlow]. Callers must hold [lock]. */
+    private fun publishOutputs() {
+        outputsFlowState.value = registeredOutputs.toList()
     }
 }

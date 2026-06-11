@@ -46,6 +46,8 @@ abstract interface org.reduxkotlin.devtools/DevToolsOutput { // org.reduxkotlin.
         abstract fun <get-id>(): kotlin/String // org.reduxkotlin.devtools/DevToolsOutput.id.<get-id>|<get-id>(){}[0]
     abstract val label // org.reduxkotlin.devtools/DevToolsOutput.label|{}label[0]
         abstract fun <get-label>(): kotlin/String // org.reduxkotlin.devtools/DevToolsOutput.label.<get-label>|<get-label>(){}[0]
+    open val isRunning // org.reduxkotlin.devtools/DevToolsOutput.isRunning|{}isRunning[0]
+        open fun <get-isRunning>(): kotlin/Boolean // org.reduxkotlin.devtools/DevToolsOutput.isRunning.<get-isRunning>|<get-isRunning>(){}[0]
 
     abstract fun start(org.reduxkotlin.devtools/DevToolsSession) // org.reduxkotlin.devtools/DevToolsOutput.start|start(org.reduxkotlin.devtools.DevToolsSession){}[0]
     abstract fun stop() // org.reduxkotlin.devtools/DevToolsOutput.stop|stop(){}[0]
@@ -164,6 +166,8 @@ final class org.reduxkotlin.devtools/DevToolsSession { // org.reduxkotlin.devtoo
         final fun <get-events>(): kotlinx.coroutines.flow/SharedFlow<org.reduxkotlin.devtools/DevToolsEvent> // org.reduxkotlin.devtools/DevToolsSession.events.<get-events>|<get-events>(){}[0]
     final val id // org.reduxkotlin.devtools/DevToolsSession.id|{}id[0]
         final fun <get-id>(): kotlin/String // org.reduxkotlin.devtools/DevToolsSession.id.<get-id>|<get-id>(){}[0]
+    final val maxAge // org.reduxkotlin.devtools/DevToolsSession.maxAge|{}maxAge[0]
+        final fun <get-maxAge>(): kotlin/Int // org.reduxkotlin.devtools/DevToolsSession.maxAge.<get-maxAge>|<get-maxAge>(){}[0]
 
     final fun close() // org.reduxkotlin.devtools/DevToolsSession.close|close(){}[0]
     final fun history(): kotlin.collections/List<org.reduxkotlin.devtools/DevToolsEvent.ActionRecorded> // org.reduxkotlin.devtools/DevToolsSession.history|history(){}[0]
@@ -349,6 +353,8 @@ final class org.reduxkotlin.devtools/PipelineTrace { // org.reduxkotlin.devtools
 }
 
 final object org.reduxkotlin.devtools/DevToolsHub { // org.reduxkotlin.devtools/DevToolsHub|null[0]
+    final val outputsFlow // org.reduxkotlin.devtools/DevToolsHub.outputsFlow|{}outputsFlow[0]
+        final fun <get-outputsFlow>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<org.reduxkotlin.devtools/DevToolsOutput>> // org.reduxkotlin.devtools/DevToolsHub.outputsFlow.<get-outputsFlow>|<get-outputsFlow>(){}[0]
     final val sessionsFlow // org.reduxkotlin.devtools/DevToolsHub.sessionsFlow|{}sessionsFlow[0]
         final fun <get-sessionsFlow>(): kotlinx.coroutines.flow/StateFlow<kotlin.collections/List<org.reduxkotlin.devtools/DevToolsSession>> // org.reduxkotlin.devtools/DevToolsHub.sessionsFlow.<get-sessionsFlow>|<get-sessionsFlow>(){}[0]
 

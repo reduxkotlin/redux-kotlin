@@ -229,7 +229,7 @@ public final class org/reduxkotlin/devtools/bridge/BridgeOutput : org/reduxkotli
 	public fun getId ()Ljava/lang/String;
 	public fun getLabel ()Ljava/lang/String;
 	public final fun getStartEnabled ()Z
-	public final fun isRunning ()Z
+	public fun isRunning ()Z
 	public fun start (Lorg/reduxkotlin/devtools/DevToolsSession;)V
 	public fun stop ()V
 }

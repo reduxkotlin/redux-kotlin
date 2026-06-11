@@ -28,33 +28,44 @@ public fun payloadPreview(event: DevToolsEvent.ActionRecorded): String {
 }
 
 /**
- * Whether this row matches the search [query]. A blank query matches everything. The haystack spans
- * the action id, type, payload preview, serialized state and store name. When [regex] is `true` the
- * query is compiled case-insensitively (a malformed pattern matches nothing); otherwise it is a
- * case-insensitive substring test.
+ * The serialized search haystack for this row: action id, type, payload preview, serialized state
+ * and store name. Building it serializes the whole state JSON — callers that filter repeatedly
+ * (every keystroke) should compute it once per row and match with [haystackMatches].
  */
-public fun ActionLogRow.matches(query: String, regex: Boolean): Boolean {
+public fun ActionLogRow.searchHaystack(): String =
+    "${event.actionId} ${actionType(event.action)} ${payloadPreview(event)} ${event.state} $storeName"
+
+/**
+ * Whether a precomputed [haystack] (see [ActionLogRow.searchHaystack]) matches the search [query].
+ * A blank query matches everything. When [regex] is `true` the query is compiled case-insensitively
+ * (a malformed pattern matches nothing); otherwise it is a case-insensitive substring test.
+ */
+public fun haystackMatches(haystack: String, query: String, regex: Boolean): Boolean {
     if (query.isBlank()) return true
-    val hay = "${event.actionId} ${actionType(event.action)} ${payloadPreview(event)} ${event.state} $storeName"
     return if (regex) {
-        runCatching { Regex(query, RegexOption.IGNORE_CASE).containsMatchIn(hay) }.getOrDefault(false)
+        runCatching { Regex(query, RegexOption.IGNORE_CASE).containsMatchIn(haystack) }.getOrDefault(false)
     } else {
-        hay.contains(query, ignoreCase = true)
+        haystack.contains(query, ignoreCase = true)
     }
 }
 
 /**
+ * Whether this row matches the search [query] (see [haystackMatches]). Rebuilds the haystack on
+ * every call — prefer precomputing [searchHaystack] when filtering the same rows repeatedly.
+ */
+public fun ActionLogRow.matches(query: String, regex: Boolean): Boolean =
+    haystackMatches(searchHaystack(), query, regex)
+
+/**
  * Flattens this registry snapshot into action-log rows. In merged mode (`merged == true`) it returns
  * every selected store's actions interleaved by time, each tagged merged. Otherwise it resolves the
- * active store — preferring [activeStoreId] (if still selected), else the first selected store, else
- * the first registered store — and maps its actions to single-store rows (empty when there are none).
+ * active store via [StoreRegistryState.resolveActive] and maps its actions to single-store rows
+ * (empty when there are none).
  */
 public fun StoreRegistryState.actionLogRows(activeStoreId: String?): List<ActionLogRow> = if (merged) {
     mergedRows.map { ActionLogRow(it.storeId, it.storeName, true, it.event) }
 } else {
-    val store = stores.firstOrNull { it.ref.id == activeStoreId && it.ref.id in selectedIds }
-        ?: stores.firstOrNull { it.ref.id in selectedIds }
-        ?: stores.firstOrNull()
+    val store = resolveActive(activeStoreId)
     store?.state?.actions?.map { ActionLogRow(store.ref.id, store.ref.name, false, it) } ?: emptyList()
 }
 
