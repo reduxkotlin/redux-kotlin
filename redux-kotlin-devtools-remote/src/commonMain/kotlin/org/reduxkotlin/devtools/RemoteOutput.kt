@@ -42,7 +42,7 @@ public class RemoteOutput(private val config: RemoteConfig, private val logger: 
     private var connection: RemoteConnection? = null
 
     /** Whether the output is currently subscribed/connected. */
-    public val isRunning: Boolean get() = scope != null
+    override val isRunning: Boolean get() = scope != null
 
     /**
      * Whether this output should connect as soon as it is bound to a session

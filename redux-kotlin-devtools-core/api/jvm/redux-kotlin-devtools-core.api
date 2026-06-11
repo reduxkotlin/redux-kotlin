@@ -90,6 +90,7 @@ public final class org/reduxkotlin/devtools/DevToolsEvent$PipelineTraced : org/r
 public final class org/reduxkotlin/devtools/DevToolsHub {
 	public static final field INSTANCE Lorg/reduxkotlin/devtools/DevToolsHub;
 	public final fun createSession (Lorg/reduxkotlin/devtools/DevToolsConfig;)Lorg/reduxkotlin/devtools/DevToolsSession;
+	public final fun getOutputsFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun getSessionsFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun outputs ()Ljava/util/List;
 	public final fun registerOutput (Lorg/reduxkotlin/devtools/DevToolsOutput;)V
@@ -107,8 +108,13 @@ public final class org/reduxkotlin/devtools/DevToolsKt {
 public abstract interface class org/reduxkotlin/devtools/DevToolsOutput {
 	public abstract fun getId ()Ljava/lang/String;
 	public abstract fun getLabel ()Ljava/lang/String;
+	public fun isRunning ()Z
 	public abstract fun start (Lorg/reduxkotlin/devtools/DevToolsSession;)V
 	public abstract fun stop ()V
+}
+
+public final class org/reduxkotlin/devtools/DevToolsOutput$DefaultImpls {
+	public static fun isRunning (Lorg/reduxkotlin/devtools/DevToolsOutput;)Z
 }
 
 public final class org/reduxkotlin/devtools/DevToolsSession {
@@ -117,6 +123,7 @@ public final class org/reduxkotlin/devtools/DevToolsSession {
 	public final fun close ()V
 	public final fun getEvents ()Lkotlinx/coroutines/flow/SharedFlow;
 	public final fun getId ()Ljava/lang/String;
+	public final fun getMaxAge ()I
 	public final fun history ()Ljava/util/List;
 	public final fun init (Ljava/lang/Object;)V
 	public final fun liftedState ()Lkotlinx/serialization/json/JsonObject;

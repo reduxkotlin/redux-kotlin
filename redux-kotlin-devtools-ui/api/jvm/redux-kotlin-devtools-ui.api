@@ -21,8 +21,10 @@ public final class org/reduxkotlin/devtools/inapp/DevToolsThemeMode : java/lang/
 public final class org/reduxkotlin/devtools/inapp/model/ActionLogKt {
 	public static final fun actionLogRows (Lorg/reduxkotlin/devtools/inapp/model/InAppState;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public static final fun actionLogRows (Lorg/reduxkotlin/devtools/inapp/model/StoreRegistryState;Ljava/lang/String;)Ljava/util/List;
+	public static final fun haystackMatches (Ljava/lang/String;Ljava/lang/String;Z)Z
 	public static final fun matches (Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;Ljava/lang/String;Z)Z
 	public static final fun payloadPreview (Lorg/reduxkotlin/devtools/DevToolsEvent$ActionRecorded;)Ljava/lang/String;
+	public static final fun searchHaystack (Lorg/reduxkotlin/devtools/inapp/model/ActionLogRow;)Ljava/lang/String;
 }
 
 public final class org/reduxkotlin/devtools/inapp/model/ActionLogRow {
@@ -179,6 +181,7 @@ public final class org/reduxkotlin/devtools/inapp/model/StoreRegistryState {
 	public final fun getSelectedIds ()Ljava/util/Set;
 	public final fun getStores ()Ljava/util/List;
 	public fun hashCode ()I
+	public final fun resolveActive (Ljava/lang/String;)Lorg/reduxkotlin/devtools/inapp/model/StoreEntry;
 	public fun toString ()Ljava/lang/String;
 }
 

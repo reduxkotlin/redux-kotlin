@@ -33,7 +33,7 @@ public class BridgeOutput(private val config: BridgeConfig, private val logger: 
      * Whether the output has been started (and not yet stopped). `true` does **not** imply a live
      * connection — the connect loop may still be dialing or waiting out a reconnect backoff.
      */
-    public val isRunning: Boolean get() = scope != null
+    override val isRunning: Boolean get() = scope != null
 
     /**
      * Subscribes to [session] and starts the bridge connect loop.

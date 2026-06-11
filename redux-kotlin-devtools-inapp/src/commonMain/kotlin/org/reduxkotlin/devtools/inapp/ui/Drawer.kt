@@ -53,10 +53,10 @@ internal fun Drawer(
     registry: StoreRegistryModel?,
     onClose: () -> Unit,
     onToggleOutput: (String, Boolean) -> Unit,
-    rows: List<ActionLogRow> = emptyList(),
-    selectedStoreId: String? = null,
-    selectedActionId: Int? = state.selected?.actionId,
-    onSelect: (storeId: String, actionId: Int) -> Unit = { _, actionId -> model.select(actionId) },
+    rows: List<ActionLogRow>,
+    selectedStoreId: String?,
+    selectedActionId: Int?,
+    onSelect: (storeId: String, actionId: Int) -> Unit,
 ) {
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val wide = maxWidth >= 600.dp

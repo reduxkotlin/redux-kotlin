@@ -48,6 +48,15 @@ public data class StoreRegistryState(
             .filter { it.ref.id in selectedIds }
             .flatMap { e -> e.state.actions.map { StoreActionRow(e.ref.id, e.ref.name, it) } }
             .sortedWith(compareBy({ it.event.timestampMillis }, { it.storeId }, { it.event.actionId }))
+
+    /**
+     * Resolves the store the single-store UI should show: [activeStoreId] if it is registered and
+     * still selected, else the first selected store, else the first registered store, else `null`.
+     */
+    public fun resolveActive(activeStoreId: String?): StoreEntry? =
+        stores.firstOrNull { it.ref.id == activeStoreId && it.ref.id in selectedIds }
+            ?: stores.firstOrNull { it.ref.id in selectedIds }
+            ?: stores.firstOrNull()
 }
 
 /**
