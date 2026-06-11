@@ -32,7 +32,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(project(":examples:counter:common"))
-    implementation(project(":redux-kotlin-threadsafe"))
+    implementation(project(":redux-kotlin-concurrent"))
     // DevTools ships only in debug builds (see src/debug vs src/release DevToolsEnhancer.kt).
     debugImplementation(project(":redux-kotlin-devtools-core"))
 }

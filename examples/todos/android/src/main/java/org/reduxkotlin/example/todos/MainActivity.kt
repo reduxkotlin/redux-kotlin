@@ -7,9 +7,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import org.reduxkotlin.StoreSubscription
+import org.reduxkotlin.concurrent.createConcurrentStore
 import org.reduxkotlin.example.todos.databinding.ActivityMainBinding
 import org.reduxkotlin.examples.todos.*
-import org.reduxkotlin.threadsafe.createThreadSafeStore
 
 /**
  * This is a sample of basic redux behavior.
@@ -21,7 +21,7 @@ import org.reduxkotlin.threadsafe.createThreadSafeStore
  * is 10.0.2.2, or on a USB device run `adb reverse tcp:8000 tcp:8000` (host = "localhost").
  */
 
-val store = createThreadSafeStore(::rootReducer, AppState(), devToolsEnhancer())
+val store = createConcurrentStore(::rootReducer, AppState(), enhancer = devToolsEnhancer())
 
 class MainActivity : AppCompatActivity() {
     private lateinit var storeSubscription: StoreSubscription

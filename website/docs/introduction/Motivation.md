@@ -14,6 +14,7 @@ ReduxKotlin.org aims to create a standard Redux for Kotlin apps that can be used
 sharing code between Android, iOS, web.
 
 Redux as a pattern for sharing code between platforms looks promising, especially in the future with
-Jetpack Compose and SwiftUI. For an example of shared code in a SwiftUI app look at the
-[MovieSwiftUI-Kotlin](https://github.com/reduxkotlin/MovieSwiftUI-Kotlin) example.
+Jetpack Compose and SwiftUI. For an example of shared redux code across
+Android, iOS, desktop, and web, look at the in-repo
+[TaskFlow example](/introduction/examples#taskflow--the-reference-architecture).
 

@@ -48,10 +48,10 @@ Video TBA
 
 ## *** PLEASE FILL OUT THE [Redux on Mobile Survey](https://docs.google.com/forms/d/e/1FAIpQLScEQ9zGndU48AUeGKR6PPE13IqhIFmTL570wDodQUEilhwMzw/viewform?usp=sf_link) ***
 
-__How to add to project:__
+## How to add to project
 
 Artifacts are hosted on Maven Central. Replace `<version>` with the latest release shown by the
-badge above (currently `0.6.0`).
+badge above.
 
 Requirements:
 
@@ -61,31 +61,72 @@ Requirements:
 - Supported KMP targets: `jvm`, `js` (browser/node), `android`, `iosArm64`, `iosX64`,
   `iosSimulatorArm64`, `macosArm64`, `macosX64`, `linuxArm64`, `linuxX64`, `mingwX64`
 
-For multiplatform, add the following to your shared module:
+### Recommended: the bundles
+
+One dependency for the common redux-kotlin stack. For
+**Jetpack / Multiplatform Compose apps**:
 
 ```kotlin
 kotlin {
     sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation("org.reduxkotlin:redux-kotlin-concurrent:<version>")
+                implementation("org.reduxkotlin:redux-kotlin-bundle-compose:<version>")
             }
         }
     }
 }
 ```
 
-For JVM only:
+For **everything else** (no Compose runtime pulled in):
 
 ```kotlin
-implementation("org.reduxkotlin:redux-kotlin-concurrent-jvm:<version>")
+implementation("org.reduxkotlin:redux-kotlin-bundle:<version>")
 ```
 
-`redux-kotlin-concurrent` provides a thread-safe store with lock-free reads and
-serialized writes (`createConcurrentStore`). The plain single-threaded store ships in the
-`redux-kotlin` core; the older `redux-kotlin-threadsafe` (one lock around every store
-function) is **deprecated** in favor of `redux-kotlin-concurrent`.
-[More info read here](https://www.reduxkotlin.org/introduction/getting-started)
+`redux-kotlin-bundle` transitively brings the core, the concurrent store
+(lock-free reads + serialized writes), granular field-level subscriptions,
+`ModelState` multi-model state (plus granular subscriptions over it), the
+multi-store registry, and the routed-reducer DSL. `redux-kotlin-bundle-compose`
+adds the Compose `State<T>` bindings and saveable snapshot persistence on top.
+
+```kotlin
+val store = createConcurrentModelStore {
+    model(UserModel()) {
+        on<LoggedIn>  { s, a -> s.copy(user = a.user) }
+        on<LoggedOut> { s, _ -> s.copy(user = null) }
+    }
+}
+store.dispatch(LoggedIn("ann"))
+```
+
+See the [Bundle guide](https://www.reduxkotlin.org/advanced/bundle) and the
+[TaskFlow sample](examples/taskflow) — a Compose Multiplatform Kanban app built
+on `redux-kotlin-bundle-compose` end-to-end.
+
+### À-la-carte
+
+Every module is published individually. Import the BOM once to keep versions
+aligned, then add only what you need without repeating versions:
+
+```kotlin
+dependencies {
+    implementation(platform("org.reduxkotlin:redux-kotlin-bom:<version>"))
+    implementation("org.reduxkotlin:redux-kotlin")
+    implementation("org.reduxkotlin:redux-kotlin-concurrent")
+}
+```
+
+| Group | Modules |
+|---|---|
+| Core & stores | `redux-kotlin` (core contracts + `createStore`), `redux-kotlin-concurrent` (`createConcurrentStore` — the recommended thread-safe store), `redux-kotlin-threadsafe` (**deprecated** — fully-synchronized predecessor), `redux-kotlin-thunk` (async actions middleware) |
+| State shape | `redux-kotlin-granular` (field-level subscriptions), `redux-kotlin-registry` (keyed multi-store container), `redux-kotlin-multimodel` (`ModelState` typesafe model bag), `redux-kotlin-multimodel-granular` (granular subscriptions over `ModelState`) |
+| Compose | `redux-kotlin-compose` (`fieldState` / `selectorState` bindings), `redux-kotlin-compose-multimodel` (bindings for `ModelState`), `redux-kotlin-compose-saveable` (snapshot persistence across rotation + process death) |
+| Routing | `redux-kotlin-routing` (routed `(model, action)` reducer DSL), `redux-kotlin-routing-codegen` (KSP `@Reduce` processor — in-repo, not yet on Maven Central) |
+| Bundles | `redux-kotlin-bundle`, `redux-kotlin-bundle-compose`, `redux-kotlin-bom` (Maven BOM) |
+| DevTools (experimental) | `redux-kotlin-devtools-core`, `-bridge`, `-remote`, `-inapp`, `-inapp-noop`, `-ui` — aligned by the BOM but exempt from semver until the surface stabilizes |
+
+## Core API
 
 Usage is very similar to JS Redux and those docs will be useful https://redux.js.org/. These docs
 are not an intro to
@@ -153,33 +194,10 @@ val store = createStore(reducer, AppState(user, listOf()), applyMiddleware(loggi
 
 You then will have access to dispatch and subscribe functions from the `store`.
 
-__Create a synchronized store__
-
-```kotlin
-val store =
-    createThreadSafeStore(reducer, AppState(user, listOf()), applyMiddleware(loggingMiddleware))
-```
-
-Access to `store` methods like `dispatch` and `getState` will be synchronized. Note: if using a
-thread safe store with enhancers or middleware that require access to store methods, see usage
-below.
-
-__Create a synchronized store using an enhancer__
-
-```kotlin
-val store = createStore(
-    reducer,
-    AppState(user, listOf()),
-    compose(
-        applyMiddleware(createThunkMiddleware(), loggingMiddleware),
-        createSynchronizedStoreEnhancer() // needs to be placed after enhancers that requires synchronized store methods
-    )
-)
-```
-
-Access to `store` methods like `dispatch` and `getState` will be synchronized, and enhancers (
-eg. `applyMiddleware`) that are placed above `createSynchronizedStoreEnhancer` in the enhancer
-composition chain will receive the synchronized store.
+For thread-safe access from multiple threads, use `createConcurrentStore` from
+`redux-kotlin-concurrent` (lock-free reads, serialized writes) — the older
+`createThreadSafeStore` / `createSynchronizedStoreEnhancer` are deprecated; see the
+[threading docs](https://www.reduxkotlin.org/introduction/threading).
 
 ## DevTools
 

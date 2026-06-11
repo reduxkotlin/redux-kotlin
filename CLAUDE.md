@@ -7,28 +7,63 @@ gate and conventions that aren't obvious from the source.
 
 ## Modules
 
-Ten published library modules (each applies `convention.library-mpp-*` +
-`convention.publishing-mpp`):
+Twenty-one published modules (library modules apply `convention.library-mpp-*`
++ `convention.publishing-mpp`; the BOM applies `java-platform` +
+`convention.publishing-platform`). The recommended consumer entry points are
+the bundles; everything else is à-la-carte.
+
+**Core trio + thunk:**
 
 - `redux-kotlin` — core: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
-- `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper).
-- `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; the CallerSerialized strategy).
+- `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; the CallerSerialized strategy; `NotificationContext`/`coalescingNotificationContext`).
+- `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper). **Deprecated** in favor of `redux-kotlin-concurrent`.
+- `redux-kotlin-thunk` — `createThunkMiddleware` async-actions middleware.
+
+**State shape:**
+
 - `redux-kotlin-granular` — `subscribeTo` / `subscribeFields` field-level subscriptions.
 - `redux-kotlin-registry` — `StoreRegistry<K,S>` / `TypedStoreRegistry` keyed multi-store container.
 - `redux-kotlin-multimodel` — `ModelState` typesafe heterogeneous model bag.
 - `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
+
+**Compose trio:**
+
 - `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
 - `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
 - `redux-kotlin-compose-saveable` — `rememberSaveableState` store-anchored snapshot persistence (survives rotation + process death) via Compose `SaveableStateRegistry` + kotlinx.serialization.
 
-`examples/` holds sample apps (`convention.control`, not published). `website/`
+**Routing:**
+
+- `redux-kotlin-routing` — routed `(model, action)` dispatch over `ModelState`: `createModelStore { model(initial) { on<A> { … } } }`, `onAction`/`onBroadcast`/`install`, `preloadedState` rehydration.
+
+**Bundles:**
+
+- `redux-kotlin-bundle` — one-dependency stack: `createConcurrentModelStore` + registry helpers (concurrent + granular + multimodel(+granular) + registry + routing).
+- `redux-kotlin-bundle-compose` — the bundle + the Compose trio; for Compose apps.
+- `redux-kotlin-bom` — `java-platform` BOM constraining every published module (incl. devtools, marked experimental).
+
+**DevTools (×6, experimental — BOM-aligned but exempt from semver):**
+
+- `redux-kotlin-devtools-core`, `-bridge`, `-remote`, `-inapp`, `-inapp-noop` (release no-op facade), `-ui`.
+
+**Unpublished repo tools** (`convention.control` or plain JVM, no publishing
+plugin): `redux-kotlin-routing-codegen` (KSP `@Reduce`/`@ReduxInitial`
+processor — JVM-only, consumed via `project(...)`, listed in the BOM but
+publishing is a pre-release follow-up), `redux-kotlin-routing-codegen-sample`,
+`redux-kotlin-devtools-standalone` (Compose desktop monitor),
+`redux-kotlin-devtools-cli` (the `rk-devtools` terminal tool).
+
+`examples/` holds sample apps (`convention.control`, not published) — 
+`examples/taskflow` is the canonical bundle showcase. `website/`
 is the Docusaurus docs site.
 
 A new companion module: add it to `settings.gradle.kts`, create
 `build.gradle.kts` applying `convention.library-mpp-loved` +
 `convention.publishing-mpp`, set `commonMain` deps
-`api(project(":redux-kotlin"))` + whatever it needs, and use package
-`org.reduxkotlin.<feature>`. Mirror `redux-kotlin-registry` as the template.
+`api(project(":redux-kotlin"))` + whatever it needs, use package
+`org.reduxkotlin.<feature>`, and add the constraint to
+`redux-kotlin-bom/build.gradle.kts`. Mirror `redux-kotlin-registry` as the
+template.
 
 ## Build & test
 

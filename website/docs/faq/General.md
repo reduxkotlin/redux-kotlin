@@ -61,7 +61,7 @@ understand the tradeoffs involved in each decision.
 
 Yes! Redux can be used as a data store for any UI layer. In the JS world the most common usage is
 with React and React Native, which is a declarative UI framework similar in philosophy to Jetpack
-Compose and SwiftUI. It is very early days for (especially) Jetpack Compose and SwiftUI, however a
-working sample is available with
-[MovieSwiftUI-Kotlin](https://github.com/reduxkotlin/MovieSwiftUI-Kotlin)
+Compose and SwiftUI. A full Compose
+Multiplatform sample is available with the in-repo
+[TaskFlow example](../introduction/examples#taskflow--the-reference-architecture)
 
