@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Behavior change:** `dispatch` from inside a reducer now throws
+  `IllegalStateException` ("You may not dispatch while state is being reduced"),
+  restoring the core Redux contract. Previously the nested dispatch was silently
+  accepted and its state change overwritten. `getState`/`subscribe`/`unsubscribe`
+  already enforced the same guard. Dispatch follow-up actions from middleware or a
+  subscriber instead.
 - CI/toolchain bumped to JDK 21; library bytecode stays at JVM 17 to preserve downstream
   compatibility with JDK 17 consumers. Test matrix runs both JDKs.
 - Sample apps modernised: `compileSdk`/`targetSdk` 33 → 35, `JavaVersion` 1.8 → 21,
