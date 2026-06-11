@@ -29,9 +29,17 @@ public class BridgeOutput(private val config: BridgeConfig, private val logger: 
     private var scope: CoroutineScope? = null
     private var connection: BridgeConnection? = null
 
-    /** Whether the output is currently connected/streaming. */
+    /**
+     * Whether the output has been started (and not yet stopped). `true` does **not** imply a live
+     * connection — the connect loop may still be dialing or waiting out a reconnect backoff.
+     */
     public val isRunning: Boolean get() = scope != null
 
+    /**
+     * Subscribes to [session] and starts the bridge connect loop.
+     *
+     * Not thread-safe; call [start]/[stop] from a single thread (e.g. the UI thread).
+     */
     override fun start(session: DevToolsSession) {
         if (isRunning) return
         val s = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -43,6 +51,11 @@ public class BridgeOutput(private val config: BridgeConfig, private val logger: 
             .launchIn(s)
     }
 
+    /**
+     * Stops the connection and cancels the subscription.
+     *
+     * Not thread-safe; call [start]/[stop] from a single thread (e.g. the UI thread).
+     */
     override fun stop() {
         connection?.stop()
         connection = null

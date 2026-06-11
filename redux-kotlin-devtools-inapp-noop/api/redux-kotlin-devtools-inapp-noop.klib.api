@@ -104,6 +104,12 @@ final class org.reduxkotlin.devtools/DevToolsConfig { // org.reduxkotlin.devtool
     final fun toString(): kotlin/String // org.reduxkotlin.devtools/DevToolsConfig.toString|toString(){}[0]
 }
 
+final class org.reduxkotlin.devtools/KotlinxValueSerializer : org.reduxkotlin.devtools/ValueSerializer { // org.reduxkotlin.devtools/KotlinxValueSerializer|null[0]
+    constructor <init>(kotlinx.serialization.json/Json) // org.reduxkotlin.devtools/KotlinxValueSerializer.<init>|<init>(kotlinx.serialization.json.Json){}[0]
+
+    final fun toJson(kotlin/Any?): kotlinx.serialization.json/JsonElement // org.reduxkotlin.devtools/KotlinxValueSerializer.toJson|toJson(kotlin.Any?){}[0]
+}
+
 final object org.reduxkotlin.devtools.inapp/ReduxDevTools { // org.reduxkotlin.devtools.inapp/ReduxDevTools|null[0]
     final fun close() // org.reduxkotlin.devtools.inapp/ReduxDevTools.close|close(){}[0]
     final fun open() // org.reduxkotlin.devtools.inapp/ReduxDevTools.open|open(){}[0]
@@ -116,6 +122,7 @@ final object org.reduxkotlin.devtools/ToStringValueSerializer : org.reduxkotlin.
 final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop|#static{}org_reduxkotlin_devtools_inapp_InAppConfig$stableprop[0]
 final val org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop|#static{}org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop[0]
 final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_DevToolsConfig$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_DevToolsConfig$stableprop|#static{}org_reduxkotlin_devtools_DevToolsConfig$stableprop[0]
+final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_KotlinxValueSerializer$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_KotlinxValueSerializer$stableprop|#static{}org_reduxkotlin_devtools_KotlinxValueSerializer$stableprop[0]
 final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedMiddleware$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedMiddleware$stableprop|#static{}org_reduxkotlin_devtools_NamedMiddleware$stableprop[0]
 final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedReducer$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedReducer$stableprop|#static{}org_reduxkotlin_devtools_NamedReducer$stableprop[0]
 final val org.reduxkotlin.devtools/org_reduxkotlin_devtools_ToStringValueSerializer$stableprop // org.reduxkotlin.devtools/org_reduxkotlin_devtools_ToStringValueSerializer$stableprop|#static{}org_reduxkotlin_devtools_ToStringValueSerializer$stableprop[0]
@@ -129,6 +136,7 @@ final fun org.reduxkotlin.devtools.inapp/ReduxDevToolsHost(org.reduxkotlin.devto
 final fun org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_InAppConfig$stableprop_getter|org_reduxkotlin_devtools_inapp_InAppConfig$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools.inapp/org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop_getter|org_reduxkotlin_devtools_inapp_ReduxDevTools$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_DevToolsConfig$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_DevToolsConfig$stableprop_getter|org_reduxkotlin_devtools_DevToolsConfig$stableprop_getter(){}[0]
+final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_KotlinxValueSerializer$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_KotlinxValueSerializer$stableprop_getter|org_reduxkotlin_devtools_KotlinxValueSerializer$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedMiddleware$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedMiddleware$stableprop_getter|org_reduxkotlin_devtools_NamedMiddleware$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedReducer$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_NamedReducer$stableprop_getter|org_reduxkotlin_devtools_NamedReducer$stableprop_getter(){}[0]
 final fun org.reduxkotlin.devtools/org_reduxkotlin_devtools_ToStringValueSerializer$stableprop_getter(): kotlin/Int // org.reduxkotlin.devtools/org_reduxkotlin_devtools_ToStringValueSerializer$stableprop_getter|org_reduxkotlin_devtools_ToStringValueSerializer$stableprop_getter(){}[0]

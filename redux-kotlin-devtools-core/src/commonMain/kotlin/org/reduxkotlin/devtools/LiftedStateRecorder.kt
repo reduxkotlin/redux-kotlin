@@ -24,10 +24,12 @@ internal class LiftedStateRecorder(private val maxAge: Int, private val clock: E
 
     /**
      * Immutable snapshot of lifted state, published by the writer (dispatch thread) and consumed
-     * by readers on other threads. One action behind is acceptable for a debug tool.
+     * by readers on other threads. One action behind is acceptable for a debug tool. Eagerly
+     * initialized to the empty lifted object so [liftedState] never has to build a snapshot on the
+     * caller thread (which would race the consumer-confined [staged]/[nextActionId] before [init]).
      */
     @Volatile
-    private var snapshot: JsonObject? = null
+    private var snapshot: JsonObject = buildSnapshot()
 
     /** Seeds the history with the @@INIT action (id 0) and the initial [state]. */
     fun init(state: JsonElement) {
@@ -53,7 +55,7 @@ internal class LiftedStateRecorder(private val maxAge: Int, private val clock: E
     }
 
     /** Returns the last published lifted-state snapshot; safe to call from any thread. */
-    fun liftedState(): JsonObject = snapshot ?: buildSnapshot()
+    fun liftedState(): JsonObject = snapshot
 
     /** Builds the full lifted-state JSON object (the STATE message payload). */
     private fun buildSnapshot(): JsonObject {

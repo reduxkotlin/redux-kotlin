@@ -10,6 +10,8 @@ package org.reduxkotlin.devtools.bridge
  * @property token shared secret sent in the handshake; required by the monitor for non-loopback.
  * @property clientId stable id of this app instance (falls back to the session id if blank).
  * @property clientLabel human label for this client (device/app).
+ * @property storeName display name sent in the handshake's `storeName`; falls back to the
+ *   session id (`instanceId ?: name`) when `null`.
  */
 public data class BridgeConfig(
     public val host: String = "127.0.0.1",
@@ -19,4 +21,5 @@ public data class BridgeConfig(
     public val token: String? = null,
     public val clientId: String = "",
     public val clientLabel: String = "redux-kotlin app",
+    public val storeName: String? = null,
 )

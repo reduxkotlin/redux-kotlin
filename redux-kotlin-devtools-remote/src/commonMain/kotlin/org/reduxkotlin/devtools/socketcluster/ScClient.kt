@@ -72,7 +72,7 @@ internal class ScClient(
             session.incoming.consumeEach { frame ->
                 if (frame !is Frame.Text) return@consumeEach
                 when (val inbound = ScFrame.decode(frame.readText())) {
-                    is ScInbound.Ping -> session.send(ScFrame.PONG)
+                    is ScInbound.Ping -> session.send(inbound.reply)
                     is ScInbound.RpcResponse -> completePending(inbound)
                     is ScInbound.ChannelMessage -> dispatchChannel(inbound)
                     is ScInbound.Other -> Unit

@@ -9,6 +9,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import org.reduxkotlin.devtools.DevToolsSession
 
 /**
@@ -36,17 +39,33 @@ internal class BridgeConnection(
         scope.launch { connectLoop() }
     }
 
-    /** Enqueues a wire frame; drops and logs when the buffer is full. */
+    /** Enqueues a wire frame; drops and logs when the buffer is full or the output was stopped. */
     fun enqueue(message: BridgeMessage) {
         val result = outbound.trySend(message)
-        if (result.isFailure) logger("bridge: outbound buffer full, dropping message")
+        when {
+            result.isClosed -> logger("bridge: output stopped, dropping message")
+            result.isFailure -> logger("bridge: outbound buffer full, dropping message")
+        }
     }
 
-    /** Backfills a (re)connected monitor with the recent recorded actions (no clearing Init). */
+    /**
+     * Backfills a (re)connected monitor: first an [BridgeMessage.Init] carrying the session's
+     * current state (the base for monitors that join after `maxAge` evictions trimmed the history),
+     * then the recent recorded actions.
+     */
     fun reseed() {
         // Contract: the monitor MUST dedupe by actionId — this history replay can duplicate and
         // interleave with the live stream, so the same actionId may arrive more than once / out of order.
-        runCatching { session.history().forEach { enqueue(toWire(it)) } }
+        runCatching {
+            currentState()?.let { enqueue(BridgeMessage.Init(it)) }
+            session.history().forEach { enqueue(toWire(it)) }
+        }
+    }
+
+    /** The newest computed state in the session's lifted snapshot, or `null` before `init`. */
+    private fun currentState(): JsonElement? {
+        val computed = session.liftedState()["computedStates"] as? JsonArray
+        return (computed?.lastOrNull() as? JsonObject)?.get("state")
     }
 
     /** Stops the connection and closes the client. */
@@ -72,7 +91,7 @@ internal class BridgeConnection(
                         clientId = config.clientId.ifBlank { session.id },
                         clientLabel = config.clientLabel,
                         storeInstanceId = session.id,
-                        storeName = session.id,
+                        storeName = config.storeName ?: session.id,
                         serializerTier = "unknown",
                         token = config.token,
                     )
