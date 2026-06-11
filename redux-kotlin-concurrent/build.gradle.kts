@@ -49,6 +49,13 @@ kotlin {
                 implementation(project(":redux-kotlin-threadsafe"))
             }
         }
+        jvmTest {
+            dependencies {
+                // Race tests pin the publish-then-signal contract through the
+                // granular diff layer (the consumer the C1 race actually bit).
+                implementation(project(":redux-kotlin-granular"))
+            }
+        }
     }
 }
 

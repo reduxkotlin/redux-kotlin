@@ -16,6 +16,14 @@ import kotlin.concurrent.Volatile
  * and removes the typical "render once + subscribe to changes" two-step
  * in UI binding code.
  *
+ * Registration is race-safe: after the underlying `store.subscribe` is
+ * installed, every selector is re-evaluated and a change that landed
+ * during registration fires the real `(old, new)` diff at that point
+ * (subsuming the `triggerOnSubscribe` callback — no double-fire). On a
+ * store that posts notifications, a callback for the same change may
+ * already be queued; the worst case is one redundant same-value
+ * callback.
+ *
  * Returns a [StoreSubscription] (`() -> Unit`) that tears down the
  * subscription when invoked.
  */
@@ -111,8 +119,11 @@ internal class FieldSubscriptionRegistry<State>(
             val state = store.state
             // `entries` is sealed (no further mutation). The only mutable
             // field per entry is `entry.last`, which is @Volatile and
-            // written serially because the store contract guarantees
-            // subscribers are invoked serially within a dispatch.
+            // written serially because notification delivery is required to
+            // be serial: plain stores notify inline under dispatch, and the
+            // concurrent store's NotificationContext contract requires
+            // one-at-a-time, post-ordered delivery (a multi-threaded
+            // executor context is unsupported and would race this field).
             for (i in entries.indices) {
                 @Suppress("UNCHECKED_CAST")
                 val entry = entries[i] as Entry<State, Any?>
@@ -135,25 +146,47 @@ internal class FieldSubscriptionRegistry<State>(
             }
         }
 
-        // Fire triggerOnSubscribe=true entries AFTER the underlying
-        // subscriber is installed, so a racing dispatch can't be silently
-        // dropped (the worst case is the listener fires twice — once from
-        // the dispatch with a real diff, once from the trigger with
-        // (current, current) — which is harmless).
+        // Post-install re-diff, for EVERY entry: a change landing during
+        // registration — after on() sampled `entry.last`, before the
+        // store.subscribe above was installed — has no notification of its
+        // own, so re-evaluate each selector now and fire the real diff if the
+        // value moved. This also subsumes the triggerOnSubscribe firing: a
+        // moved value fires (prev, next) once (no double-fire); an unchanged
+        // value fires the documented (current, current) trigger. On a posting
+        // context a callback for the same change may already be queued — the
+        // worst case is one redundant same-value callback, which is harmless.
+        reDiffAfterInstall()
+
+        return { storeSub() }
+    }
+
+    private fun reDiffAfterInstall() {
+        val state = store.state
         for (i in entries.indices) {
             @Suppress("UNCHECKED_CAST")
             val entry = entries[i] as Entry<State, Any?>
-            if (entry.triggerOnSubscribe) {
-                val current = entry.last
-                try {
-                    entry.listener(current, current)
-                } catch (@Suppress("TooGenericExceptionCaught") cause: Throwable) {
-                    onSelectorError?.invoke(cause)
-                }
+            val next: Any? = try {
+                entry.selector(state)
+            } catch (@Suppress("TooGenericExceptionCaught") cause: Throwable) {
+                onSelectorError?.invoke(cause)
+                continue
+            }
+            val prev = entry.last
+            if (next !== prev && next != prev) {
+                entry.last = next
+                notifyGuarded(entry, prev, next)
+            } else if (entry.triggerOnSubscribe) {
+                notifyGuarded(entry, prev, prev)
             }
         }
+    }
 
-        return { storeSub() }
+    private fun notifyGuarded(entry: Entry<State, Any?>, prev: Any?, next: Any?) {
+        try {
+            entry.listener(prev, next)
+        } catch (@Suppress("TooGenericExceptionCaught") cause: Throwable) {
+            onSelectorError?.invoke(cause)
+        }
     }
 
     private companion object {

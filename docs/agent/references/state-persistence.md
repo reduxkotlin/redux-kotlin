@@ -86,7 +86,9 @@ Behavioral contract (all KDoc'd in the sources above):
   Use `Json { ignoreUnknownKeys = true }` for additive changes, a `version` field for breaking ones.
 - **Main thread.** Restore reads/dispatches on main — the store must accept main-thread access
   (the concurrent/bundle store does).
-- Desktop / JS / wasm have no OS saved-instance state: the anchor is a no-op there.
+- Only Android's Compose runtime wires `SaveableStateRegistry` to OS saved-instance state today;
+  on iOS, desktop, JS and wasm the anchor is a no-op for process death — durable state goes
+  through your own storage + `preloadedState` there.
 
 **Keys:** the default key is positional (call-site composite hash). Pass an explicit stable `key`
 whenever scopes can collide — multiple anchors, anchors inside lists/nav graphs, or per-entity

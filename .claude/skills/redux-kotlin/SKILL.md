@@ -33,6 +33,7 @@ companion modules on one `Store<S>` contract. Recommended app organization is **
 | **Modularization** | [`modularization.md`](../../../docs/agent/references/modularization.md) |
 | **Debugging** a running app (actions/state/diffs) | [`devtools.md`](../../../docs/agent/references/devtools.md) |
 | **Persisting/restoring state** (process death, `preloadedState`, saveable) | [`state-persistence.md`](../../../docs/agent/references/state-persistence.md) |
+| **Store consistency model** (sync writes, async notify, timing) | [`store-consistency-model.md`](../../../docs/agent/references/store-consistency-model.md) |
 
 ## Pointers
 
