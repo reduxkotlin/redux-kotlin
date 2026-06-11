@@ -24,5 +24,13 @@ dependencies {
         api("$g:redux-kotlin-bundle:$v")
         api("$g:redux-kotlin-bundle-compose:$v")
         api("$g:redux-kotlin-compose-saveable:$v")
+        // DevTools family — experimental: aligned by the BOM but exempt from
+        // semver until the devtools surface stabilizes (see docs/devtools.md).
+        api("$g:redux-kotlin-devtools-core:$v")
+        api("$g:redux-kotlin-devtools-bridge:$v")
+        api("$g:redux-kotlin-devtools-remote:$v")
+        api("$g:redux-kotlin-devtools-inapp:$v")
+        api("$g:redux-kotlin-devtools-inapp-noop:$v")
+        api("$g:redux-kotlin-devtools-ui:$v")
     }
 }

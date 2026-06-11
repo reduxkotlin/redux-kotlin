@@ -1,5 +1,9 @@
 # redux-kotlin-devtools-bridge
 
+> **Experimental:** published and version-aligned by `redux-kotlin-bom`, but exempt
+> from the semver guarantee until the devtools surface stabilizes — the API may
+> change in minor releases.
+
 The app→monitor transport of the Redux-Kotlin DevTools. `BridgeOutput` streams a
 `DevToolsSession`'s feed over WebSocket to the
 [standalone monitor](../redux-kotlin-devtools-standalone) or the

@@ -1,5 +1,9 @@
 # redux-kotlin-devtools-ui
 
+> **Experimental:** published and version-aligned by `redux-kotlin-bom`, but exempt
+> from the semver guarantee until the devtools surface stabilizes — the API may
+> change in minor releases.
+
 The shared Compose UI layer of the Redux-Kotlin DevTools: the panels (action
 log, State, Diff, Pipeline, Outputs), view models, and theme used by **both**
 the [in-app drawer](../redux-kotlin-devtools-inapp) and the

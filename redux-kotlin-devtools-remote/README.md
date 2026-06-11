@@ -1,5 +1,9 @@
 # redux-kotlin-devtools-remote
 
+> **Experimental:** published and version-aligned by `redux-kotlin-bom`, but exempt
+> from the semver guarantee until the devtools surface stabilizes — the API may
+> change in minor releases.
+
 Streams a `DevToolsSession` feed to an external Redux DevTools monitor — the
 browser extension or `@redux-devtools/cli` — over WebSocket, so you can inspect
 a redux-kotlin app in the same monitor UI the JS ecosystem uses.
