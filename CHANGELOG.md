@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `redux-kotlin-concurrent`: the state mirror is now published **before**
+  subscriber notifications are signaled (previously after, in the dispatch
+  epilogue). A posted callback racing ahead of the dispatching thread could
+  read the pre-dispatch mirror; for diff-based consumers (granular
+  subscriptions, Compose bindings) that meant a lost wakeup — the binding
+  stayed stale until the next dispatch. A callback now always observes state
+  at least as new as the dispatch that triggered it. The old
+  "mirror published after listeners / no mid-listener tear" wording is
+  retired: off-context readers may observe the new state while listeners run.
+- `redux-kotlin-concurrent`: after `unsubscribe()` returns, no new callback
+  invocation begins — a callback already queued on a posting context is
+  skipped at execution time (deliberate divergence from core Redux snapshot
+  delivery; with an inline context a peer unsubscribed earlier in the same
+  fan-out is skipped).
+- `redux-kotlin-concurrent`: a throwing `onError` handler no longer aborts
+  delivery to remaining subscribers or escapes `dispatch` — it is printed and
+  swallowed.
+
 ### Changed
 
 - **Behavior change:** `dispatch` from inside a reducer now throws
