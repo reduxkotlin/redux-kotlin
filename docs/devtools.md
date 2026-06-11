@@ -7,9 +7,11 @@ published on the website at
 the agent-oriented CLI walkthrough lives at
 [docs/agent/references/devtools.md](agent/references/devtools.md).
 
-> **Availability:** the DevTools modules are new and experimental — they are not
-> part of any published release yet and will be available from the next release.
-> Until then, build them from source (this repo).
+> **Availability:** the DevTools modules are **experimental**. They are published
+> alongside the other modules and version-aligned by `redux-kotlin-bom`, but they
+> are exempt from the semantic-versioning guarantee until the devtools surface
+> stabilizes — the API may change in minor releases. Everything else under the
+> BOM carries the full stability promise.
 
 ---
 

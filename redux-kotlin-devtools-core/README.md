@@ -1,5 +1,9 @@
 # redux-kotlin-devtools-core
 
+> **Experimental:** published and version-aligned by `redux-kotlin-bom`, but exempt
+> from the semver guarantee until the devtools surface stabilizes — the API may
+> change in minor releases.
+
 The recording core of the Redux-Kotlin DevTools. Provides the `devTools(config)`
 store enhancer that records actions, state snapshots, and JSON diffs into a
 `DevToolsSession`; the process-global `DevToolsHub` where sessions and outputs

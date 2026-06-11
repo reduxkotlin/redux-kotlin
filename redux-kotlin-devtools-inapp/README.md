@@ -1,5 +1,9 @@
 # redux-kotlin-devtools-inapp
 
+> **Experimental:** published and version-aligned by `redux-kotlin-bom`, but exempt
+> from the semver guarantee until the devtools surface stabilizes — the API may
+> change in minor releases.
+
 The in-app Redux-Kotlin DevTools drawer for Compose Multiplatform. Wrapping your
 app root in `ReduxDevToolsHost` adds a floating bubble and a right-edge swipe
 tab that open a drawer with **Actions**, **State**, **Diff**, **Pipeline**, and
