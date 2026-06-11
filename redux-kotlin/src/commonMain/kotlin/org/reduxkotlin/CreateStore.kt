@@ -163,6 +163,10 @@ public fun <State> createStore(
      * middleware will eventually dispatch plain object actions using this
      * method.
      *
+     * Dispatching while the reducer is executing (i.e. from inside a reducer)
+     * throws [IllegalStateException] — reducers must be pure; trigger follow-up
+     * actions from middleware or a subscriber instead.
+     *
      * @param {Any} [action] A plain object representing “what changed”. It is
      * a good idea to keep actions serializable so you can record and replay
      * user sessions, or use the time travelling `redux-devtools`.
@@ -179,16 +183,16 @@ public fun <State> createStore(
             """.trimMargin()
         }
 
-        /*
         check(!isDispatching) {
             """You may not dispatch while state is being reduced.
             |2 conditions can cause this error:
             |    1) Dispatching from a reducer
             |    2) Dispatching from multiple threads
-            |If #2 switch to createThreadSafeStore().
-            |https://reduxkotlin.org/introduction/threading""".trimMargin()
+            |If #2 switch to a thread-safe store (createConcurrentStore or
+            |createThreadSafeStore).
+            |https://reduxkotlin.org/introduction/threading
+            """.trimMargin()
         }
-         */
 
         try {
             isDispatching = true

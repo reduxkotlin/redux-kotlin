@@ -3,6 +3,7 @@ package org.reduxkotlin.concurrent
 import org.reduxkotlin.Reducer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class CallerSerializedStoreTest {
@@ -10,6 +11,7 @@ class CallerSerializedStoreTest {
     private data class S(val count: Int = 0)
     private object Inc
     private object Noop
+    private object TriggerNested
     private val reducer: Reducer<S> = { s, a -> if (a is Inc) s.copy(count = s.count + 1) else s }
 
     private fun store(onError: (Throwable) -> Unit = LogAndContinue) = CallerSerializedStore(
@@ -106,5 +108,35 @@ class CallerSerializedStoreTest {
         assertEquals(42, observedDuringReplace, "on-context getState during REPLACE must route to inner")
         s.dispatch(Inc)
         assertEquals(52, s.state.count)
+    }
+
+    @Test
+    fun dispatch_from_reducer_throws_through_wrapper_and_mirror_stays_consistent() {
+        lateinit var wrapped: ConcurrentStore<S>
+        val selfDispatchingReducer: Reducer<S> = { st, a ->
+            when (a) {
+                is Inc -> st.copy(count = st.count + 1)
+
+                is TriggerNested -> {
+                    wrapped.dispatch(Inc)
+                    st
+                }
+
+                else -> st
+            }
+        }
+        wrapped = CallerSerializedStore(
+            inner = org.reduxkotlin.createStore(selfDispatchingReducer, S()),
+            notificationContext = NotificationContext.Inline,
+            onError = LogAndContinue,
+        )
+
+        assertFailsWith<IllegalStateException> { wrapped.dispatch(TriggerNested) }
+
+        // The aborted dispatch left a consistent mirror: off-context reads see the
+        // unchanged state, and the store remains usable.
+        assertEquals(0, wrapped.state.count, "mirror must stay consistent after reducer-dispatch ISE")
+        wrapped.dispatch(Inc)
+        assertEquals(1, wrapped.state.count)
     }
 }
