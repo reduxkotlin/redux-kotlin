@@ -51,4 +51,28 @@ class BridgeProtocolTest {
         val wire = toWire(DevToolsEvent.Initialized(buildJsonObject { put("n", 0) }))
         assertTrue(wire is BridgeMessage.Init)
     }
+
+    @Test
+    fun lenient_decode_skips_undecodable_message_lines() {
+        val header = RecordingHeader(
+            protocolVersion = PROTOCOL_VERSION,
+            serializerTier = "json",
+            clientId = "c1",
+            clientLabel = "TaskFlow",
+            storeName = "TaskFlow-root",
+            storeInstanceId = "root",
+        )
+        val action = BridgeMessage.Action(
+            actionId = 1,
+            action = buildJsonObject { put("type", "AddCard") },
+            state = buildJsonObject { put("n", 1) },
+            diff = emptyList(),
+            timestampMillis = 10L,
+            isExcess = false,
+        )
+        val text = encodeRecording(header, listOf(action)) + "{\"t\":\"acti" // trailing partial write
+        val (h, msgs) = decodeRecordingLenient(text)
+        assertEquals(header, h)
+        assertEquals(listOf<BridgeMessage>(action), msgs)
+    }
 }

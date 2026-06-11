@@ -40,7 +40,10 @@ public fun MonitorApp(ingest: MonitorIngest, state: MonitorState) {
                 state = state,
                 colors = colors,
                 matches = matches,
-                onPause = { state.paused = !state.paused },
+                onPause = {
+                    state.paused = !state.paused
+                    ingest.paused = state.paused
+                },
                 onReconnect = { ingest.registry.refresh() },
                 onSave = {
                     val id = active?.ref?.id
@@ -68,7 +71,7 @@ public fun MonitorApp(ingest: MonitorIngest, state: MonitorState) {
                         msgs.forEach { c.accept(it) }
                     }
                 },
-                onClear = {},
+                onClear = { active?.let { ingest.clear(it.ref.id) } },
                 onTheme = { state.dark = !state.dark },
             )
             Box(Modifier.weight(1f)) { DockBody(state, colors) }

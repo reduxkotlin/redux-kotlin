@@ -8,7 +8,7 @@ import java.io.File
 
 /** `stores` — list the store keys present in the capture directory. */
 internal class StoresCommand : CliktCommand(name = "stores") {
-    private val out by option("--out").default(".rk-devtools")
+    private val out by option("--out", help = "capture directory").default(DEFAULT_CAPTURE_DIR)
 
     override fun run() = discoverStores(File(out)).forEach { echo("${it.key}\t${it.name}") }
 }

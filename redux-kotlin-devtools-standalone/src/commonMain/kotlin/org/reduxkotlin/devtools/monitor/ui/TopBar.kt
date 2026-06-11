@@ -180,7 +180,8 @@ private fun StatusAndControls(
         Box(Modifier.size(7.dp).clip(CircleShape).background(if (state.paused) colors.amber else colors.green))
         val clients = state.clients.size
         val label = if (state.paused) "paused" else "$clients client${if (clients == 1) "" else "s"}"
-        Text("$label · ws://127.0.0.1:9090", color = colors.dim, fontFamily = FontFamily.Monospace, fontSize = 11.sp)
+        val status = if (state.endpoint.isEmpty()) label else "$label · ${state.endpoint}"
+        Text(status, color = colors.dim, fontFamily = FontFamily.Monospace, fontSize = 11.sp)
         Spacer(Modifier.width(2.dp))
         IconBtn(if (state.paused) "▶" else "⏸", colors, active = state.paused, onClick = onPause)
         IconBtn("↻", colors, onClick = onReconnect)

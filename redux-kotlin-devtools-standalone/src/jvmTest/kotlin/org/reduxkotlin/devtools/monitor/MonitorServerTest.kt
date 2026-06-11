@@ -10,10 +10,33 @@ import org.reduxkotlin.devtools.DevToolsSession
 import org.reduxkotlin.devtools.bridge.BridgeConfig
 import org.reduxkotlin.devtools.bridge.BridgeOutput
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class MonitorServerTest {
 
+    @Test
+    fun loopback_peers_are_recognized() {
+        assertTrue(isLoopbackHost("127.0.0.1"))
+        assertTrue(isLoopbackHost("127.0.0.53"))
+        assertTrue(isLoopbackHost("::1"))
+        assertTrue(isLoopbackHost("0:0:0:0:0:0:0:1"))
+        assertTrue(isLoopbackHost("localhost"))
+        assertFalse(isLoopbackHost("192.168.1.20"))
+        assertFalse(isLoopbackHost("0.0.0.0"))
+        assertFalse(isLoopbackHost("example.com"))
+    }
+
+    @Test
+    fun start_refuses_a_non_loopback_bind_without_a_token() {
+        val server = MonitorServer(MonitorIngest(), port = 0, host = "0.0.0.0", token = null)
+        val e = assertFailsWith<IllegalStateException> { server.start() }
+        assertTrue(e.message!!.contains("token"))
+    }
+
+    // A loopback peer connecting WITHOUT a token must be accepted: the handshake below carries no
+    // token, and the store only appears in the registry after an accepted HelloAck.
     @Test
     fun a_bridge_client_connection_populates_the_registry() = runBlocking {
         val ingest = MonitorIngest()

@@ -280,6 +280,7 @@ public final class org/reduxkotlin/devtools/bridge/RecordingHeader$Companion {
 
 public final class org/reduxkotlin/devtools/bridge/RecordingKt {
 	public static final fun decodeRecording (Ljava/lang/String;)Lkotlin/Pair;
+	public static final fun decodeRecordingLenient (Ljava/lang/String;)Lkotlin/Pair;
 	public static final fun encodeRecording (Lorg/reduxkotlin/devtools/bridge/RecordingHeader;Ljava/util/List;)Ljava/lang/String;
 }
 
