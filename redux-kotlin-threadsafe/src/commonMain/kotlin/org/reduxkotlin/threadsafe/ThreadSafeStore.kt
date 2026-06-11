@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.reduxkotlin.threadsafe
 
 import kotlinx.atomicfu.locks.SynchronizedObject
@@ -14,8 +16,12 @@ import org.reduxkotlin.StoreSubscription
  * kotlinx.AtomicFu [https://github.com/Kotlin/kotlinx.atomicfu]
  * Allows all store functions to be accessed from any thread.
  * This does have a performance impact for JVM/Native.
- * TODO more info at [https://ReduxKotlin.org]
  */
+@Deprecated(
+    "redux-kotlin-threadsafe is deprecated in favor of redux-kotlin-concurrent: " +
+        "ConcurrentStore offers the same thread-safety with lock-free reads and serialized writes. " +
+        "See https://reduxkotlin.org/introduction/threading for migration notes.",
+)
 public class ThreadSafeStore<State>(override val store: Store<State>) :
     SynchronizedObject(),
     Store<State> {

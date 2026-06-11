@@ -64,6 +64,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   double-fire; worst case on a posting store is one redundant same-value
   callback.
 
+### Deprecated
+
+- `redux-kotlin-threadsafe` is deprecated in favor of `redux-kotlin-concurrent`. All public
+  declarations (`createThreadSafeStore`, `createTypedThreadSafeStore`, `ThreadSafeStore`,
+  `Store.asThreadSafe`, `createThreadSafeStoreEnhancer`) now carry `@Deprecated` warnings.
+  Migration: `createConcurrentStore(reducer, preloadedState, enhancer = enhancer)` /
+  `createTypedConcurrentStore` / `Store.asConcurrent()` keep the same contract with lock-free
+  reads and serialized writes. The module will be retired in a future release.
+
 ### Changed
 
 - **Behavior change:** `dispatch` from inside a reducer now throws

@@ -6,10 +6,18 @@ sidebar_label: createThreadSafeStore
 
 # `createThreadSafeStore(reducer, preloadedState, enhancer)`
 
+:::caution Deprecated
+
+`redux-kotlin-threadsafe` is **deprecated** in favor of `redux-kotlin-concurrent`.
+`createConcurrentStore(reducer, preloadedState, enhancer = enhancer)` keeps the same
+contract with lock-free reads and serialized writes — for most code it is a drop-in
+replacement. See [Threading](../introduction/threading) for migration notes.
+
+:::
+
 Creates a Redux [store](./store-api) that is may be accessed from any thread.
 
-***This is the simplest thread-safe way to create a store*** — every store
-function is synchronized on one lock. If you want reads that never block
+Every store function is synchronized on one lock. If you want reads that never block
 (lock-free `getState`/`subscribe` with serialized writes), use
 `createConcurrentStore` from `redux-kotlin-concurrent` instead — see
 [Threading](../introduction/threading).
