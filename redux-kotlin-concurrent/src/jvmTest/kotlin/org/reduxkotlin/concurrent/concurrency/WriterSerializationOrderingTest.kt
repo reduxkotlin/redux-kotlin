@@ -40,10 +40,12 @@ class WriterSerializationOrderingTest {
                 { s: S, a ->
                     when (a) {
                         is MarkA -> s.copy(count = s.count + 1)
+
                         is MarkB -> {
                             events += "B-reduce"
                             s.copy(count = s.count + 1)
                         }
+
                         else -> s
                     }
                 },
