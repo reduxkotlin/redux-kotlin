@@ -36,6 +36,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   new order every change before the install is caught by the re-sample and
   every change after it by the subscription; the worst-case overlap is one
   redundant same-value recomposition.
+- `redux-kotlin-granular`: `subscribeTo` / `subscribeFields` registration is
+  now race-safe — after the underlying `store.subscribe` is installed, every
+  selector is re-evaluated and a change that landed during registration fires
+  the real `(old, new)` diff at activation (previously it was silently
+  missed; only `triggerOnSubscribe` entries got a `(current, current)`
+  callback). A moved value subsumes the `triggerOnSubscribe` callback — no
+  double-fire; worst case on a posting store is one redundant same-value
+  callback.
 
 ### Changed
 
