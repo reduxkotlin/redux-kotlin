@@ -73,8 +73,8 @@ are good patterns to copy.
 ## KMP targets & where they run
 
 `convention.library-mpp-loved` targets: `jvm`, `android`, `js` (browser+node),
-`wasmJs` (browser+node), `iosArm64`, `iosSimulatorArm64`, `iosX64`, `macosX64`,
-`macosArm64`, `linuxX64`, `mingwX64`. The core uses `convention.library-mpp-all`,
+`wasmJs` (browser+node), `iosArm64`, `iosSimulatorArm64`, `macosArm64`,
+`linuxX64`, `mingwX64`. The core uses `convention.library-mpp-all`,
 which additionally has `linuxArm64`.
 
 - `jvm`/`js`/`android` compile on **every** host (host-independent; the Android

@@ -26,8 +26,8 @@ __Requirements__
 
 - Kotlin 1.9 or newer (artefacts are built with Kotlin 2.3)
 - Android `minSdk 21` or higher; library bytecode is JVM 17
-- Supported KMP targets: `jvm`, `js` (browser/node), `android`, `iosArm64`, `iosX64`,
-  `iosSimulatorArm64`, `macosArm64`, `macosX64`, `linuxArm64`, `linuxX64`, `mingwX64`
+- Supported KMP targets: `jvm`, `js` (browser/node), `wasmJs`, `android`, `iosArm64`,
+  `iosSimulatorArm64`, `macosArm64`, `linuxArm64` (core), `linuxX64`, `mingwX64`
 
 __For a multiplatform project:__
 

@@ -30,8 +30,8 @@ implementation("org.reduxkotlin:redux-kotlin-granular:<version>")
 ```
 
 The module targets every platform the core library supports: JVM,
-Android, JS, wasmJs, iosArm64, iosX64, iosSimulatorArm64, macosArm64,
-macosX64, linuxX64, mingwX64.
+Android, JS, wasmJs, iosArm64, iosSimulatorArm64, macosArm64,
+linuxX64, mingwX64.
 
 ## Single-field subscription
 
