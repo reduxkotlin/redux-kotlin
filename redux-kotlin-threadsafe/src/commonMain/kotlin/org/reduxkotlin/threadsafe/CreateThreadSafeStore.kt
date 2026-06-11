@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.reduxkotlin.threadsafe
 
 import org.reduxkotlin.Reducer
@@ -32,6 +34,12 @@ import org.reduxkotlin.typedReducer
  * @returns {Store} A Redux store that lets you read the state, dispatch actions
  * and subscribe to changes.
  */
+@Deprecated(
+    "redux-kotlin-threadsafe is deprecated in favor of redux-kotlin-concurrent: " +
+        "createConcurrentStore(reducer, preloadedState, enhancer = enhancer) keeps the same contract " +
+        "with lock-free reads and serialized writes. " +
+        "See https://reduxkotlin.org/introduction/threading for migration notes.",
+)
 public fun <State> createThreadSafeStore(
     reducer: Reducer<State>,
     preloadedState: State,
@@ -41,6 +49,11 @@ public fun <State> createThreadSafeStore(
 /**
  * Creates a thread-safe [TypedStore]. For further details see the matching [createThreadSafeStore].
  */
+@Deprecated(
+    "redux-kotlin-threadsafe is deprecated in favor of redux-kotlin-concurrent: " +
+        "use createTypedConcurrentStore from org.reduxkotlin.concurrent. " +
+        "See https://reduxkotlin.org/introduction/threading for migration notes.",
+)
 public inline fun <State, reified Action : Any> createTypedThreadSafeStore(
     crossinline reducer: TypedReducer<State, Action>,
     preloadedState: State,
@@ -50,4 +63,9 @@ public inline fun <State, reified Action : Any> createTypedThreadSafeStore(
 /**
  * Converts a given [Store] to a [ThreadSafeStore].
  */
+@Deprecated(
+    "redux-kotlin-threadsafe is deprecated in favor of redux-kotlin-concurrent: " +
+        "use Store.asConcurrent() from org.reduxkotlin.concurrent. " +
+        "See https://reduxkotlin.org/introduction/threading for migration notes.",
+)
 public fun <State> Store<State>.asThreadSafe(): ThreadSafeStore<State> = ThreadSafeStore(store)

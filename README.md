@@ -68,7 +68,7 @@ kotlin {
     sourceSets {
         commonMain { //   <---  name may vary on your project
             dependencies {
-                implementation("org.reduxkotlin:redux-kotlin-threadsafe:<version>")
+                implementation("org.reduxkotlin:redux-kotlin-concurrent:<version>")
             }
         }
     }
@@ -78,11 +78,14 @@ kotlin {
 For JVM only:
 
 ```kotlin
-implementation("org.reduxkotlin:redux-kotlin-threadsafe-jvm:<version>")
+implementation("org.reduxkotlin:redux-kotlin-concurrent-jvm:<version>")
 ```
 
-*Non threadsafe store is available. Typical usage will be with the threadsafe
-store. [More info read here](https://www.reduxkotlin.org/introduction/getting-started)
+`redux-kotlin-concurrent` provides a thread-safe store with lock-free reads and
+serialized writes (`createConcurrentStore`). The plain single-threaded store ships in the
+`redux-kotlin` core; the older `redux-kotlin-threadsafe` (one lock around every store
+function) is **deprecated** in favor of `redux-kotlin-concurrent`.
+[More info read here](https://www.reduxkotlin.org/introduction/getting-started)
 
 Usage is very similar to JS Redux and those docs will be useful https://redux.js.org/. These docs
 are not an intro to

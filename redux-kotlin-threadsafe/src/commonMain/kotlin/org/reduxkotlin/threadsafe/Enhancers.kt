@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.reduxkotlin.threadsafe
 
 import org.reduxkotlin.StoreEnhancer
@@ -13,6 +15,11 @@ import org.reduxkotlin.StoreEnhancer
 
  * @returns {StoreEnhancer} A store enhancer that synchronizes the store.
  */
+@Deprecated(
+    "redux-kotlin-threadsafe is deprecated in favor of redux-kotlin-concurrent: " +
+        "wrap the store with Store.asConcurrent() (or build it with createConcurrentStore) instead. " +
+        "See https://reduxkotlin.org/introduction/threading for migration notes.",
+)
 public fun <State> createThreadSafeStoreEnhancer(): StoreEnhancer<State> = { storeCreator ->
     { reducer, initialState, en: Any? ->
         val store = storeCreator(reducer, initialState, en)

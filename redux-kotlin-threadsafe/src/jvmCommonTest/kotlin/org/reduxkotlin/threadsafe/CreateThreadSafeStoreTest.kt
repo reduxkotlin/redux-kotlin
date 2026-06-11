@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.reduxkotlin.threadsafe
 
 import kotlinx.coroutines.Dispatchers
