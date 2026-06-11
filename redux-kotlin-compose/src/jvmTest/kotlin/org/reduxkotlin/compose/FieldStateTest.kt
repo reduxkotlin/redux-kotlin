@@ -61,10 +61,8 @@ private class DeferredNotifyStore<S>(initial: S) : org.reduxkotlin.Store<S> {
 // Lands a silent state change exactly inside the binding's effect-time window: `subscribe()`
 // first mutates state WITHOUT notifying, then registers the listener. Whatever the binding does
 // before its subscription is installed cannot see this change; only work done AFTER install can.
-private class MutateOnSubscribeStore(
-    initial: String,
-    private val valueAtSubscribe: String,
-) : org.reduxkotlin.Store<String> {
+private class MutateOnSubscribeStore(initial: String, private val valueAtSubscribe: String) :
+    org.reduxkotlin.Store<String> {
     private var current: String = initial
     private val listeners = mutableListOf<org.reduxkotlin.StoreSubscriber>()
 
