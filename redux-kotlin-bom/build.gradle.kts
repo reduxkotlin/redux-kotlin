@@ -12,6 +12,7 @@ dependencies {
         api("$g:redux-kotlin:$v")
         api("$g:redux-kotlin-threadsafe:$v")
         api("$g:redux-kotlin-concurrent:$v")
+        api("$g:redux-kotlin-thunk:$v")
         api("$g:redux-kotlin-granular:$v")
         api("$g:redux-kotlin-registry:$v")
         api("$g:redux-kotlin-multimodel:$v")

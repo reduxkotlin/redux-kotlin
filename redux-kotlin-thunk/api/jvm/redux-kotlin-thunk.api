@@ -1,0 +1,5 @@
+public final class org/reduxkotlin/thunk/ThunkKt {
+	public static final fun createThunkMiddleware (Ljava/lang/Object;)Lkotlin/jvm/functions/Function1;
+	public static synthetic fun createThunkMiddleware$default (Ljava/lang/Object;ILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
+}
+
