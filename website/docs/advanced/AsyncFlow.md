@@ -14,7 +14,7 @@ You may enhance [`createStore()`](../api/createstore) with
 [`applyMiddleware()`](../api/applymiddleware). It is not required, but it lets you 
 [express asynchronous actions in a convenient way](./async-actions).
 
-Asynchronous middleware like [redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin-thunk)
+Asynchronous middleware like [redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin/tree/master/redux-kotlin-thunk)
 wraps the store's [`dispatch()`](../api/store-api#dispatchaction-any-any) method and allows you to dispatch 
 something other than actions, for example, functions. Any middleware you use can then intercept 
 anything you dispatch, and in turn, can pass actions to the next middleware in the chain.

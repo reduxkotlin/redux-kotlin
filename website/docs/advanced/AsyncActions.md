@@ -55,8 +55,11 @@ We'll use separate types in this tutorial.
 
 # Async Actions
 
-The standard way to do async actions in Redux is to use the Redux-Kotlin-Thunk middleware. It comes
-in a separate package called `redux-kotlin-thunk`. We'll explain how middleware works in general
+The standard way to do async actions in Redux is to use the
+[redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin/tree/master/redux-kotlin-thunk)
+middleware. It comes in a separate artifact,
+`org.reduxkotlin:redux-kotlin-thunk` (install the middleware with
+`createThunkMiddleware()`). We'll explain how middleware works in general
 later; for now, there is just one important thing you need to know: by using this specific
 middleware, you can dispatch a function and it will be executed by the thunk-middleware. These
 functions are known as [thunks](https://en.wikipedia.org/wiki/Thunk). Thunks don't need to be pure; 
@@ -67,8 +70,8 @@ Thunks can be defined anywhere, but it useful to group them together logically. 
 thunks for an API can be grouped together in a class. Or they can be top level functions in a file.
 It is up to you and your team.
 
-`NetworkThunks` from the [Name Game example app](https://github.com/reduxkotlin/NameGameSampleApp) 
-shows how API request can be completed asynchronously using coroutines.
+`NetworkThunks` below (adapted from the archived Name Game sample app) shows how an API request
+can be completed asynchronously using coroutines.
 
 
 `NetworkThunks.kt`
@@ -115,8 +118,9 @@ fun thunk(thunkLambda: (dispatch: Dispatcher, getState: GetState<AppState>, extr
 ## Connecting to UI
 
 Dispatching async actions is no different from dispatching synchronous actions, so we won't discuss
-this in detail. See the [Example: Name Game](https://github.com/reduxkotlin/NameGameSampleApp) for 
-the complete source code discussed in this example.
+this in detail. For a current, in-repo example of async work driven through middleware, see the
+[TaskFlow sample](../introduction/examples#taskflow--the-reference-architecture) and its sync
+engine.
 
 ## Next Steps
 

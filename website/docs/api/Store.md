@@ -94,7 +94,7 @@ the middleware can interpret actions differently, and provide support for dispat
 thunks.
 
 Middleware is created by the community and does not ship with Redux by default. You need to
-explicitly install packages like [redux-thunk](https://github.com/reduxkotlin/redux-kotlin-thunk). 
+explicitly install packages like [redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin/tree/master/redux-kotlin-thunk). 
 You may also create your own middleware.
 
 To learn how to describe asynchronous API calls, read the current state inside action creators,

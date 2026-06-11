@@ -17,31 +17,61 @@ here](https://redux.js.org/introduction/ecosystem).
 ## First-party modules
 
 The core `redux-kotlin` library is intentionally minimal. Optional
-companion modules build on its contracts; add only the ones you need.
+companion modules build on its contracts; add only the ones you need —
+or start with a [bundle](../advanced/bundle), the recommended install.
 Published modules share the core's group id `org.reduxkotlin` and version;
 rows marked as repo tools are developer tools that ship in the repository
 and are not published to Maven.
 
+### Bundles — the recommended starting point
+
+| Module | Purpose |
+|---|---|
+| `redux-kotlin-bundle-compose` | [The bundle](../advanced/bundle) plus the Compose bindings and `redux-kotlin-compose-saveable` — the single dependency for Compose Multiplatform apps. |
+| `redux-kotlin-bundle` | [One-dependency assembly](../advanced/bundle) of the concurrent `ModelState` stack (`createConcurrentModelStore`, registry helpers) — concurrent + multimodel + granular + routing in one artifact, no Compose runtime. |
+| `redux-kotlin-bom` | [Maven BOM](../advanced/bundle#aligning-versions-the-bom) aligning the versions of every `org.reduxkotlin` module, for à-la-carte setups. |
+
+### Core & stores
+
 | Module | Purpose |
 |---|---|
 | `redux-kotlin` | The core store, reducer, and middleware contracts. |
-| `redux-kotlin-threadsafe` | [`createThreadSafeStore`](../api/createthreadsafestore) — a store wrapper that serialises access so any thread can dispatch, read, and subscribe safely. |
+| `redux-kotlin-concurrent` | [`createConcurrentStore`](../advanced/concurrent-store) — lock-free reads with caller-serialized writes; `NotificationContext` controls where subscriber callbacks run (incl. `coalescingNotificationContext` for lag-free main-thread notify). |
+| `redux-kotlin-threadsafe` | **Deprecated** in favor of `redux-kotlin-concurrent`. [`createThreadSafeStore`](../api/createthreadsafestore) — a store wrapper that serialises every store function on one lock. |
+| `redux-kotlin-thunk` | [Thunk middleware](../advanced/async-actions) for async actions — dispatch functions that can themselves dispatch once async work completes (`createThunkMiddleware()`). |
+
+### State shape
+
+| Module | Purpose |
+|---|---|
 | `redux-kotlin-granular` | [Granular Subscriptions](../advanced/granular-subscriptions) — subscribe to a single field or selector with an `(old, new)` callback that fires only when that value changes. |
 | `redux-kotlin-registry` | [Store Registry](../advanced/store-registry) — manage many stores keyed by a unique identifier, with thread-safe `getOrCreate` and manual lifecycle. |
-| `redux-kotlin-multimodel` | `ModelState` — a type-safe bag of independent feature models keyed by class, plus `combineModelReducers` to drive them from one store. |
-| `redux-kotlin-multimodel-granular` | [Granular subscriptions for `ModelState`](../advanced/granular-subscriptions#multi-model-stores) — `subscribeTo(Model::field)` / `subscribeToModel(...)`. |
+| `redux-kotlin-multimodel` | [`ModelState`](../advanced/multimodel) — a type-safe bag of independent feature models keyed by class, plus `combineModelReducers` to drive them from one store. |
+| `redux-kotlin-multimodel-granular` | [Granular subscriptions for `ModelState`](../advanced/multimodel#granular-subscriptions-redux-kotlin-multimodel-granular) — `subscribeTo(Model::field)` / `subscribeToModel(...)`. |
+
+### Routing
+
+| Module | Purpose |
+|---|---|
+| `redux-kotlin-routing` | [Routed `(model, action)` dispatch](../advanced/routing) over `ModelState` — declare each slot with `model(initial) { on<Action> { … } }` instead of a `when(action)` cascade; optional `preloadedState` overlays restored models at construction. |
+| `redux-kotlin-routing-codegen` | [KSP processor](../advanced/routing#code-generation-reduce--reduxinitial) for the routing DSL — `@Reduce` / `@ReduxInitial` annotations generate the `ReduxModule` wiring. Repo tool: not yet published to Maven Central. |
+
+### Compose
+
+| Module | Purpose |
+|---|---|
 | `redux-kotlin-compose` | [Compose integration](../advanced/compose-integration) — bind store fields to Compose `State<T>` with `fieldState` / `selectorState`. |
-| `redux-kotlin-compose-multimodel` | Compose `fieldState(Model::field)` bindings for `ModelState` stores. |
+| `redux-kotlin-compose-multimodel` | Compose [`fieldState(Model::field)` bindings](../advanced/multimodel#compose-bindings-redux-kotlin-compose-multimodel) for `ModelState` stores. |
 | `redux-kotlin-compose-saveable` | [`StateSaver` + `rememberSaveableState`](../advanced/compose-integration#saving-state-across-rotation--process-death) store-anchored snapshot persistence for Compose (survives rotation + process death) via Compose `SaveableStateRegistry`. |
-| `redux-kotlin-concurrent` | `createConcurrentStore` — lock-free reads with caller-serialized writes; `NotificationContext` controls where subscriber callbacks run (incl. `coalescingNotificationContext` for lag-free main-thread notify). |
-| `redux-kotlin-routing` | Routed `(model, action)` dispatch over `ModelState` — declare each slot with `model(initial) { on<Action> { … } }` instead of a `when(action)` cascade; optional `preloadedState` overlays restored models at construction. |
-| `redux-kotlin-routing-codegen` | KSP processor for the routing DSL — `@Reduce` / `@ReduxInitial` annotations generate the `ReduxModule` wiring. |
-| `redux-kotlin-bundle` | One-dependency assembly of the concurrent `ModelState` stack (`createConcurrentModelStore`, registry helpers) — concurrent + multimodel + granular + routing in one artifact. |
-| `redux-kotlin-bundle-compose` | The bundle plus the Compose bindings and `redux-kotlin-compose-saveable` — the single dependency for Compose Multiplatform apps. |
-| `redux-kotlin-bom` | Maven BOM aligning the versions of every `org.reduxkotlin` module. |
-| `redux-kotlin-devtools-*` | [DevTools family](../advanced/devtools) — action/state inspection, diffing, and pipeline timing for a running app. Published: `core`, `bridge`, `remote`, `inapp`, `inapp-noop` (release no-op facade), `ui`. Unpublished repo tools: `standalone` (Compose desktop monitor app) and `cli` (the `rk-devtools` terminal tool). |
+
+### DevTools (experimental)
+
+| Module | Purpose |
+|---|---|
+| `redux-kotlin-devtools-*` | [DevTools family](../advanced/devtools) — action/state inspection, diffing, and pipeline timing for a running app. Published (experimental — exempt from semver until the surface stabilizes): `core`, `bridge`, `remote`, `inapp`, `inapp-noop` (release no-op facade), `ui`. Unpublished repo tools: `standalone` (Compose desktop monitor app) and `cli` (the `rk-devtools` terminal tool). |
 
 ## Community
 
-**[Presenter-middleware](https://github.com/reduxkotlin/presenter-middleware)**  
+**[Presenter-middleware](https://github.com/reduxkotlin/presenter-middleware)** *(archived)*  
 A middleware for writing concise UI binding code and no-fuss lifecycle/subscription management.
+The repository is archived and no longer maintained.

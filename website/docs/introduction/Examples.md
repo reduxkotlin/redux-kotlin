@@ -6,8 +6,11 @@ sidebar_label: Examples
 
 # Examples
 
-ReduxKotlin includes a few examples currently and plans to port many of the JS Redux examples over.
-You may also find the [JS examples](https://redux.js.org/introduction/examples) helpful
+The example apps live in the repository's
+[`examples/`](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples)
+directory, so they always build against the current source. You may also find
+the [JS examples](https://redux.js.org/introduction/examples) helpful for the
+general patterns.
 
 ## TaskFlow — the reference architecture
 
@@ -34,99 +37,41 @@ git clone https://github.com/reduxkotlin/redux-kotlin.git
 
 ## Counter
 
+The smallest end-to-end app: a multiplatform common module (reducer + state)
+with an Android view-binding UI, granular field subscriptions, and a
+debug-only DevTools enhancer.
+
 Run the [Counter](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/counter) example:
-
-
 
 ```sh
 git clone https://github.com/reduxkotlin/redux-kotlin.git
 
-./gradlew examples:counter:installDebug
-
+./gradlew :examples:counter:android:installDebug
 ```
-or:
 
-Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
-example/counter example.
+or open the root project in Android Studio/IntelliJ and run the
+`examples/counter` Android configuration.
 
 ## Todos
+
+The classic Redux todos app: actions, a composed root reducer, and a visibility
+filter, with an Android RecyclerView UI.
 
 Run the [Todos](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/todos) example:
 
 ```sh
 git clone https://github.com/reduxkotlin/redux-kotlin.git
 
-./gradlew examples:todos:installDebug
-
-```
-or:
-
-Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
-example/counter example.
-
-## NameGame
-
-This is a multiplatform app for Android and iOS. It is a quiz on dog/cat breeds. This is a more
-complete example of how to use Redux in a real application. Async actions such as network requests
-and delays are demonstrated. Also used is the
-[presenter-middleware](https://github.com/reduxkotlin/presenter-middleware) as a presentation layer.
-
-Run the [NameGame](https://github.com/reduxkotlin/NameGameSampleApp) example:
-
-```sh
-git clone https://github.com/reduxkotlin/NameGameSampleApp.git
-
-./gradlew android:installDebug
-
-```
-or:
-
-Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
-example/counter example.
-
-iOS:
-
-Open the iOS/NameGame in XCode.
-
-
-## ReadingList 
-
-This is a multiplatform app for Android and iOS. It is a quiz on dog/cat breeds. This is a more
-complete example of how to use Redux in a real application. Async actions such as network requests
-and delays are demonstrated. Also used is the
-[presenter-middleware](https://github.com/reduxkotlin/presenter-middleware) as a presentation layer.
-
-Run the [ReadingList](https://github.com/reduxkotlin/ReadingListSampleApp) example:
-
-
-```sh
-git clone https://github.com/reduxkotlin/ReadingListSampleApp.git
-
-./gradlew android:installDebug
-
-```
-or:
-
-Open the root project in Android Studio/Intellij. Select and run the configuration for the Android
-example/counter example.
-
-iOS:
-
-Open the iOS/ReadingList in XCode.
-
-
-## MovieSwiftUI-Kotlin
-
-Fork of an 100% SwiftUI app that uses shared Kotlin code for networking, preferences, reducers,
-actions, and more.
-
-Run the [MovieSwiftUI-Kotlin](https://github.com/reduxkotlin/MovieSwiftUI-Kotlin) example:
-
-```sh
-git clone https://github.com/reduxkotlin/MovieSwiftUI-Kotlin.git
+./gradlew :examples:todos:android:installDebug
 ```
 
-Open the iOS/ReadingList in XCode.
+or open the root project in Android Studio/IntelliJ and run the
+`examples/todos` Android configuration.
 
-A minimal Jetpack Compose screen is implemented.
+## Older external samples
 
+Earlier standalone sample repositories on the
+[reduxkotlin GitHub organization](https://github.com/reduxkotlin) —
+NameGameSampleApp, ReadingListSampleApp, MovieSwiftUI-Kotlin — are **archived**
+and no longer build against current releases. They remain readable for
+historical reference, but start from TaskFlow or the in-repo examples above.

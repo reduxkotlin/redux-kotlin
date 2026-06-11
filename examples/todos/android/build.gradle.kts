@@ -35,7 +35,7 @@ dependencies {
     implementation(libs.androidx.recyclerview)
 
     implementation(project(":examples:todos:common"))
-    implementation(project(":redux-kotlin-threadsafe"))
+    implementation(project(":redux-kotlin-concurrent"))
     // DevTools ships only in debug builds (see src/debug vs src/release DevToolsEnhancer.kt).
     debugImplementation(project(":redux-kotlin-devtools-core"))
 }

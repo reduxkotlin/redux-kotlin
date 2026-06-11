@@ -127,8 +127,9 @@ function. Async actions may have different types, depending on the middleware yo
 often asynchronous primitives, like a thunk, which are not passed to the reducer immediately, but 
 trigger action dispatches once an operation has completed.
 
-Currently the only async middleware published is
-[Thunk middleware](https://github.com/reduxkotlin/redux-kotlin-thunk). Thunk is just any function
+Currently the only async middleware published is the
+[Thunk middleware](https://github.com/reduxkotlin/redux-kotlin/tree/master/redux-kotlin-thunk)
+(`org.reduxkotlin:redux-kotlin-thunk`). Thunk is just any function
 that can be sent to the `dispatch()` function. The Thunk middleware will execute the function.
 
 The design of Redux and its middleware allow creating other Async Action solutions.

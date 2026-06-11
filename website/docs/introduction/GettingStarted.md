@@ -14,13 +14,12 @@ implementation of Redux for Kotlin. Much of the information on [redux.js.org](ht
 applies to ReduxKotlin, however, there is also a lot of Javascript specific information that may
 _not_ apply to ReduxKotlin. This site documents how to get started with ReduxKotlin and provides 
 examples of using ReduxKotlin in projects. There are suggestions and examples, but ultimately the 
-core ReduxLibrary is not opinionated. How you use it in your project is up to you. This site will 
-continue to be updated as Kotlin multiplatform matures.
-
+core ReduxLibrary is not opinionated. How you use it in your project is up to you.
 
 ## Installation
 
-ReduxKotlin is published to Maven Central.
+ReduxKotlin is published to Maven Central. Replace `<version>` with the latest
+release.
 
 __Requirements__
 
@@ -29,32 +28,88 @@ __Requirements__
 - Supported KMP targets: `jvm`, `js` (browser/node), `wasmJs`, `android`, `iosArm64`,
   `iosSimulatorArm64`, `macosArm64`, `linuxArm64` (core), `linuxX64`, `mingwX64`
 
-__For a multiplatform project:__
+### Quick start — the bundles (recommended)
 
-The dependency only needs to be declared in your common sourceset — Gradle metadata picks up the
-platform-specific artefacts automatically (and has been on by default since Gradle 5.3):
+One dependency for the common redux-kotlin stack. For **Jetpack / Multiplatform
+Compose apps**, declare it in your common sourceset — Gradle metadata picks up
+the platform-specific artefacts automatically:
 
-```groovy
+```kotlin
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin-threadsafe:0.6.0"
+                implementation("org.reduxkotlin:redux-kotlin-bundle-compose:<version>")
             }
         }
     }
 }
 ```
 
-__For single platform project (i.e. just Android):__
+For apps **without Compose** (no Compose runtime pulled in):
 
-```groovy
+```kotlin
+implementation("org.reduxkotlin:redux-kotlin-bundle:<version>")
+```
+
+The bundle brings the core, the concurrent store (lock-free reads + serialized
+writes), granular field-level subscriptions, `ModelState` multi-model state,
+the multi-store registry, and the routed-reducer DSL; the Compose bundle adds
+`State<T>` bindings plus saveable snapshot persistence. Create a store with the
+routing DSL:
+
+```kotlin
+val store = createConcurrentModelStore {
+    model(UserModel()) {
+        on<LoggedIn>  { s, a -> s.copy(user = a.user) }
+        on<LoggedOut> { s, _ -> s.copy(user = null) }
+    }
+}
+store.dispatch(LoggedIn("ann"))
+```
+
+See the [Bundle guide](/advanced/bundle) for the full tour.
+
+### See it in a real app — TaskFlow
+
+[TaskFlow](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/taskflow)
+is a Compose Multiplatform Kanban app (Android / iOS / desktop / wasm) built on
+`redux-kotlin-bundle-compose` end-to-end — multi-model state, routing, granular
+Compose bindings, offline-first persistence. Its
+[ARCHITECTURE.md](https://github.com/reduxkotlin/redux-kotlin/blob/master/examples/taskflow/ARCHITECTURE.md)
+documents every design rule it follows. More on the [Examples page](/introduction/examples).
+
+### À-la-carte with the BOM
+
+Every module is also published individually. Import the
+[BOM](/advanced/bundle#aligning-versions-the-bom) once to align versions, then
+add only what you need:
+
+```kotlin
 dependencies {
-    implementation "org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.6.0"
+    implementation(platform("org.reduxkotlin:redux-kotlin-bom:<version>"))
+    implementation("org.reduxkotlin:redux-kotlin")
+    implementation("org.reduxkotlin:redux-kotlin-concurrent")
 }
 ```
 
-NOTE: If threadsafety is not a concern (i.e. a JS only project) `"org.reduxkotlin:redux-kotlin:0.6.0"` may be used.
+The [Ecosystem page](/introduction/ecosystem) lists every module and what it
+does.
+
+### Plain core — for library authors and minimal apps
+
+The core `redux-kotlin` artifact is a deliberately minimal implementation of the
+Redux contract (`Store`, `Reducer`, `Middleware`, `createStore`) with no extra
+dependencies — the right target for middleware/enhancer libraries, JS-only
+projects, or apps that want to assemble their own stack:
+
+```kotlin
+implementation("org.reduxkotlin:redux-kotlin:<version>")
+```
+
+The plain `createStore` is **not** thread-safe. On multi-threaded platforms use
+`createConcurrentStore` from `org.reduxkotlin:redux-kotlin-concurrent` (which
+the bundles use under the hood).
 [**More info on threading available here.**](/introduction/threading)
 
 ## Basic Example
@@ -94,7 +149,7 @@ class Decrement
 
 // Create a Redux store holding the state of your app.
 // 0 is the initial state
-val store = createThreadSafeStore(reducer, 0)
+val store = createConcurrentStore(reducer, 0)
 
 // You can use subscribe() to update the UI in response to state changes.
 // Normally you'd use an additional layer or view binding library rather than subscribe() directly.
@@ -132,13 +187,12 @@ and reproduce them just by replaying every action.
 
 ## Examples
 
-The ReduxKotlin Github organization contains several example projects demonstrating various aspects of how to use ReduxKotlin.
+The repository contains several example projects demonstrating various aspects of how to use
+ReduxKotlin:
 
+- [**TaskFlow**](/introduction/examples#taskflow--the-reference-architecture): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/taskflow) — Compose Multiplatform Kanban app on the bundle stack
 - [**Counter**](/introduction/examples#counter): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/counter)
 - [**Todos**](/introduction/examples#todos): [Source](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/todos)
-- [**Name Game**](/introduction/examples#namegame): [Source](https://github.com/reduxkotlin/NameGameSampleApp)
-- [**Reading List**](/introduction/examples#readinglist): [Source](https://github.com/reduxkotlin/ReadingListSampleApp)
-- [**MovieSwiftUI-Kotlin**](/introduction/examples#movieswiftui-kotlin): [Source](https://github.com/reduxkotlin/MovieSwiftUI-kotlin)
 
 ## Help and Discussion
 

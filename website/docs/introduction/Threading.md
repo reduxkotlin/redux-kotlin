@@ -7,9 +7,9 @@ sidebar_label: Threading
 # Redux on Multi-threaded Platforms
 
 TLDR; use a **concurrent store** (`createConcurrentStore` from
-`redux-kotlin-concurrent`, or the bundle's `createConcurrentModelStore`) or the
-fully-synchronized [createThreadSafeStore()](../api/createthreadsafestore),
-unless your app is Javascript only.
+`redux-kotlin-concurrent`, or the bundle's `createConcurrentModelStore`),
+unless your app is Javascript only. The older fully-synchronized
+[createThreadSafeStore()](../api/createthreadsafestore) is **deprecated**.
 
 Redux in multi-threaded environments brings additional concerns that are not present in redux
 for Javascript.  Javascript is single threaded, so Redux.js did not have to address the issue.
@@ -22,12 +22,12 @@ state.  Or 2 actions dispatched concurrently could cause an invalid state.
 **So there are 4 options:**
 
 1) Lock-free reads + serialized writes - `createConcurrentStore` (`redux-kotlin-concurrent`)
-2) Synchronize all access to the store  - [createThreadSafeStore()](../api/createthreadsafestore)
+2) Synchronize all access to the store  - [createThreadSafeStore()](../api/createthreadsafestore) - DEPRECATED
 3) Only access the store from the same thread - [createSameThreadEnforcedStore()](../api/createsamethreadenforcedstore)
 4) Live in the wild west and access store anytime, any thread
     and live with consequences - NOT_RECOMMENDED - [createStore()](../api/createstore)
 
-ReduxKotlin allows all of these; most apps will use #1 or #2.
+ReduxKotlin allows all of these; most apps should use #1.
 
 ## Concurrent store
 
@@ -47,23 +47,28 @@ val store = createConcurrentStore(reducer, initialState)
 
 This trades strict read synchronization for non-blocking reads: off-thread
 reads are eventually consistent (they may briefly observe the previous state
-while a dispatch is completing). If you want every read fully synchronized
-instead, use `createThreadSafeStore`.
+while a dispatch is completing).
+See the [Concurrent Store guide](../advanced/concurrent-store) for
+`NotificationContext`, error isolation, and migration notes.
 
-## ThreadSafe
+## ThreadSafe (deprecated)
 
-Starting with ReduxKotlin 0.5.0 there is a threadsafe store which uses synchronization (AtomicFu library)
-to allow safe access to all the functions on the store.  It is the simplest fully-synchronized option:
-every read and write takes the same lock, so reads block during an in-flight dispatch (which the
-concurrent store above avoids).
+`redux-kotlin-threadsafe` is **deprecated** in favor of
+`redux-kotlin-concurrent`. Since ReduxKotlin 0.5.0 it provided a store that
+synchronizes (via the AtomicFu library) every function on the store: every read
+and write takes the same lock, so reads block during an in-flight dispatch
+(which the concurrent store above avoids).
 
 ```kotlin
     val store = createThreadSafeStore(reducer, state)
 ```
 
-Who is the other 10%? If you are only targeting Javascript thread safety is not an issue, so
-`createStore` is the way to go.  Other possible reasons could be applications that need optimal
-performance, however it is unlikely that the extra overhead from synchronization will be an issue.
+For most code `createConcurrentStore(reducer, preloadedState, enhancer = enhancer)`
+is a drop-in replacement — see
+[createThreadSafeStore](../api/createthreadsafestore) for migration notes.
+
+If you are only targeting Javascript thread safety is not an issue, so
+`createStore` is the way to go.
 
 ## Same thread enforcement
 
