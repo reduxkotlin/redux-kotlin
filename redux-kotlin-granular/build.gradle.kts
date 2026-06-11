@@ -51,6 +51,9 @@ kotlin {
                 // Concurrency stress tests use the thread-safe store as
                 // the canonical multi-threaded host.
                 implementation(project(":redux-kotlin-threadsafe"))
+                // Tripwire: granular diffing over the concurrent store relies on
+                // the fan-out staying under the writer lock (serial delivery).
+                implementation(project(":redux-kotlin-concurrent"))
             }
         }
         named("jvmBenchmark") {
