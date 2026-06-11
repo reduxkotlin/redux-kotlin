@@ -18,6 +18,7 @@ Read the committed `.api` dump for a module's public surface; regenerate with `.
 | `:redux-kotlin` | `redux-kotlin/api/redux-kotlin.klib.api` | Core contract: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`. |
 | `:redux-kotlin-threadsafe` | `redux-kotlin-threadsafe/api/redux-kotlin-threadsafe.klib.api` | `createThreadSafeStore` (atomicfu-locked store wrapper). |
 | `:redux-kotlin-concurrent` | `redux-kotlin-concurrent/api/redux-kotlin-concurrent.klib.api` | `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; CallerSerialized strategy) + `NotificationContext` notify control (`coalescingNotificationContext` runs the callback inline when already on the target thread, else posts — one callback per subscriber per dispatch, no burst collapsing). |
+| `:redux-kotlin-thunk` | `redux-kotlin-thunk/api/redux-kotlin-thunk.klib.api` | `Thunk<State>` typealias + `createThunkMiddleware(extraArgument)` async action middleware (ported from the standalone repo, same coordinates). |
 | `:redux-kotlin-granular` | `redux-kotlin-granular/api/redux-kotlin-granular.klib.api` | `subscribeTo` / `subscribeFields` field-level subscriptions. |
 | `:redux-kotlin-registry` | `redux-kotlin-registry/api/redux-kotlin-registry.klib.api` | `StoreRegistry<K,S>` / `TypedStoreRegistry` keyed multi-store container. |
 | `:redux-kotlin-multimodel` | `redux-kotlin-multimodel/api/redux-kotlin-multimodel.klib.api` | `ModelState` typesafe heterogeneous model bag (incl. `withAll` bulk merge). |
