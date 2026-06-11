@@ -1,5 +1,10 @@
 package org.reduxkotlin.devtools
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,6 +41,55 @@ class DevToolsHubTest {
         }
         DevToolsHub.registerOutput(out)
         assertTrue(DevToolsHub.outputs().any { it.id == "remote" })
+    }
+
+    @Test
+    fun outputs_sharing_an_id_both_register_and_both_receive_events() = runTest {
+        // BridgeOutput/RemoteOutput use constant ids ("bridge"/"remote") but are per-store
+        // instances; deduping by id would silently drop every store's output after the first.
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val session = DevToolsSession.create(DevToolsConfig(name = "dual"), dispatcher)
+        val jobs = mutableListOf<Job>()
+
+        fun recordingOutput(seen: MutableList<DevToolsEvent>) = object : DevToolsOutput {
+            override val id = "bridge"
+            override val label = "Bridge"
+            override fun start(session: DevToolsSession) {
+                jobs.add(launch(dispatcher) { session.events.toList(seen) })
+            }
+
+            override fun stop() = Unit
+        }
+
+        val seenA = mutableListOf<DevToolsEvent>()
+        val seenB = mutableListOf<DevToolsEvent>()
+        DevToolsHub.registerOutput(recordingOutput(seenA))
+        DevToolsHub.registerOutput(recordingOutput(seenB))
+
+        assertEquals(2, DevToolsHub.outputs().size)
+
+        DevToolsHub.outputs().forEach { it.start(session) }
+        testScheduler.runCurrent()
+        session.init("state")
+        testScheduler.advanceUntilIdle()
+
+        assertTrue(seenA.any { it is DevToolsEvent.Initialized })
+        assertTrue(seenB.any { it is DevToolsEvent.Initialized })
+        session.close()
+        jobs.forEach { it.cancel() }
+    }
+
+    @Test
+    fun registering_the_same_output_instance_twice_lists_it_once() {
+        val out = object : DevToolsOutput {
+            override val id = "bridge"
+            override val label = "Bridge"
+            override fun start(session: DevToolsSession) = Unit
+            override fun stop() = Unit
+        }
+        DevToolsHub.registerOutput(out)
+        DevToolsHub.registerOutput(out)
+        assertEquals(1, DevToolsHub.outputs().size)
     }
 
     @Test

@@ -137,6 +137,7 @@ internal class RemoteConnection(
     private fun scheme() = if (remoteConfig.secure) "wss" else "ws"
 
     private companion object {
-        const val MAX_BACKOFF_MS = 16_000L
+        // Kept in sync with the bridge module's BridgeConnection.MAX_BACKOFF_MS.
+        const val MAX_BACKOFF_MS = 8_000L
     }
 }

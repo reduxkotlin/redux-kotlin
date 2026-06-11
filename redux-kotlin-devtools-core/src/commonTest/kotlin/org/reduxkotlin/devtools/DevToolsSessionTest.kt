@@ -57,6 +57,53 @@ class DevToolsSessionTest {
     }
 
     @Test
+    fun overflowing_the_capture_buffer_counts_drops_and_warns() = runTest {
+        val logged = mutableListOf<String>()
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val session = DevToolsSession.create(DevToolsConfig(name = "drop", logger = { logged.add(it) }), dispatcher)
+
+        // The consumer coroutine never runs (scheduler is not advanced), so the 256-slot capture
+        // buffer fills and DROP_OLDEST displaces the oldest pending captures.
+        repeat(300) { session.record(Inc, St(it)) }
+
+        assertTrue(
+            logged.any { it.contains("dropped 1 captures") },
+            "expected the first-drop warning, got: $logged",
+        )
+        session.close()
+    }
+
+    @Test
+    fun history_respects_the_maxAge_bound_and_orders_newest_last() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val session = DevToolsSession.create(DevToolsConfig(name = "hist", maxAge = 3), dispatcher)
+
+        session.init(St(0))
+        repeat(5) { session.record(Inc, St(it + 1)) }
+        testScheduler.advanceUntilIdle()
+
+        // Bounded to maxAge, ascending actionIds, newest last.
+        assertEquals(listOf(3, 4, 5), session.history().map { it.actionId })
+        session.close()
+    }
+
+    @Test
+    fun history_clears_when_the_session_is_reinitialized() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val session = DevToolsSession.create(DevToolsConfig(name = "hist2"), dispatcher)
+
+        session.init(St(0))
+        session.record(Inc, St(1))
+        testScheduler.advanceUntilIdle()
+        assertEquals(1, session.history().size)
+
+        session.init(St(0))
+        testScheduler.advanceUntilIdle()
+        assertTrue(session.history().isEmpty())
+        session.close()
+    }
+
+    @Test
     fun recorded_action_carries_its_type_label() = runTest {
         val dispatcher = StandardTestDispatcher(testScheduler)
         val session = DevToolsSession.create(DevToolsConfig(name = "ty"), dispatcher)

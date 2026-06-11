@@ -36,5 +36,35 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
+        // compose-foundation publishes no linuxX64/mingwX64 klibs, so the HostFrame actual that
+        // mirrors the debug host's Box(Modifier.fillMaxSize()) frame lives only in the source sets
+        // below; linuxMain/mingwMain fall back to rendering the content directly.
+        named("jvmCommonMain") {
+            dependencies {
+                implementation(compose.foundation)
+            }
+        }
+        named("jsMain") {
+            dependencies {
+                implementation(compose.foundation)
+            }
+        }
+        named("wasmJsMain") {
+            dependencies {
+                implementation(compose.foundation)
+            }
+        }
+        named("appleMain") {
+            dependencies {
+                implementation(compose.foundation)
+            }
+        }
+        if (hasAndroidSdk) {
+            named("androidMain") {
+                dependencies {
+                    implementation(compose.foundation)
+                }
+            }
+        }
     }
 }

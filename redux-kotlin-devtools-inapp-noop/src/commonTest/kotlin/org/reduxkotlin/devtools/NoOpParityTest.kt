@@ -1,16 +1,11 @@
-package org.reduxkotlin.sample
+package org.reduxkotlin.devtools
 
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import org.reduxkotlin.Store
 import org.reduxkotlin.compose
 import org.reduxkotlin.createStore
-import org.reduxkotlin.devtools.DevToolsConfig
-import org.reduxkotlin.devtools.ValueSerializer
-import org.reduxkotlin.devtools.devTools
-import org.reduxkotlin.devtools.devToolsCombineReducers
-import org.reduxkotlin.devtools.devToolsMiddleware
 import org.reduxkotlin.devtools.inapp.ReduxDevTools
-import org.reduxkotlin.devtools.named
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -22,7 +17,7 @@ class NoOpParityTest {
 
     @Test
     fun the_documented_integration_compiles_and_runs_inertly() {
-        // Imports mirror a REAL integrator: core-package symbols from org.reduxkotlin.devtools,
+        // Mirrors a REAL integrator's usage: core-package symbols from org.reduxkotlin.devtools,
         // in-app symbols from org.reduxkotlin.devtools.inapp. This must compile against the no-op
         // with NO core dependency on the (release) classpath.
         val redactor = object : ValueSerializer {
@@ -36,5 +31,17 @@ class NoOpParityTest {
         ReduxDevTools.open()
         ReduxDevTools.close()
         assertEquals(1, store.state.n)
+    }
+
+    @Test
+    fun the_kotlinx_serializer_mirror_compiles_and_degrades_to_toString() {
+        // The documented `DevToolsConfig(serializer = KotlinxValueSerializer(json))` pattern must
+        // compile (and stay inert) against the release no-op artifact.
+        val serializer = KotlinxValueSerializer(Json)
+        val cfg = DevToolsConfig(name = "release-kotlinx", serializer = serializer)
+        val store = createStore(reducer, St(), devTools(cfg))
+        store.dispatch(Inc)
+        assertEquals(1, store.state.n)
+        assertEquals(JsonPrimitive("St(n=1)"), serializer.toJson(store.state))
     }
 }
