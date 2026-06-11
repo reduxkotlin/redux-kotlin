@@ -6,5 +6,5 @@ package org.reduxkotlin.devtools.monitor
 /** Writes [text] as a recording file/blob named [suggestedName]; platform-specific. */
 public expect fun saveRecording(suggestedName: String, text: String)
 
-/** Prompts for + reads a recording file/blob; calls [onLoaded] with its contents (async on web). */
+/** Reads a recording file/blob and calls [onLoaded] with its contents; platform-specific. */
 public expect fun loadRecording(onLoaded: (String) -> Unit)

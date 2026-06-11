@@ -13,7 +13,8 @@ import org.reduxkotlin.devtools.bridge.bridgeJson
 /** Output granularity tiers; each is a strict superset of the previous. */
 internal enum class Format { ACTIONS, DIFF, FULL }
 
-private val prettyJson = Json(bridgeJson) { prettyPrint = true }
+/** [bridgeJson] with pretty-printing on, for `--pretty` output. */
+internal val prettyJson: Json = Json(bridgeJson) { prettyPrint = true }
 
 /** Render one action record to a single JSON object string at the requested [format] tier. */
 internal fun formatRecord(

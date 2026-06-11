@@ -1,6 +1,5 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("convention.control")
@@ -11,12 +10,9 @@ plugins {
 }
 
 kotlin {
+    // Desktop-only for now: the wasmJs web viewer was removed because the server had no
+    // viewer-facing fanout (it only ingested); it returns when a broadcast path exists.
     jvm()
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
 
     sourceSets {
         commonMain.dependencies {
@@ -46,9 +42,6 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.ktor.client.cio)
         }
-        wasmJsMain.dependencies {
-            implementation(libs.ktor.client.js)
-        }
     }
 }
 
@@ -58,7 +51,20 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ReduxKotlinDevTools"
-            packageVersion = "1.0.0"
+            // Compose packaging wants plain MAJOR.MINOR.PATCH — strip any -SNAPSHOT suffix.
+            val distVersion = project.version.toString().substringBefore("-")
+            packageVersion = distVersion
+            macOS {
+                // Dmg additionally requires MAJOR > 0; lift 0.x.y until the project reaches 1.0.
+                dmgPackageVersion = if (distVersion.startsWith(
+                        "0.",
+                    )
+                ) {
+                    "1." + distVersion.removePrefix("0.")
+                } else {
+                    distVersion
+                }
+            }
         }
     }
 }

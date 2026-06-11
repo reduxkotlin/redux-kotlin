@@ -10,5 +10,9 @@ public actual fun saveRecording(suggestedName: String, text: String) {
 /** Reads `recording.jsonl` from the current working directory and calls [onLoaded] if it exists. */
 public actual fun loadRecording(onLoaded: (String) -> Unit) {
     val f = File("recording.jsonl")
-    if (f.exists()) onLoaded(f.readText())
+    if (f.exists()) {
+        onLoaded(f.readText())
+    } else {
+        println("loadRecording: ${f.absolutePath} not found — nothing loaded")
+    }
 }

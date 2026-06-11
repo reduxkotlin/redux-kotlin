@@ -8,13 +8,13 @@ import org.reduxkotlin.devtools.monitor.ui.MonitorApp
 public fun main() {
     val ingest = MonitorIngest()
     val server = MonitorServer(ingest)
-    server.start()
+    val port = server.start()
     application {
         Window(onCloseRequest = {
             server.stop()
             exitApplication()
         }, title = "Redux DevTools Monitor") {
-            val state = rememberMonitorState(ingest)
+            val state = rememberMonitorState(ingest, endpoint = "ws://127.0.0.1:$port")
             MonitorApp(ingest, state)
         }
     }

@@ -1,5 +1,6 @@
 package org.reduxkotlin.devtools.cli.command
 
+import com.github.ajalt.clikt.core.UsageError
 import kotlinx.serialization.json.buildJsonObject
 import org.reduxkotlin.devtools.bridge.BridgeMessage
 import org.reduxkotlin.devtools.bridge.PROTOCOL_VERSION
@@ -36,9 +37,9 @@ internal class QueryResolveTest {
     }
 
     @Test
-    fun no_captures_throws() {
+    fun no_captures_throws_a_usage_error() {
         val dir = java.nio.file.Files.createTempDirectory("rkq-empty").toFile()
-        kotlin.test.assertFailsWith<IllegalStateException> { resolveStore(dir, null) }
+        assertFailsWith<UsageError> { resolveStore(dir, null) }
     }
 
     @Test
@@ -46,7 +47,14 @@ internal class QueryResolveTest {
         val dir = Files.createTempDirectory("rkq").toFile()
         seed(dir, "app::root")
         seed(dir, "app::acct")
-        assertFailsWith<IllegalStateException> { resolveStore(dir, null) }
+        assertFailsWith<UsageError> { resolveStore(dir, null) }
         assertEquals("app::acct", resolveStore(dir, "app::acct").key)
+    }
+
+    @Test
+    fun time_flags_accept_epoch_millis_and_iso_instants() {
+        assertEquals(1718000000000L, parseTimeMillis("1718000000000"))
+        assertEquals(0L, parseTimeMillis("1970-01-01T00:00:00Z"))
+        assertFailsWith<Exception> { parseTimeMillis("yesterday") }
     }
 }

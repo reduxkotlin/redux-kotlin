@@ -38,10 +38,13 @@ public fun clientGroups(state: StoreRegistryState): List<ClientGroup> = state.st
  *
  * @param registry the aggregate store registry selection is delegated to.
  * @param registryState the latest aggregate snapshot, collected from [StoreRegistryModel.state].
+ * @property endpoint the bridge endpoint the server actually bound (e.g. `ws://127.0.0.1:9090`),
+ *   shown in the status cluster; empty when unknown (e.g. UI tests).
  */
 public class MonitorState(
     private val registry: StoreRegistryModel,
     private val registryState: State<StoreRegistryState>,
+    public val endpoint: String = "",
 ) {
     /** Search text across action type / payload / serialized state. */
     public var query: String by mutableStateOf("")
@@ -49,7 +52,7 @@ public class MonitorState(
     /** Whether [query] is interpreted as a regex. */
     public var regex: Boolean by mutableStateOf(false)
 
-    /** Whether capture is paused (UI flag; ingest is host-driven). */
+    /** Whether capture is paused (mirrored into [MonitorIngest.paused] by the pause toggle). */
     public var paused: Boolean by mutableStateOf(false)
 
     /** Whether the dark theme is active. */
@@ -109,10 +112,11 @@ public class MonitorState(
 
 /**
  * Remembers a [MonitorState] for [ingest] and collects the registry snapshot as Compose state.
+ * [endpoint] is the bridge endpoint the server actually bound, shown in the status cluster.
  */
 @Composable
-public fun rememberMonitorState(ingest: MonitorIngest): MonitorState {
+public fun rememberMonitorState(ingest: MonitorIngest, endpoint: String = ""): MonitorState {
     val flow: StateFlow<StoreRegistryState> = ingest.registry.state
     val collected = flow.collectAsState()
-    return remember(ingest) { MonitorState(ingest.registry, collected) }
+    return remember(ingest, endpoint) { MonitorState(ingest.registry, collected, endpoint) }
 }

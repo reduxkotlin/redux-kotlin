@@ -35,3 +35,18 @@ public fun decodeRecording(text: String): Pair<RecordingHeader, List<BridgeMessa
     val messages = lines.drop(1).map { bridgeJson.decodeFromString(BridgeMessage.serializer(), it) }
     return header to messages
 }
+
+/**
+ * Lenient [decodeRecording]: the header (first line) is still required to parse, but undecodable
+ * message lines are skipped instead of failing the whole recording. Use this when reading files
+ * that may be mid-write (e.g. live capture `.jsonl`s with a trailing partial line).
+ */
+public fun decodeRecordingLenient(text: String): Pair<RecordingHeader, List<BridgeMessage>> {
+    val lines = text.split("\n").filter { it.isNotBlank() }
+    require(lines.isNotEmpty()) { "empty recording" }
+    val header = bridgeJson.decodeFromString(RecordingHeader.serializer(), lines.first())
+    val messages = lines.drop(1).mapNotNull { line ->
+        runCatching { bridgeJson.decodeFromString(BridgeMessage.serializer(), line) }.getOrNull()
+    }
+    return header to messages
+}
