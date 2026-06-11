@@ -30,10 +30,13 @@ import kotlin.reflect.KProperty1
  * state change — reads the freshest store state, never a stale cached
  * snapshot lagging a frame behind the notification.
  *
- * A B3 re-sample runs inside the [DisposableEffect]: it compares the value at first composition
- * against the value at the effect's commit and bumps the tick **only if it changed**. This catches a
- * change that landed between first composition and subscribe (e.g. a fast async load), for which no
- * real notification is delivered — without it the binding would stay stuck on the first-frame value.
+ * A B3 re-sample runs inside the [DisposableEffect], AFTER the subscription is installed: it
+ * compares the value at first composition against the current value and bumps the tick **only if
+ * it changed**. The subscribe-then-resample order is load-bearing — every change before the
+ * install is caught by the re-sample, every change after it by the subscription, so no window
+ * remains (the worst-case overlap is one redundant same-value bump). This catches a change that
+ * landed between first composition and the install (e.g. a fast async load), for which no real
+ * notification is delivered — without it the binding would stay stuck on the first-frame value.
  * Because the bump is conditional, an unchanged value adds no mount-time recomposition (so render
  * isolation is preserved: a binding only recomposes when its selected value actually moves).
  *
@@ -55,16 +58,21 @@ public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
     // landed before the subscription was installed.
     val initial = remember(store, rememberedSelector) { rememberedSelector(store.state) }
     DisposableEffect(store, rememberedSelector) {
-        // B3 re-sample: if the selected value changed between first composition and this effect's
-        // commit (e.g. a fast async load), bump the tick so the getter re-reads. Conditional, so an
-        // unchanged value adds no mount-time recomposition (preserves render isolation).
-        if (rememberedSelector(store.state) != initial) tick.intValue++
+        // Install the subscription FIRST, then re-sample — the order is load-bearing: a change
+        // landing before the install is caught by the re-sample below; a change landing after it
+        // is caught by the subscription. With the reverse order, a change landing between the
+        // re-sample and the install (e.g. inside subscribe() itself, or a fast off-main dispatch)
+        // was never observed. Worst-case overlap is one redundant same-value tick bump.
         val sub = store.subscribeTo(
             selector = rememberedSelector,
             triggerOnSubscribe = false,
         ) { _, _ ->
             tick.intValue++
         }
+        // B3 re-sample: if the selected value changed between first composition and this point
+        // (e.g. a fast async load), bump the tick so the getter re-reads. Conditional, so an
+        // unchanged value adds no mount-time recomposition (preserves render isolation).
+        if (rememberedSelector(store.state) != initial) tick.intValue++
         onDispose { sub() }
     }
     return remember(store, rememberedSelector) {
@@ -90,8 +98,8 @@ public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
  * `store.state` on every [State.value] access; the subscription only
  * schedules recomposition, so the value is correct even when the store
  * delivers notifications asynchronously (e.g. a concurrent store posting
- * to the main thread). Like [selectorState] it runs a conditional B3 re-sample in the effect to
- * catch a change that landed between first composition and the effect commit.
+ * to the main thread). Like [selectorState] it installs the subscription and then runs a
+ * conditional B3 re-sample, so a change landing any time before the install is caught.
  *
  * Hidden from Swift via [HiddenFromObjC] (KProperty1 is Kotlin-only).
  */
@@ -105,15 +113,16 @@ public fun <S, F> Store<S>.fieldState(property: KProperty1<S, F>): State<F> {
     // landed before the subscription was installed.
     val initial = remember(store, property) { property.get(store.state) }
     DisposableEffect(store, property) {
-        // B3 re-sample (see selectorState): bump only if the value changed between first composition
-        // and commit, so an unchanged value adds no mount-time recomposition.
-        if (property.get(store.state) != initial) tick.intValue++
+        // Subscribe first, then re-sample (see selectorState — the order is load-bearing).
         val sub = store.subscribeTo(
             property = property,
             triggerOnSubscribe = false,
         ) { _, _ ->
             tick.intValue++
         }
+        // B3 re-sample: bump only if the value changed between first composition and this point,
+        // so an unchanged value adds no mount-time recomposition.
+        if (property.get(store.state) != initial) tick.intValue++
         onDispose { sub() }
     }
     return remember(store, property) {

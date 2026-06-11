@@ -36,6 +36,9 @@ kotlin {
                 implementation(compose.uiTest)
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutines.test)
+                // Binding tests against the real concurrent store (test-scope only;
+                // the published POM is unaffected).
+                implementation(project(":redux-kotlin-concurrent"))
             }
         }
     }

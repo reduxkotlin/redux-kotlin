@@ -28,6 +28,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `redux-kotlin-concurrent`: a throwing `onError` handler no longer aborts
   delivery to remaining subscribers or escapes `dispatch` — it is printed and
   swallowed.
+- `redux-kotlin-compose`: `selectorState` / `fieldState` now install their store
+  subscription **before** running the subscribe-time re-sample (previously
+  after). A state change landing between the re-sample and the subscription
+  install — e.g. a fast off-main dispatch during effect commit — could
+  otherwise go unobserved forever (no notification, no re-sample). With the
+  new order every change before the install is caught by the re-sample and
+  every change after it by the subscription; the worst-case overlap is one
+  redundant same-value recomposition.
+- `redux-kotlin-granular`: `subscribeTo` / `subscribeFields` registration is
+  now race-safe — after the underlying `store.subscribe` is installed, every
+  selector is re-evaluated and a change that landed during registration fires
+  the real `(old, new)` diff at activation (previously it was silently
+  missed; only `triggerOnSubscribe` entries got a `(current, current)`
+  callback). A moved value subsumes the `triggerOnSubscribe` callback — no
+  double-fire; worst case on a posting store is one redundant same-value
+  callback.
 
 ### Changed
 
