@@ -211,7 +211,7 @@ sealed interface org.reduxkotlin.devtools.bridge/BridgeMessage { // org.reduxkot
 }
 
 final class org.reduxkotlin.devtools.bridge/BridgeConfig { // org.reduxkotlin.devtools.bridge/BridgeConfig|null[0]
-    constructor <init>(kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/String = ...) // org.reduxkotlin.devtools.bridge/BridgeConfig.<init>|<init>(kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Boolean;kotlin.String?;kotlin.String;kotlin.String){}[0]
+    constructor <init>(kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String? = ...) // org.reduxkotlin.devtools.bridge/BridgeConfig.<init>|<init>(kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Boolean;kotlin.String?;kotlin.String;kotlin.String;kotlin.String?){}[0]
 
     final val clientId // org.reduxkotlin.devtools.bridge/BridgeConfig.clientId|{}clientId[0]
         final fun <get-clientId>(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.clientId.<get-clientId>|<get-clientId>(){}[0]
@@ -225,6 +225,8 @@ final class org.reduxkotlin.devtools.bridge/BridgeConfig { // org.reduxkotlin.de
         final fun <get-secure>(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeConfig.secure.<get-secure>|<get-secure>(){}[0]
     final val startEnabled // org.reduxkotlin.devtools.bridge/BridgeConfig.startEnabled|{}startEnabled[0]
         final fun <get-startEnabled>(): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeConfig.startEnabled.<get-startEnabled>|<get-startEnabled>(){}[0]
+    final val storeName // org.reduxkotlin.devtools.bridge/BridgeConfig.storeName|{}storeName[0]
+        final fun <get-storeName>(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeConfig.storeName.<get-storeName>|<get-storeName>(){}[0]
     final val token // org.reduxkotlin.devtools.bridge/BridgeConfig.token|{}token[0]
         final fun <get-token>(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeConfig.token.<get-token>|<get-token>(){}[0]
 
@@ -235,7 +237,8 @@ final class org.reduxkotlin.devtools.bridge/BridgeConfig { // org.reduxkotlin.de
     final fun component5(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeConfig.component5|component5(){}[0]
     final fun component6(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.component6|component6(){}[0]
     final fun component7(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.component7|component7(){}[0]
-    final fun copy(kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/String = ...): org.reduxkotlin.devtools.bridge/BridgeConfig // org.reduxkotlin.devtools.bridge/BridgeConfig.copy|copy(kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Boolean;kotlin.String?;kotlin.String;kotlin.String){}[0]
+    final fun component8(): kotlin/String? // org.reduxkotlin.devtools.bridge/BridgeConfig.component8|component8(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/String? = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String? = ...): org.reduxkotlin.devtools.bridge/BridgeConfig // org.reduxkotlin.devtools.bridge/BridgeConfig.copy|copy(kotlin.String;kotlin.Int;kotlin.Boolean;kotlin.Boolean;kotlin.String?;kotlin.String;kotlin.String;kotlin.String?){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // org.reduxkotlin.devtools.bridge/BridgeConfig.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.reduxkotlin.devtools.bridge/BridgeConfig.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // org.reduxkotlin.devtools.bridge/BridgeConfig.toString|toString(){}[0]

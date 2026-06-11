@@ -36,6 +36,10 @@ private fun sliceNodeId(label: String): String = "slice_$label"
  * it resolves (creating if needed, idempotently) the one session, so capture works regardless of
  * enhancer composition order. [config] is the shared DevTools config (keys the session); the
  * [middlewares] are the labeled middleware chain, applied left-to-right.
+ *
+ * Timing note: a middleware node's recorded `durationNanos` is **inclusive** — it measures the
+ * whole downstream chain (every later middleware plus the reducer), not just that middleware's own
+ * work. Expect earlier nodes to report larger durations than the nodes they wrap.
  */
 public fun <State> devToolsMiddleware(
     config: DevToolsConfig,
@@ -109,10 +113,18 @@ public fun <State> devToolsCombineReducers(
     vararg reducers: NamedReducer<State>,
 ): Reducer<State> {
     val id = config.instanceId ?: config.name
+    // Reducers run under the store's dispatch, so plain vars are safe (dispatch-confined). The hub
+    // lookup is retried until a session exists (the enhancer may register it after the store's
+    // bootstrap dispatches), then cached; the slice structure is registered once per session.
+    var cachedSession: DevToolsSession? = null
+    var registeredFor: DevToolsSession? = null
     return { state, action ->
-        val session = DevToolsHub.session(id)
+        val session = cachedSession ?: DevToolsHub.session(id)?.also { cachedSession = it }
         if (session != null) {
-            maybeRegisterSlices(session, reducers)
+            if (registeredFor !== session) {
+                registerSlices(session, reducers)
+                registeredFor = session
+            }
             val selfBracket = !session.pipeline.isActive
             if (selfBracket) session.pipeline.begin()
             val next = reducers.fold(state) { acc, nr ->
@@ -134,7 +146,7 @@ public fun <State> devToolsCombineReducers(
     }
 }
 
-private fun <State> maybeRegisterSlices(session: DevToolsSession, reducers: Array<out NamedReducer<State>>) {
+private fun <State> registerSlices(session: DevToolsSession, reducers: Array<out NamedReducer<State>>) {
     val nodes = ArrayList<PipelineNode>()
     nodes.add(PipelineNode("dispatch", "dispatch(action)", PipelineNodeKind.ENTRY))
     nodes.add(PipelineNode("rootReducer", "rootReducer", PipelineNodeKind.REDUCER))

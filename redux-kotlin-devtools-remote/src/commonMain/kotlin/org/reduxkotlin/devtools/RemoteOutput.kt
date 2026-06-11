@@ -30,8 +30,10 @@ import org.reduxkotlin.devtools.remote.wire.stateMessage
  * handshake completes — so events captured before the socket is up are buffered, not lost.
  *
  * @param config connection settings.
+ * @param logger diagnostic sink for connection events; defaults to a no-op.
  */
-public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
+public class RemoteOutput(private val config: RemoteConfig, private val logger: (String) -> Unit = {}) :
+    DevToolsOutput {
 
     override val id: String = "remote"
     override val label: String = "Remote (WebSocket)"
@@ -57,7 +59,7 @@ public class RemoteOutput(private val config: RemoteConfig) : DevToolsOutput {
         if (isRunning) return
         val s = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         scope = s
-        val conn = RemoteConnection(config, session).also { connection = it }
+        val conn = RemoteConnection(config, session, logger).also { connection = it }
         conn.start()
         runCatching { conn.enqueueState(session.liftedState()) }
         session.events

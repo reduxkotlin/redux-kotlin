@@ -41,7 +41,11 @@ public sealed interface BridgeMessage {
         public val storeInstanceId: String,
         /** The store's display name. */
         public val storeName: String,
-        /** Which `ValueSerializer` tier produced the JSON. */
+        /**
+         * Which `ValueSerializer` tier produced the JSON. Best-effort: core does not expose a
+         * session's serializer, so senders that cannot determine the tier send `"unknown"`
+         * (the bridge output currently always does).
+         */
         public val serializerTier: String,
         /** Shared token; required by the monitor for non-loopback connections. */
         public val token: String? = null,

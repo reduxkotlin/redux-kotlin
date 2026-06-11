@@ -34,8 +34,13 @@ public class DevToolsSession private constructor(
     private val allowRegex = config.allowlist.map(::Regex)
 
     // DROP_OLDEST: under sustained burst we drop the oldest pending capture rather than block
-    // dispatch. We count drops and warn (throttled) so silent history gaps are visible.
-    private val captures = Channel<Capture>(capacity = 256, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    // dispatch (newest wins). The displaced element is handed to onUndeliveredElement on the
+    // sender, where we count it and warn (throttled) so silent history gaps stay visible.
+    private val captures = Channel<Capture>(
+        capacity = 256,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        onUndeliveredElement = { onCaptureDropped() },
+    )
     private var dropped = 0L
     private val recentLock = kotlinx.atomicfu.locks.SynchronizedObject()
     private val recent = ArrayDeque<DevToolsEvent.ActionRecorded>()
@@ -112,14 +117,18 @@ public class DevToolsSession private constructor(
         if (!shouldSend(action, denyRegex, allowRegex)) return
         // systemClock() is the dispatch-time capture timestamp (more accurate than the recorder's
         // own clock read on the background thread); the small skew between the two is acceptable.
-        val result = captures.trySend(Capture.Action(action, state, systemClock(), traceNodes))
-        if (result.isFailure) {
-            dropped++
-            if (dropped == 1L || dropped % 100L == 0L) {
-                config.logger(
-                    "devtools: dropped $dropped captures (dispatch outpacing recorder)",
-                )
-            }
+        // DROP_OLDEST means trySend itself never fails on overflow — the displaced oldest capture
+        // is counted in onCaptureDropped via the channel's onUndeliveredElement hook.
+        captures.trySend(Capture.Action(action, state, systemClock(), traceNodes))
+    }
+
+    // Invoked (on the sender) for each capture displaced by DROP_OLDEST buffer overflow.
+    private fun onCaptureDropped() {
+        dropped++
+        if (dropped == 1L || dropped % 100L == 0L) {
+            config.logger(
+                "devtools: dropped $dropped captures (dispatch outpacing recorder)",
+            )
         }
     }
 

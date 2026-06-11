@@ -36,8 +36,15 @@ class ScFrameTest {
     }
 
     @Test
-    fun emptyStringFrameDecodesAsPing() {
-        assertIs<ScInbound.Ping>(ScFrame.decode(""))
+    fun emptyStringFrameDecodesAsPingWithEmptyReply() {
+        val ping = assertIs<ScInbound.Ping>(ScFrame.decode(""))
+        assertEquals(ScFrame.PONG, ping.reply)
+    }
+
+    @Test
+    fun legacyHashOnePingDecodesWithHashTwoReply() {
+        val ping = assertIs<ScInbound.Ping>(ScFrame.decode("#1"))
+        assertEquals("#2", ping.reply)
     }
 
     @Test

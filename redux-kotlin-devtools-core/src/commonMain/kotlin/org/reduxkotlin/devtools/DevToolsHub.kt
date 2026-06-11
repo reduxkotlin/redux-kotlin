@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
  *
  * The enhancer records into a [DevToolsSession] keyed by `instanceId`; [DevToolsOutput]s subscribe
  * to those sessions. Multi-store support falls out for free — each enhanced store is one session.
- * This object holds static state and therefore must only exist in debug builds (the release no-op
- * artifact in Plan 3 has no hub).
+ * This object holds static state and therefore must only exist in debug builds (a release no-op
+ * artifact has no hub).
  */
 public object DevToolsHub {
     private val lock = SynchronizedObject()
@@ -85,9 +85,14 @@ public object DevToolsHub {
         publishSessions()
     }
 
-    /** Registers a [DevToolsOutput]. Outputs decide for themselves whether to start (off by default). */
+    /**
+     * Registers a [DevToolsOutput]. Outputs decide for themselves whether to start (off by default).
+     * Idempotent per *instance*: registering the same output twice adds it once. Distinct instances
+     * may share an [DevToolsOutput.id] — outputs are per-store, and e.g. every `BridgeOutput` uses
+     * the id `"bridge"` — so deduping by id would silently drop every store's output but the first.
+     */
     public fun registerOutput(output: DevToolsOutput): Unit = synchronized(lock) {
-        if (registeredOutputs.none { it.id == output.id }) registeredOutputs.add(output)
+        if (registeredOutputs.none { it === output }) registeredOutputs.add(output)
     }
 
     /** A snapshot of all registered outputs (the Outputs tab source). */

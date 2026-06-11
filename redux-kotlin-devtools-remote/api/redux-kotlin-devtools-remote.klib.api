@@ -29,7 +29,7 @@ final class org.reduxkotlin.devtools.remote/RemoteConfig { // org.reduxkotlin.de
 }
 
 final class org.reduxkotlin.devtools.remote/RemoteOutput : org.reduxkotlin.devtools/DevToolsOutput { // org.reduxkotlin.devtools.remote/RemoteOutput|null[0]
-    constructor <init>(org.reduxkotlin.devtools.remote/RemoteConfig) // org.reduxkotlin.devtools.remote/RemoteOutput.<init>|<init>(org.reduxkotlin.devtools.remote.RemoteConfig){}[0]
+    constructor <init>(org.reduxkotlin.devtools.remote/RemoteConfig, kotlin/Function1<kotlin/String, kotlin/Unit> = ...) // org.reduxkotlin.devtools.remote/RemoteOutput.<init>|<init>(org.reduxkotlin.devtools.remote.RemoteConfig;kotlin.Function1<kotlin.String,kotlin.Unit>){}[0]
 
     final val id // org.reduxkotlin.devtools.remote/RemoteOutput.id|{}id[0]
         final fun <get-id>(): kotlin/String // org.reduxkotlin.devtools.remote/RemoteOutput.id.<get-id>|<get-id>(){}[0]

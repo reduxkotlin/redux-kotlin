@@ -18,7 +18,8 @@ public final class org/reduxkotlin/devtools/remote/RemoteConfig {
 }
 
 public final class org/reduxkotlin/devtools/remote/RemoteOutput : org/reduxkotlin/devtools/DevToolsOutput {
-	public fun <init> (Lorg/reduxkotlin/devtools/remote/RemoteConfig;)V
+	public fun <init> (Lorg/reduxkotlin/devtools/remote/RemoteConfig;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/reduxkotlin/devtools/remote/RemoteConfig;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getId ()Ljava/lang/String;
 	public fun getLabel ()Ljava/lang/String;
 	public final fun getStartEnabled ()Z

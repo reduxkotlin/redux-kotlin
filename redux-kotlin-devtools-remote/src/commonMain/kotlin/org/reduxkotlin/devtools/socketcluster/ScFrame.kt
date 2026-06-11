@@ -8,8 +8,11 @@ import kotlinx.serialization.json.intOrNull
 
 /** A decoded inbound SocketCluster frame. */
 internal sealed interface ScInbound {
-    /** The empty-string heartbeat; the client must reply with [ScFrame.PONG]. */
-    data object Ping : ScInbound
+    /**
+     * A server heartbeat; the client must answer with [reply] — the empty string for the protocol-v2
+     * empty-string ping, `"#2"` for the legacy `"#1"` ping.
+     */
+    data class Ping(val reply: String) : ScInbound
 
     /** A response to a prior `invoke`/`#handshake`/`#subscribe`, correlated by [rid]. */
     data class RpcResponse(val rid: Int, val data: JsonElement?, val error: JsonElement?) : ScInbound
@@ -25,6 +28,9 @@ internal sealed interface ScInbound {
 internal object ScFrame {
     /** The protocol-v2 heartbeat reply: an empty text frame. */
     const val PONG: String = ""
+
+    /** The legacy (SC v1-style) heartbeat reply to a `"#1"` ping. */
+    const val LEGACY_PONG: String = "#2"
 
     private val json = Json { encodeDefaults = true }
 
@@ -63,8 +69,11 @@ internal object ScFrame {
     }
 
     fun decode(raw: String): ScInbound = when {
-        // SC v2 server-side ping token (legacy), treated like the empty-string heartbeat
-        raw.isEmpty() || raw == "#1" -> ScInbound.Ping
+        // SC v2 empty-string heartbeat: answered with an empty frame.
+        raw.isEmpty() -> ScInbound.Ping(PONG)
+
+        // Legacy server ping token: the legacy protocol expects "#2" back, not "".
+        raw == "#1" -> ScInbound.Ping(LEGACY_PONG)
 
         else -> decodeJson(raw)
     }

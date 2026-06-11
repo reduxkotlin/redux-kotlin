@@ -1,10 +1,13 @@
 package org.reduxkotlin.devtools
 
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.reduxkotlin.applyMiddleware
 import org.reduxkotlin.createStore
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class DevToolsEnhancerTest {
 
@@ -49,13 +52,17 @@ class DevToolsEnhancerTest {
     }
 
     @Test
-    fun throwing_serializer_never_breaks_dispatch_or_state() {
+    fun throwing_serializer_never_breaks_dispatch_or_state() = runTest {
         val boom = object : ValueSerializer {
             override fun toJson(value: Any?): kotlinx.serialization.json.JsonElement =
                 throw IllegalStateException("serializer boom")
         }
         val logged = mutableListOf<String>()
         val config = DevToolsConfig(name = "safe", serializer = boom, logger = { logged.add(it) })
+        // Pre-register the session on the test dispatcher; the enhancer's createSession then
+        // resolves it idempotently, so background processing drains deterministically.
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        DevToolsHub.createSessionForTest(config, dispatcher)
 
         val store = createStore(reducer, St(), devTools(config))
         // Dispatch must succeed and the reducer's state must be correct even though the serializer
@@ -64,5 +71,9 @@ class DevToolsEnhancerTest {
         store.dispatch(Inc)
 
         assertEquals(2, store.state.n)
+
+        // The failure is not silent: the session's consumer logs the serializer error.
+        testScheduler.advanceUntilIdle()
+        assertTrue(logged.any { it.contains("serializer boom") }, "expected the failure log, got: $logged")
     }
 }
