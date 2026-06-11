@@ -910,6 +910,12 @@ The codebase follows a small set of named conventions (referenced throughout the
   `LocalClock` CompositionLocals (`ui/Locals.kt`; `IdGenerator` itself in
   `infra/util/IdGenerator.kt`) at the dispatch site, never from a reducer.
 - **Rule H — Single inset point.** Window insets are applied once at the shell root.
+- **Rule I — State-keyed lifecycle effects.** A load that brings a screen its data keys on
+  **state** (the nav-derived slice), never on a navigation event. State-only entry points —
+  process-death restore, deep links, DevTools time-travel, account-switch hydration — set
+  state without replaying events, so an event-keyed load silently never runs there.
+  `BoardLifecycleEffect` (`app/App.kt`) keys on `nav.activeBoardId`; the fallback is matching
+  the hydrating action itself in an effects middleware.
 
 Persistence (`LocalStore`) and network (`RemoteApi`) are deliberately separate seams.
 Models are deeply immutable. The `ModelState` key set is fixed at construction (no runtime

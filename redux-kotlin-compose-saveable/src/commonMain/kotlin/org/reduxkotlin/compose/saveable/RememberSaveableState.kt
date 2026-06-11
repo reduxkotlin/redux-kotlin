@@ -29,6 +29,16 @@ private const val KEY_RADIX = 36
  * The persisted store must accept main-thread reads and dispatch (the
  * Compose-facing store: concurrent/threadsafe, or main-confined).
  *
+ * A restore replays no events — it dispatches exactly one action (the
+ * saver's restore action). Data your app loads in response to a navigation
+ * *event* therefore never loads on the restore path. Key load effects on the
+ * restored **state** (e.g. an effect keyed on the current route), or match
+ * the restore action in an effects middleware; state-keyed effects also
+ * survive every other state-only entry point (deep links, DevTools
+ * time-travel, replay). Because the restore is applied synchronously during
+ * composition, a state-keyed effect's first key evaluation already sees the
+ * restored value.
+ *
  * Example:
  * ```
  * @Composable

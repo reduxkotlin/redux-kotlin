@@ -12,9 +12,9 @@ derives_from:
   - examples/taskflow/composeApp/src/jvmTest/kotlin/org/reduxkotlin/sample/taskflow/infra/data/OfflineSyncE2ETest.kt → OfflineSyncE2ETest
 api_files:
   - redux-kotlin-bundle/api/redux-kotlin-bundle.klib.api
-rules: [E, F, G]
+rules: [E, F, G, I]
 assembles_into: [AGENTS.md, claude-skill]
-last_verified: { commit: 3c1cd67, date: 2026-06-04 }
+last_verified: { commit: ab2fb5b, date: 2026-06-11 }
 ---
 
 # Effects + sync (Rule E)
@@ -33,6 +33,13 @@ effects`, see [store-setup.md](./store-setup.md)) — "Rule E" is this disciplin
 All repository work runs on the per-account background `CoroutineScope` (off-main, `Dispatchers.Default`).
 Dispatches that follow marshal back to main through the store's `NotificationContext`, so the effect
 code does **no explicit main hop**.
+
+**Lifecycle loads key on STATE, not navigation events.** A load triggered alongside a `Navigate`
+dispatch never fires on state-only entry points — process-death restore, deep links, DevTools
+time-travel, account-switch hydration — because those set state without replaying events. Key the
+effect on the state slice instead (taskflow's board load keys on the nav-derived `activeBoardId`),
+or match the hydrating action itself in middleware. See
+[state-persistence.md](./state-persistence.md) ("Restore replays no events").
 
 ## The optimistic dance
 

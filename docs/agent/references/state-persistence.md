@@ -4,6 +4,8 @@ concern: state-persistence
 derives_from:
   - redux-kotlin-compose-saveable/src/commonMain/kotlin/org/reduxkotlin/compose/saveable/StateSaver.kt → StateSaver
   - redux-kotlin-compose-saveable/src/commonMain/kotlin/org/reduxkotlin/compose/saveable/RememberSaveableState.kt → rememberSaveableState
+  - redux-kotlin-compose-saveable/src/jvmTest/kotlin/org/reduxkotlin/compose/saveable/RestoreRetriggersEffectsTest.kt → RestoreRetriggersEffectsTest
+  - examples/taskflow/composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/app/App.kt → BoardLifecycleEffect
   - redux-kotlin-routing/src/commonMain/kotlin/org/reduxkotlin/routing/CreateModelStore.kt → createModelStore
   - redux-kotlin-bundle/src/commonMain/kotlin/org/reduxkotlin/bundle/StoreFactory.kt → createConcurrentModelStore
   - redux-kotlin-multimodel/src/commonMain/kotlin/org/reduxkotlin/multimodel/ModelState.kt → withAll
@@ -14,9 +16,9 @@ api_files:
   - redux-kotlin-bundle/api/redux-kotlin-bundle.klib.api
   - redux-kotlin-multimodel/api/redux-kotlin-multimodel.klib.api
   - redux-kotlin-concurrent/api/redux-kotlin-concurrent.klib.api
-rules: [C, E]
+rules: [C, E, I]
 assembles_into: [AGENTS.md, claude-skill]
-last_verified: { commit: 75388a1, date: 2026-06-10 }
+last_verified: { commit: ab2fb5b, date: 2026-06-11 }
 ---
 
 # State persistence & restore (process death, rotation, relaunch)
@@ -95,6 +97,33 @@ whenever scopes can collide — multiple anchors, anchors inside lists/nav graph
 scopes. Scope the key to the data's identity (e.g. `key = "account-ui-$accountId"`) so one
 account's snapshot can never restore into another.
 
+## Restore replays no events — key load effects on state
+
+A restore dispatches exactly **one** action (the saver's restore action). None of the events that
+originally produced the saved state are replayed — no clicks, no `Navigate`-style actions. Anything
+the app loads *in response to an event* never loads on the restore path: the nav stack comes back,
+the screen renders, and its data is empty. This is the deep-link bug class (a web page that fetches
+in a click handler breaks on refresh); redux adds more entry points with the same shape — DevTools
+time-travel, replay, and hydrating on an account switch all set state without re-running events.
+
+Two patterns survive all of them:
+
+- **Derive the effect from state** (preferred): key the load on the state the restore produces —
+  e.g. a `DisposableEffect(activeId)` watching the restored route slice, as taskflow's board
+  lifecycle does
+  (`examples/taskflow/composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/app/App.kt → BoardLifecycleEffect`).
+  Restore is applied synchronously during composition, so the effect's first key evaluation already
+  sees the restored value and the load fires exactly as after a real navigation. Pinned by
+  `redux-kotlin-compose-saveable/src/jvmTest/kotlin/org/reduxkotlin/compose/saveable/RestoreRetriggersEffectsTest.kt → RestoreRetriggersEffectsTest`.
+- **Match the restore action in middleware** (fallback): the restore action is a normal dispatch
+  through the full middleware chain, so an effects middleware can react to it and kick loads
+  explicitly.
+
+Downstream of either pattern, tolerate **dangling references**: a snapshot can outlive the data it
+points at (deleted entity, removed board). Treat "referenced entity not found" as an empty state or
+a navigate-away, never a crash. And before blaming restoration for "missing" data, check the
+DevTools action log — a background actor (sync, taskflow's bot) may have legitimately moved it.
+
 ## What NOT to persist
 
 - **Modes/overlays** — restore a detail screen in *view* mode even if the process died in *edit*
@@ -132,6 +161,11 @@ Its hard-won lessons, in checklist form:
    on process-death restore.
 6. `coalescingNotificationContext` as the main `NotificationContext` so main-thread dispatches
    notify inline (no lag frame); off-main sync/effects dispatches marshal to main as before.
+7. Board data survives restore ONLY because the board-load effect keys on **state**
+   (`DisposableEffect(activeId, activeBoardId)` over the restored nav slice), not on `Navigate`
+   events — see "Restore replays no events" above. A "no cards after restore" report against this
+   flow turned out to be the demo bot relocating cards, found via the DevTools action log — verify
+   store contents before suspecting restoration.
 
 ## Verify loop
 
