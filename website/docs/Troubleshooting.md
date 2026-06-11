@@ -50,13 +50,14 @@ click handler breaks on browser refresh. Fix one of two ways:
 - **Key the load on state, not events**: an effect keyed on the restored
   route/selection (e.g. `DisposableEffect(route)` or a middleware watching
   the slice) fires for a real navigation *and* for a restore — and also for
-  DevTools time-travel and any other state hydration.
+  [DevTools](/advanced/devtools) time-travel and any other state hydration.
 - **Handle the restore action in middleware**: the restore action flows
   through the full middleware chain like any dispatch, so an effects
   middleware can match it and start the loads.
 
 Also check what the data *should* be: restoration can be innocent. Verify
-the store contents (e.g. with the DevTools action log) before concluding
+the store contents (e.g. with the [DevTools action log](/advanced/devtools))
+before concluding
 state was lost — a background actor or sync may have legitimately moved the
 data. See
 [Restoration replays no events](/advanced/compose-integration#restoration-replays-no-events--key-effects-on-state).

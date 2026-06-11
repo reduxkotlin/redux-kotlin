@@ -1,14 +1,24 @@
 # Redux-Kotlin DevTools integration guide
 
 This guide covers how to add the Redux-Kotlin DevTools to an application,
-how to wire up each artifact, and the sharp edges to avoid.
+how to wire up each artifact, and the sharp edges to avoid. The same guide is
+published on the website at
+[reduxkotlin.org/advanced/devtools](https://www.reduxkotlin.org/advanced/devtools);
+the agent-oriented CLI walkthrough lives at
+[docs/agent/references/devtools.md](agent/references/devtools.md).
+
+> **Availability:** the DevTools modules are new and experimental — they are not
+> part of any published release yet and will be available from the next release.
+> Until then, build them from source (this repo).
 
 ---
 
 ## Artifacts overview
 
-The DevTools ship as four separate artifacts so release builds can link none of
-the debug infrastructure.
+The DevTools ship as separate artifacts so release builds can link none of
+the debug infrastructure. Published libraries: `-core`, `-bridge`, `-remote`,
+`-inapp`, `-inapp-noop`, `-ui`. Unpublished repo tools: `-standalone` (the
+desktop monitor app) and `-cli` (the `rk-devtools` terminal tool).
 
 ### `redux-kotlin-devtools-core`
 
@@ -37,7 +47,7 @@ Package: `org.reduxkotlin.devtools.remote`
 
 | Symbol | Role |
 |---|---|
-| `RemoteOutput(config)` | `DevToolsOutput` implementation; off by default |
+| `RemoteOutput(config, logger = …)` | `DevToolsOutput` implementation; off by default. Optional `logger: (String) -> Unit` surfaces connection diagnostics |
 | `RemoteConfig` | Connection settings: `host`, `port`, `secure`, `startEnabled` |
 
 Off by default — `RemoteConfig.startEnabled` defaults to `false`. Enable it
@@ -56,18 +66,30 @@ Package: `org.reduxkotlin.devtools.inapp`
 | `ReduxDevTools.open()` / `ReduxDevTools.close()` | Programmatic drawer control |
 | `InAppConfig` | Drawer options: `triggers`, `startTab`, `theme`, `instanceId` |
 | `DevToolsTrigger` | `BUBBLE` / `EDGE_SWIPE` |
-| `DevToolsThemeMode` | `DARK` (default) / `LIGHT` / `SYSTEM` |
-| `DevToolsTab` | `ACTIONS` / `STATE` / `DIFF` / `PIPELINE` / `OUTPUTS` |
+| `DevToolsThemeMode` | `DARK` (default) / `LIGHT` / `SYSTEM` — lives in `org.reduxkotlin.devtools.ui` |
+| `DevToolsTab` | `ACTIONS` / `STATE` / `DIFF` / `PIPELINE` / `OUTPUTS` — lives in `org.reduxkotlin.devtools.ui` |
 
 Not published for `linuxX64` or `mingwX64` (Compose material3 is not available
 on those targets). Use the no-op on those targets.
 
 ### `redux-kotlin-devtools-inapp-noop`
 
-The zero-overhead release sibling. Declares the identical `org.reduxkotlin.devtools.inapp`
-API (`ReduxDevToolsHost`, `ReduxDevTools`, `InAppConfig`, and the enum types)
-with empty bodies. Has no dependency on Compose material3, Ktor, or core. Available
-on all targets, including `linuxX64` and `mingwX64`.
+The zero-overhead release sibling. Mirrors the `org.reduxkotlin.devtools.inapp`
+API (`ReduxDevToolsHost`, `ReduxDevTools`, `InAppConfig`, the enum types) **and**
+the core facade (`devTools`, `devToolsMiddleware`, `devToolsCombineReducers`,
+`named`, `DevToolsConfig`, `KotlinxValueSerializer`, …) with empty bodies. Has
+no dependency on Compose material3, Ktor, or core. Available on all targets,
+including `linuxX64` and `mingwX64`. Only the mirrored API may be referenced
+from main source sets — everything else stays in debug-only code.
+
+### `redux-kotlin-devtools-ui`
+
+The shared Compose UI panels (action log, State, Diff, Pipeline, Outputs) used
+by both the in-app drawer and the standalone monitor. Arrives transitively via
+`redux-kotlin-devtools-inapp`; apps touch it only for the
+`org.reduxkotlin.devtools.ui` config enums `DevToolsTab` and `DevToolsThemeMode`.
+
+Package: `org.reduxkotlin.devtools.ui`
 
 ---
 
@@ -282,7 +304,7 @@ The in-app drawer renders inside the app's own Compose tree via
 system overlay window. This means it is only visible while your app is in the
 foreground, which is the intended behavior for a developer tool.
 
-## Standalone monitor (desktop + web)
+## Standalone monitor (desktop)
 
 A separate Compose app — `redux-kotlin-devtools-standalone` — that monitors a
 debugged app from *outside* its process, with desktop-class screen real estate:
@@ -318,6 +340,8 @@ DevToolsHub.session(cfg.instanceId ?: cfg.name)?.let { session ->
 Multiple stores stream as multiple sessions (one `BridgeOutput` per store,
 sharing a `clientId`); the monitor groups them under one client and offers
 per-store / "all stores" (merged-by-time) views with per-row store badges.
+`BridgeConfig.storeName` sets an explicit display name for the monitor's
+store rail.
 
 ### Reaches platforms the in-app drawer cannot
 
@@ -328,16 +352,59 @@ supports — making the standalone monitor the **only** devtools option for
 headless/native/server redux-kotlin apps. For structured state on iOS/native/JS,
 register a `KotlinxValueSerializer(json)` as `DevToolsConfig.serializer`.
 
-### Web
+### Desktop-only
 
-The desktop app also hosts the same UI in a browser (Compose for Web / wasm)
-at `http://127.0.0.1:9090`, connecting back to the monitor over the same-origin
-WebSocket. (Serving the compiled web bundle through the embedded server is a
-work-in-progress; the desktop app is the primary surface.)
+The monitor is a desktop app. An earlier `wasmJs` web viewer was removed (the
+embedded server never served the compiled bundle); the desktop window is the
+only monitor surface.
 
 ### Security
 
 The monitor binds `127.0.0.1` and the bridge defaults to loopback. Streaming app
 state off the loopback interface requires a non-loopback `host` **and** a shared
-`token` (sent in the handshake, enforced by the monitor). The bridge is
-debug-only — never ship it in a release build.
+`token` (sent in the handshake, verified by the monitor against the connecting
+peer). The bridge is debug-only — never ship it in a release build.
+
+## The `rk-devtools` CLI
+
+`redux-kotlin-devtools-cli` wraps the same bridge receiver in a terminal tool —
+ideal for agents, scripts, and headless debugging. It is unpublished; install it
+from the repository:
+
+```
+./gradlew :redux-kotlin-devtools-cli:installDist
+# binary:
+redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
+```
+
+| Command | What it does |
+|---|---|
+| `rk-devtools serve` | Hosts the receiver on `127.0.0.1:9090`; writes one `<storeKey>.jsonl` capture per connected store into `.rk-devtools/`. Options: `--port`, `--host`, `--token`, `--out`, `--ui` (also launch the GUI monitor). |
+| `rk-devtools stores` | Lists captured stores (`clientId::storeInstanceId`). |
+| `rk-devtools actions` | Action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until`, `--last N`, `--format actions\|diff\|full`, `--pretty`. |
+| `rk-devtools diff` | Same filters; each line includes the per-field JSON diff. |
+| `rk-devtools state --at <id>` | Full state snapshot at an actionId. |
+| `rk-devtools tail [--follow]` | Recent actions; `--follow` polls live. |
+
+The agent-oriented walkthrough of the full debugging loop lives in
+[docs/agent/references/devtools.md](agent/references/devtools.md).
+
+## Recording codec (`.jsonl` captures)
+
+The bridge module ships the capture codec, so any code can save, load, and
+inspect recordings — the same format the CLI writes:
+
+```kotlin
+import org.reduxkotlin.devtools.bridge.RecordingHeader
+import org.reduxkotlin.devtools.bridge.decodeRecording
+import org.reduxkotlin.devtools.bridge.decodeRecordingLenient
+import org.reduxkotlin.devtools.bridge.encodeRecording
+
+val text: String = encodeRecording(header, messages)   // header line + one BridgeMessage per line
+val (header, messages) = decodeRecording(text)         // strict — throws on a malformed line
+val (header2, kept) = decodeRecordingLenient(text)     // lenient — skips malformed/unknown lines
+```
+
+`RecordingHeader` carries the protocol version, client id/label, and store
+name/instance-id, so a capture is self-describing. Use the lenient decoder for
+captures from a crashed app or a newer protocol version.

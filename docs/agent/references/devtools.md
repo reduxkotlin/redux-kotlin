@@ -178,3 +178,5 @@ Full protocol, wire format, server internals, and module boundaries:
 ## See also
 
 - [README](./README.md)
+- Human-facing integration guide (artifacts, store wiring, in-app drawer, monitor, security):
+  [docs/devtools.md](../../devtools.md)

@@ -18,7 +18,9 @@ here](https://redux.js.org/introduction/ecosystem).
 
 The core `redux-kotlin` library is intentionally minimal. Optional
 companion modules build on its contracts; add only the ones you need.
-All share the core's group id `org.reduxkotlin` and version.
+Published modules share the core's group id `org.reduxkotlin` and version;
+rows marked as repo tools are developer tools that ship in the repository
+and are not published to Maven.
 
 | Module | Purpose |
 |---|---|
@@ -37,7 +39,7 @@ All share the core's group id `org.reduxkotlin` and version.
 | `redux-kotlin-bundle` | One-dependency assembly of the concurrent `ModelState` stack (`createConcurrentModelStore`, registry helpers) — concurrent + multimodel + granular + routing in one artifact. |
 | `redux-kotlin-bundle-compose` | The bundle plus the Compose bindings and `redux-kotlin-compose-saveable` — the single dependency for Compose Multiplatform apps. |
 | `redux-kotlin-bom` | Maven BOM aligning the versions of every `org.reduxkotlin` module. |
-| `redux-kotlin-devtools-*` | DevTools family (`core`, `bridge`, `remote`, `inapp`, `ui`, `cli`, `standalone`) — action/state inspection and diffing for a running app. |
+| `redux-kotlin-devtools-*` | [DevTools family](../advanced/devtools) — action/state inspection, diffing, and pipeline timing for a running app. Published: `core`, `bridge`, `remote`, `inapp`, `inapp-noop` (release no-op facade), `ui`. Unpublished repo tools: `standalone` (Compose desktop monitor app) and `cli` (the `rk-devtools` terminal tool). |
 
 ## Community
 

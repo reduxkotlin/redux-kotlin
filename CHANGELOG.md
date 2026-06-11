@@ -28,6 +28,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   defaults at construction, so the first read/render already reflects rehydrated state.
 - `redux-kotlin-multimodel`: `ModelState.withAll(other: ModelState)` overlay overload backing
   `preloadedState`.
+- **New DevTools family** — action/state/diff/pipeline inspection for redux-kotlin apps.
+  Six published modules:
+  - `redux-kotlin-devtools-core` — the `devTools(config)` store enhancer, `DevToolsConfig`,
+    the process-global `DevToolsHub`/`DevToolsSession`, `devToolsMiddleware` /
+    `devToolsCombineReducers` pipeline instrumentation, and JSON state diffing.
+  - `redux-kotlin-devtools-bridge` — `BridgeOutput`/`BridgeConfig`: streams a session to the
+    standalone monitor / CLI over WebSocket; also the `.jsonl` recording codec
+    (`encodeRecording` / `decodeRecording` / `decodeRecordingLenient`).
+  - `redux-kotlin-devtools-remote` — `RemoteOutput`/`RemoteConfig`: streams to an external
+    Redux DevTools monitor (browser extension / `@redux-devtools/cli`).
+  - `redux-kotlin-devtools-inapp` — `ReduxDevToolsHost` + `InAppConfig`: the in-app Compose
+    Multiplatform drawer (bubble / edge-swipe triggers, Actions/State/Diff/Pipeline/Outputs tabs).
+  - `redux-kotlin-devtools-inapp-noop` — zero-overhead release sibling mirroring the inapp +
+    core facade for `releaseImplementation` substitution.
+  - `redux-kotlin-devtools-ui` — shared Compose UI panels (`DevToolsTab`, `DevToolsThemeMode`)
+    used by both the in-app drawer and the standalone monitor.
+
+  Plus two unpublished developer tools in the repo: `redux-kotlin-devtools-standalone`
+  (Compose desktop monitor app, `./gradlew :redux-kotlin-devtools-standalone:run`) and
+  `redux-kotlin-devtools-cli` (`rk-devtools` clikt tool — install with
+  `./gradlew :redux-kotlin-devtools-cli:installDist`, then run
+  `redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools`).
+  See [docs/devtools.md](docs/devtools.md) for the integration guide.
 ### Fixed
 
 - `redux-kotlin-concurrent`: the state mirror is now published **before**
@@ -63,6 +86,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   callback). A moved value subsumes the `triggerOnSubscribe` callback — no
   double-fire; worst case on a posting store is one redundant same-value
   callback.
+- `redux-kotlin-devtools-core`: silent capture drops are now counted and surfaced
+  (the drop counter was previously dead code — captures could be lost without any
+  signal); capture writes are atomic so a reader never observes a half-written
+  entry. `DevToolsHub.registerOutput` dedupes by output **instance**, so
+  re-registering the same output no longer double-streams every event.
+- `redux-kotlin-devtools-bridge`: reseeding a session (monitor reconnect / late
+  attach) now emits an `Init` event first, so the monitor rebuilds its baseline
+  instead of diffing against a stale one. Monitor reconnects resume from the
+  recorded stream — previously a reconnect could drop the actions captured while
+  disconnected. Non-loopback connections are peer-checked against the shared
+  `token`.
+- `redux-kotlin-devtools-remote`: `RemoteOutput` gained an injectable `logger`
+  (connection errors were previously swallowed), and the legacy
+  socketcluster-style ping/pong handshake is answered correctly so the
+  `@redux-devtools/cli` monitor no longer drops the connection.
+- `redux-kotlin-devtools-inapp-noop`: the no-op facade now mirrors the real API
+  one-for-one (including `KotlinxValueSerializer` and the core combinators), so a
+  `releaseImplementation` substitution compiles against the same surface; an
+  automated parity gate keeps the facades aligned.
+- `redux-kotlin-devtools-inapp`: `InAppConfig.startTab` is honored,
+  `DevToolsThemeMode.SYSTEM` follows the platform theme, `DevToolsSession.maxAge`
+  is surfaced, the session list is reactive (stores registered after the drawer
+  mounts appear without reopening), and the Outputs tab reflects the truthful
+  hub-global output state — toggles act on the hub's outputs, not a per-drawer
+  copy.
 
 ### Deprecated
 
@@ -95,6 +143,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tooling: `com.gradle.enterprise` plugin migrated to `com.gradle.develocity`; Renovate
   upgraded to `config:recommended` with grouped `packageRules` for kotlin-ecosystem,
   android-build, gradle-build, and github-actions.
+- **BREAKING (pre-1.0, unreleased):** `redux-kotlin-devtools-ui` package renamed
+  `org.reduxkotlin.devtools.inapp` → `org.reduxkotlin.devtools.ui` — `DevToolsTab` and
+  `DevToolsThemeMode` now import from `org.reduxkotlin.devtools.ui` (`InAppConfig` and the
+  triggers stay in `org.reduxkotlin.devtools.inapp`).
+- `redux-kotlin-devtools-bridge` moved to the standard companion-module target tier
+  (drops `linuxArm64`; all other targets unchanged). `redux-kotlin-devtools-standalone`
+  dropped its `wasmJs` web viewer — the monitor is desktop-only.
+- `redux-kotlin-devtools-bridge`: `BridgeConfig` gained `storeName` (explicit display
+  name for the monitor's store rail).
 
 ### Removed
 
