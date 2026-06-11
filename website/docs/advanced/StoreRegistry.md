@@ -27,8 +27,8 @@ implementation("org.reduxkotlin:redux-kotlin-registry:<version>")
 ```
 
 The module targets every platform the core library supports: JVM,
-Android, JS, wasmJs, iosArm64, iosX64, iosSimulatorArm64, macosArm64,
-macosX64, linuxX64, mingwX64. Its only dependencies are `redux-kotlin`
+Android, JS, wasmJs, iosArm64, iosSimulatorArm64, macosArm64,
+linuxX64, mingwX64. Its only dependencies are `redux-kotlin`
 and `kotlinx.atomicfu` — no coroutines requirement.
 
 ## Tier 1: `StoreRegistry<K, S>`

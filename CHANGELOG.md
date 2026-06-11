@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New module `redux-kotlin-compose-saveable`: `StateSaver` + `rememberSaveableState` —
+  store-anchored snapshot persistence via Compose `SaveableStateRegistry` +
+  kotlinx.serialization. Survives rotation and process death on Android; restore is applied
+  synchronously during composition (no stale first frame).
+- `redux-kotlin-concurrent`: `coalescingNotificationContext(isOnTargetThread, post)` — runs
+  subscriber callbacks inline when the dispatch is already on the target (main) thread, posts
+  otherwise; removes the one-frame notification lag for main-thread dispatches.
+- `redux-kotlin-routing` / `redux-kotlin-bundle`: optional `preloadedState: ModelState?` on
+  `createModelStore` / `createConcurrentModelStore` — overlays restored models onto the declared
+  defaults at construction, so the first read/render already reflects rehydrated state.
+- `redux-kotlin-multimodel`: `ModelState.withAll(other: ModelState)` overlay overload backing
+  `preloadedState`.
 ### Fixed
 
 - `redux-kotlin-concurrent`: the state mirror is now published **before**
@@ -53,6 +67,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   accepted and its state change overwritten. `getState`/`subscribe`/`unsubscribe`
   already enforced the same guard. Dispatch follow-up actions from middleware or a
   subscriber instead.
+- `redux-kotlin-compose`: `selectorState` / `fieldState` now read store state synchronously on
+  every read and use the subscription only to schedule recomposition — bindings stay fresh even
+  with asynchronous notification contexts, and re-sample conditionally at subscribe so a change
+  landing before the subscription is not lost.
 - CI/toolchain bumped to JDK 21; library bytecode stays at JVM 17 to preserve downstream
   compatibility with JDK 17 consumers. Test matrix runs both JDKs.
 - Sample apps modernised: `compileSdk`/`targetSdk` 33 → 35, `JavaVersion` 1.8 → 21,

@@ -271,9 +271,13 @@ read the restored slice.
 The snapshot is read and the restore action dispatched on the **main
 thread**, so the persisted store must accept main-thread reads and dispatch
 — the Compose-facing store (the concurrent/threadsafe bundle store, or a
-main-confined store). On Android the snapshot rides `savedInstanceState`
-(rotation + process death); iOS uses state restoration; desktop, JS and
-wasm have no OS restore concept, so the anchor is a no-op there.
+main-confined store). The anchor rides whatever `SaveableStateRegistry`
+the platform's Compose runtime provides. On Android that registry is wired
+to `savedInstanceState`, so snapshots survive rotation **and** process
+death. On iOS, desktop, JS and wasm the Compose runtime does not currently
+wire the registry to an OS restore mechanism, so the anchor is a no-op for
+process death there — persist anything durable yourself and seed it via
+[`preloadedState`](#rehydrating-at-construction-preloadedstate) instead.
 
 :::tip Bundled
 `redux-kotlin-compose-saveable` ships inside
