@@ -181,13 +181,30 @@ Access to `store` methods like `dispatch` and `getState` will be synchronized, a
 eg. `applyMiddleware`) that are placed above `createSynchronizedStoreEnhancer` in the enhancer
 composition chain will receive the synchronized store.
 
+## DevTools
+
+The repo ships a DevTools family for inspecting a running redux-kotlin app:
+
+- **In-app drawer** (`redux-kotlin-devtools-inapp`) — a Compose Multiplatform overlay with
+  Actions / State / Diff / Pipeline / Outputs tabs, swapped out at release time by
+  `redux-kotlin-devtools-inapp-noop`.
+- **Standalone desktop monitor** (`redux-kotlin-devtools-standalone`) — observe any app
+  (including headless/native) from outside its process via the WebSocket bridge.
+- **CLI** (`redux-kotlin-devtools-cli`) — the `rk-devtools` terminal tool: capture, query,
+  diff, and tail action streams.
+- **Remote streaming** (`redux-kotlin-devtools-remote`) — stream to the Redux DevTools
+  browser extension.
+
+See the [integration guide](docs/devtools.md) and the
+[website DevTools page](https://www.reduxkotlin.org/advanced/devtools).
+
 ## Extensions
 
-Here's a list of optional extensions available. Raise an issue to add yours!
-
-- [redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin-thunk)
-- [redux-kotlin-compose](https://github.com/reduxkotlin/redux-kotlin-compose)
-- [presenter-middleware](https://github.com/reduxkotlin/presenter-middleware)
+Optional companion modules in this repo build on the core contracts — Compose bindings
+(`redux-kotlin-compose`), async actions (`redux-kotlin-thunk`), granular subscriptions,
+multi-store registries, routing, and the one-dependency bundles. See the
+[ecosystem page](https://www.reduxkotlin.org/introduction/ecosystem) for the full list.
+Raise an issue to add your external extension!
 
 ## Communication
 

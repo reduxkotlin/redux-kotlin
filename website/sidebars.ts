@@ -58,6 +58,7 @@ const sidebars: SidebarsConfig = {
         'advanced/granular-subscriptions',
         'advanced/store-registry',
         'advanced/compose-integration',
+        'advanced/devtools',
       ],
     },
     {

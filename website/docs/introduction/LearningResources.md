@@ -49,5 +49,5 @@ Javascript, and related topics, see the
 
 - **Redux in Swift Pt. 1: What, why, and how**  
     https://medium.com/newindustrialist/redux-in-swift-pt-1-what-why-and-how-b52e6fd29440
-    A take on how to use Redux in Swift with ReSwift.  Mention of devtools and how to use them on iOS.  ReduxKotlin aims to provide devtools to all platforms, but not available yet. 
+    A take on how to use Redux in Swift with ReSwift.  Mention of devtools and how to use them on iOS.  ReduxKotlin provides [DevTools for all Kotlin platforms](../advanced/devtools) — an in-app Compose drawer, a desktop monitor, a CLI, and remote streaming to the Redux DevTools browser extension. 
 

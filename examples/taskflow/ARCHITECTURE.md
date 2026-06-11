@@ -46,6 +46,7 @@ relative to
 16. [App bootstrap sequence](#16-app-bootstrap-sequence)
 17. [Design rules](#17-design-rules)
 18. [Testing strategy](#18-testing-strategy)
+19. [DevTools wiring](#19-devtools-wiring)
 
 ---
 
@@ -937,6 +938,35 @@ inject/eject) — "not loaded" is a nullable payload, not an absent slot.
   switching).
 - Native/iOS-simulator and browser test execution is host/CI-gated; local verification
   uses scoped `jvmTest` + cross-target compiles + `detektAll`.
+
+---
+
+## 19. DevTools wiring
+
+TaskFlow ships with the Redux-Kotlin DevTools wired in (see the repo-level
+[integration guide](../../docs/devtools.md)). Three artifacts are added in
+`composeApp/build.gradle.kts:47` (`redux-kotlin-devtools-core`, `-inapp`, `-bridge`).
+
+- **Root store** (`app/AppStore.kt`): `createAppStore` passes
+  `enhancer = devTools(rootCfg)` with `DevToolsConfig(name = "TaskFlow-root")`, then attaches
+  a `BridgeOutput(BridgeConfig(clientId = "taskflow", clientLabel = "TaskFlow"))` to the hub
+  session so the store also streams to an external monitor/CLI when one is listening.
+- **Account stores** (`app/AccountStore.kt`): `createAccountStore` uses
+  `DevToolsConfig(name = "TaskFlow")` and composes **two** combinators —
+  `compose(devTools(devCfg), devToolsMiddleware(devCfg, named("activityLogger", …),
+  named("undo", …), named("effects", …)))` — so the drawer's Pipeline tab shows the
+  per-middleware timing/forwarding of the `activityLogger → undo → effects` stack. Each
+  account store gets its own `BridgeOutput` (same `clientId = "taskflow"`, so the monitor
+  groups all TaskFlow stores under one client); the output and the session id travel in
+  `AccountStoreHandle.bridgeOutput` / `.devtoolsId` and are torn down by
+  `AccountRegistry.remove`.
+- **In-app drawer** (`app/App.kt`): the shell wraps everything in
+  `ReduxDevToolsHost(InAppConfig())`. No `instanceId` is pinned — the drawer is
+  multi-session, so the always-present root store drives the bubble/edge-swipe trigger from
+  launch and each account store appears in the store picker as it logs in.
+
+The bridge is loopback-only by default; run `./gradlew :redux-kotlin-devtools-standalone:run`
+(or `rk-devtools serve`) before launching TaskFlow to capture its streams.
 
 ---
 

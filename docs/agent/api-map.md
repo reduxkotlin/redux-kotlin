@@ -35,10 +35,15 @@ Read the committed `.api` dump for a module's public surface; regenerate with `.
 | `:redux-kotlin-devtools-remote` | `redux-kotlin-devtools-remote/api/redux-kotlin-devtools-remote.klib.api` | Remote DevTools transport config (`RemoteConfig`). |
 | `:redux-kotlin-devtools-inapp` | `redux-kotlin-devtools-inapp/api/redux-kotlin-devtools-inapp.klib.api` | In-app DevTools overlay: triggers/config (`DevToolsTrigger`, `InAppConfig`, `DevToolsTab`). |
 | `:redux-kotlin-devtools-inapp-noop` | `redux-kotlin-devtools-inapp-noop/api/redux-kotlin-devtools-inapp-noop.klib.api` | No-op in-app DevTools (same config types, stripped for release builds). |
-| `:redux-kotlin-devtools-ui` | `redux-kotlin-devtools-ui/api/redux-kotlin-devtools-ui.klib.api` | Compose DevTools UI panels (tabs, theme). |
+| `:redux-kotlin-devtools-ui` | `redux-kotlin-devtools-ui/api/redux-kotlin-devtools-ui.klib.api` | Compose DevTools UI panels — package `org.reduxkotlin.devtools.ui` (`DevToolsTab`, `DevToolsThemeMode`, `ui.model` view-state, `RkTokens`). |
 
-`redux-kotlin-bom` (BOM platform), `redux-kotlin-routing-codegen` (KSP processor), and
-`redux-kotlin-devtools-standalone` (sample app) are published/built but carry no `.api` dump, so
-they're not listed.
+`redux-kotlin-bom` (BOM platform) and `redux-kotlin-routing-codegen` (KSP processor) are
+published but carry no `.api` dump, so they're not listed.
+
+Unpublished developer tools (no `.api` dump, not on Maven):
+`redux-kotlin-devtools-standalone` is the `convention.control` Compose desktop monitor app, and
+`redux-kotlin-devtools-cli` is the `rk-devtools` clikt tool wrapping the standalone server +
+capture queries (`serve`/`stores`/`actions`/`diff`/`state`/`tail`); install via
+`./gradlew :redux-kotlin-devtools-cli:installDist`.
 
 `examples/*` are `convention.control` (not published, no `.api`).
