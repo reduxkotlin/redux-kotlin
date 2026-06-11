@@ -51,6 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `./gradlew :redux-kotlin-devtools-cli:installDist`, then run
   `redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools`).
   See [docs/devtools.md](docs/devtools.md) for the integration guide.
+
+  The six published DevTools modules are version-aligned by `redux-kotlin-bom` but
+  marked **experimental**: they are exempt from the semver guarantee until the
+  devtools surface stabilizes and may change in minor releases.
 ### Fixed
 
 - `redux-kotlin-concurrent`: the state mirror is now published **before**

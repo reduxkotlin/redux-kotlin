@@ -11,11 +11,15 @@ middleware-pipeline timing, and time-ordered multi-store views for a running
 redux-kotlin app — in-app, on the desktop, from the terminal, or in the
 classic Redux DevTools browser monitor.
 
-> **Availability:** the DevTools modules are new and experimental; they are not
-> part of any published release yet and will ship with the next release. Until
-> then, build them from source (the repository's
-> [docs/devtools.md](https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/devtools.md)
-> tracks the same content against the working tree).
+:::caution Experimental
+
+The DevTools modules are **experimental**. They are published alongside the
+other modules and version-aligned by `redux-kotlin-bom`, but they are exempt
+from the semantic-versioning guarantee until the devtools surface stabilizes —
+the API may change in minor releases. Everything else under the BOM carries the
+full stability promise.
+
+:::
 
 ## Artifacts overview
 

@@ -1,5 +1,9 @@
 # redux-kotlin-devtools-inapp-noop
 
+> **Experimental:** published and version-aligned by `redux-kotlin-bom`, but exempt
+> from the semver guarantee until the devtools surface stabilizes — the API may
+> change in minor releases.
+
 The zero-overhead release sibling of the DevTools. It mirrors the
 [`redux-kotlin-devtools-inapp`](../redux-kotlin-devtools-inapp) API **and** the
 core facade (`devTools`, `devToolsMiddleware`, `devToolsCombineReducers`,
