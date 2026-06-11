@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New module `redux-kotlin-thunk`: ported from the standalone
+  [reduxkotlin/redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin-thunk) repo into
+  the monorepo — `Thunk` typealias + `createThunkMiddleware`. Published under the same maven
+  coordinates `org.reduxkotlin:redux-kotlin-thunk` and added to the BOM; the standalone repo
+  will be archived.
 - New module `redux-kotlin-compose-saveable`: `StateSaver` + `rememberSaveableState` —
   store-anchored snapshot persistence via Compose `SaveableStateRegistry` +
   kotlinx.serialization. Survives rotation and process death on Android; restore is applied

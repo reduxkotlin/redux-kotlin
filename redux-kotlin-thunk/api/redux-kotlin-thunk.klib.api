@@ -1,0 +1,9 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, linuxX64, macosArm64, mingwX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <org.reduxkotlin:redux-kotlin-thunk>
+final fun <#A: kotlin/Any?> org.reduxkotlin.thunk/createThunkMiddleware(kotlin/Any? = ...): kotlin/Function1<org.reduxkotlin/TypedStore<#A, kotlin/Any>, kotlin/Function1<kotlin/Function1<kotlin/Any, kotlin/Any>, kotlin/Function1<kotlin/Any, kotlin/Any>>> // org.reduxkotlin.thunk/createThunkMiddleware|createThunkMiddleware(kotlin.Any?){0§<kotlin.Any?>}[0]
