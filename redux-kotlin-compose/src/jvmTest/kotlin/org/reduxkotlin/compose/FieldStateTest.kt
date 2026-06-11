@@ -58,8 +58,51 @@ private class DeferredNotifyStore<S>(initial: S) : org.reduxkotlin.Store<S> {
     override val replaceReducer: (org.reduxkotlin.Reducer<S>) -> Unit = { }
 }
 
+// Lands a silent state change exactly inside the binding's effect-time window: `subscribe()`
+// first mutates state WITHOUT notifying, then registers the listener. Whatever the binding does
+// before its subscription is installed cannot see this change; only work done AFTER install can.
+private class MutateOnSubscribeStore(
+    initial: String,
+    private val valueAtSubscribe: String,
+) : org.reduxkotlin.Store<String> {
+    private var current: String = initial
+    private val listeners = mutableListOf<org.reduxkotlin.StoreSubscriber>()
+
+    override val store: org.reduxkotlin.Store<String> = this
+    override val getState: org.reduxkotlin.GetState<String> = { current }
+    override var dispatch: org.reduxkotlin.Dispatcher = { action ->
+        @Suppress("UNCHECKED_CAST")
+        run { current = action as String }
+        action
+    }
+    override val subscribe: (org.reduxkotlin.StoreSubscriber) -> org.reduxkotlin.StoreSubscription = { l ->
+        current = valueAtSubscribe // silent change DURING registration; no notification follows
+        listeners.add(l)
+        val unsubscribe: org.reduxkotlin.StoreSubscription = {
+            listeners.remove(l)
+            Unit
+        }
+        unsubscribe
+    }
+    override val replaceReducer: (org.reduxkotlin.Reducer<String>) -> Unit = { }
+}
+
 @OptIn(ExperimentalTestApi::class)
 class FieldStateTest {
+
+    @Test
+    fun bindingCatchesChangeThatLandedDuringSubscriptionInstall() = runComposeUiTest {
+        val store = MutateOnSubscribeStore(initial = "a", valueAtSubscribe = "b")
+        setContent {
+            val value by store.selectorState { it }
+            Text("v=$value")
+        }
+        waitForIdle()
+        // The change landed inside subscribe() itself, with no notification ever delivered.
+        // Only a re-sample that runs AFTER the subscription is installed can catch it; the
+        // pre-install re-sample order left the binding stale on "a" forever.
+        onAllNodesWithText("v=b").assertCountEquals(1)
+    }
 
     @Test
     fun fieldState_renders_initial_value_on_first_frame() = runComposeUiTest {
