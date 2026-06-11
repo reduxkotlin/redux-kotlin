@@ -15,12 +15,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.devtools.DevToolsHub
-import org.reduxkotlin.devtools.inapp.model.StoreRegistryModel
-import org.reduxkotlin.devtools.inapp.model.actionLogRows
-import org.reduxkotlin.devtools.inapp.theme.ReduxKotlinDevToolsTheme
 import org.reduxkotlin.devtools.inapp.ui.DevToolsBubble
 import org.reduxkotlin.devtools.inapp.ui.Drawer
 import org.reduxkotlin.devtools.inapp.ui.EdgeTab
+import org.reduxkotlin.devtools.ui.model.StoreRegistryModel
+import org.reduxkotlin.devtools.ui.model.actionLogRows
+import org.reduxkotlin.devtools.ui.theme.ReduxKotlinDevToolsTheme
 import kotlin.math.roundToInt
 
 /** Process-visible drawer open-state, so [ReduxDevTools] can toggle it from anywhere. */

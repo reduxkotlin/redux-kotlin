@@ -20,7 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import org.reduxkotlin.devtools.inapp.theme.RkTokens
+import org.reduxkotlin.devtools.ui.theme.RkTokens
 
 /** Leftward drag distance on the edge tab that counts as an open-the-drawer swipe. */
 private val EdgeSwipeThreshold = 24.dp

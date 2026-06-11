@@ -8,9 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.flow.StateFlow
-import org.reduxkotlin.devtools.inapp.model.StoreEntry
-import org.reduxkotlin.devtools.inapp.model.StoreRegistryModel
-import org.reduxkotlin.devtools.inapp.model.StoreRegistryState
+import org.reduxkotlin.devtools.ui.model.StoreEntry
+import org.reduxkotlin.devtools.ui.model.StoreRegistryModel
+import org.reduxkotlin.devtools.ui.model.StoreRegistryState
 
 /**
  * A group of stores that share a `clientId` (the prefix before `"::"` in a [StoreEntry]'s id).

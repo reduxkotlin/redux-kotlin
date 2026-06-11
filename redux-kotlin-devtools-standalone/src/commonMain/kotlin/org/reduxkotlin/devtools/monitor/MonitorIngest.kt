@@ -6,9 +6,9 @@ import kotlinx.serialization.json.JsonNull
 import org.reduxkotlin.devtools.DevToolsEvent
 import org.reduxkotlin.devtools.bridge.BridgeMessage
 import org.reduxkotlin.devtools.bridge.RecordingHeader
-import org.reduxkotlin.devtools.inapp.model.InAppModel
-import org.reduxkotlin.devtools.inapp.model.StoreRef
-import org.reduxkotlin.devtools.inapp.model.StoreRegistryModel
+import org.reduxkotlin.devtools.ui.model.InAppModel
+import org.reduxkotlin.devtools.ui.model.StoreRef
+import org.reduxkotlin.devtools.ui.model.StoreRegistryModel
 
 /**
  * Decodes bridge message streams into per-store [InAppModel]s and registers them in [registry].

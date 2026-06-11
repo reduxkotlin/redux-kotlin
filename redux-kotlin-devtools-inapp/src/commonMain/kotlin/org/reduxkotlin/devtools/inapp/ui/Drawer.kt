@@ -33,16 +33,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import org.reduxkotlin.devtools.inapp.DevToolsTab
-import org.reduxkotlin.devtools.inapp.model.ActionLogRow
-import org.reduxkotlin.devtools.inapp.model.InAppModel
-import org.reduxkotlin.devtools.inapp.model.InAppState
-import org.reduxkotlin.devtools.inapp.model.StoreRegistryModel
-import org.reduxkotlin.devtools.inapp.theme.RkTokens
-import org.reduxkotlin.devtools.inapp.ui.tabs.DiffTab
-import org.reduxkotlin.devtools.inapp.ui.tabs.OutputsTab
-import org.reduxkotlin.devtools.inapp.ui.tabs.PipelineTab
-import org.reduxkotlin.devtools.inapp.ui.tabs.StateTab
+import org.reduxkotlin.devtools.ui.DevToolsTab
+import org.reduxkotlin.devtools.ui.model.ActionLogRow
+import org.reduxkotlin.devtools.ui.model.InAppModel
+import org.reduxkotlin.devtools.ui.model.InAppState
+import org.reduxkotlin.devtools.ui.model.StoreRegistryModel
+import org.reduxkotlin.devtools.ui.tabs.DiffTab
+import org.reduxkotlin.devtools.ui.tabs.OutputsTab
+import org.reduxkotlin.devtools.ui.tabs.PipelineTab
+import org.reduxkotlin.devtools.ui.tabs.StateTab
+import org.reduxkotlin.devtools.ui.theme.RkTokens
 
 /** The drawer: scrim + adaptive panel (bottom sheet on compact width, right panel on wide). */
 @Composable

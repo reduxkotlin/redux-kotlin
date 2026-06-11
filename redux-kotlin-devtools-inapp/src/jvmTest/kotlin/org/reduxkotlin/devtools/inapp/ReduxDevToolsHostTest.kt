@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.runComposeUiTest
 import org.reduxkotlin.devtools.DevToolsConfig
 import org.reduxkotlin.devtools.DevToolsHub
+import org.reduxkotlin.devtools.ui.DevToolsTab
 import kotlin.test.AfterTest
 import kotlin.test.Test
 

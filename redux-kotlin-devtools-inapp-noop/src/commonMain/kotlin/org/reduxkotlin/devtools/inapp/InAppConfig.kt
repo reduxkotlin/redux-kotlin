@@ -2,6 +2,9 @@
 // matches the debug artifact's.
 package org.reduxkotlin.devtools.inapp
 
+import org.reduxkotlin.devtools.ui.DevToolsTab
+import org.reduxkotlin.devtools.ui.DevToolsThemeMode
+
 /** No-op trigger enum (kept for API parity). */
 public enum class DevToolsTrigger {
     /** Inert. */

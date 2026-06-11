@@ -24,12 +24,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.reduxkotlin.devtools.DevToolsEvent
-import org.reduxkotlin.devtools.inapp.model.ActionLogRow
-import org.reduxkotlin.devtools.inapp.model.actionLogRows
-import org.reduxkotlin.devtools.inapp.model.actionType
-import org.reduxkotlin.devtools.inapp.model.matches
-import org.reduxkotlin.devtools.inapp.model.payloadPreview
 import org.reduxkotlin.devtools.monitor.MonitorState
+import org.reduxkotlin.devtools.ui.model.ActionLogRow
+import org.reduxkotlin.devtools.ui.model.actionLogRows
+import org.reduxkotlin.devtools.ui.model.actionType
+import org.reduxkotlin.devtools.ui.model.matches
+import org.reduxkotlin.devtools.ui.model.payloadPreview
 
 /** Visible (post-filter) rows for the current selection — used for the header count + match count. */
 internal fun visibleRows(state: MonitorState): List<Pair<String, DevToolsEvent.ActionRecorded>> =
