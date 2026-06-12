@@ -20,7 +20,8 @@ dependencies {
         api("$g:redux-kotlin-compose:$v")
         api("$g:redux-kotlin-compose-multimodel:$v")
         api("$g:redux-kotlin-routing:$v")
-        api("$g:redux-kotlin-routing-codegen:$v")
+        // redux-kotlin-routing-codegen is intentionally absent: the KSP
+        // processor is not published yet (in-repo only) — re-add when it ships.
         api("$g:redux-kotlin-bundle:$v")
         api("$g:redux-kotlin-bundle-compose:$v")
         api("$g:redux-kotlin-compose-saveable:$v")

@@ -116,6 +116,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hub-global output state — toggles act on the hub's outputs, not a per-drawer
   copy.
 
+- `redux-kotlin-bom`: no longer constrains `redux-kotlin-routing-codegen` — the KSP
+  processor is not published yet (in-repo only); the constraint returns when it ships.
+
 ### Deprecated
 
 - `redux-kotlin-threadsafe` is deprecated in favor of `redux-kotlin-concurrent`. All public
