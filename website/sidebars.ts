@@ -63,6 +63,7 @@ const sidebars: SidebarsConfig = {
         'advanced/bundle',
         'advanced/compose-integration',
         'advanced/devtools',
+        'advanced/devtools-cli-tutorial',
       ],
     },
     {
