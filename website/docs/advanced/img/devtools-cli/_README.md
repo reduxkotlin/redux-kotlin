@@ -1,8 +1,9 @@
 # DevTools CLI screenshots
 
-Placeholder slots referenced by
-`website/docs/advanced/DevToolsCLITutorial.md`. Capture against the TaskFlow
-sample, then drop PNGs here with these exact names:
+These PNGs are **labelled placeholders** referenced by
+`../DevToolsCLITutorial.md` with doc-relative paths (`./img/devtools-cli/*.png`)
+so they render both on GitHub and on the Docusaurus site. Replace each with a
+real capture against the TaskFlow sample, keeping the same filename:
 
 | File | Shot |
 |---|---|

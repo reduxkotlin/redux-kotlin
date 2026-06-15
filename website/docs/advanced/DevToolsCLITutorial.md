@@ -25,7 +25,7 @@ developer tool — you build it from the repo, it is not a Maven artifact.
 :::
 
 > **Screenshots in this guide are placeholders.** Image slots reference
-> `static/img/devtools-cli/*.png`; capture them against the
+> the labelled placeholder PNGs in `./img/devtools-cli/`; replace them with real captures against the
 > [TaskFlow sample](https://github.com/reduxkotlin/redux-kotlin/tree/master/examples/taskflow)
 > when filling this page in.
 
@@ -38,7 +38,7 @@ new column shows a transient "Saving…" badge that **never clears** when the
 fake backend rejects the write — the card looks stuck. We want the action that
 fired and the state field that went wrong.
 
-![TaskFlow board with a stuck "Saving…" card](/img/devtools-cli/00-stuck-card.png)
+![TaskFlow board with a stuck "Saving…" card](./img/devtools-cli/00-stuck-card.png)
 
 ---
 
@@ -75,7 +75,7 @@ Commands:
   tail      Print recent actions; --follow to poll live
 ```
 
-![rk-devtools --help in a terminal](/img/devtools-cli/01-help.png)
+![rk-devtools --help in a terminal](./img/devtools-cli/01-help.png)
 
 ---
 
@@ -99,7 +99,7 @@ Useful flags: `--port`, `--host`, `--out <dir>`, `--token <t>` (required for
 non-loopback binds), and `--ui` to also launch the desktop GUI monitor against
 the same ingest.
 
-![serve waiting for a connection](/img/devtools-cli/02-serve-waiting.png)
+![serve waiting for a connection](./img/devtools-cli/02-serve-waiting.png)
 
 ---
 
@@ -154,7 +154,7 @@ The `clientId::storeInstanceId` key is what you pass to `--store` when more
 than one store is captured. With a single store, the query commands resolve it
 automatically.
 
-![stores listing two captured stores](/img/devtools-cli/03-stores.png)
+![stores listing two captured stores](./img/devtools-cli/03-stores.png)
 
 ---
 
@@ -179,7 +179,7 @@ traffic with a type glob:
 rk-devtools actions --type '*Sync*' --last 5
 ```
 
-![filtered action log showing SyncFailed](/img/devtools-cli/04-actions-filtered.png)
+![filtered action log showing SyncFailed](./img/devtools-cli/04-actions-filtered.png)
 
 ---
 
@@ -203,7 +203,7 @@ The diff makes the bug obvious: the failure handler sets `syncError` but
 **leaves `saving = true`** — so the badge never clears. The reducer should set
 `saving = false` on `SyncFailed`.
 
-![diff output highlighting saving stayed true](/img/devtools-cli/05-diff.png)
+![diff output highlighting saving stayed true](./img/devtools-cli/05-diff.png)
 
 ---
 
@@ -244,7 +244,7 @@ rk-devtools tail --follow
 rk-devtools tail --follow --type '*Sync*'
 ```
 
-![tail --follow streaming actions](/img/devtools-cli/06-tail-follow.png)
+![tail --follow streaming actions](./img/devtools-cli/06-tail-follow.png)
 
 ---
 
