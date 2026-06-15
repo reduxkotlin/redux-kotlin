@@ -33,12 +33,15 @@ developer tool — you build it from the repo, it is not a Maven artifact.
 
 ## The scenario
 
-We use the **TaskFlow** Kanban sample. Bug to reproduce: dragging a card to a
-new column shows a transient "Saving…" badge that **never clears** when the
-fake backend rejects the write — the card looks stuck. We want the action that
-fired and the state field that went wrong.
+We use the **TaskFlow** Kanban sample. TaskFlow does optimistic card moves
+against a fake backend: a move applies immediately, then the server result
+either confirms it (`CardOpSucceeded`) or rejects it and rolls back
+(`CardOpFailed`). To make rejections happen on demand, open **Settings** and set
+the **failure-rate** slider to 100%. Now every move you make snaps back. We'll
+use the CLI to watch that optimistic-apply → reject → rollback trace and confirm
+the in-flight bookkeeping behaves.
 
-![TaskFlow board with a stuck "Saving…" card](./img/devtools-cli/00-stuck-card.png)
+![TaskFlow board after a rejected, rolled-back card move](./img/devtools-cli/00-stuck-card.png)
 
 ---
 
@@ -105,8 +108,14 @@ the same ingest.
 
 ## Step 3 — Point the app at the bridge
 
-Add a `BridgeOutput` to the DevTools hub in **debug-only** code, with
-`startEnabled = true` so it connects on launch:
+**TaskFlow already does this** — `AppStore.kt` / `AccountStore.kt` wire the
+`devTools(...)` enhancer and attach a `BridgeOutput(BridgeConfig(clientId = "taskflow"))`
+to the hub, pointing at `127.0.0.1:9090`. So you can skip straight to launching
+the app.
+
+For your **own** app, add a `BridgeOutput` to the DevTools hub in
+**debug-only** code (the store must already carry the `devTools(...)` enhancer —
+see [Wiring the store](./DevTools.md#wiring-the-store)):
 
 ```kotlin
 import org.reduxkotlin.devtools.DevToolsHub
@@ -119,26 +128,26 @@ DevToolsHub.registerOutput(
             host = "127.0.0.1",
             port = 9090,
             startEnabled = true,
-            clientLabel = "taskflow",
+            clientLabel = "my-app",
         ),
     ),
 )
 ```
 
-The store must already be wired with the `devTools(...)` enhancer — see
-[Wiring the store](./DevTools.md#wiring-the-store). Launch the app; `serve`
-prints the connection:
+Launch the app; `serve` prints the connection (TaskFlow streams two stores — its
+per-account board store and the root store):
 
 ```text
-rk-devtools: client connected — taskflow
-rk-devtools: capturing store taskflow::board
+rk-devtools: client connected — TaskFlow
+rk-devtools: capturing store taskflow::TaskFlow
+rk-devtools: capturing store taskflow::TaskFlow-root
 ```
 
 ---
 
 ## Step 4 — List the captured stores
 
-Reproduce the bug in the app (drag the card so the backend rejects it), then
+Move a card in the app (with failure-rate at 100% it'll snap back), then
 confirm the CLI is recording:
 
 ```bash
@@ -146,13 +155,15 @@ rk-devtools stores
 ```
 
 ```text
-taskflow::board
-taskflow::account
+taskflow::TaskFlow
+taskflow::TaskFlow-root
 ```
 
-The `clientId::storeInstanceId` key is what you pass to `--store` when more
-than one store is captured. With a single store, the query commands resolve it
-automatically.
+The `clientId::storeInstanceId` key is what you pass to `--store` when more than
+one store is captured (here `clientId = "taskflow"` and the instance id is each
+store's `DevToolsConfig` name — `TaskFlow` for the board store, `TaskFlow-root`
+for the root store). The board/card actions live in `taskflow::TaskFlow`. With a
+single store, the query commands resolve it automatically.
 
 ![stores listing two captured stores](./img/devtools-cli/03-stores.png)
 
@@ -161,71 +172,81 @@ automatically.
 ## Step 5 — Scan the recent action log
 
 ```bash
-rk-devtools actions --last 8
+rk-devtools actions --store taskflow::TaskFlow --last 8
 ```
 
 ```text
-  39  CardDragStarted          taskflow::board  12:04:51.310
-  40  CardMoved                taskflow::board  12:04:51.""
-  41  SyncRequested            taskflow::board  12:04:51.402
-  42  SyncFailed               taskflow::board  12:04:52.118
-  43  CardMoved                taskflow::board  12:04:52.""
+  39  AddCard            taskflow::TaskFlow  12:04:51.310
+  40  CardMoveRequested  taskflow::TaskFlow  12:04:51.402
+  41  CardMoveRequested  taskflow::TaskFlow  12:04:51.870
+  42  CardOpFailed       taskflow::TaskFlow  12:04:52.118
+  43  CardOpFailed       taskflow::TaskFlow  12:04:52.640
 ```
 
-There's the suspect: `SyncFailed` at action **42**. Filter to just the sync
-traffic with a type glob:
+There's the pair we want: an optimistic `CardMoveRequested` at **40** and its
+rejection `CardOpFailed` at **42**. Filter to just the card traffic with a type
+glob:
 
 ```bash
-rk-devtools actions --type '*Sync*' --last 5
+rk-devtools actions --type '*Card*' --last 5
 ```
 
-![filtered action log showing SyncFailed](./img/devtools-cli/04-actions-filtered.png)
+![filtered action log showing CardOpFailed](./img/devtools-cli/04-actions-filtered.png)
 
 ---
 
 ## Step 6 — Diff the offending action
 
-`diff` shows the per-field JSON change each action produced — exactly what
-`SyncFailed` did to the state:
+`diff` shows the per-field JSON change each action produced. TaskFlow's state is
+a `ModelState`, so the diff is keyed by model class. Look at what the rejection
+did:
 
 ```bash
-rk-devtools diff --type 'SyncFailed' --last 1
+rk-devtools diff --store taskflow::TaskFlow --type 'CardOpFailed' --last 1
 ```
 
 ```text
-  42  SyncFailed  taskflow::board  12:04:52.118
-    ~ cards.c7.saving            true  ->  true        # never cleared
-    ~ cards.c7.syncError         null  ->  "rejected"
-    + errors.lastSyncError       "card c7 rejected by backend"
+  42  CardOpFailed  taskflow::TaskFlow  12:04:52.118
+    ~ SyncModel.inFlight   ["card-7"]  ->  []                         # cleared on result
+    ~ SyncModel.lastError  null        ->  "card-7 rejected by backend"
+    ~ BoardModel.board     (column "Done")  ->  (column "Doing")      # inverse applied — moved back
 ```
 
-The diff makes the bug obvious: the failure handler sets `syncError` but
-**leaves `saving = true`** — so the badge never clears. The reducer should set
-`saving = false` on `SyncFailed`.
+The trace confirms the rollback is correct: `card-7` leaves `SyncModel.inFlight`
+the moment the op resolves, `lastError` records why, and `BoardModel` reverts the
+optimistic move via the action's inverse op. (Exact serialization depends on the
+serializer tier — JVM renders structured JSON; other targets may render
+`toString()`.)
 
-![diff output highlighting saving stayed true](./img/devtools-cli/05-diff.png)
+![diff output showing the rejection rollback](./img/devtools-cli/05-diff.png)
 
 ---
 
 ## Step 7 — Confirm against full state
 
-Print the full state snapshot at that action to confirm the stuck field:
+Print the full state snapshot at that action to confirm the post-rollback shape:
 
 ```bash
-rk-devtools state --at 42 --pretty
+rk-devtools state --store taskflow::TaskFlow --at 42 --pretty
 ```
 
 ```json
 {
-  "cards": {
-    "c7": { "title": "Ship v1", "column": "done", "saving": true, "syncError": "rejected" }
+  "SyncModel": {
+    "online": true,
+    "pendingCount": 0,
+    "inFlight": [],
+    "lastError": "card-7 rejected by backend"
+  },
+  "BoardModel": {
+    "board": { "columns": [ "…card-7 back in Doing…" ] }
   }
 }
 ```
 
-`saving: true` with a populated `syncError` — the smoking gun. Fix the
-`SyncFailed` branch, rebuild, and re-run the trace to verify it now flips to
-`false`.
+`inFlight` is empty and `card-7` is back in its original column — the optimistic
+move was cleanly reverted. If `inFlight` had retained `card-7`, that would be the
+"stuck Saving…" bug to chase; here it's clean.
 
 ---
 
@@ -241,7 +262,7 @@ rk-devtools tail --follow
 `--type` to watch only what you care about:
 
 ```bash
-rk-devtools tail --follow --type '*Sync*'
+rk-devtools tail --follow --type '*Card*'
 ```
 
 ![tail --follow streaming actions](./img/devtools-cli/06-tail-follow.png)
@@ -256,7 +277,7 @@ rk-devtools tail --follow --type '*Sync*'
 | A bounded window | `rk-devtools actions --since 40 --until 50` |
 | Only actions in a time window | `rk-devtools actions --since-time 2026-06-15T12:04:00Z` |
 | Full state + diff for every action | `rk-devtools actions --format full --pretty` |
-| One specific store when several are captured | `rk-devtools diff --store 'taskflow::board' --last 5` |
+| One specific store when several are captured | `rk-devtools diff --store 'taskflow::TaskFlow' --last 5` |
 | Inspect captures with the GUI too | `rk-devtools serve --ui` |
 
 ---
