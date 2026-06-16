@@ -69,6 +69,7 @@ and are not published to Maven.
 | Module | Purpose |
 |---|---|
 | `redux-kotlin-devtools-*` | [DevTools family](../advanced/devtools) — action/state inspection, diffing, and pipeline timing for a running app. Published (experimental — exempt from semver until the surface stabilizes): `core`, `bridge`, `remote`, `inapp`, `inapp-noop` (release no-op facade), `ui`. Unpublished repo tools: `standalone` (Compose desktop monitor app) and `cli` (the `rk-devtools` terminal tool). |
+| `redux-kotlin-snapshot` | [Snapshot testing](../advanced/snapshot-testing) — headlessly render Compose Multiplatform screens from redux-kotlin state to PNG (`f(state) -> UI`), with golden-image diffing and an HTML dashboard. The `rk-snapshot` CLI. Unpublished repo tool. |
 
 ## Community
 
