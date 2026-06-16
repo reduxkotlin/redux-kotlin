@@ -16,6 +16,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.reduxkotlin.snapshot.BatchManifest
 import org.reduxkotlin.snapshot.BatchRunner
+import org.reduxkotlin.snapshot.DashboardGenerator
 import org.reduxkotlin.snapshot.DiffVerdict
 import org.reduxkotlin.snapshot.Differ
 import org.reduxkotlin.snapshot.ImageComposeSceneBackend
@@ -44,6 +45,7 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
     private val outDir by option("--out-dir", help = "Batch output directory").file().default(File(".rk-snapshots"))
     private val goldenDir by option("--golden-dir", help = "Golden dir; its presence verifies the batch").file()
     private val jsonMode by option("--json", help = "Emit machine JSON on stdout").flag()
+    private val dashboard by option("--dashboard", help = "Also write a static index.html over the report").flag()
 
     override fun run() {
         val b = batch
@@ -100,6 +102,10 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
         File(outDir, "report.json").apply {
             parentFile?.mkdirs()
             writeText(json)
+        }
+        if (dashboard) {
+            val index = DashboardGenerator.generate(report, outDir)
+            if (!jsonMode) echo("dashboard: ${index.path}")
         }
         if (jsonMode) {
             echo(json)
