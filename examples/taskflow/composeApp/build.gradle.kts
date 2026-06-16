@@ -78,8 +78,6 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.sqldelight.sqlite.driver)
             implementation(libs.ktor.client.java)
-            // Reference integration of the headless snapshot library (renders TaskFlow screens to PNG).
-            implementation(project(":redux-kotlin-snapshot"))
         }
         // Kotlin's default hierarchy template provides the iosMain intermediate (iosArm64 +
         // iosSimulatorArm64). The `iosMain { }` source-set convention accessor (KGP 2.3.x) resolves
@@ -99,6 +97,10 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
             implementation(compose.desktop.currentOs)
+            // Reference integration of the headless snapshot library (renders TaskFlow screens to
+            // PNG). Test-scoped on purpose: the render backend (Skiko) + Clikt CLI are dev tooling
+            // and must NOT leak into the runnable desktop app / packaged distributable.
+            implementation(project(":redux-kotlin-snapshot"))
         }
     }
 }
@@ -128,9 +130,11 @@ compose.desktop {
 tasks.register<JavaExec>("snapshotUi") {
     group = "render"
     description = "Headless-render TaskFlow screens from seeded state to PNG (see TaskFlowSnapshots.kt)."
-    val jvmMainCompilation = kotlin.jvm().compilations.getByName("main")
-    dependsOn(jvmMainCompilation.compileTaskProvider)
-    classpath(jvmMainCompilation.output.allOutputs, jvmMainCompilation.runtimeDependencyFiles)
+    // The harness lives in jvmTest (dev tooling, kept off the production app classpath), so run it
+    // from the test compilation — its runtime classpath already includes jvmMain + commonMain.
+    val jvmTestCompilation = kotlin.jvm().compilations.getByName("test")
+    dependsOn(jvmTestCompilation.compileTaskProvider)
+    classpath(jvmTestCompilation.output.allOutputs, jvmTestCompilation.runtimeDependencyFiles)
     mainClass.set("org.reduxkotlin.sample.taskflow.snapshot.SnapshotMainKt")
     workingDir = rootProject.projectDir
 }
