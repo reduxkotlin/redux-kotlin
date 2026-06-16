@@ -53,4 +53,27 @@ internal class CliTest {
             .test(listOf("--scene", "counter", "--state-json", "{bad", "--out", File(tmp, "z.png").path))
         assertEquals(2, r.statusCode)
     }
+
+    @Test fun batch_writes_images_and_report() {
+        val manifest = File(tmp, "shots.json").apply {
+            writeText(
+                """{"shots":[{"id":"a","scene":"counter","preset":"n3"},{"id":"b","scene":"counter","preset":"n0"}]}""",
+            )
+        }
+        val outDir = File(tmp, "out")
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--batch", manifest.path, "--out-dir", outDir.path))
+        assertEquals(0, r.statusCode, r.output)
+        assertTrue(File(outDir, "a.png").isFile)
+        assertTrue(File(outDir, "report.json").isFile)
+    }
+
+    @Test fun batch_with_failure_exits_1() {
+        val manifest = File(tmp, "bad.json").apply {
+            writeText("""{"shots":[{"id":"x","scene":"nope","preset":"n3"}]}""")
+        }
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--batch", manifest.path, "--out-dir", File(tmp, "out2").path))
+        assertEquals(1, r.statusCode)
+    }
 }
