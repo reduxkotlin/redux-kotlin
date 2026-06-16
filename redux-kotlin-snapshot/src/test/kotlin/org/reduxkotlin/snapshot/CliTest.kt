@@ -77,6 +77,25 @@ internal class CliTest {
         assertEquals(1, r.statusCode)
     }
 
+    @Test fun missing_batch_manifest_exits_2_with_fixit_message() {
+        val missing = File(tmp, "nope.json")
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--batch", missing.path, "--out-dir", File(tmp, "o").path))
+        assertEquals(2, r.statusCode, r.output)
+        assertTrue(missing.absolutePath in r.output, "should name the resolved path it looked for")
+        assertTrue("working dir" in r.output, "should explain relative-path resolution")
+        assertTrue(""""shots"""" in r.output && "--list" in r.output, "should show a sample manifest + --list hint")
+    }
+
+    @Test fun missing_verify_golden_exits_2_with_fixit_message() {
+        val golden = File(tmp, "absent-golden.png")
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--scene", "counter", "--preset", "n3", "--verify", golden.path))
+        assertEquals(2, r.statusCode, r.output)
+        assertTrue(golden.absolutePath in r.output, "should name the missing golden path")
+        assertTrue("--out" in r.output, "should tell the user how to generate the golden")
+    }
+
     @Test fun batch_dashboard_writes_index_html() {
         val manifest = File(tmp, "d.json").apply {
             writeText("""{"shots":[{"id":"a","scene":"counter","preset":"n3"}]}""")

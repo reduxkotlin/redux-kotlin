@@ -49,7 +49,7 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
     private val height by option("--height", help = "Height in dp").int()
     private val out by option("--out", help = "Output PNG path").file()
     private val verify by option("--verify", help = "Golden PNG to compare against (single shot)").file()
-    private val batch by option("--batch", help = "Batch manifest JSON").file()
+    private val batch by option("--batch", help = "Batch manifest JSON (see --list for scenes/presets)").file()
     private val outDir by option("--out-dir", help = "Batch output directory").file().default(File(".rk-snapshots"))
     private val goldenDir by option("--golden-dir", help = "Golden dir; its presence verifies the batch").file()
     private val jsonMode by option("--json", help = "Emit machine JSON on stdout").flag()
@@ -91,6 +91,13 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
             writeBytes(png)
         }
         verify?.let { golden ->
+            if (!golden.isFile) {
+                throw CliktError(
+                    "--verify golden not found: ${golden.absolutePath}\n" +
+                        "  Generate it first with --out ${golden.path} (no --verify), then re-run with --verify.",
+                    statusCode = 2,
+                )
+            }
             val r = Differ().compare(golden.readBytes(), png, tolerance = 8, maxDiffPercent = 1.0)
             echo("verify: ${r.verdict} (${"%.3f".format(r.diffPercent)}%)")
             if (r.verdict == DiffVerdict.MISMATCH) throw CliktError("golden mismatch", statusCode = 1)
@@ -99,6 +106,7 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
     }
 
     private fun runBatch(file: File) {
+        requireManifest(file)
         val manifest = try {
             Json.decodeFromString(BatchManifest.serializer(), file.readText())
         } catch (e: SerializationException) {
@@ -127,6 +135,30 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
                 statusCode = 1,
             )
         }
+    }
+
+    // Fail with a fix-it message (path + cwd + sample manifest) instead of a raw FileNotFoundException —
+    // the path is relative to the JVM's working dir, which is rarely where the human typed the command.
+    private fun requireManifest(file: File) {
+        if (file.isFile) return
+        val sample = app.scenes.firstOrNull()
+        val shotLine = sample?.let {
+            val p = it.presets.firstOrNull() ?: "default"
+            """    { "id": "${it.name}-$p", "scene": "${it.name}", "preset": "$p" }"""
+        } ?: """    { "id": "shot1", "scene": "<scene>", "preset": "<preset>" }"""
+        throw CliktError(
+            buildString {
+                appendLine("--batch manifest not found: ${file.absolutePath}")
+                appendLine("  (relative paths resolve against the working dir: ${File("").absolutePath})")
+                appendLine("Fix — create that JSON file, e.g.:")
+                appendLine("""  { "shots": [""")
+                appendLine(shotLine)
+                appendLine("  ] }")
+                append("Run with --list to see all scenes + presets, ")
+                append("or render a single shot: --scene <name> --preset <preset> --out shot.png")
+            },
+            statusCode = 2,
+        )
     }
 
     private fun renderList(): String {
