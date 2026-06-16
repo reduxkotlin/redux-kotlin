@@ -34,4 +34,9 @@ internal data class ShotReport(
 
 /** Golden comparison for one shot. [result] is `match` | `mismatch` | `missing-golden`. */
 @Serializable
-internal data class VerifyReport(val golden: String, val result: String, val diffPercent: Double)
+internal data class VerifyReport(
+    val golden: String,
+    val result: String,
+    val diffPercent: Double,
+    val diffImage: String? = null,
+)
