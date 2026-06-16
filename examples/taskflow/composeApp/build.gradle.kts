@@ -78,6 +78,8 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.sqldelight.sqlite.driver)
             implementation(libs.ktor.client.java)
+            // Reference integration of the headless snapshot library (renders TaskFlow screens to PNG).
+            implementation(project(":redux-kotlin-snapshot"))
         }
         // Kotlin's default hierarchy template provides the iosMain intermediate (iosArm64 +
         // iosSimulatorArm64). The `iosMain { }` source-set convention accessor (KGP 2.3.x) resolves
@@ -119,4 +121,16 @@ compose.desktop {
     application {
         mainClass = "org.reduxkotlin.sample.taskflow.MainKt"
     }
+}
+
+// Headless snapshot CLI for TaskFlow screens (rk-snapshot driving the taskFlowSnapshots registry):
+//   ./gradlew :examples:taskflow:composeApp:snapshotUi --args="--batch shots.json --out-dir out --dashboard"
+tasks.register<JavaExec>("snapshotUi") {
+    group = "render"
+    description = "Headless-render TaskFlow screens from seeded state to PNG (see TaskFlowSnapshots.kt)."
+    val jvmMainCompilation = kotlin.jvm().compilations.getByName("main")
+    dependsOn(jvmMainCompilation.compileTaskProvider)
+    classpath(jvmMainCompilation.output.allOutputs, jvmMainCompilation.runtimeDependencyFiles)
+    mainClass.set("org.reduxkotlin.sample.taskflow.snapshot.SnapshotMainKt")
+    workingDir = rootProject.projectDir
 }

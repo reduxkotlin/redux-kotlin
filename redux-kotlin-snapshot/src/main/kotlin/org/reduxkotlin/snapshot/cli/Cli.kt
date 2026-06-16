@@ -31,6 +31,14 @@ import java.io.File
  */
 public fun snapshotCommand(app: SnapshotApp): CliktCommand = SnapshotCommand(app)
 
+/**
+ * Runs the `rk-snapshot` CLI for this registry — the entry point a consuming app calls from its own
+ * `main`. Keeps Clikt types from leaking across the module boundary.
+ */
+public fun SnapshotApp.runCli(argv: Array<String>) {
+    snapshotCommand(this).main(argv)
+}
+
 private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name = "rk-snapshot") {
     private val list by option("--list", help = "Print scenes + presets as JSON").flag()
     private val scene by option("--scene", help = "Scene name")
