@@ -71,19 +71,24 @@ internal class BatchRunner(
                     (shot.heightDp * shot.density).roundToInt(),
                 ),
                 out = outFile.path, bytes = png.size, renderMs = ms, status = "ok",
-                verify = if (verify) verifyShot(spec, png, goldenDir) else null,
+                verify = if (verify) verifyShot(spec, png, goldenDir, outDir) else null,
             )
         } catch (e: Exception) {
             ShotReport(id = spec.id, scene = spec.scene, input = inputDesc, status = "error", error = e.message)
         }
     }
 
-    private fun verifyShot(spec: ShotSpec, png: ByteArray, goldenDir: File?): VerifyReport {
+    private fun verifyShot(spec: ShotSpec, png: ByteArray, goldenDir: File?, outDir: File): VerifyReport {
         val goldenFile = File(goldenDir ?: File("."), "${spec.id}.png")
         val golden = goldenFile.takeIf { it.isFile }?.readBytes()
             ?: return VerifyReport(goldenFile.path, "missing-golden", 0.0)
         val r = differ.compare(golden, png, VERIFY_TOLERANCE, VERIFY_MAX_DIFF_PERCENT)
-        val result = if (r.verdict == DiffVerdict.MATCH) "match" else "mismatch"
-        return VerifyReport(goldenFile.path, result, r.diffPercent)
+        return if (r.verdict == DiffVerdict.MATCH) {
+            VerifyReport(goldenFile.path, "match", r.diffPercent)
+        } else {
+            val diffPath = differ.diffImage(golden, png, VERIFY_TOLERANCE)
+                ?.let { File(outDir, "${spec.id}.diff.png").apply { writeBytes(it) }.path }
+            VerifyReport(goldenFile.path, "mismatch", r.diffPercent, diffPath)
+        }
     }
 }
