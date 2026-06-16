@@ -35,5 +35,8 @@ internal class DashboardGeneratorTest {
         // the mismatching shot gets a diff image written + shown in the triptych
         assertTrue(File(out, "bad.diff.png").isFile, "diff image not written for mismatch")
         assertTrue("""src="bad.diff.png"""" in html, "diff ref missing from dashboard")
+        // click-to-zoom lightbox + smooth thumbnails (not nearest-neighbour pixelated)
+        assertTrue("lbOpen(" in html && """id="lb"""" in html, "zoom lightbox missing")
+        assertTrue("image-rendering:auto" in html, "thumbnails should downscale smoothly")
     }
 }
