@@ -32,5 +32,8 @@ internal class DashboardGeneratorTest {
         assertTrue("""src="good.png"""" in html, "relative actual image ref missing")
         assertTrue(File(out, "goldens/good.png").isFile, "golden not copied for self-containment")
         assertTrue("""src="goldens/good.png"""" in html, "golden ref missing")
+        // the mismatching shot gets a diff image written + shown in the triptych
+        assertTrue(File(out, "bad.diff.png").isFile, "diff image not written for mismatch")
+        assertTrue("""src="bad.diff.png"""" in html, "diff ref missing from dashboard")
     }
 }
