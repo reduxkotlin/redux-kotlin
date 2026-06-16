@@ -87,25 +87,24 @@ $cards
         else -> """<span class="pill ok">ok</span>"""
     }
 
+    private fun rel(path: String, outDir: File): String =
+        runCatching { File(path).relativeTo(outDir).path }.getOrNull() ?: File(path).name
+
+    private fun figure(caption: String, src: String): String =
+        """<figure><figcaption>$caption</figcaption><img src="${e(src)}"></figure>"""
+
+    private fun imgsFor(s: ShotReport, outDir: File): String = buildString {
+        append("""<div class="imgs">""")
+        if (File(File(outDir, "goldens"), "${s.id}.png").isFile) append(figure("golden", "goldens/${s.id}.png"))
+        s.out?.let { append(figure("actual", rel(it, outDir))) }
+        s.verify?.diffImage?.let { append(figure("diff", rel(it, outDir))) }
+        append("</div>")
+    }
+
     private fun card(s: ShotReport, outDir: File): String {
         val bad = s.status == "error" || s.verify?.result == "mismatch"
         val pill = pillFor(s)
-        val actualRel = s.out?.let { runCatching { File(it).relativeTo(outDir).path }.getOrNull() ?: File(it).name }
-        val goldenExists = File(File(outDir, "goldens"), "${s.id}.png").isFile
-        val imgs = buildString {
-            append("""<div class="imgs">""")
-            if (goldenExists) {
-                append(
-                    """<figure><figcaption>golden</figcaption><img src="goldens/${e(s.id)}.png"></figure>""",
-                )
-            }
-            if (actualRel != null) {
-                append(
-                    """<figure><figcaption>actual</figcaption><img src="${e(actualRel)}"></figure>""",
-                )
-            }
-            append("</div>")
-        }
+        val imgs = imgsFor(s, outDir)
         val meta = buildString {
             append("""<div class="meta">""")
             append("input <code>${e(s.input)}</code>")
