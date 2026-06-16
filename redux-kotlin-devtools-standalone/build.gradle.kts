@@ -1,5 +1,6 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("convention.control")
@@ -12,7 +13,13 @@ plugins {
 kotlin {
     // Desktop-only for now: the wasmJs web viewer was removed because the server had no
     // viewer-facing fanout (it only ingested); it returns when a broadcast path exists.
-    jvm()
+    // Pin bytecode to 17 (convention.control sets no jvmTarget) so consumers compiled against a
+    // JDK 17 toolchain — e.g. redux-kotlin-devtools-cli — can load these classes on a 17 JVM.
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
 
     sourceSets {
         commonMain.dependencies {
