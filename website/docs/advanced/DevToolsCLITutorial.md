@@ -66,17 +66,19 @@ rk-devtools --help
 ```text
 Usage: rk-devtools [<options>] <command> [<args>]...
 
-  Receive a redux-kotlin app's event stream over the bridge and query the
-  captured .jsonl logs.
+Options:
+  -h, --help  Show this message and exit
 
 Commands:
-  serve     Host the bridge receiver and write per-store captures
-  stores    List captured store keys
-  actions   Print the action log
-  diff      Print per-action field diffs
-  state     Print the full state at an actionId
-  tail      Print recent actions; --follow to poll live
+  serve
+  stores
+  actions
+  diff
+  state
+  tail
 ```
+
+Run `rk-devtools <command> --help` for a command's flags (e.g. `rk-devtools actions --help`).
 
 ![rk-devtools --help in a terminal](./img/devtools-cli/01-help.png)
 
@@ -155,9 +157,11 @@ rk-devtools stores
 ```
 
 ```text
-taskflow::TaskFlow
-taskflow::TaskFlow-root
+taskflow::TaskFlow      TaskFlow
+taskflow::TaskFlow-root TaskFlow-root
 ```
+
+(Each row is `<storeKey>` then the store's display name.)
 
 The `clientId::storeInstanceId` key is what you pass to `--store` when more than
 one store is captured (here `clientId = "taskflow"` and the instance id is each
@@ -172,23 +176,25 @@ single store, the query commands resolve it automatically.
 ## Step 5 — Scan the recent action log
 
 ```bash
-rk-devtools actions --store taskflow::TaskFlow --last 8
+rk-devtools actions --store taskflow::TaskFlow --last 5
 ```
+
+Output is **one JSON object per line** (pipe it to `jq`); `ts` is epoch millis:
 
 ```text
-  39  AddCard            taskflow::TaskFlow  12:04:51.310
-  40  CardMoveRequested  taskflow::TaskFlow  12:04:51.402
-  41  CardMoveRequested  taskflow::TaskFlow  12:04:51.870
-  42  CardOpFailed       taskflow::TaskFlow  12:04:52.118
-  43  CardOpFailed       taskflow::TaskFlow  12:04:52.640
+{"actionId":1,"type":"AddCard","store":"taskflow::TaskFlow","ts":1718450691120}
+{"actionId":2,"type":"CardMoveRequested","store":"taskflow::TaskFlow","ts":1718450691402}
+{"actionId":3,"type":"CardOpFailed","store":"taskflow::TaskFlow","ts":1718450692118}
+{"actionId":4,"type":"CardMoveRequested","store":"taskflow::TaskFlow","ts":1718450692980}
+{"actionId":5,"type":"CardOpFailed","store":"taskflow::TaskFlow","ts":1718450693640}
 ```
 
-There's the pair we want: an optimistic `CardMoveRequested` at **40** and its
-rejection `CardOpFailed` at **42**. Filter to just the card traffic with a type
+There's the pair we want: an optimistic `CardMoveRequested` at **2** and its
+rejection `CardOpFailed` at **3**. Filter to just the card traffic with a type
 glob:
 
 ```bash
-rk-devtools actions --type '*Card*' --last 5
+rk-devtools actions --store taskflow::TaskFlow --type '*Card*' --last 5
 ```
 
 ![filtered action log showing CardOpFailed](./img/devtools-cli/04-actions-filtered.png)
@@ -202,14 +208,24 @@ a `ModelState`, so the diff is keyed by model class. Look at what the rejection
 did:
 
 ```bash
-rk-devtools diff --store taskflow::TaskFlow --type 'CardOpFailed' --last 1
+rk-devtools diff --store taskflow::TaskFlow --since 3 --until 3 --pretty
 ```
 
-```text
-  42  CardOpFailed  taskflow::TaskFlow  12:04:52.118
-    ~ SyncModel.inFlight   ["card-7"]  ->  []                         # cleared on result
-    ~ SyncModel.lastError  null        ->  "card-7 rejected by backend"
-    ~ BoardModel.board     (column "Done")  ->  (column "Doing")      # inverse applied — moved back
+The `diff` tier adds a `diff` array of `{op, path, before, after}` entries
+(`--pretty` expands it; drop it for one object per line):
+
+```json
+{
+    "actionId": 3,
+    "type": "CardOpFailed",
+    "store": "taskflow::TaskFlow",
+    "ts": 1718450692118,
+    "diff": [
+        { "op": "CHANGED", "path": "SyncModel.inFlight", "before": ["card-7"], "after": [] },
+        { "op": "ADDED", "path": "SyncModel.lastError", "before": null, "after": "card-7 rejected by backend" },
+        { "op": "CHANGED", "path": "BoardModel.board.card-7-column", "before": "done", "after": "doing" }
+    ]
+}
 ```
 
 The trace confirms the rollback is correct: `card-7` leaves `SyncModel.inFlight`
@@ -227,20 +243,23 @@ serializer tier — JVM renders structured JSON; other targets may render
 Print the full state snapshot at that action to confirm the post-rollback shape:
 
 ```bash
-rk-devtools state --store taskflow::TaskFlow --at 42 --pretty
+rk-devtools state --store taskflow::TaskFlow --at 3 --pretty
 ```
+
+`state` prints the whole serialized state at that action (a `ModelState`, keyed
+by model class):
 
 ```json
 {
-  "SyncModel": {
-    "online": true,
-    "pendingCount": 0,
-    "inFlight": [],
-    "lastError": "card-7 rejected by backend"
-  },
-  "BoardModel": {
-    "board": { "columns": [ "…card-7 back in Doing…" ] }
-  }
+    "SyncModel": {
+        "online": true,
+        "pendingCount": 0,
+        "inFlight": [],
+        "lastError": "card-7 rejected by backend"
+    },
+    "BoardModel": {
+        "board": { "name": "Launch", "card-7-column": "doing" }
+    }
 }
 ```
 
@@ -258,8 +277,8 @@ While iterating, stream actions as they fire instead of re-running `actions`:
 rk-devtools tail --follow
 ```
 
-`--follow` polls the capture every 300ms and prints new actions. Combine with
-`--type` to watch only what you care about:
+`--follow` polls the capture every 300ms and prints new actions (same JSON-line
+format as `actions`). Combine with `--type` to watch only what you care about:
 
 ```bash
 rk-devtools tail --follow --type '*Card*'
