@@ -17,6 +17,7 @@ import kotlinx.serialization.json.put
 import org.reduxkotlin.snapshot.BatchManifest
 import org.reduxkotlin.snapshot.BatchRunner
 import org.reduxkotlin.snapshot.DashboardGenerator
+import org.reduxkotlin.snapshot.DiffDefaults
 import org.reduxkotlin.snapshot.DiffVerdict
 import org.reduxkotlin.snapshot.Differ
 import org.reduxkotlin.snapshot.ImageComposeSceneBackend
@@ -28,8 +29,10 @@ import java.io.File
 
 /**
  * Builds the `rk-snapshot` command for [app]. Exit codes: 0 ok, 1 render/verify failure, 2 usage.
+ * Internal: the public entry point is [runCli], which keeps the Clikt dependency off this module's
+ * public API.
  */
-public fun snapshotCommand(app: SnapshotApp): CliktCommand = SnapshotCommand(app)
+internal fun snapshotCommand(app: SnapshotApp): CliktCommand = SnapshotCommand(app)
 
 /**
  * Runs the `rk-snapshot` CLI for this registry — the entry point a consuming app calls from its own
@@ -98,7 +101,12 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
                     statusCode = 2,
                 )
             }
-            val r = Differ().compare(golden.readBytes(), png, tolerance = 8, maxDiffPercent = 1.0)
+            val r = Differ().compare(
+                golden.readBytes(),
+                png,
+                tolerance = DiffDefaults.TOLERANCE,
+                maxDiffPercent = DiffDefaults.BATCH_MAX_DIFF_PERCENT,
+            )
             echo("verify: ${r.verdict} (${"%.3f".format(r.diffPercent)}%)")
             if (r.verdict == DiffVerdict.MISMATCH) throw CliktError("golden mismatch", statusCode = 1)
         }

@@ -6,6 +6,22 @@ import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 import kotlin.math.abs
 
+/**
+ * Single source for the comparison thresholds, so the test/batch/CLI entry points stay aligned.
+ * [TOLERANCE] is the per-channel 8-bit delta below which two pixels count as equal; the percent
+ * gate is the share of differing pixels tolerated before a MISMATCH.
+ */
+internal object DiffDefaults {
+    /** Per-channel (0..255) delta below which a pixel is considered unchanged. */
+    const val TOLERANCE: Int = 4
+
+    /** Unit-test gate (`assertGolden`): fail on the slightest drift. */
+    const val STRICT_MAX_DIFF_PERCENT: Double = 0.1
+
+    /** Batch / CLI `--verify` gate: tolerate sub-pixel anti-aliasing noise across many shots. */
+    const val BATCH_MAX_DIFF_PERCENT: Double = 0.5
+}
+
 /** Diff outcome. */
 public enum class DiffVerdict {
     /** Images are equal within tolerance and under the diff gate. */
