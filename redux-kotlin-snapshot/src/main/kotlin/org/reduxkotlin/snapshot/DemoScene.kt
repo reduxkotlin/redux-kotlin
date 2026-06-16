@@ -20,14 +20,11 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.reduxkotlin.Reducer
 import org.reduxkotlin.createStore
 
-/** A trivial counter state for the redux-backed demo scene. */
-public data class CounterState(
-    /** The current count. */
-    public val count: Int = 0,
-)
+/** A trivial counter state for the redux-backed demo scene (internal fixture, not consumer API). */
+internal data class CounterState(val count: Int = 0)
 
 /** Increments [CounterState.count] on the `"inc"` action; ignores everything else. */
-public val counterReducer: Reducer<CounterState> = { state, action ->
+internal val counterReducer: Reducer<CounterState> = { state, action ->
     if (action == "inc") state.copy(count = state.count + 1) else state
 }
 
