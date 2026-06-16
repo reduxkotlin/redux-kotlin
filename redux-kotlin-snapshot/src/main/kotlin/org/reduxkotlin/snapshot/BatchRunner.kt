@@ -3,10 +3,6 @@ package org.reduxkotlin.snapshot
 import java.io.File
 import kotlin.math.roundToInt
 
-/** Tolerances used when a batch shot is verified against a golden. */
-private const val VERIFY_TOLERANCE = 4
-private const val VERIFY_MAX_DIFF_PERCENT = 0.5
-
 /**
  * Runs a [BatchManifest]: renders each shot to [outDir], optionally verifies against goldens, and
  * returns a [SnapshotReport]. A failing shot is isolated (recorded as `status=error`) and never
@@ -82,11 +78,11 @@ internal class BatchRunner(
         val goldenFile = File(goldenDir ?: File("."), "${spec.id}.png")
         val golden = goldenFile.takeIf { it.isFile }?.readBytes()
             ?: return VerifyReport(goldenFile.path, "missing-golden", 0.0)
-        val r = differ.compare(golden, png, VERIFY_TOLERANCE, VERIFY_MAX_DIFF_PERCENT)
+        val r = differ.compare(golden, png, DiffDefaults.TOLERANCE, DiffDefaults.BATCH_MAX_DIFF_PERCENT)
         return if (r.verdict == DiffVerdict.MATCH) {
             VerifyReport(goldenFile.path, "match", r.diffPercent)
         } else {
-            val diffPath = differ.diffImage(golden, png, VERIFY_TOLERANCE)
+            val diffPath = differ.diffImage(golden, png, DiffDefaults.TOLERANCE)
                 ?.let { File(outDir, "${spec.id}.diff.png").apply { writeBytes(it) }.path }
             VerifyReport(goldenFile.path, "mismatch", r.diffPercent, diffPath)
         }
