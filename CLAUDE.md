@@ -51,7 +51,9 @@ plugin): `redux-kotlin-routing-codegen` (KSP `@Reduce`/`@ReduxInitial`
 processor — JVM-only, consumed via `project(...)`, listed in the BOM but
 publishing is a pre-release follow-up), `redux-kotlin-routing-codegen-sample`,
 `redux-kotlin-devtools-standalone` (Compose desktop monitor),
-`redux-kotlin-devtools-cli` (the `rk-devtools` terminal tool).
+`redux-kotlin-devtools-cli` (the `rk-devtools` terminal tool),
+`redux-kotlin-snapshot` (the `rk-snapshot` headless Compose UI snapshot/golden
+tool — renders `f(state) → PNG`, diffs against goldens, emits an HTML dashboard).
 
 `examples/` holds sample apps (`convention.control`, not published) — 
 `examples/taskflow` is the canonical bundle showcase. `website/`
