@@ -38,4 +38,19 @@ internal class CliTest {
         ).test("--scene counter --preset n3 --state-json {} --out ${File(tmp, "y.png").path}")
         assertEquals(2, r.statusCode)
     }
+
+    @Test fun state_json_render_writes_a_png() {
+        val out = File(tmp, "cj.png")
+        // list-argv overload avoids the string overload's shell tokenization stripping JSON quotes.
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--scene", "counter", "--state-json", """{"count":"2"}""", "--out", out.path))
+        assertEquals(0, r.statusCode, r.output)
+        assertTrue(out.isFile && out.length() > 0)
+    }
+
+    @Test fun malformed_state_json_exits_2() {
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--scene", "counter", "--state-json", "{bad", "--out", File(tmp, "z.png").path))
+        assertEquals(2, r.statusCode)
+    }
 }

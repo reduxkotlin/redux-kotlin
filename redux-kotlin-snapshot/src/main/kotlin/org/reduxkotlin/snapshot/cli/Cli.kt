@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
@@ -47,11 +48,15 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
         if ((preset == null) == (stateJson == null)) {
             throw CliktError("provide exactly one of --preset or --state-json", statusCode = 2)
         }
-        val input = preset?.let { SnapshotInput.Preset(it) }
-            ?: SnapshotInput.Json(Json.parseToJsonElement(stateJson!!))
+        val input = try {
+            preset?.let { SnapshotInput.Preset(it) }
+                ?: SnapshotInput.Json(Json.parseToJsonElement(stateJson!!))
+        } catch (e: SerializationException) {
+            throw CliktError("invalid --state-json: ${e.message}", cause = e, statusCode = 2)
+        }
         val png = try {
             val shot = app.resolve(sceneName, input, theme, width, height, null)
-            app.renderPng(shot, BACKEND)
+            app.renderResult(shot, BACKEND).png
         } catch (e: SnapshotException) {
             throw CliktError(e.message ?: "usage error", cause = e, statusCode = 2)
         } catch (e: Exception) {

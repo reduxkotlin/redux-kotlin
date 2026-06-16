@@ -45,4 +45,20 @@ internal class SnapshotAppTest {
         assertEquals(listOf("demo"), app.scenes.map { it.name })
         assertEquals(listOf("default"), app.scenes.first().presets)
     }
+
+    @Test fun scene_defaults_are_the_middle_tier() {
+        val app2 = snapshotApp {
+            defaults {
+                width = 400
+                height = 800
+            }
+            scene("s") {
+                defaults { width = 360 } // scene tier overrides global width, inherits height
+                render { { Box(Modifier) } }
+            }
+        }
+        val r = app2.resolve("s", SnapshotInput.Preset("x"), null, null, null, null)
+        assertEquals(360, r.widthDp) // scene tier wins over global
+        assertEquals(800, r.heightDp) // falls back to global
+    }
 }

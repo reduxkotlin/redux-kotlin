@@ -26,7 +26,7 @@ public fun SnapshotApp.assertGolden(
     require((preset == null) != (json == null)) { "provide exactly one of preset or json" }
     val input = preset?.let { SnapshotInput.Preset(it) } ?: SnapshotInput.Json(Json.parseToJsonElement(json!!))
     val shot = resolve(scene, input, theme, null, null, null)
-    val actual = renderPng(shot, ImageComposeSceneBackend())
+    val actual = renderResult(shot, ImageComposeSceneBackend()).png
     val store = GoldenStore(goldenDir)
     if (record) {
         store.write(name, actual)

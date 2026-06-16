@@ -40,6 +40,7 @@ public class SnapshotApp internal constructor(
     internal val defaults: GlobalDefaults,
 ) {
     private val byName = scenes.associateBy { it.name }
+    private val defaultBackend: RenderBackend = ImageComposeSceneBackend()
 
     /** Resolves (scene, input, dims) applying global, then scene, then per-call overrides. */
     public fun resolve(
@@ -63,10 +64,23 @@ public class SnapshotApp internal constructor(
         )
     }
 
-    /** Renders a resolved shot to PNG bytes via [backend]. */
-    internal fun renderPng(shot: ResolvedShot, backend: RenderBackend): ByteArray {
+    /**
+     * Renders [scene] from [input] to a [RenderResult] (PNG + semantics) — the headless
+     * `f(state) -> UI` primitive. Applies global/scene/per-call defaults.
+     */
+    public fun render(
+        scene: String,
+        input: SnapshotInput,
+        theme: String? = null,
+        width: Int? = null,
+        height: Int? = null,
+        density: Float? = null,
+    ): RenderResult = renderResult(resolve(scene, input, theme, width, height, density), defaultBackend)
+
+    /** Renders a resolved shot via [backend], returning PNG + semantics. */
+    internal fun renderResult(shot: ResolvedShot, backend: RenderBackend): RenderResult {
         val composable = shot.scene.render(SceneArgs(shot.input, shot.theme))
-        return backend.render(RenderSpec(shot.widthDp, shot.heightDp, shot.density, composable)).png
+        return backend.render(RenderSpec(shot.widthDp, shot.heightDp, shot.density, composable))
     }
 }
 
