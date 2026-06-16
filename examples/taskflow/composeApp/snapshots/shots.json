@@ -1,0 +1,9 @@
+{
+  "shots": [
+    { "id": "board-seeded",     "scene": "board",    "preset": "seeded" },
+    { "id": "board-empty",      "scene": "board",    "preset": "empty" },
+    { "id": "settings-default", "scene": "settings", "preset": "default" },
+    { "id": "settings-offline", "scene": "settings", "preset": "offline-failing" },
+    { "id": "settings-bot",     "scene": "settings", "preset": "online-bot" }
+  ]
+}
