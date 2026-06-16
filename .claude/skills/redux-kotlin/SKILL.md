@@ -30,6 +30,7 @@ companion modules on one `Store<S>` contract. Recommended app organization is **
 | **Compose** state binding (Rule C) | [`compose-binding.md`](../../../docs/agent/references/compose-binding.md) |
 | **Effects + sync** (Rule E) | [`effects-sync.md`](../../../docs/agent/references/effects-sync.md) |
 | **Testing** + the verify loop | [`testing.md`](../../../docs/agent/references/testing.md) |
+| **Visual / golden UI** verification (render f(state)→PNG, diff goldens) | [`snapshot.md`](../../../docs/agent/references/snapshot.md) |
 | The 5 **platform shims** | [`platform-shims.md`](../../../docs/agent/references/platform-shims.md) |
 | **Modularization** | [`modularization.md`](../../../docs/agent/references/modularization.md) |
 | **Debugging** a running app (actions/state/diffs) | [`devtools.md`](../../../docs/agent/references/devtools.md) |
