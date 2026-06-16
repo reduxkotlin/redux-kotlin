@@ -8,12 +8,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class DemoGoldenTest {
-    private val backend = ImageComposeSceneBackend()
-
-    private fun renderCounter(preset: String, theme: String = "dark"): ByteArray {
-        val shot = demoSnapshots.resolve("counter", SnapshotInput.Preset(preset), theme, null, null, null)
-        return demoSnapshots.renderPng(shot, backend)
-    }
+    // Uses the public render(...) primitive end-to-end.
+    private fun renderCounter(preset: String, theme: String = "dark"): ByteArray =
+        demoSnapshots.render("counter", SnapshotInput.Preset(preset), theme).png
 
     @Test fun renders_nonempty_png_of_expected_size() {
         val png = renderCounter("n3")
@@ -26,6 +23,14 @@ internal class DemoGoldenTest {
     @Test fun render_is_deterministic() {
         val r = Differ().compare(renderCounter("n3"), renderCounter("n3"), tolerance = 0, maxDiffPercent = 0.0)
         assertEquals(DiffVerdict.MATCH, r.verdict)
+    }
+
+    @Test fun density_maps_dp_to_px_exactly_once() {
+        // 16.dp padding at density 2 => a 32px background band on top, then the first bar.
+        // If density were applied twice (or not at all) these coordinates would not be bg/bar.
+        val img = ImageIO.read(ByteArrayInputStream(renderCounter("n3")))
+        assertEquals(0x101418, img.getRGB(200, 10) and 0xFFFFFF) // inside the 32px padding band
+        assertEquals(0x66AAFF, img.getRGB(200, 40) and 0xFFFFFF) // first bar (after 32px padding)
     }
 
     @Test fun redux_state_drives_the_ui() {

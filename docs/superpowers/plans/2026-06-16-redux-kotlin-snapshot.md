@@ -78,12 +78,12 @@ plugins {
     alias(libs.plugins.compose.multiplatform)
 }
 
-// Match the test JVM to the highest bytecode shipped by Compose/Skiko deps. Do NOT blindly
-// copy jvmToolchain(17): that caused an UnsupportedClassVersionError in redux-kotlin-devtools-cli
-// when a transitive compose/skiko class was compiled to 21. Verify the actual level (Task 1, Step 4)
-// and set both library bytecode and the test toolchain accordingly.
+// Pin the compile JDK to 17 — matches the repo convention (JvmTarget.JVM_17) and the
+// redux-kotlin-devtools-cli fix (Compose 1.11.x + Skiko load fine at 17). Do NOT raise to 21.
+// (The devtools-cli UnsupportedClassVersionError was a 21-compiled DEP on a 17 test JVM; the fix
+// was making everything 17, not raising the toolchain.)
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 application {
@@ -113,7 +113,7 @@ Create empty file `redux-kotlin-snapshot/src/main/kotlin/org/reduxkotlin/snapsho
 Run: `./gradlew :redux-kotlin-snapshot:dependencies --configuration runtimeClasspath -q | grep -i skiko`
 Then inspect the skiko/compose jar bytecode level if the build later fails to load classes. Run:
 `./gradlew :redux-kotlin-snapshot:help -q`
-Expected: `BUILD SUCCESSFUL`. If a later test throws `UnsupportedClassVersionError`, raise `jvmToolchain(21)` to match (do not lower).
+Expected: `BUILD SUCCESSFUL`. `17` matches the repo convention and is verified to work with Compose 1.11.x/Skiko (devtools-cli runs at 17).
 
 - [ ] **Step 5: Commit**
 
@@ -279,7 +279,7 @@ internal class ImageComposeSceneBackend : RenderBackend {
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `./gradlew :redux-kotlin-snapshot:test --tests "*RenderBackendTest*"`
-Expected: PASS. If `UnsupportedClassVersionError` appears, raise `jvmToolchain` in `build.gradle.kts` to 21 and rerun.
+Expected: PASS at `jvmToolchain(17)`.
 
 - [ ] **Step 5: Commit**
 
