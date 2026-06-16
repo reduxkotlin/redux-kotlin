@@ -76,4 +76,15 @@ internal class CliTest {
             .test(listOf("--batch", manifest.path, "--out-dir", File(tmp, "out2").path))
         assertEquals(1, r.statusCode)
     }
+
+    @Test fun batch_dashboard_writes_index_html() {
+        val manifest = File(tmp, "d.json").apply {
+            writeText("""{"shots":[{"id":"a","scene":"counter","preset":"n3"}]}""")
+        }
+        val outDir = File(tmp, "dout")
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--batch", manifest.path, "--out-dir", outDir.path, "--dashboard"))
+        assertEquals(0, r.statusCode, r.output)
+        assertTrue(File(outDir, "index.html").isFile)
+    }
 }
