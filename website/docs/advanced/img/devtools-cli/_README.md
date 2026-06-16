@@ -14,7 +14,7 @@ Reproduce with Settings → failure-rate at 100%, then move a card (it rolls bac
 | `02-serve-waiting.png` | `rk-devtools serve` waiting for a client |
 | `03-stores.png` | `rk-devtools stores` → `taskflow::TaskFlow`, `taskflow::TaskFlow-root` |
 | `04-actions-filtered.png` | `rk-devtools actions --type '*Card*' --last 5` |
-| `05-diff.png` | `rk-devtools diff --store taskflow::TaskFlow --type 'CardOpFailed' --last 1` |
+| `05-diff.png` | `rk-devtools diff --store taskflow::TaskFlow --since 3 --until 3 --pretty` |
 | `06-tail-follow.png` | `rk-devtools tail --follow` streaming live |
 
 Keep terminal shots dark-theme, ~100 cols, trimmed to the relevant output.
