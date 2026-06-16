@@ -16,6 +16,14 @@ kotlin {
     @OptIn(ExperimentalAbiValidation::class)
     abiValidation {
         enabled.set(true)
+        // CI only builds every native target on the main host (macOS); ubuntu/windows
+        // build a subset, so without this their klib dump would drop the unbuilt
+        // targets and `checkKotlinAbi` would fail on a spurious `Targets:` header diff.
+        // Infer the missing targets from the committed reference so the check is
+        // host-independent.
+        klib {
+            keepUnsupportedTargets.set(true)
+        }
     }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
