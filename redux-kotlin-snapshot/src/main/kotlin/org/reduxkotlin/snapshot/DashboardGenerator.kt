@@ -36,7 +36,27 @@ internal object DashboardGenerator {
         val cards = shots.joinToString("\n") { card(it, outDir) }
         return """<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>rk-snapshot — ${e(report.runId)}</title>
-<style>
+<style>$STYLE</style></head>
+<body>
+<header>
+  <h1>rk-snapshot · <code>${e(report.runId)}</code></h1>
+  <div class="totals">
+    <span>${t.total} total</span>
+    <span class="ok">${t.ok} ok</span>
+    <span class="fail">${t.failed} failed</span>
+    <span class="fail">${t.mismatched} mismatched</span>
+    <span class="warn">${t.missingGolden} missing-golden</span>
+  </div>
+</header>
+<main>
+$cards
+</main>
+$LIGHTBOX
+</body></html>
+"""
+    }
+
+    private val STYLE = """
   :root { color-scheme: dark; }
   body { margin: 0; font: 14px/1.4 -apple-system,Segoe UI,Roboto,sans-serif; background:#0d1117; color:#e6edf3; }
   header { padding:16px 24px; border-bottom:1px solid #30363d; display:flex; gap:24px; align-items:baseline; flex-wrap:wrap; }
@@ -52,27 +72,45 @@ internal object DashboardGenerator {
   .imgs { display:flex; gap:8px; padding:12px; background:#0d1117; }
   .imgs figure { margin:0; flex:1; text-align:center; }
   .imgs figcaption { font-size:11px; color:#8b949e; margin-bottom:4px; }
-  .imgs img { max-width:100%; border:1px solid #30363d; border-radius:4px; image-rendering:pixelated; }
+  /* smooth downscale for thumbnails (pixelated would nearest-neighbour a 2x screenshot -> jagged) */
+  .imgs img { max-width:100%; border:1px solid #30363d; border-radius:4px; image-rendering:auto; cursor:zoom-in; }
   .meta { padding:10px 12px; font-size:12px; color:#8b949e; }
   .meta code { color:#e6edf3; background:#0d1117; padding:1px 4px; border-radius:3px; }
-</style></head>
-<body>
-<header>
-  <h1>rk-snapshot · <code>${e(report.runId)}</code></h1>
-  <div class="totals">
-    <span>${t.total} total</span>
-    <span class="ok">${t.ok} ok</span>
-    <span class="fail">${t.failed} failed</span>
-    <span class="fail">${t.mismatched} mismatched</span>
-    <span class="warn">${t.missingGolden} missing-golden</span>
+  /* click-to-zoom lightbox */
+  .lb { display:none; position:fixed; inset:0; z-index:50; background:rgba(0,0,0,.88); flex-direction:column; }
+  .lb.open { display:flex; }
+  .lbbar { display:flex; gap:16px; align-items:center; padding:10px 16px; background:#161b22; color:#e6edf3; font-size:13px; }
+  .lbbar .sp { flex:1; }
+  .lbbar button { background:#21262d; color:#e6edf3; border:1px solid #30363d; border-radius:6px; padding:4px 10px; cursor:pointer; }
+  .lbwrap { flex:1; overflow:auto; display:flex; align-items:flex-start; justify-content:center; padding:16px; }
+  .lbwrap img.fit { max-width:100%; max-height:calc(100vh - 56px); object-fit:contain; image-rendering:auto; cursor:zoom-in; }
+  .lbwrap img.actual { image-rendering:pixelated; cursor:zoom-out; } /* 1:1 native pixels for diff inspection */
+""".trim()
+
+    private val LIGHTBOX = """
+<div id="lb" class="lb" onclick="if(event.target.id==='lb')lbClose()">
+  <div class="lbbar">
+    <span id="lbcap"></span><span class="sp"></span>
+    <button onclick="lbToggle()">fit / 1:1</button>
+    <button onclick="lbClose()">&#10005; close</button>
   </div>
-</header>
-<main>
-$cards
-</main>
-</body></html>
-"""
-    }
+  <div class="lbwrap"><img id="lbimg" class="fit" onclick="lbToggle()"></div>
+</div>
+<script>
+  function lbOpen(src, cap) {
+    var i = document.getElementById('lbimg');
+    i.src = src; i.className = 'fit';
+    document.getElementById('lbcap').textContent = cap;
+    document.getElementById('lb').classList.add('open');
+  }
+  function lbClose() { document.getElementById('lb').classList.remove('open'); }
+  function lbToggle() {
+    var i = document.getElementById('lbimg');
+    i.className = (i.className === 'fit') ? 'actual' : 'fit';
+  }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lbClose(); });
+</script>
+""".trim()
 
     private fun pillFor(s: ShotReport): String = when {
         s.status == "error" -> """<span class="pill bad">error</span>"""
@@ -90,14 +128,22 @@ $cards
     private fun rel(path: String, outDir: File): String =
         runCatching { File(path).relativeTo(outDir).path }.getOrNull() ?: File(path).name
 
-    private fun figure(caption: String, src: String): String =
-        """<figure><figcaption>$caption</figcaption><img src="${e(src)}"></figure>"""
+    /** Escapes a value for use inside a single-quoted JS string literal. */
+    private fun js(s: String): String = s.replace("\\", "\\\\").replace("'", "\\'")
+
+    private fun figure(caption: String, src: String, label: String): String {
+        val onClick = "lbOpen('${e(js(src))}','${e(js(label))}')"
+        return """<figure><figcaption>$caption</figcaption>""" +
+            """<img src="${e(src)}" onclick="$onClick"></figure>"""
+    }
 
     private fun imgsFor(s: ShotReport, outDir: File): String = buildString {
         append("""<div class="imgs">""")
-        if (File(File(outDir, "goldens"), "${s.id}.png").isFile) append(figure("golden", "goldens/${s.id}.png"))
-        s.out?.let { append(figure("actual", rel(it, outDir))) }
-        s.verify?.diffImage?.let { append(figure("diff", rel(it, outDir))) }
+        if (File(File(outDir, "goldens"), "${s.id}.png").isFile) {
+            append(figure("golden", "goldens/${s.id}.png", "golden · ${s.id}"))
+        }
+        s.out?.let { append(figure("actual", rel(it, outDir), "actual · ${s.id}")) }
+        s.verify?.diffImage?.let { append(figure("diff", rel(it, outDir), "diff · ${s.id}")) }
         append("</div>")
     }
 
