@@ -54,6 +54,10 @@ last_verified: { commit: ab2fb5b, date: 2026-06-11 }
 - **Account switching — store binding.**
   `examples/taskflow/composeApp/src/jvmTest/kotlin/org/reduxkotlin/sample/taskflow/feature/account/AccountSwitchTest.kt → AccountSwitchTest`
   drives two per-account stores and asserts each account restores its own remembered screen.
+- **Snapshot / golden UI — the rendered frame.** Render a screen headlessly from a known dispatched
+  state to a PNG and diff it against a committed golden, asserting the *visual* output a state
+  produces (not just the model). The TaskFlow harness wires this via `redux-kotlin-snapshot`; see
+  [snapshot.md](./snapshot.md).
 
 ## The verify loop (fast → slow)
 
@@ -98,4 +102,5 @@ every host.
 - [effects-sync.md](./effects-sync.md) — the virtual-time sync E2E.
 - [compose-binding.md](./compose-binding.md) — the render-isolation proof.
 - [state-persistence.md](./state-persistence.md) — restore-path testing (registry-primed restore).
+- [snapshot.md](./snapshot.md) — golden UI snapshots (`rk-snapshot`, `assertGolden`, the `snapshotUi` batch).
 - [README](./README.md)
