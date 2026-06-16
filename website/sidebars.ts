@@ -64,6 +64,7 @@ const sidebars: SidebarsConfig = {
         'advanced/compose-integration',
         'advanced/devtools',
         'advanced/devtools-cli-tutorial',
+        'advanced/snapshot-testing',
       ],
     },
     {

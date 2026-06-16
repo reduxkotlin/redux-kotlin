@@ -3,7 +3,7 @@ set -uo pipefail
 cd "$(git rev-parse --show-toplevel)" || exit 2
 fail=0
 note() { printf 'ANCHOR-FAIL: %s\n' "$*"; fail=1; }
-ALLOWED=" build detekt detektAll apiCheck apiDump allTests jvmTest test assemble assembleDebug installDist "
+ALLOWED=" build detekt detektAll apiCheck apiDump allTests jvmTest test assemble assembleDebug installDist snapshotUi "
 files=(AGENTS.md docs/agent/api-map.md)
 while IFS= read -r f; do files+=("$f"); done < <(find docs/agent/references -name '*.md' ! -name '_template.md' 2>/dev/null | sort)
 for F in "${files[@]}"; do

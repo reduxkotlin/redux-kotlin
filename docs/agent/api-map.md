@@ -45,5 +45,9 @@ Unpublished developer tools (no `.api` dump, not on Maven):
 `redux-kotlin-devtools-cli` is the `rk-devtools` clikt tool wrapping the standalone server +
 capture queries (`serve`/`stores`/`actions`/`diff`/`state`/`tail`); install via
 `./gradlew :redux-kotlin-devtools-cli:installDist`.
+`redux-kotlin-snapshot` is the `rk-snapshot` clikt tool: it renders a redux-kotlin Compose screen
+headlessly from a known state (`f(state) → PNG`), diffs against a committed golden, and emits an HTML
+dashboard. Run it via a consuming app's `main` (which calls `runCli`) or the TaskFlow `snapshotUi`
+task; see `docs/agent/references/snapshot.md`.
 
 `examples/*` are `convention.control` (not published, no `.api`).
