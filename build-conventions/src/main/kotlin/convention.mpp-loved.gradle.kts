@@ -29,7 +29,11 @@ kotlin {
 
     js {
         useCommonJs()
-        browser { testTask { useKarma() } }
+        // Default Karma launcher is ChromiumHeadless, which isn't installed on the
+        // Windows runner and can't start its sandbox on Ubuntu 24.04 (AppArmor blocks
+        // unprivileged user namespaces). Chrome ships on every GitHub runner, and
+        // --no-sandbox clears the Ubuntu restriction.
+        browser { testTask { useKarma { useChromeHeadlessNoSandbox() } } }
         nodejs()
     }
     @OptIn(ExperimentalWasmDsl::class)
