@@ -120,3 +120,16 @@ compose.desktop {
         mainClass = "org.reduxkotlin.sample.taskflow.MainKt"
     }
 }
+
+// `redux-ui render` primitive: headless-render a screen from seeded Redux state to PNG.
+//   ./gradlew :examples:taskflow:composeApp:renderUi --args="--screen board --out board.png --theme dark"
+tasks.register<JavaExec>("renderUi") {
+    group = "render"
+    description = "Headless-render a TaskFlow screen from seeded state to PNG (see RenderCli.kt)."
+    val jvmMainCompilation = kotlin.jvm().compilations.getByName("main")
+    dependsOn(jvmMainCompilation.compileTaskProvider)
+    classpath(jvmMainCompilation.output.allOutputs, jvmMainCompilation.runtimeDependencyFiles)
+    mainClass.set("org.reduxkotlin.sample.taskflow.render.RenderCliKt")
+    // Resolve a relative --out against the repo root, not this module dir.
+    workingDir = rootProject.projectDir
+}
