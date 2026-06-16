@@ -40,4 +40,15 @@ internal class DifferTest {
         assertEquals(DiffVerdict.MISMATCH, r.verdict)
         assertTrue(r.diffPercent > 99.0)
     }
+
+    @Test fun diff_image_marks_changed_pixels_magenta() {
+        val png = Differ().diffImage(solid(4, 4, 0x000000), solid(4, 4, 0xFFFFFF), tolerance = 0)!!
+        val img = ImageIO.read(java.io.ByteArrayInputStream(png))
+        assertEquals(4, img.width)
+        assertEquals(0xFF00FF, img.getRGB(0, 0) and 0xFFFFFF) // fully changed -> magenta
+    }
+
+    @Test fun diff_image_null_on_dimension_mismatch() {
+        assertEquals(null, Differ().diffImage(solid(4, 4, 0), solid(4, 5, 0), tolerance = 0))
+    }
 }
