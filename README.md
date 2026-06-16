@@ -125,6 +125,7 @@ dependencies {
 | Routing | `redux-kotlin-routing` (routed `(model, action)` reducer DSL), `redux-kotlin-routing-codegen` (KSP `@Reduce` processor — in-repo, not yet on Maven Central) |
 | Bundles | `redux-kotlin-bundle`, `redux-kotlin-bundle-compose`, `redux-kotlin-bom` (Maven BOM) |
 | DevTools (experimental) | `redux-kotlin-devtools-core`, `-bridge`, `-remote`, `-inapp`, `-inapp-noop`, `-ui` — aligned by the BOM but exempt from semver until the surface stabilizes |
+| Dev tools (in-repo, unpublished) | `redux-kotlin-snapshot` — the `rk-snapshot` CLI: headlessly render Compose screens from state to PNG with golden diffing (`f(state) -> UI`); `redux-kotlin-devtools-cli`, `redux-kotlin-devtools-standalone` |
 
 ## Core API
 
@@ -215,6 +216,11 @@ The repo ships a DevTools family for inspecting a running redux-kotlin app:
 
 See the [integration guide](docs/devtools.md) and the
 [website DevTools page](https://www.reduxkotlin.org/advanced/devtools).
+
+For *visual* verification, `redux-kotlin-snapshot` (the `rk-snapshot` CLI)
+headlessly renders Compose screens from state to PNG with golden-image diffing —
+`f(state) -> UI`. See its [README](redux-kotlin-snapshot/README.md) and the
+[snapshot testing guide](https://www.reduxkotlin.org/advanced/snapshot-testing).
 
 ## Extensions
 
