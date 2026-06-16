@@ -19,8 +19,8 @@ public fun SnapshotApp.assertGolden(
     theme: String? = null,
     goldenDir: File = File("src/test/resources/snapshots"),
     name: String = if (preset != null) "$scene-$preset" else scene,
-    tolerance: Int = 4,
-    maxDiffPercent: Double = 0.1,
+    tolerance: Int = DiffDefaults.TOLERANCE,
+    maxDiffPercent: Double = DiffDefaults.STRICT_MAX_DIFF_PERCENT,
     record: Boolean = System.getProperty("snapshot.record") == "true",
 ) {
     require((preset == null) != (json == null)) { "provide exactly one of preset or json" }
