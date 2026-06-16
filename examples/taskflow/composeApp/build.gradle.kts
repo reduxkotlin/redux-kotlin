@@ -125,8 +125,11 @@ compose.desktop {
     }
 }
 
-// Headless snapshot CLI for TaskFlow screens (rk-snapshot driving the taskFlowSnapshots registry):
-//   ./gradlew :examples:taskflow:composeApp:snapshotUi --args="--batch shots.json --out-dir out --dashboard"
+// Headless snapshot CLI for TaskFlow screens (rk-snapshot driving the taskFlowSnapshots registry).
+// Paths in --args resolve against the repo root (workingDir below); a ready-to-run manifest ships at
+// examples/taskflow/composeApp/snapshots/shots.json:
+//   ./gradlew :examples:taskflow:composeApp:snapshotUi \
+//     --args="--batch examples/taskflow/composeApp/snapshots/shots.json --out-dir build/snapshots --dashboard"
 tasks.register<JavaExec>("snapshotUi") {
     group = "render"
     description = "Headless-render TaskFlow screens from seeded state to PNG (see TaskFlowSnapshots.kt)."
