@@ -22,20 +22,25 @@ internal class CliTest {
 
     @Test fun single_render_writes_a_png() {
         val out = File(tmp, "counter.png")
-        val r = snapshotCommand(demoSnapshots).test("--scene counter --preset n3 --out ${out.path}")
+        // list-argv overload: the string overload shell-tokenizes and eats the
+        // backslashes in a Windows --out path, mangling it so no PNG is written.
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--scene", "counter", "--preset", "n3", "--out", out.path))
         assertEquals(0, r.statusCode, r.output)
         assertTrue(out.isFile && out.length() > 0)
     }
 
     @Test fun unknown_scene_exits_2() {
-        val r = snapshotCommand(demoSnapshots).test("--scene nope --preset n3 --out ${File(tmp, "x.png").path}")
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--scene", "nope", "--preset", "n3", "--out", File(tmp, "x.png").path))
         assertEquals(2, r.statusCode)
     }
 
     @Test fun both_inputs_exits_2() {
-        val r = snapshotCommand(
-            demoSnapshots,
-        ).test("--scene counter --preset n3 --state-json {} --out ${File(tmp, "y.png").path}")
+        val r = snapshotCommand(demoSnapshots)
+            .test(
+                listOf("--scene", "counter", "--preset", "n3", "--state-json", "{}", "--out", File(tmp, "y.png").path),
+            )
         assertEquals(2, r.statusCode)
     }
 
