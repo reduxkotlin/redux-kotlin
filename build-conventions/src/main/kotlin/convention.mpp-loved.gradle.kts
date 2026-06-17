@@ -15,15 +15,12 @@ kotlin {
     // `./gradlew apiDump` after an intentional public-API change.
     @OptIn(ExperimentalAbiValidation::class)
     abiValidation {
-        enabled.set(true)
-        // CI only builds every native target on the main host (macOS); ubuntu/windows
-        // build a subset, so without this their klib dump would drop the unbuilt
-        // targets and `checkKotlinAbi` would fail on a spurious `Targets:` header diff.
-        // Infer the missing targets from the committed reference so the check is
-        // host-independent.
-        klib {
-            keepUnsupportedTargets.set(true)
-        }
+        // The klib ABI dump covers every native target, but CI only builds them all on
+        // the main host (macOS, per convention.control); ubuntu/windows build a subset,
+        // so their dump drops apple/mingw and checkKotlinAbi fails on a spurious
+        // `Targets:` header diff. Validate ABI only where the full target set exists
+        // (locally, or the main host on CI).
+        enabled.set(!CI || isMainHost)
     }
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
