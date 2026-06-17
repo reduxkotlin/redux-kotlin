@@ -62,3 +62,12 @@ kotlin {
     linuxX64()
     mingwX64()
 }
+
+// Compose's wasm runtime (skiko.wasm) can't be fetched under Node, so a
+// compose-dependent module's wasm tests are browser-only — `wasmJsNodeTest`
+// aborts with "both async and sync fetching of the wasm failed". Disable the
+// Node variant wherever the Compose plugin is applied; `wasmJsBrowserTest` keeps
+// the coverage.
+plugins.withId("org.jetbrains.compose") {
+    tasks.matching { it.name == "wasmJsNodeTest" }.configureEach { enabled = false }
+}
