@@ -44,7 +44,10 @@ kotlin {
     }
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        // Same Karma browser fix as the js target: force the single Chrome-headless
+        // --no-sandbox launcher via the shared karma.config.d, else wasmJsBrowserTest
+        // launches the default ChromiumHeadless and fails on CI.
+        browser { testTask { useKarma { useConfigDirectory(rootDir.resolve("karma.config.d")) } } }
         nodejs()
     }
     jvm {
