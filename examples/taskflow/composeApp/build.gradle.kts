@@ -27,7 +27,10 @@ kotlin {
     jvm()
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        // Force the single Chrome-headless --no-sandbox Karma launcher (shared
+        // karma.config.d) so wasmJsBrowserTest works on CI; the default
+        // ChromiumHeadless isn't on the Windows runner and can't sandbox on Ubuntu 24.04.
+        browser { testTask { useKarma { useConfigDirectory(rootDir.resolve("karma.config.d")) } } }
         binaries.executable()
     }
     // The AGP-9 KMP-library `android {}` accessor is only generated when the plugin sits in plugins{}.

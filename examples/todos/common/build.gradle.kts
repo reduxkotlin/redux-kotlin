@@ -8,7 +8,10 @@ kotlin {
     iosSimulatorArm64()
     js {
         useCommonJs()
-        browser()
+        // Force the single Chrome-headless --no-sandbox Karma launcher (shared
+        // karma.config.d) so jsBrowserTest works on CI; the default ChromiumHeadless
+        // isn't on the Windows runner and can't sandbox on Ubuntu 24.04.
+        browser { testTask { useKarma { useConfigDirectory(rootDir.resolve("karma.config.d")) } } }
         binaries.executable()
     }
     jvm()
