@@ -99,6 +99,12 @@ jobs:
         run: ./gradlew check -x detekt -x detektAll --scan
 
       - name: Gradle Test Local Publishing
+        # Only the main host (macOS) builds every native target, so it's the only
+        # runner that can publish the full multiplatform set — matching the real
+        # release, which publishes from a single macOS host. On ubuntu/windows the
+        # apple/native klibs aren't built and publishToLocal fails generating their
+        # publication metadata (FileNotFoundException on the missing klib).
+        if: ${{ matrix.os.runner == 'macos-latest' }}
         run: ./gradlew publishToLocal --scan
 
       - uses: actions/upload-artifact@v7
