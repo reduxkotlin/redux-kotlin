@@ -32,3 +32,22 @@ tasks.register("apiCheck") {
     description = "Verify the public API of all library modules matches the committed ABI dumps."
     dependsOn(subprojects.map { it.tasks.matching { task -> task.name == "checkKotlinAbi" } })
 }
+
+// Compose's iOS UI test binaries can't link on the CI Xcode toolchain: compose
+// ui-uikit auto-links Apple's private 'UIUtilities' framework, which the linker
+// can't find ("Undefined symbols for architecture arm64"), failing
+// linkDebugTestIosSimulatorArm64 for every module that renders Compose UI in
+// tests (devtools-inapp-noop, -ui, the taskflow sample, …). Those UI tests run on
+// the JVM, so disable the iOS test build wherever the Compose plugin is applied;
+// the iOS *main* targets still compile and publish.
+subprojects {
+    afterEvaluate {
+        if (plugins.hasPlugin("org.jetbrains.compose")) {
+            listOf(
+                "linkDebugTestIosSimulatorArm64",
+                "linkDebugTestIosArm64",
+                "iosSimulatorArm64Test",
+            ).forEach { taskName -> tasks.findByName(taskName)?.enabled = false }
+        }
+    }
+}

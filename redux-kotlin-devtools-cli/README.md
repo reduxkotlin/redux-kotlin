@@ -17,6 +17,22 @@ from the repository:
 redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
 ```
 
+### Requires Java 17+
+
+The tool is compiled to Java 17 bytecode, so the launcher needs a **JDK 17 or
+newer** on `JAVA_HOME`/`PATH`. The build itself is pinned to JDK 17 via a Gradle
+toolchain (auto-provisioned), so `installDist` is deterministic regardless of
+your default Java. The repo ships a [`.sdkmanrc`](../.sdkmanrc) pinning Temurin
+17 — run `sdk env` in the repo root to select it.
+
+If you launch `rk-devtools` with an older Java it fails fast with a clear
+message instead of an `UnsupportedClassVersionError`. To pick a JDK explicitly:
+
+```
+JAVA_HOME=/path/to/jdk17+ rk-devtools --help
+# macOS, if registered: JAVA_HOME=$(/usr/libexec/java_home -v 17) rk-devtools --help
+```
+
 ## Subcommands
 
 | Command | What it does |
