@@ -382,6 +382,10 @@ jobs:
     name: Publish (JReleaser)
     needs: build
     runs-on: ubuntu-latest
+    # contents: write so JReleaser's default GITHUB_TOKEN can update the release + upload assets
+    # on the main repo. (tap/bucket pushes use the GH_PUBLISH_TOKEN PAT, not this token.)
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
         with:
