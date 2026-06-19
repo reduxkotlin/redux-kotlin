@@ -4,6 +4,10 @@ on:
   release:
     types: [created]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to build/publish the CLI under (e.g. 1.0.0-alpha02). Use to (re)publish the CLI for an existing release without re-running the Maven Central release."
+        required: true
 
 jobs:
   build:
@@ -22,7 +26,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Build + archive the app-image
         # -Pversion=<tag> so the archive filename uses the release version (matches JReleaser).
-        run: ./gradlew :redux-kotlin-cli-dist:packageRkArchive -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
+        run: ./gradlew :redux-kotlin-cli-dist:packageRkArchive -Pversion=${{ github.event.inputs.version || github.event.release.tag_name || github.ref_name }} --stacktrace
       - uses: actions/upload-artifact@v7
         with:
           name: rk-dist-${{ matrix.os }}
@@ -52,9 +56,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: JReleaser full-release
         # -Pversion so the Gradle-interpolated artifact paths match the downloaded archive names.
-        run: ./gradlew :redux-kotlin-cli-dist:jreleaserFullRelease -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
+        run: ./gradlew :redux-kotlin-cli-dist:jreleaserFullRelease -Pversion=${{ github.event.inputs.version || github.event.release.tag_name || github.ref_name }} --stacktrace
         env:
-          JRELEASER_PROJECT_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
+          JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.version || github.event.release.tag_name || github.ref_name }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_TOKEN }}
           JRELEASER_SCOOP_GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_TOKEN }}
