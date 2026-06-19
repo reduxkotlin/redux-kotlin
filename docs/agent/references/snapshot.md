@@ -31,7 +31,7 @@ prove the *logic*; snapshots prove the *rendered frame* a given state produces. 
 indirectly — a scene renders the real screen from dispatched state, so a binding that reads too wide
 shows up as an unexpected pixel diff.
 
-The CLI tool is named `rk-snapshot`. Module is registered as `:redux-kotlin-snapshot` in
+The CLI subcommand is `rk snapshot` (from the unified `rk` binary; install via `:redux-kotlin-cli:installDist`). Module is registered as `:redux-kotlin-snapshot` in
 `settings.gradle.kts`.
 
 ## Define a scene registry
@@ -97,7 +97,7 @@ Goldens are committed PNGs; the loop is generate → review → verify.
 1. **Generate** the golden the first time (no `--verify`):
 
    ```
-   rk-snapshot --scene board --preset seeded --out goldens/board-seeded.png
+   rk snapshot --scene board --preset seeded --out goldens/board-seeded.png
    ```
 
 2. **Review** the PNG by eye — this is the human/agent acceptance step. Commit it once correct.
@@ -105,7 +105,7 @@ Goldens are committed PNGs; the loop is generate → review → verify.
 3. **Verify** later renders against it:
 
    ```
-   rk-snapshot --scene board --preset seeded --verify goldens/board-seeded.png
+   rk snapshot --scene board --preset seeded --verify goldens/board-seeded.png
    ```
 
    Prints `verify: <verdict> (<pct>%)`; exits `1` on `MISMATCH`. If the golden file is missing it
@@ -143,10 +143,10 @@ mismatched. Open the dashboard `index.html` to eyeball golden vs. actual vs. dif
 ## Typical agent workflow
 
 1. Write/extend a screen, then add or pick a scene in the registry (`snapshotApp { }`).
-2. `rk-snapshot --list` — confirm the scene + presets are registered.
-3. `rk-snapshot --scene <s> --preset <p> --out goldens/<s>-<p>.png` — render `f(state) → PNG`.
+2. `rk snapshot --list` — confirm the scene + presets are registered.
+3. `rk snapshot --scene <s> --preset <p> --out goldens/<s>-<p>.png` — render `f(state) → PNG`.
 4. Eyeball the PNG; commit it as the golden when correct.
-5. After later edits: `rk-snapshot --scene <s> --preset <p> --verify goldens/<s>-<p>.png`
+5. After later edits: `rk snapshot --scene <s> --preset <p> --verify goldens/<s>-<p>.png`
    (or the batch `snapshotUi --dashboard` over `shots.json`).
 6. On mismatch, open the dashboard / `build/snapshots/<name>.actual.png`, decide intended-vs-regression,
    then fix the code or re-record the golden.

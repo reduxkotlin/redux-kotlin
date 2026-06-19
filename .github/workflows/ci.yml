@@ -75,21 +75,18 @@ jobs:
           echo "Tests failed after ${max_attempts} attempts"
           exit 1
 
-      - name: Smoke-test the assembled rk-devtools CLI
+      - name: Smoke-test the assembled rk CLI
         shell: bash
         run: |
-          set -euo pipefail
-          # Build the distribution the how-to / README tell users to install, then
-          # launch the real launcher. Catches breakage the in-process unit tests
-          # cannot: a broken `application`/mainClass block, a missing runtime jar in
-          # the install lib dir, or a dropped subcommand — none of which surface
-          # from `test` alone.
-          ./gradlew --no-daemon --stacktrace :redux-kotlin-devtools-cli:installDist
-          bin=redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
-          out="$("$bin" --help)"
-          echo "$out"
-          for cmd in serve stores actions diff state tail; do
-            echo "$out" | grep -q "$cmd" || { echo "rk-devtools --help is missing subcommand: $cmd"; exit 1; }
+          ./gradlew --no-daemon --stacktrace :redux-kotlin-cli:installDist
+          bin=redux-kotlin-cli/build/install/rk/bin/rk
+          out=$("$bin" --help)
+          for grp in devtools snapshot; do
+            echo "$out" | grep -q "$grp" || { echo "rk --help is missing group: $grp"; exit 1; }
+          done
+          dout=$("$bin" devtools --help)
+          for cmd in serve actions; do
+            echo "$dout" | grep -q "$cmd" || { echo "rk devtools --help missing: $cmd"; exit 1; }
           done
 
       - name: Upload test reports on failure

@@ -32,7 +32,7 @@ full stability promise.
 | `redux-kotlin-devtools-inapp-noop` | published library | Zero-overhead release sibling mirroring the inapp + core API for build-variant substitution. |
 | `redux-kotlin-devtools-ui` | published library | Shared Compose UI panels (`DevToolsTab`, `DevToolsThemeMode`) used by the drawer and the standalone monitor. |
 | `redux-kotlin-devtools-standalone` | unpublished tool | Compose desktop monitor app (run from the repo). |
-| `redux-kotlin-devtools-cli` | unpublished tool | `rk-devtools` — terminal receiver + capture query tool (installed from the repo via `installDist`). |
+| `redux-kotlin-devtools-cli` | library (behind `rk devtools`) | `devToolsCommand()` — the library backing `rk devtools`; the installable tool is `rk` from `:redux-kotlin-cli`. |
 
 ## Core entry points
 
@@ -238,16 +238,17 @@ option for headless/native/server redux-kotlin apps. For structured state on
 iOS/native/JS, register a `KotlinxValueSerializer(json)` as
 `DevToolsConfig.serializer`.
 
-## The `rk-devtools` CLI
+## The `rk` CLI
 
-`redux-kotlin-devtools-cli` wraps the same bridge receiver in a terminal tool —
-ideal for agents, scripts, and headless debugging. It is unpublished; install
-it from the repository:
+`redux-kotlin-cli` bundles `rk devtools` (bridge receiver + capture queries) and
+`rk snapshot` (headless renderer) in a single terminal tool — ideal for agents,
+scripts, and headless debugging. It is unpublished; install it from the
+repository:
 
 ```
-./gradlew :redux-kotlin-devtools-cli:installDist
+./gradlew :redux-kotlin-cli:installDist
 # binary lands at:
-redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
+redux-kotlin-cli/build/install/rk/bin/rk
 ```
 
 (Add that `bin/` directory to your `PATH`, or symlink the binary.)
@@ -256,15 +257,15 @@ redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
 
 | Command | What it does |
 |---|---|
-| `rk-devtools serve` | Hosts the bridge receiver on `127.0.0.1:9090` and writes one `<storeKey>.jsonl` capture per connected store into `.rk-devtools/`. Options: `--port`, `--host`, `--token`, `--out`, `--ui` (also launch the GUI monitor). |
-| `rk-devtools stores` | Lists captured stores (`clientId::storeInstanceId` keys). |
-| `rk-devtools actions` | Prints the action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until`, `--last N`, `--format actions\|diff\|full`, `--pretty`. |
-| `rk-devtools diff` | Same filters; each line includes the per-field JSON-diff for the action. |
-| `rk-devtools state --at <id>` | Full state snapshot recorded at an actionId. |
-| `rk-devtools tail [--follow]` | Recent actions; `--follow` polls for new ones live. |
+| `rk devtools serve` | Hosts the bridge receiver on `127.0.0.1:9090` and writes one `<storeKey>.jsonl` capture per connected store into `.rk-devtools/`. Options: `--port`, `--host`, `--token`, `--out`, `--ui` (also launch the GUI monitor). |
+| `rk devtools stores` | Lists captured stores (`clientId::storeInstanceId` keys). |
+| `rk devtools actions` | Prints the action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until`, `--last N`, `--format actions\|diff\|full`, `--pretty`. |
+| `rk devtools diff` | Same filters; each line includes the per-field JSON-diff for the action. |
+| `rk devtools state --at <id>` | Full state snapshot recorded at an actionId. |
+| `rk devtools tail [--follow]` | Recent actions; `--follow` polls for new ones live. |
 
-Typical loop: `serve` in a background terminal → run the app → `stores` →
-`actions --last 30` → `diff --type '*Failed*' --last 5` → `state --at <id>`.
+Typical loop: `rk devtools serve` in a background terminal → run the app → `rk devtools stores` →
+`rk devtools actions --last 30` → `rk devtools diff --type '*Failed*' --last 5` → `rk devtools state --at <id>`.
 
 ## Recording codec (`.jsonl` captures)
 

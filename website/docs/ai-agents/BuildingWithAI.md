@@ -88,6 +88,25 @@ nav), and `ui` (theme, locals, widgets).
 - Store consistency model (sync writes, async notify) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/store-consistency-model.md
 - State persistence & restore (process death, preloadedState, saveable) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/state-persistence.md
 
+## DevTools CLI — `rk`
+
+The unified `rk` binary bundles `rk devtools` (bridge receiver + capture queries) and
+`rk snapshot` (headless Compose renderer). Requires **JDK 17+**.
+
+```bash
+git clone https://github.com/reduxkotlin/redux-kotlin.git
+cd redux-kotlin
+./gradlew :redux-kotlin-cli:installDist
+# binary:
+# redux-kotlin-cli/build/install/rk/bin/rk
+```
+
+Add `redux-kotlin-cli/build/install/rk/bin` to your `PATH`, then use:
+- `rk devtools serve` — receive a running app's action stream; `rk devtools actions|diff|state|tail` to query.
+- `rk snapshot --scene <name> --preset <name> --out shot.png` — render a Compose screen from state.
+
+Full guide: https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
+
 ## Verify loop
 
 After writing code, run (Gradle): build (`./gradlew build`), lint

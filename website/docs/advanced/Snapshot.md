@@ -4,7 +4,7 @@ title: Snapshot Testing
 sidebar_label: Snapshot Testing
 ---
 
-# Snapshot Testing with `rk-snapshot`
+# Snapshot Testing with `rk snapshot`
 
 `redux-kotlin-snapshot` headlessly renders your real Compose Multiplatform
 screens from seeded redux-kotlin state to PNG. Because a screen is a pure
@@ -27,7 +27,7 @@ That gives you two things at once:
 `redux-kotlin-snapshot` is a JVM developer tool. It is **not** published to
 Maven Central and **not** in `redux-kotlin-bom`. In this repository, example
 apps depend on it as a test-scoped `project(":redux-kotlin-snapshot")`, and the
-`rk-snapshot` CLI is installed from source. It requires **JDK 17+**.
+`rk snapshot` CLI subcommand is installed from source via `redux-kotlin-cli`. It requires **JDK 17+**.
 
 :::
 
@@ -71,13 +71,13 @@ A scene renders from a `SnapshotInput`, which is one of:
 Defaults resolve per-call → per-scene → global, so a shot can override theme or
 dimensions without touching the scene.
 
-## The CLI: `rk-snapshot`
+## The CLI: `rk snapshot`
 
-Install the bundled CLI from the repository:
+Install the unified `rk` CLI from the repository:
 
 ```
-./gradlew :redux-kotlin-snapshot:installDist
-# binary: redux-kotlin-snapshot/build/install/rk-snapshot/bin/rk-snapshot
+./gradlew :redux-kotlin-cli:installDist
+# binary: redux-kotlin-cli/build/install/rk/bin/rk
 ```
 
 The bundled binary renders a built-in demo registry. To drive **your** scenes,
@@ -116,12 +116,12 @@ The golden loop is *generate → review → accept → verify*:
 
 ```
 # 1. render once and look at the PNG
-rk-snapshot --scene board --preset seeded --out board.png
+rk snapshot --scene board --preset seeded --out board.png
 
 # 2. accept it — commit board.png as the golden
 
 # 3. verify later renders against it (CI / pre-merge)
-rk-snapshot --scene board --preset seeded --verify board.png
+rk snapshot --scene board --preset seeded --verify board.png
 ```
 
 Step 3 exits `1` on drift. To update a golden after an intended UI change,
@@ -150,10 +150,10 @@ For a whole screen set, drive a JSON manifest. It is `{ "defaults": {...},
 
 ```
 # generate every shot + a browsable dashboard
-rk-snapshot --batch shots.json --out-dir build/snapshots --dashboard
+rk snapshot --batch shots.json --out-dir build/snapshots --dashboard
 
 # once accepted, verify in CI by pointing at the golden dir
-rk-snapshot --batch shots.json --out-dir build/snapshots --golden-dir goldens
+rk snapshot --batch shots.json --out-dir build/snapshots --golden-dir goldens
 ```
 
 The batch writes a `report.json` under `--out-dir`; `--dashboard` adds an
