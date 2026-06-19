@@ -8,15 +8,30 @@
   diffing. (Rendering *your own* app's screens stays a library use — depend on
   `redux-kotlin-snapshot` and call `yourRegistry.runCli(args)`.)
 
-**Unpublished today** — build from this repo (needs **JDK 17+**):
+## Installation
 
+### Package managers (recommended — no Java required)
+
+Homebrew and Scoop builds bundle a JRE; no local JDK needed.
+
+```sh
+# macOS / Linux
+brew install reduxkotlin/tap/rk
+
+# Windows
+scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
+scoop install rk
 ```
+
+Available once the first tagged release is published.
+
+### From source (any OS, needs JDK 17+)
+
+```sh
 ./gradlew :redux-kotlin-cli:installDist
 # binary: redux-kotlin-cli/build/install/rk/bin/rk
 rk --help
 rk --version
 ```
 
-Add that `bin/` directory to your `PATH`, or symlink the binary. Phase 2 will
-publish self-contained per-OS builds via Homebrew/Scoop (`brew install
-reduxkotlin/tap/rk`) with a bundled JRE — no Java required.
+Add `redux-kotlin-cli/build/install/rk/bin` to your `PATH`, or symlink the binary.

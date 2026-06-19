@@ -125,7 +125,7 @@ dependencies {
 | Routing | `redux-kotlin-routing` (routed `(model, action)` reducer DSL), `redux-kotlin-routing-codegen` (KSP `@Reduce` processor — in-repo, not yet on Maven Central) |
 | Bundles | `redux-kotlin-bundle`, `redux-kotlin-bundle-compose`, `redux-kotlin-bom` (Maven BOM) |
 | DevTools (experimental) | `redux-kotlin-devtools-core`, `-bridge`, `-remote`, `-inapp`, `-inapp-noop`, `-ui` — aligned by the BOM but exempt from semver until the surface stabilizes |
-| Dev tools (in-repo, unpublished) | `redux-kotlin-cli` — the unified `rk` binary (`rk devtools` + `rk snapshot`); `redux-kotlin-devtools-standalone` |
+| Dev tools | `redux-kotlin-cli` — the unified `rk` binary (`rk devtools` + `rk snapshot`); `redux-kotlin-devtools-standalone` (in-repo). Install `rk` via Homebrew/Scoop (bundled JRE, no Java needed) or build from source — see the [CLI README](redux-kotlin-cli/README.md). |
 
 ## Core API
 

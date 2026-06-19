@@ -242,16 +242,30 @@ iOS/native/JS, register a `KotlinxValueSerializer(json)` as
 
 `redux-kotlin-cli` bundles `rk devtools` (bridge receiver + capture queries) and
 `rk snapshot` (headless renderer) in a single terminal tool — ideal for agents,
-scripts, and headless debugging. It is unpublished; install it from the
-repository:
+scripts, and headless debugging.
 
+### Install
+
+Homebrew and Scoop builds bundle a JRE — no Java required:
+
+```sh
+# macOS / Linux
+brew install reduxkotlin/tap/rk
+
+# Windows
+scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
+scoop install rk
 ```
+
+Or build from source (needs JDK 17+):
+
+```sh
 ./gradlew :redux-kotlin-cli:installDist
 # binary lands at:
-redux-kotlin-cli/build/install/rk/bin/rk
+# redux-kotlin-cli/build/install/rk/bin/rk
 ```
 
-(Add that `bin/` directory to your `PATH`, or symlink the binary.)
+Add that `bin/` directory to your `PATH`, or symlink the binary.
 
 ### Subcommands
 
