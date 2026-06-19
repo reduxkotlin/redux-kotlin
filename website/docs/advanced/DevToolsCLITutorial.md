@@ -45,9 +45,20 @@ the in-flight bookkeeping behaves.
 
 ---
 
-## Step 1 — Build the CLI
+## Step 1 — Install the CLI
 
-`rk` installs from the repo with Gradle's `installDist`:
+**Homebrew / Scoop (recommended — bundled JRE, no Java required):**
+
+```bash
+# macOS / Linux
+brew install reduxkotlin/tap/rk
+
+# Windows
+scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
+scoop install rk
+```
+
+**From source (any OS, needs JDK 17+):**
 
 ```bash
 ./gradlew :redux-kotlin-cli:installDist

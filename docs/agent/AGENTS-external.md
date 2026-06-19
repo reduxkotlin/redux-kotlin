@@ -74,6 +74,7 @@ nav), and `ui` (theme, locals, widgets).
 - DevTools debugging loop — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
 - Store consistency model (sync writes, async notify) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/store-consistency-model.md
 - State persistence & restore (process death, preloadedState, saveable) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/state-persistence.md
+- Snapshot / golden UI testing — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/snapshot.md
 
 ## DevTools CLI — `rk`
 
@@ -105,6 +106,11 @@ Add `redux-kotlin-cli/build/install/rk/bin` to your `PATH`, then use:
 - `rk snapshot --scene <name> --preset <name> --out shot.png` — render a Compose screen from state.
 
 Full guide: https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
+
+> **Note:** `rk snapshot` only renders the binary's built-in scenes. To render
+> **your own app's screens**, depend on `redux-kotlin-snapshot` as a library and
+> call `yourRegistry.runCli(args)` from your `main` (then `exitProcess(0)` — Skiko
+> leaves non-daemon threads alive).
 
 ## Verify loop
 

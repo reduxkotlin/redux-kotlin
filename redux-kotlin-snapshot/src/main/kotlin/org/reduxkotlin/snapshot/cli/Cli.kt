@@ -29,14 +29,18 @@ import java.io.File
 
 /**
  * Builds the `snapshot` command for [app]. Exit codes: 0 ok, 1 render/verify failure, 2 usage.
- * Public so the unified `rk` CLI can mount it as a subcommand; in-project callers should prefer
- * [runCli], which keeps the Clikt dependency off this module's public API.
+ * Public so the unified `rk` CLI can mount it as a subcommand; library consumers building their
+ * OWN binary should call [runCli] instead — it avoids leaking the [CliktCommand] return type and
+ * the Clikt dependency into their public API.
  */
 public fun snapshotCommand(app: SnapshotApp): CliktCommand = SnapshotCommand(app)
 
 /**
  * Runs the snapshot CLI for this registry — the entry point a consuming app calls from its own
  * `main`. Keeps Clikt types from leaking across the module boundary.
+ *
+ * Callers should follow this with `exitProcess(0)`: Skiko / Compose leave non-daemon threads alive
+ * after the command returns, which would prevent the process from exiting cleanly.
  */
 public fun SnapshotApp.runCli(argv: Array<String>) {
     snapshotCommand(this).main(argv)
