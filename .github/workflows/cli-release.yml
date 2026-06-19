@@ -1,0 +1,67 @@
+name: rk CLI Release
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build rk (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-13, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Build + archive the app-image
+        # -Pversion=<tag> so the archive filename uses the release version (matches JReleaser).
+        run: ./gradlew :redux-kotlin-cli-dist:packageRkArchive -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
+      - uses: actions/upload-artifact@v7
+        with:
+          name: rk-dist-${{ matrix.os }}
+          path: redux-kotlin-cli-dist/build/distributions/rk-*.*
+
+  publish:
+    name: Publish (JReleaser)
+    needs: build
+    runs-on: ubuntu-latest
+    # contents: write so JReleaser's default GITHUB_TOKEN can update the release + upload assets
+    # on the main repo. (tap/bucket pushes use the GH_PUBLISH_TOKEN PAT, not this token.)
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: rk-dist-*
+          merge-multiple: true
+          path: redux-kotlin-cli-dist/build/distributions
+      - uses: gradle/actions/setup-gradle@v6
+      - name: JReleaser full-release
+        # -Pversion so the Gradle-interpolated artifact paths match the downloaded archive names.
+        run: ./gradlew :redux-kotlin-cli-dist:jreleaserFullRelease -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
+        env:
+          JRELEASER_PROJECT_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_TOKEN }}
+          JRELEASER_SCOOP_GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_TOKEN }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: jreleaser-logs
+          path: |
+            redux-kotlin-cli-dist/build/jreleaser/trace.log
+            redux-kotlin-cli-dist/build/jreleaser/output.properties
