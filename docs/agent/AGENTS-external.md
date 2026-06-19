@@ -82,6 +82,24 @@ nav), and `ui` (theme, locals, widgets).
 - Store consistency model (sync writes, async notify) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/store-consistency-model.md
 - State persistence & restore (process death, preloadedState, saveable) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/state-persistence.md
 
+## DevTools CLI — `rk-devtools`
+
+A terminal tool that inspects a running redux-kotlin app — action log, per-field
+JSON diffs, per-store `.jsonl` captures — ideal for agents and headless
+debugging (`serve` → reproduce → `actions`/`diff`/`state`). It is **not** a Maven
+dependency and not yet on a package manager; today you build it from the
+redux-kotlin repo with the JVM `application` plugin's `installDist`:
+
+```
+git clone https://github.com/reduxkotlin/redux-kotlin && cd redux-kotlin
+./gradlew :redux-kotlin-devtools-cli:installDist   # needs JDK 17+
+# binary: redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
+```
+
+(A sibling tool, `rk-snapshot` — `:redux-kotlin-snapshot:installDist` — renders a
+Compose screen from state to PNG with golden diffing.) Agent guide:
+https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
+
 ## Verify loop
 
 After writing code, run (Gradle): build (`./gradlew build`), lint
