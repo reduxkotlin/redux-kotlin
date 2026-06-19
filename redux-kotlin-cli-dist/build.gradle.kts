@@ -3,6 +3,7 @@ plugins {
     kotlin("jvm")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.jreleaser)
 }
 
 // Packaging-only module — NO `application` plugin (it clashes with Compose's `run` task).
@@ -67,6 +68,77 @@ tasks.register<Tar>("packageRkArchiveTar") {
 // Umbrella: builds whichever archive matches the current host OS.
 tasks.register("packageRkArchive") {
     dependsOn("packageRkArchiveZip", "packageRkArchiveTar")
+}
+
+// Publishes the per-OS bundled-JRE archives (built by the CI matrix) as a GitHub Release plus a
+// Homebrew formula and Scoop manifest. distributionType=JLINK = "archive contains a bundled JRE".
+// See docs/superpowers/specs/2026-06-19-rk-publishing-research.md for the verified field values.
+//
+// Capture Gradle project version here: inside jreleaser{} the name `project` resolves to JReleaser's
+// own DSL object, so project.version would return the JReleaser Property<String> toString() form.
+val gradleVersion: String = project.version.toString()
+val gradleDistDir: File = layout.buildDirectory.dir("distributions").get().asFile
+
+jreleaser {
+    gitRootSearch.set(true)
+    project {
+        // JReleaser wants a release-form version; CI passes JRELEASER_PROJECT_VERSION = tag.
+        description.set("rk — the unified redux-kotlin CLI (devtools + snapshot)")
+        copyright.set("reduxkotlin contributors")
+        authors.set(listOf("reduxkotlin"))
+        license.set("Apache-2.0")
+        links {
+            homepage.set("https://reduxkotlin.org")
+        }
+    }
+    release {
+        github {
+            repoOwner.set("reduxkotlin")
+            name.set("redux-kotlin")
+            overwrite.set(true)
+        }
+    }
+    distributions {
+        create("rk") {
+            // String-based setter (avoids import of internal model enum)
+            setDistributionType("JLINK")
+            artifact {
+                setPath(gradleDistDir.resolve("rk-$gradleVersion-osx-aarch_64.zip").absolutePath)
+                platform.set("osx-aarch_64")
+            }
+            artifact {
+                setPath(gradleDistDir.resolve("rk-$gradleVersion-osx-x86_64.zip").absolutePath)
+                platform.set("osx-x86_64")
+            }
+            artifact {
+                setPath(gradleDistDir.resolve("rk-$gradleVersion-linux-x86_64.tar.gz").absolutePath)
+                platform.set("linux-x86_64")
+            }
+            artifact {
+                setPath(gradleDistDir.resolve("rk-$gradleVersion-windows-x86_64.zip").absolutePath)
+                platform.set("windows-x86_64")
+            }
+        }
+    }
+    packagers {
+        brew {
+            active.set(org.jreleaser.model.Active.RELEASE)
+            multiPlatform.set(true)
+            repository {
+                active.set(org.jreleaser.model.Active.RELEASE)
+                repoOwner.set("reduxkotlin")
+                name.set("homebrew-tap")
+            }
+        }
+        scoop {
+            active.set(org.jreleaser.model.Active.RELEASE)
+            repository {
+                active.set(org.jreleaser.model.Active.RELEASE)
+                repoOwner.set("reduxkotlin")
+                name.set("scoop-bucket")
+            }
+        }
+    }
 }
 
 /**
