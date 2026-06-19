@@ -25,6 +25,9 @@ jobs:
           java-version: 17
       - uses: gradle/actions/setup-gradle@v6
       - name: Build + archive the app-image
+        # shell: bash so the -Pversion=<x.y.z-...> arg parses identically on Windows (the default
+        # PowerShell splits it on the dots, turning the version into "1"). Matches ci.yml/check.yml.
+        shell: bash
         # -Pversion=<tag> so the archive filename uses the release version (matches JReleaser).
         run: ./gradlew :redux-kotlin-cli-dist:packageRkArchive -Pversion=${{ github.event.inputs.version || github.event.release.tag_name || github.ref_name }} --stacktrace
       - uses: actions/upload-artifact@v7
@@ -55,6 +58,7 @@ jobs:
           path: redux-kotlin-cli-dist/build/distributions
       - uses: gradle/actions/setup-gradle@v6
       - name: JReleaser full-release
+        shell: bash
         # -Pversion so the Gradle-interpolated artifact paths match the downloaded archive names.
         run: ./gradlew :redux-kotlin-cli-dist:jreleaserFullRelease -Pversion=${{ github.event.inputs.version || github.event.release.tag_name || github.ref_name }} --stacktrace
         env:
