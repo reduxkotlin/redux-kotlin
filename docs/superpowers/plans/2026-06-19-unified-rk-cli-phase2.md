@@ -14,7 +14,9 @@
 
 - Module touched: `:redux-kotlin-cli` (Phase 1 created it; `kotlin("jvm")` + `application`, binary `rk`, `mainClass = org.reduxkotlin.cli.MainKt`). It is a repo tool — NOT Maven-published, NOT in the BOM.
 - Compose app-image task: `createDistributable` → output `redux-kotlin-cli/build/compose/binaries/main/app/rk` (Linux/Windows dir) or `…/app/rk.app` (macOS bundle). Launcher: Linux `rk/bin/rk`; Windows `rk/rk.exe`; macOS `rk.app/Contents/MacOS/rk`.
-- `packageVersion` must be `MAJOR.MINOR.PATCH`, **no `-SNAPSHOT`**, MAJOR > 0 → use `project.version.toString().substringBefore("-")` (yields `1.0.0`).
+- **Two version strings, by design.** The **archive filename** and JReleaser use the FULL release version (the tag, e.g. `1.0.0-alpha01`); only jpackage's `packageVersion` strips the qualifier (jpackage rejects `-alpha01`) via `project.version.toString().substringBefore("-")` (→ `1.0.0`, MAJOR>0 for macOS). CI MUST pass `-Pversion=<tag>` to every Gradle invocation (as `release.yml` already does with `-Pversion=${VERSION//v}`); otherwise `project.version` stays `1.0.0-SNAPSHOT` from `gradle.properties` and the archive names won't match JReleaser's expected paths.
+- **JDK:** every runner needs a full **JDK 17 that includes `jpackage`** (Temurin 17 does). The Gradle toolchain must resolve to that JDK, not a JRE. The bundled runtime is jlink'd from it.
+- **No ProGuard:** use `createDistributable` (NOT `createReleaseDistributable`) — ProGuard breaks clikt and kotlinx.serialization reflection. Larger image, but correct.
 - Windows CLI needs `windows { console = true }` or stdout is invisible from a terminal.
 - App-image carries host-specific Skiko → **must build on each target OS** (no cross-compile).
 - JReleaser `distributionType = JLINK` (bundled JRE). Platform strings (underscore in arch): `osx-aarch_64`, `osx-x86_64`, `linux-x86_64`, `windows-x86_64`.
@@ -123,11 +125,13 @@ Append to `redux-kotlin-cli/build.gradle.kts`:
 // Archives the per-OS app-image under build/distributions with the JReleaser platform suffix
 // (e.g. rk-1.0.0-osx-aarch_64.zip). Each CI runner builds + archives its own host's image;
 // JReleaser (Task 3) consumes these by exact path. macOS/Windows → zip; Linux → tar.gz.
+// NOTE: archive filename uses the FULL version (project.version, e.g. 1.0.0-alpha01) so it matches
+// JReleaser's artifact paths in Task 3. Only jpackage's packageVersion (Task 1) strips the qualifier.
 tasks.register<Zip>("packageRkArchiveZip") {
     val osName = System.getProperty("os.name").lowercase()
     onlyIf { osName.contains("mac") || osName.contains("windows") }
     dependsOn("createDistributable")
-    val ver = project.version.toString().substringBefore("-")
+    val ver = project.version.toString()
     val platform = rkJReleaserPlatform()
     archiveFileName.set("rk-$ver-$platform.zip")
     destinationDirectory.set(layout.buildDirectory.dir("distributions"))
@@ -139,7 +143,7 @@ tasks.register<Tar>("packageRkArchiveTar") {
     onlyIf { osName.contains("linux") }
     dependsOn("createDistributable")
     compression = Compression.GZIP
-    val ver = project.version.toString().substringBefore("-")
+    val ver = project.version.toString()
     val platform = rkJReleaserPlatform()
     archiveFileName.set("rk-$ver-$platform.tar.gz")
     destinationDirectory.set(layout.buildDirectory.dir("distributions"))
@@ -172,13 +176,13 @@ fun rkJReleaserPlatform(): String {
 - [ ] **Step 2: Build the archive on this host**
 
 Run: `./gradlew :redux-kotlin-cli:packageRkArchive`
-Expected: `BUILD SUCCESSFUL`; on macOS-arm64 a file `redux-kotlin-cli/build/distributions/rk-1.0.0-osx-aarch_64.zip` exists.
+Expected: `BUILD SUCCESSFUL`; on macOS-arm64 (local, no `-Pversion`, so version is `1.0.0-SNAPSHOT`) a file `redux-kotlin-cli/build/distributions/rk-1.0.0-SNAPSHOT-osx-aarch_64.zip` exists. In CI with `-Pversion=<tag>` the name uses the tag.
 
 - [ ] **Step 3: Verify the archive contains the bundled launcher**
 
-On macOS:
+On macOS (adjust the version in the name to whatever Step 2 produced):
 ```bash
-unzip -l redux-kotlin-cli/build/distributions/rk-1.0.0-osx-aarch_64.zip | grep -E "rk.app/Contents/MacOS/rk$|runtime"
+unzip -l redux-kotlin-cli/build/distributions/rk-1.0.0-SNAPSHOT-osx-aarch_64.zip | grep -E "rk.app/Contents/MacOS/rk$|runtime"
 ```
 Expected: the entry `rk.app/Contents/MacOS/rk` and a bundled `runtime/` (the jlink JRE) are present. Record the archive's internal top-level layout in the report — Task 5 needs to know whether the mac archive's root is `rk.app` (it is) for the brew formula.
 
@@ -245,20 +249,25 @@ jreleaser {
         create("rk") {
             distributionType.set(org.jreleaser.model.Distribution.DistributionType.JLINK)
             executable { name.set("rk") }
+            // Absolute paths built from project.version (known at config time because CI passes
+            // -Pversion=<tag>). Avoids a JReleaser {{template}} inside Gradle file() and avoids
+            // gitRootSearch resolving relative paths against the wrong basedir.
+            val distDir = layout.buildDirectory.dir("distributions").get().asFile
+            val v = project.version.toString()
             artifact {
-                path.set(file("build/distributions/rk-{{projectVersion}}-osx-aarch_64.zip"))
+                path.set(distDir.resolve("rk-$v-osx-aarch_64.zip").absolutePath)
                 platform.set("osx-aarch_64")
             }
             artifact {
-                path.set(file("build/distributions/rk-{{projectVersion}}-osx-x86_64.zip"))
+                path.set(distDir.resolve("rk-$v-osx-x86_64.zip").absolutePath)
                 platform.set("osx-x86_64")
             }
             artifact {
-                path.set(file("build/distributions/rk-{{projectVersion}}-linux-x86_64.tar.gz"))
+                path.set(distDir.resolve("rk-$v-linux-x86_64.tar.gz").absolutePath)
                 platform.set("linux-x86_64")
             }
             artifact {
-                path.set(file("build/distributions/rk-{{projectVersion}}-windows-x86_64.zip"))
+                path.set(distDir.resolve("rk-$v-windows-x86_64.zip").absolutePath)
                 platform.set("windows-x86_64")
             }
         }
@@ -287,14 +296,15 @@ jreleaser {
 
 - [ ] **Step 4: Dry-run validate the config (no publish, no network writes)**
 
-Create placeholder archives so JReleaser can resolve artifact paths, then run config:
+Create placeholder archives whose names match the resolved version, then run config. Pass the SAME `-Pversion` you'll use in CI so the Gradle-interpolated artifact paths match the placeholder names, and set `JRELEASER_PROJECT_VERSION` to the same value:
 ```bash
+V=1.0.0-alpha01
 mkdir -p redux-kotlin-cli/build/distributions
 for p in osx-aarch_64 osx-x86_64 linux-x86_64 windows-x86_64; do
   case "$p" in *linux*) ext=tar.gz;; *) ext=zip;; esac
-  : > "redux-kotlin-cli/build/distributions/rk-1.0.0-$p.$ext"
+  : > "redux-kotlin-cli/build/distributions/rk-$V-$p.$ext"
 done
-JRELEASER_PROJECT_VERSION=1.0.0 ./gradlew :redux-kotlin-cli:jreleaserConfig
+JRELEASER_PROJECT_VERSION=$V ./gradlew :redux-kotlin-cli:jreleaserConfig -Pversion=$V
 ```
 Expected: `BUILD SUCCESSFUL` and JReleaser prints the resolved model (distribution `rk`, four artifacts, brew + scoop packagers) with no schema errors. `jreleaserConfig` does not contact GitHub. If JReleaser reports an unknown property / wrong enum, fix the DSL against the JReleaser 1.24.0 Gradle reference (cited in the research doc) and re-run. Remove the placeholder files afterward.
 
@@ -343,7 +353,8 @@ jobs:
           java-version: 17
       - uses: gradle/actions/setup-gradle@v6
       - name: Build + archive the app-image
-        run: ./gradlew :redux-kotlin-cli:packageRkArchive --stacktrace
+        # -Pversion=<tag> so the archive filename uses the release version (matches JReleaser).
+        run: ./gradlew :redux-kotlin-cli:packageRkArchive -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
       - uses: actions/upload-artifact@v7
         with:
           name: rk-dist-${{ matrix.os }}
@@ -368,7 +379,8 @@ jobs:
           path: redux-kotlin-cli/build/distributions
       - uses: gradle/actions/setup-gradle@v6
       - name: JReleaser full-release
-        run: ./gradlew :redux-kotlin-cli:jreleaserFullRelease --stacktrace
+        # -Pversion so the Gradle-interpolated artifact paths match the downloaded archive names.
+        run: ./gradlew :redux-kotlin-cli:jreleaserFullRelease -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
         env:
           JRELEASER_PROJECT_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -471,6 +483,20 @@ git commit -m "docs(cli): brew + scoop as primary rk install (bundled JRE); clos
 ```
 
 ---
+
+## Known risks & first-release decisions
+
+- **macOS signing / Gatekeeper.** jpackage ad-hoc-signs the `.app`, so `rk` runs on Apple Silicon (arm64 requires at least an ad-hoc signature — satisfied). `brew`-installed binaries are not quarantined (brew downloads via curl, not a browser), so the brew path should run unsigned. A `.app` downloaded **directly from the GitHub Release in a browser** carries `com.apple.quarantine` → Gatekeeper warns; document the `xattr -dr com.apple.quarantine <path>` workaround. Full Developer-ID signing + notarization removes that warning but needs an Apple Developer cert (a maintainer prereq) — treat as an optional follow-up, not a Phase 2 blocker. Validate the brew path on a real Mac in Task 5.
+- **Windows SmartScreen.** The unsigned `.exe` may trigger SmartScreen on direct download; `scoop install` (user-dir install) generally avoids it. Acceptable; note in docs.
+- **JReleaser packager field names** (`brew.repository.owner` vs `scoop.repository.repoOwner`) differ between packagers and the research flagged the inconsistency. The Task 3 `jreleaserConfig` dry run is the gate — if it reports an unknown property, correct against the JReleaser 1.24.0 Gradle reference and re-run. Do not assume the DSL as written compiles until the dry run is green.
+- **Changelog.** JReleaser defaults to a git-commit changelog and can fail if tags/history aren't shaped as it expects. If `jreleaserFullRelease` errors on changelog, set `release { github { changelog { formatted.set(org.jreleaser.model.Active.NEVER) } } }` (or `enabled.set(false)`) for the first release. First-release item.
+- **`includeAllModules = true`** bundles the full JDK module set (larger image) for Skiko/AWT reliability; revisit with `suggestRuntimeModules` only if image size becomes a problem.
+
+## Open decisions (resolve before executing Tasks 4–6)
+
+1. **Linux ARM64** — add an `ubuntu-24.04-arm` matrix entry (+ a `linux-aarch_64` JReleaser artifact) or defer? (Currently NOT built.)
+2. **Prerelease publishing** — `active = RELEASE` pushes a brew/scoop update for **every** non-SNAPSHOT, including `-alphaNN`. Keep alphas flowing to brew/scoop, or gate the packagers to stable (non-prerelease) tags only?
+3. **macOS notarization** — ship ad-hoc-signed now (brew works, browser-download warns) and add Developer-ID notarization later, or block Phase 2 on obtaining an Apple cert?
 
 ## Sequencing & honesty notes
 
