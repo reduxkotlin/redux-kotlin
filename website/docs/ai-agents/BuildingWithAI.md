@@ -91,14 +91,26 @@ nav), and `ui` (theme, locals, widgets).
 ## DevTools CLI — `rk`
 
 The unified `rk` binary bundles `rk devtools` (bridge receiver + capture queries) and
-`rk snapshot` (headless Compose renderer). Requires **JDK 17+**.
+`rk snapshot` (headless Compose renderer).
+
+**Install — Homebrew/Scoop (bundled JRE, no Java required):**
+
+```bash
+# macOS / Linux
+brew install reduxkotlin/tap/rk
+
+# Windows
+scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
+scoop install rk
+```
+
+**From source (any OS, needs JDK 17+):**
 
 ```bash
 git clone https://github.com/reduxkotlin/redux-kotlin.git
 cd redux-kotlin
 ./gradlew :redux-kotlin-cli:installDist
-# binary:
-# redux-kotlin-cli/build/install/rk/bin/rk
+# binary: redux-kotlin-cli/build/install/rk/bin/rk
 ```
 
 Add `redux-kotlin-cli/build/install/rk/bin` to your `PATH`, then use:
