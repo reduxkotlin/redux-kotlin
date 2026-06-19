@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * Runtime smoke test for the assembled `rk-devtools` command tree.
+ * Runtime smoke test for the assembled `devtools` command tree.
  *
  * This guards against the class of breakage where the CLI compiles but the
  * tool is unusable — a subcommand dropped from the tree, the root command
@@ -22,24 +22,24 @@ internal class CliSmokeTest {
 
     @Test
     fun root_registers_every_expected_subcommand() {
-        val names = rootCommand().registeredSubcommands().map { it.commandName }
-        assertEquals(expectedSubcommands, names, "rk-devtools subcommand tree changed")
+        val names = devToolsCommand().registeredSubcommands().map { it.commandName }
+        assertEquals(expectedSubcommands, names, "devtools subcommand tree changed")
     }
 
     @Test
     fun root_help_runs_and_lists_every_subcommand() {
-        val result = rootCommand().test("--help")
-        assertEquals(0, result.statusCode, "rk-devtools --help should exit 0")
+        val result = devToolsCommand().test("--help")
+        assertEquals(0, result.statusCode, "devtools --help should exit 0")
         expectedSubcommands.forEach { name ->
-            assertTrue(name in result.output, "rk-devtools --help omits subcommand: $name")
+            assertTrue(name in result.output, "devtools --help omits subcommand: $name")
         }
     }
 
     @Test
     fun every_subcommand_help_is_reachable() {
         expectedSubcommands.forEach { name ->
-            val result = rootCommand().test("$name --help")
-            assertEquals(0, result.statusCode, "rk-devtools $name --help should exit 0")
+            val result = devToolsCommand().test("$name --help")
+            assertEquals(0, result.statusCode, "devtools $name --help should exit 0")
         }
     }
 }
