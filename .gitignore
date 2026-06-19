@@ -102,3 +102,4 @@ website/.docusaurus/
 .vercel
 .env*.local
 .superpowers/
+.infisical.json

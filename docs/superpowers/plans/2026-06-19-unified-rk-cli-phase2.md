@@ -20,21 +20,20 @@
 - Windows CLI needs `windows { console = true }` or stdout is invisible from a terminal.
 - App-image carries host-specific Skiko → **must build on each target OS** (no cross-compile).
 - JReleaser `distributionType = JLINK` (bundled JRE). Platform strings (underscore in arch): `osx-aarch_64`, `osx-x86_64`, `linux-x86_64`, `windows-x86_64`.
-- Tokens: `JRELEASER_GITHUB_TOKEN` (main repo release); tap/bucket need a separate PAT in `JRELEASER_HOMEBREW_GITHUB_TOKEN` / `JRELEASER_SCOOP_GITHUB_TOKEN` (the Actions default `GITHUB_TOKEN` cannot push to them).
+- Tokens: `JRELEASER_GITHUB_TOKEN` = the workflow default `GITHUB_TOKEN` (main-repo release; needs `permissions: contents: write`). The tap/bucket pushes use a fine-grained PAT mirrored from Infisical (`GITHUB_CLI_PUBLISH_TOKEN`) into the GH Actions secret **`GH_PUBLISH_TOKEN`** (GitHub forbids Actions-secret names starting with `GITHUB_`), wired to BOTH `JRELEASER_HOMEBREW_GITHUB_TOKEN` and `JRELEASER_SCOOP_GITHUB_TOKEN`.
 - Pre-commit hook runs `detektAll --auto-correct`; never `--no-verify`.
 - **Testability note:** Tasks 1–2 are fully verifiable on the dev/CI host now. Task 3 is verifiable via `jreleaserConfig` (dry run, no publish). Tasks 4–6 (actual publish, brew/scoop) can only be end-to-end validated on a real tagged release AFTER Task 0's prerequisites exist — those tasks carry explicit dry-run + first-release validation steps, not fabricated "it works" claims.
 
 ---
 
-### Task 0: Maintainer prerequisites (gating — not code)
+### Task 0: Maintainer prerequisites (gating — not code) — ✅ DONE (2026-06-19)
 
-This task is a checklist the repo owner completes; no implementer subagent. Phase 2 publish (Tasks 4–6) cannot run end-to-end until these exist. Tasks 1–3 do NOT depend on them.
+Repo-owner checklist; no implementer subagent. Phase 2 publish (Tasks 4–6) cannot run end-to-end until these exist.
 
-- [ ] Create repo `reduxkotlin/homebrew-tap` (empty, public).
-- [ ] Create a Scoop bucket repo, e.g. `reduxkotlin/scoop-bucket` (empty, public).
-- [ ] Create a PAT (classic, or fine-grained with **Contents: read+write** on both repos above).
-- [ ] Add it as repo secrets on `reduxkotlin/redux-kotlin`: `TAP_PAT` and `BUCKET_PAT` (may be the same PAT).
-- [ ] Confirm the exact bucket repo name chosen and update `name = …` in the Task 3 `scoop.repository` block if it differs from `scoop-bucket`.
+- [x] `reduxkotlin/homebrew-tap` created (public).
+- [x] `reduxkotlin/scoop-bucket` created (public) — name matches the Task 3 `scoop.repository.name`.
+- [x] Fine-grained PAT with **Contents: read+write** on both repos, stored in Infisical as `GITHUB_CLI_PUBLISH_TOKEN`.
+- [x] Mirrored into the GH Actions secret **`GH_PUBLISH_TOKEN`** on `reduxkotlin/redux-kotlin` (one secret → both `JRELEASER_HOMEBREW_GITHUB_TOKEN` + `JRELEASER_SCOOP_GITHUB_TOKEN`).
 
 ---
 
@@ -403,8 +402,8 @@ jobs:
         env:
           JRELEASER_PROJECT_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.TAP_PAT }}
-          JRELEASER_SCOOP_GITHUB_TOKEN: ${{ secrets.BUCKET_PAT }}
+          JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_TOKEN }}
+          JRELEASER_SCOOP_GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_TOKEN }}
       - uses: actions/upload-artifact@v7
         if: always()
         with:
