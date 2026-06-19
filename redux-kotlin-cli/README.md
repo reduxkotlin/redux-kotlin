@@ -35,3 +35,14 @@ rk --version
 ```
 
 Add `redux-kotlin-cli/build/install/rk/bin` to your `PATH`, or symlink the binary.
+
+## Commands
+
+- **`rk devtools`** — inspect a running app: `serve` (start bridge receiver + capture), `stores`,
+  `actions`, `diff`, `state`, `tail`. See [`../redux-kotlin-devtools-cli/README.md`](../redux-kotlin-devtools-cli/README.md).
+- **`rk snapshot`** — render built-in or manifest Compose scenes to PNG with golden diffing.
+  See [`../redux-kotlin-snapshot/README.md`](../redux-kotlin-snapshot/README.md).
+
+> **Rendering your own app's screens** is a library use: depend on `redux-kotlin-snapshot` and
+> call `yourRegistry.runCli(args)` from your own `main` (then `exitProcess(0)` — Skiko leaves
+> non-daemon threads alive). The `rk` binary only renders its built-in demo scenes.

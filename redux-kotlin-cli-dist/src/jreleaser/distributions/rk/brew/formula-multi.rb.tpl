@@ -28,7 +28,7 @@ class {{brewFormulaName}} < Formula
   # `#{libexec}/bin/rk` is therefore right for Linux but wrong for macOS. The macOS zip also loses
   # the launcher's exec bit (Gradle Zip doesn't preserve unix perms), so restore it. post_install
   # dylib re-signing is dropped: the .app's dylibs live inside the bundle, not in `#{libexec}/lib`,
-  # and the bundled runtime + Skiko load fine as-is (verified: `rk snapshot render` works).
+  # and the bundled runtime + Skiko load fine as-is (verified: `rk snapshot --scene counter --preset n3 --out /tmp/test.png` renders).
   def install
     libexec.install Dir["*"]
     if OS.mac?

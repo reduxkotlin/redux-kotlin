@@ -29,7 +29,8 @@ internal val counterReducer: Reducer<CounterState> = { state, action ->
 }
 
 /**
- * A redux-free, deterministic demo registry used to self-test the whole pipe in CI.
+ * A self-contained, deterministic demo registry used to self-test the whole pipe in CI.
+ * Each scene builds its own store from the preset, no external store injected.
  *
  * - `counter` proves `f(redux-state) -> UI`: it builds a real redux-kotlin [createStore], dispatches
  *   N `"inc"` actions from the input, and renders `count` solid bars (no text -> font-independent ->

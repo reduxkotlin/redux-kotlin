@@ -70,6 +70,8 @@ and are not published to Maven.
 |---|---|
 | `redux-kotlin-devtools-*` | [DevTools family](../advanced/devtools) — action/state inspection, diffing, and pipeline timing for a running app. Published (experimental — exempt from semver until the surface stabilizes): `core`, `bridge`, `remote`, `inapp`, `inapp-noop` (release no-op facade), `ui`. Unpublished repo tools: `standalone` (Compose desktop monitor app) and `cli` (library behind `rk devtools`). |
 | `redux-kotlin-snapshot` | [Snapshot testing](../advanced/snapshot-testing) — headlessly render Compose Multiplatform screens from redux-kotlin state to PNG (`f(state) -> UI`), with golden-image diffing and an HTML dashboard. Accessed via `rk snapshot` (from `redux-kotlin-cli`). Unpublished repo tool. |
+| `redux-kotlin-cli` | Produces the unified `rk` binary — `rk devtools` (bridge receiver + capture queries) and `rk snapshot` (headless Compose renderer). Install from source: `./gradlew :redux-kotlin-cli:installDist` (binary: `redux-kotlin-cli/build/install/rk/bin/rk`; needs JDK 17+). Or install via brew/scoop (see `redux-kotlin-cli-dist`). Unpublished repo tool. |
+| `redux-kotlin-cli-dist` | Compose bundled-JRE packaging for `rk` — produces per-OS app-images via `createDistributable` and archives via `packageRkArchive`; published to the Homebrew tap and Scoop bucket on a tagged release. End users install via `brew install reduxkotlin/tap/rk` / `scoop install rk` (no Java required). Unpublished repo tool. |
 
 ## Community
 

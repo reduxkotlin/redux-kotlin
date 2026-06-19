@@ -73,7 +73,18 @@ dimensions without touching the scene.
 
 ## The CLI: `rk snapshot`
 
-Install the unified `rk` CLI from the repository:
+**Homebrew / Scoop (recommended — bundled JRE, no Java required):**
+
+```bash
+# macOS / Linux
+brew install reduxkotlin/tap/rk
+
+# Windows
+scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
+scoop install rk
+```
+
+**From source (needs JDK 17+):**
 
 ```
 ./gradlew :redux-kotlin-cli:installDist
