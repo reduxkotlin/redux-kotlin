@@ -134,7 +134,7 @@ git commit -m "build(cli-dist): Compose app-image packaging module (bundled JRE)
 
 **Interfaces:**
 - Consumes: `createDistributable` output (Task 1).
-- Produces: Gradle task `packageRkArchive` writing `redux-kotlin-cli-dist/build/distributions/rk-<version>-<platform>.{zip|tar.gz}` where `<platform>` is the JReleaser string for the build host, and `<version>` is the stripped version. These exact paths are what Task 3's JReleaser `artifact` blocks reference.
+- Produces: Gradle task `packageRkArchive` writing `redux-kotlin-cli-dist/build/distributions/rk-<version>-<platform>.{zip|tar.gz}` where `<platform>` is the JReleaser string for the build host, and `<version>` is the FULL `project.version` (matches JReleaser). These exact paths are what Task 3's JReleaser `artifact` blocks reference.
 
 - [ ] **Step 1: Add the archive task**
 
