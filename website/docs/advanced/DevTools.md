@@ -21,6 +21,24 @@ full stability promise.
 
 :::
 
+:::info Availability
+
+All six DevTools libraries are on **Maven Central**, group `org.reduxkotlin`,
+published with the rest of the stack. The current release is **`1.0.0-alpha01`**.
+There is no umbrella `redux-kotlin-devtools` artifact — depend on the specific
+modules below (replace `<version>` with `1.0.0-alpha01`).
+
+`master` snapshots publish as **`1.0.0-SNAPSHOT`** to the Central Portal
+snapshots repository — add it and use `1.0.0-SNAPSHOT` as the version:
+
+```kotlin
+repositories {
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
+}
+```
+
+:::
+
 ## Artifacts overview
 
 | Artifact | Kind | Role |
