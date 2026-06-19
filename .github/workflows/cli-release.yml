@@ -15,7 +15,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, macos-13, ubuntu-latest, windows-latest]
+        # macos-13 (Intel) dropped for alpha02 — Intel macOS runners were backlogged. Apple Silicon
+        # (macos-14 → osx-aarch_64) covers ~all Mac users; Intel-Mac users build from source for now.
+        os: [macos-14, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6

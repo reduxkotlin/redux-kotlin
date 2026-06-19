@@ -106,10 +106,8 @@ jreleaser {
                 setPath(gradleDistDir.resolve("rk-$gradleVersion-osx-aarch_64.zip").absolutePath)
                 platform.set("osx-aarch_64")
             }
-            artifact {
-                setPath(gradleDistDir.resolve("rk-$gradleVersion-osx-x86_64.zip").absolutePath)
-                platform.set("osx-x86_64")
-            }
+            // osx-x86_64 (Intel Mac) dropped for alpha02 — Intel macOS CI runners were backlogged.
+            // Re-add this artifact + macos-13 to the workflow matrix when capacity allows.
             artifact {
                 setPath(gradleDistDir.resolve("rk-$gradleVersion-linux-x86_64.tar.gz").absolutePath)
                 platform.set("linux-x86_64")
