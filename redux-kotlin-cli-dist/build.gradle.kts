@@ -96,6 +96,10 @@ jreleaser {
             repoOwner.set("reduxkotlin")
             name.set("redux-kotlin")
             overwrite.set(true)
+            // Reuse the existing release tag as-is (e.g. 1.0.0-alpha02). JReleaser's default
+            // tagName is `v{{projectVersion}}`, which would create a duplicate `v`-prefixed release.
+            tagName.set("{{projectVersion}}")
+            releaseName.set("{{tagName}}")
         }
     }
     distributions {
