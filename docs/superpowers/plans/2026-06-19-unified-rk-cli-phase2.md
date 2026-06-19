@@ -12,8 +12,8 @@
 
 ## Global Constraints
 
-- Module touched: `:redux-kotlin-cli` (Phase 1 created it; `kotlin("jvm")` + `application`, binary `rk`, `mainClass = org.reduxkotlin.cli.MainKt`). It is a repo tool — NOT Maven-published, NOT in the BOM.
-- Compose app-image task: `createDistributable` → output `redux-kotlin-cli/build/compose/binaries/main/app/rk` (Linux/Windows dir) or `…/app/rk.app` (macOS bundle). Launcher: Linux `rk/bin/rk`; Windows `rk/rk.exe`; macOS `rk.app/Contents/MacOS/rk`.
+- Modules: `:redux-kotlin-cli` (Phase 1; `kotlin("jvm")` + `application`, binary `rk`, `mainClass = org.reduxkotlin.cli.MainKt`) is **left untouched** — its `installDist` is load-bearing (CI smoke test + docs). Phase 2 adds a NEW packaging-only module `:redux-kotlin-cli-dist` (Compose, depends on `:redux-kotlin-cli`) because `application` + `org.jetbrains.compose` both register a `run` task and cannot coexist in one module. Both are repo tools — NOT Maven-published, NOT in the BOM.
+- Compose app-image task: `createDistributable` → output `redux-kotlin-cli-dist/build/compose/binaries/main/app/rk` (Linux/Windows dir) or `…/app/rk.app` (macOS bundle). Launcher: Linux `rk/bin/rk`; Windows `rk/rk.exe`; macOS `rk.app/Contents/MacOS/rk`.
 - **Two version strings, by design.** The **archive filename** and JReleaser use the FULL release version (the tag, e.g. `1.0.0-alpha01`); only jpackage's `packageVersion` strips the qualifier (jpackage rejects `-alpha01`) via `project.version.toString().substringBefore("-")` (→ `1.0.0`, MAJOR>0 for macOS). CI MUST pass `-Pversion=<tag>` to every Gradle invocation (as `release.yml` already does with `-Pversion=${VERSION//v}`); otherwise `project.version` stays `1.0.0-SNAPSHOT` from `gradle.properties` and the archive names won't match JReleaser's expected paths.
 - **JDK:** every runner needs a full **JDK 17 that includes `jpackage`** (Temurin 17 does). The Gradle toolchain must resolve to that JDK, not a JRE. The bundled runtime is jlink'd from it.
 - **No ProGuard:** use `createDistributable` (NOT `createReleaseDistributable`) — ProGuard breaks clikt and kotlinx.serialization reflection. Larger image, but correct.
@@ -38,28 +38,45 @@ This task is a checklist the repo owner completes; no implementer subagent. Phas
 
 ---
 
-### Task 1: Add Compose app-image packaging to `:redux-kotlin-cli`
+### Task 1: New `:redux-kotlin-cli-dist` packaging module (Compose app-image)
+
+**Why a separate module:** the Gradle `application` plugin (on `:redux-kotlin-cli`, which Phase 1's `installDist` dev path + the CI smoke test depend on) and `org.jetbrains.compose` BOTH register a `run` task → `DuplicateTaskException` if applied to the same module. So `:redux-kotlin-cli` stays exactly as Phase 1 left it; Compose packaging goes in an isolated module that depends on it.
 
 **Files:**
-- Modify: `redux-kotlin-cli/build.gradle.kts`
+- Create: `redux-kotlin-cli-dist/build.gradle.kts`
+- Modify: `settings.gradle.kts` (register the module)
 
 **Interfaces:**
-- Produces: Gradle task `createDistributable` on `:redux-kotlin-cli`, output app-image at `redux-kotlin-cli/build/compose/binaries/main/app/rk[.app]` with a bundled JRE and an `rk` launcher.
+- Consumes: `:redux-kotlin-cli` (its `org.reduxkotlin.cli.MainKt` + full runtime classpath, incl. Compose/Skiko via transitive `implementation` deps).
+- Produces: `createDistributable` on `:redux-kotlin-cli-dist` → app-image at `redux-kotlin-cli-dist/build/compose/binaries/main/app/rk[.app]` with a bundled JRE.
 
-- [ ] **Step 1: Add the Compose plugins**
+- [ ] **Step 1: Register the module in settings**
 
-In `redux-kotlin-cli/build.gradle.kts`, add to the `plugins {}` block (keep `convention.common`, `kotlin("jvm")`, `application`):
+In `settings.gradle.kts`, add `":redux-kotlin-cli-dist",` to the `include(...)` list next to `":redux-kotlin-cli"`.
+
+- [ ] **Step 2: Create the packaging module build file**
+
+Create `redux-kotlin-cli-dist/build.gradle.kts`:
 
 ```kotlin
+plugins {
+    id("convention.common")
+    kotlin("jvm")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
-```
+}
 
-- [ ] **Step 2: Add the `compose.desktop` app-image config**
+// Packaging-only module — NO `application` plugin (it clashes with Compose's `run` task).
+// Depends on :redux-kotlin-cli for the rk entry point + full runtime classpath (Compose/Skiko
+// arrive transitively). createDistributable bundles that classpath + a jlink JRE.
+kotlin {
+    jvmToolchain(17)
+}
 
-Append to `redux-kotlin-cli/build.gradle.kts` (after the existing `dependencies { }` block):
+dependencies {
+    implementation(project(":redux-kotlin-cli"))
+}
 
-```kotlin
 // Self-contained per-OS app-image with a bundled (jlink-minimized) JRE — `rk` runs with no
 // system Java. createDistributable produces build/compose/binaries/main/app/rk[.app].
 compose.desktop {
@@ -81,29 +98,31 @@ compose.desktop {
 }
 ```
 
+(The module needs no Kotlin sources — `mainClass` resolves from the `:redux-kotlin-cli` dependency on the runtime classpath. If Gradle complains about a missing source set, add an empty `redux-kotlin-cli-dist/src/main/kotlin/.gitkeep`.)
+
 - [ ] **Step 3: Build the app-image on this host**
 
-Run: `./gradlew :redux-kotlin-cli:createDistributable`
-Expected: `BUILD SUCCESSFUL`; an app-image appears under `redux-kotlin-cli/build/compose/binaries/main/app/`.
+Run: `./gradlew :redux-kotlin-cli-dist:createDistributable`
+Expected: `BUILD SUCCESSFUL`; an app-image appears under `redux-kotlin-cli-dist/build/compose/binaries/main/app/`. (Compose/Skiko + jpackage — slow, several minutes — is expected.)
 
 - [ ] **Step 4: Run the bundled-JRE launcher (proves the JRE is self-contained)**
 
 On macOS:
 ```bash
-redux-kotlin-cli/build/compose/binaries/main/app/rk.app/Contents/MacOS/rk --version
-redux-kotlin-cli/build/compose/binaries/main/app/rk.app/Contents/MacOS/rk --help
+redux-kotlin-cli-dist/build/compose/binaries/main/app/rk.app/Contents/MacOS/rk --version
+redux-kotlin-cli-dist/build/compose/binaries/main/app/rk.app/Contents/MacOS/rk --help
 ```
 On Linux:
 ```bash
-redux-kotlin-cli/build/compose/binaries/main/app/rk/bin/rk --version
+redux-kotlin-cli-dist/build/compose/binaries/main/app/rk/bin/rk --version
 ```
 Expected: a `rk version …` line and `--help` listing `devtools` + `snapshot`. Note `packageVersion` (jpackage metadata) is independent of the runtime `--version`, which reads `project.version` from the stamped resource — so `--version` prints whatever `project.version` is (e.g. `rk version 1.0.0-SNAPSHOT` on `master`). Record the actual printed line. If the launcher fails with a missing-module/class error, `includeAllModules = true` did not cover it — report DONE_WITH_CONCERNS with the exact error.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add redux-kotlin-cli/build.gradle.kts
-git commit -m "build(cli): Compose app-image packaging (bundled JRE) for rk"
+git add settings.gradle.kts redux-kotlin-cli-dist/build.gradle.kts
+git commit -m "build(cli-dist): Compose app-image packaging module (bundled JRE) for rk"
 ```
 
 ---
@@ -111,15 +130,15 @@ git commit -m "build(cli): Compose app-image packaging (bundled JRE) for rk"
 ### Task 2: Gradle task to archive the app-image with a JReleaser platform name
 
 **Files:**
-- Modify: `redux-kotlin-cli/build.gradle.kts`
+- Modify: `redux-kotlin-cli-dist/build.gradle.kts`
 
 **Interfaces:**
 - Consumes: `createDistributable` output (Task 1).
-- Produces: Gradle task `packageRkArchive` writing `redux-kotlin-cli/build/distributions/rk-<version>-<platform>.{zip|tar.gz}` where `<platform>` is the JReleaser string for the build host, and `<version>` is the stripped version. These exact paths are what Task 3's JReleaser `artifact` blocks reference.
+- Produces: Gradle task `packageRkArchive` writing `redux-kotlin-cli-dist/build/distributions/rk-<version>-<platform>.{zip|tar.gz}` where `<platform>` is the JReleaser string for the build host, and `<version>` is the stripped version. These exact paths are what Task 3's JReleaser `artifact` blocks reference.
 
 - [ ] **Step 1: Add the archive task**
 
-Append to `redux-kotlin-cli/build.gradle.kts`:
+Append to `redux-kotlin-cli-dist/build.gradle.kts`:
 
 ```kotlin
 // Archives the per-OS app-image under build/distributions with the JReleaser platform suffix
@@ -175,21 +194,21 @@ fun rkJReleaserPlatform(): String {
 
 - [ ] **Step 2: Build the archive on this host**
 
-Run: `./gradlew :redux-kotlin-cli:packageRkArchive`
-Expected: `BUILD SUCCESSFUL`; on macOS-arm64 (local, no `-Pversion`, so version is `1.0.0-SNAPSHOT`) a file `redux-kotlin-cli/build/distributions/rk-1.0.0-SNAPSHOT-osx-aarch_64.zip` exists. In CI with `-Pversion=<tag>` the name uses the tag.
+Run: `./gradlew :redux-kotlin-cli-dist:packageRkArchive`
+Expected: `BUILD SUCCESSFUL`; on macOS-arm64 (local, no `-Pversion`, so version is `1.0.0-SNAPSHOT`) a file `redux-kotlin-cli-dist/build/distributions/rk-1.0.0-SNAPSHOT-osx-aarch_64.zip` exists. In CI with `-Pversion=<tag>` the name uses the tag.
 
 - [ ] **Step 3: Verify the archive contains the bundled launcher**
 
 On macOS (adjust the version in the name to whatever Step 2 produced):
 ```bash
-unzip -l redux-kotlin-cli/build/distributions/rk-1.0.0-SNAPSHOT-osx-aarch_64.zip | grep -E "rk.app/Contents/MacOS/rk$|runtime"
+unzip -l redux-kotlin-cli-dist/build/distributions/rk-1.0.0-SNAPSHOT-osx-aarch_64.zip | grep -E "rk.app/Contents/MacOS/rk$|runtime"
 ```
 Expected: the entry `rk.app/Contents/MacOS/rk` and a bundled `runtime/` (the jlink JRE) are present. Record the archive's internal top-level layout in the report — Task 5 needs to know whether the mac archive's root is `rk.app` (it is) for the brew formula.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add redux-kotlin-cli/build.gradle.kts
+git add redux-kotlin-cli-dist/build.gradle.kts
 git commit -m "build(cli): package rk app-image into per-OS JReleaser-named archive"
 ```
 
@@ -199,7 +218,7 @@ git commit -m "build(cli): package rk app-image into per-OS JReleaser-named arch
 
 **Files:**
 - Modify: `gradle/libs.versions.toml` (add the JReleaser plugin)
-- Modify: `redux-kotlin-cli/build.gradle.kts` (apply plugin + `jreleaser { }`)
+- Modify: `redux-kotlin-cli-dist/build.gradle.kts` (apply plugin + `jreleaser { }`)
 
 **Interfaces:**
 - Consumes: the four per-OS archives named in Task 2 (built by the CI matrix in Task 4).
@@ -215,7 +234,7 @@ jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
 
 - [ ] **Step 2: Apply the plugin**
 
-In `redux-kotlin-cli/build.gradle.kts` `plugins {}` block add:
+In `redux-kotlin-cli-dist/build.gradle.kts` `plugins {}` block add:
 
 ```kotlin
     alias(libs.plugins.jreleaser)
@@ -223,7 +242,7 @@ In `redux-kotlin-cli/build.gradle.kts` `plugins {}` block add:
 
 - [ ] **Step 3: Add the `jreleaser {}` config**
 
-Append to `redux-kotlin-cli/build.gradle.kts`. The `artifact` paths MUST match Task 2's output names exactly.
+Append to `redux-kotlin-cli-dist/build.gradle.kts`. The `artifact` paths MUST match Task 2's output names exactly.
 
 ```kotlin
 // Publishes the per-OS bundled-JRE archives (built by the CI matrix) as a GitHub Release plus a
@@ -299,19 +318,19 @@ jreleaser {
 Create placeholder archives whose names match the resolved version, then run config. Pass the SAME `-Pversion` you'll use in CI so the Gradle-interpolated artifact paths match the placeholder names, and set `JRELEASER_PROJECT_VERSION` to the same value:
 ```bash
 V=1.0.0-alpha01
-mkdir -p redux-kotlin-cli/build/distributions
+mkdir -p redux-kotlin-cli-dist/build/distributions
 for p in osx-aarch_64 osx-x86_64 linux-x86_64 windows-x86_64; do
   case "$p" in *linux*) ext=tar.gz;; *) ext=zip;; esac
-  : > "redux-kotlin-cli/build/distributions/rk-$V-$p.$ext"
+  : > "redux-kotlin-cli-dist/build/distributions/rk-$V-$p.$ext"
 done
-JRELEASER_PROJECT_VERSION=$V ./gradlew :redux-kotlin-cli:jreleaserConfig -Pversion=$V
+JRELEASER_PROJECT_VERSION=$V ./gradlew :redux-kotlin-cli-dist:jreleaserConfig -Pversion=$V
 ```
 Expected: `BUILD SUCCESSFUL` and JReleaser prints the resolved model (distribution `rk`, four artifacts, brew + scoop packagers) with no schema errors. `jreleaserConfig` does not contact GitHub. If JReleaser reports an unknown property / wrong enum, fix the DSL against the JReleaser 1.24.0 Gradle reference (cited in the research doc) and re-run. Remove the placeholder files afterward.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add gradle/libs.versions.toml redux-kotlin-cli/build.gradle.kts
+git add gradle/libs.versions.toml redux-kotlin-cli-dist/build.gradle.kts
 git commit -m "build(cli): JReleaser JLINK config for brew + scoop publishing"
 ```
 
@@ -354,11 +373,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - name: Build + archive the app-image
         # -Pversion=<tag> so the archive filename uses the release version (matches JReleaser).
-        run: ./gradlew :redux-kotlin-cli:packageRkArchive -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
+        run: ./gradlew :redux-kotlin-cli-dist:packageRkArchive -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
       - uses: actions/upload-artifact@v7
         with:
           name: rk-dist-${{ matrix.os }}
-          path: redux-kotlin-cli/build/distributions/rk-*.*
+          path: redux-kotlin-cli-dist/build/distributions/rk-*.*
 
   publish:
     name: Publish (JReleaser)
@@ -376,11 +395,11 @@ jobs:
         with:
           pattern: rk-dist-*
           merge-multiple: true
-          path: redux-kotlin-cli/build/distributions
+          path: redux-kotlin-cli-dist/build/distributions
       - uses: gradle/actions/setup-gradle@v6
       - name: JReleaser full-release
         # -Pversion so the Gradle-interpolated artifact paths match the downloaded archive names.
-        run: ./gradlew :redux-kotlin-cli:jreleaserFullRelease -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
+        run: ./gradlew :redux-kotlin-cli-dist:jreleaserFullRelease -Pversion=${{ github.event.release.tag_name || github.ref_name }} --stacktrace
         env:
           JRELEASER_PROJECT_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -391,8 +410,8 @@ jobs:
         with:
           name: jreleaser-logs
           path: |
-            redux-kotlin-cli/build/jreleaser/trace.log
-            redux-kotlin-cli/build/jreleaser/output.properties
+            redux-kotlin-cli-dist/build/jreleaser/trace.log
+            redux-kotlin-cli-dist/build/jreleaser/output.properties
 ```
 
 - [ ] **Step 2: Validate the workflow YAML**
@@ -415,7 +434,7 @@ This cannot be verified without the tap/bucket repos + PAT secrets. Record in th
 
 ### Task 5: macOS `.app` → Homebrew validation + fallback (first-release risk)
 
-**Files:** none, or (fallback only) `redux-kotlin-cli/build.gradle.kts` / a brew template.
+**Files:** none, or (fallback only) `redux-kotlin-cli-dist/build.gradle.kts` / a brew template.
 
 **Why this is its own task:** JReleaser's JLINK Homebrew packager expects a `bin/`-style launcher, but Compose's macOS archive root is `rk.app` with the launcher at `rk.app/Contents/MacOS/rk`. Whether `brew install` lands a working `rk` on PATH from that layout is UNCONFIRMED and only testable on a real release.
 
