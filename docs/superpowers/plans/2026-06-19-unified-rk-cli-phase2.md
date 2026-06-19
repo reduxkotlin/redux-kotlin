@@ -492,11 +492,11 @@ git commit -m "docs(cli): brew + scoop as primary rk install (bundled JRE); clos
 - **Changelog.** JReleaser defaults to a git-commit changelog and can fail if tags/history aren't shaped as it expects. If `jreleaserFullRelease` errors on changelog, set `release { github { changelog { formatted.set(org.jreleaser.model.Active.NEVER) } } }` (or `enabled.set(false)`) for the first release. First-release item.
 - **`includeAllModules = true`** bundles the full JDK module set (larger image) for Skiko/AWT reliability; revisit with `suggestRuntimeModules` only if image size becomes a problem.
 
-## Open decisions (resolve before executing Tasks 4–6)
+## Decisions (resolved 2026-06-19)
 
-1. **Linux ARM64** — add an `ubuntu-24.04-arm` matrix entry (+ a `linux-aarch_64` JReleaser artifact) or defer? (Currently NOT built.)
-2. **Prerelease publishing** — `active = RELEASE` pushes a brew/scoop update for **every** non-SNAPSHOT, including `-alphaNN`. Keep alphas flowing to brew/scoop, or gate the packagers to stable (non-prerelease) tags only?
-3. **macOS notarization** — ship ad-hoc-signed now (brew works, browser-download warns) and add Developer-ID notarization later, or block Phase 2 on obtaining an Apple cert?
+1. **Linux ARM64 — DEFERRED.** Matrix ships macOS (arm64 + x64), linux-x64, windows-x64 only. No `ubuntu-24.04-arm` / `linux-aarch_64` artifact for now; add later if requested. (Plan as written already omits it — no change needed.)
+2. **Prerelease publishing — ALPHAS INCLUDED for now.** Keep `active = RELEASE` so every non-SNAPSHOT tag (incl. `-alphaNN`) pushes brew/scoop updates. **Future toggle:** to restrict to stable, change the brew/scoop packager `active` to a condition that excludes prereleases (e.g. gate the workflow `publish` job on `!github.event.release.prerelease`, or set the packagers' `active` to `RELEASE` only when the version has no `-` qualifier). Revisit before 1.0.0 stable.
+3. **macOS — AD-HOC NOW, notarize later.** Ship jpackage's ad-hoc signature; document the `xattr -dr com.apple.quarantine` workaround for direct browser downloads. Developer-ID notarization is a follow-up when a cert exists; NOT a Phase 2 blocker.
 
 ## Sequencing & honesty notes
 
