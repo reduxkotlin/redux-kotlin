@@ -21,6 +21,22 @@ core ReduxLibrary is not opinionated. How you use it in your project is up to yo
 ReduxKotlin is published to Maven Central. Replace `<version>` with the latest
 release.
 
+:::info Current release
+The latest is **`1.0.0-alpha01`** — the first `1.0.0` pre-release, covering the
+whole module set (core, concurrent, granular, multimodel, registry, routing,
+bundles, Compose bindings, and the experimental DevTools). The API is stabilizing
+toward `1.0.0`; pin an exact alpha and expect minor changes between alphas.
+
+Snapshots of `master` publish to the Central Portal snapshots repository. To use
+them, add the repository and depend on `1.0.0-SNAPSHOT`:
+
+```kotlin
+repositories {
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
+}
+```
+:::
+
 __Requirements__
 
 - Kotlin 1.9 or newer (artefacts are built with Kotlin 2.3)
