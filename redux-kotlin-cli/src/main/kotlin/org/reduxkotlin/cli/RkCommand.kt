@@ -13,10 +13,9 @@ internal class RkCommand : CliktCommand(name = "rk") {
 }
 
 /** Builds the full `rk` command tree: `rk devtools …` and `rk snapshot …`. */
-internal fun rkCommand(): CliktCommand =
-    RkCommand()
-        .versionOption(RK_VERSION, names = setOf("--version"), message = { "rk version $it" })
-        .subcommands(
-            devToolsCommand(),
-            snapshotCommand(demoSnapshots),
-        )
+internal fun rkCommand(): CliktCommand = RkCommand()
+    .versionOption(RK_VERSION, names = setOf("--version"), message = { "rk version $it" })
+    .subcommands(
+        devToolsCommand(),
+        snapshotCommand(demoSnapshots),
+    )
