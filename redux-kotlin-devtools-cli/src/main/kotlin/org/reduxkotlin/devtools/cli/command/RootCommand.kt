@@ -3,13 +3,13 @@ package org.reduxkotlin.devtools.cli.command
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 
-/** Root `rk-devtools` command; dispatches to subcommands. */
-internal class RootCommand : CliktCommand(name = "rk-devtools") {
+/** The `devtools` command group; dispatches to its subcommands. */
+internal class DevToolsRootCommand : CliktCommand(name = "devtools") {
     override fun run() = Unit
 }
 
-/** Build the configured command tree. */
-internal fun rootCommand(): CliktCommand = RootCommand().subcommands(
+/** Builds the `devtools` command group used by the unified `rk` CLI. */
+public fun devToolsCommand(): CliktCommand = DevToolsRootCommand().subcommands(
     ServeCommand(),
     StoresCommand(),
     ActionsCommand(),
