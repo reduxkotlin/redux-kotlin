@@ -1,24 +1,25 @@
 # redux-kotlin-snapshot
 
-`rk-snapshot` — a headless renderer that turns redux-kotlin state into PNG. It
-runs your real Compose Multiplatform screens off-screen against seeded store
-state, so a frame is a pure function of the state you dispatched: `f(state) ->
-UI`. It diffs each render against a committed golden image and can emit a static
-HTML dashboard of the run — ideal for rapid visual verification and visual
-regression testing, by agents and by people.
+This module is the **library** behind `rk snapshot` — a headless renderer that
+turns redux-kotlin state into PNG. It runs your real Compose Multiplatform
+screens off-screen against seeded store state, so a frame is a pure function of
+the state you dispatched: `f(state) -> UI`. It diffs each render against a
+committed golden image and can emit a static HTML dashboard of the run — ideal
+for rapid visual verification and visual regression testing, by agents and by
+people.
 
 **Unpublished.** This is a developer tool, not a Maven artifact — it is not on
 Maven Central and not in `redux-kotlin-bom`. In-repo, example apps depend on it
-as a test-scoped `project(":redux-kotlin-snapshot")`. To run the bundled CLI,
-install it from the repository:
+as a test-scoped `project(":redux-kotlin-snapshot")`. To run the CLI, install
+the unified `rk` binary from the repository:
 
 ```
-./gradlew :redux-kotlin-snapshot:installDist
+./gradlew :redux-kotlin-cli:installDist
 # binary:
-redux-kotlin-snapshot/build/install/rk-snapshot/bin/rk-snapshot
+redux-kotlin-cli/build/install/rk/bin/rk
 ```
 
-The bundled CLI renders a built-in demo registry. Real apps define their own
+Then invoke it as `rk snapshot <flags>`. Real apps can also define their own
 `main` calling `yourRegistry.runCli(args)` (see [Defining a
 registry](#defining-a-registry) below).
 
@@ -34,8 +35,8 @@ root to select it.
 To pick a JDK explicitly:
 
 ```
-JAVA_HOME=/path/to/jdk17+ rk-snapshot --help
-# macOS, if registered: JAVA_HOME=$(/usr/libexec/java_home -v 17) rk-snapshot --help
+JAVA_HOME=/path/to/jdk17+ rk snapshot --help
+# macOS, if registered: JAVA_HOME=$(/usr/libexec/java_home -v 17) rk snapshot --help
 ```
 
 ## Defining a registry
@@ -94,9 +95,9 @@ Defaults resolve in order: per-call flag → scene default → global default.
 the golden and verify against it:
 
 ```
-rk-snapshot --scene board --preset seeded --out board.png   # render + inspect
+rk snapshot --scene board --preset seeded --out board.png   # render + inspect
 # accept board.png as the golden (commit it)
-rk-snapshot --scene board --preset seeded --verify board.png  # exit 1 on drift
+rk snapshot --scene board --preset seeded --verify board.png  # exit 1 on drift
 ```
 
 **Batch + dashboard.** A manifest is `{ "defaults": {...}, "shots": [...] }`;
@@ -115,9 +116,9 @@ optional `theme` / `width` / `height` / `density` / `out`:
 
 ```
 # generate the batch + a browsable dashboard
-rk-snapshot --batch shots.json --out-dir build/snapshots --dashboard
+rk snapshot --batch shots.json --out-dir build/snapshots --dashboard
 # once accepted, re-run with a golden dir to verify in CI
-rk-snapshot --batch shots.json --out-dir build/snapshots --golden-dir goldens
+rk snapshot --batch shots.json --out-dir build/snapshots --golden-dir goldens
 ```
 
 The batch writes `report.json` under `--out-dir`; `--dashboard` adds an

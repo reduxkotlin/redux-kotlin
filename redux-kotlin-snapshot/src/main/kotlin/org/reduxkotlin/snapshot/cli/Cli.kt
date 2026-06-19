@@ -35,7 +35,7 @@ import java.io.File
 public fun snapshotCommand(app: SnapshotApp): CliktCommand = SnapshotCommand(app)
 
 /**
- * Runs the `rk-snapshot` CLI for this registry — the entry point a consuming app calls from its own
+ * Runs the snapshot CLI for this registry — the entry point a consuming app calls from its own
  * `main`. Keeps Clikt types from leaking across the module boundary.
  */
 public fun SnapshotApp.runCli(argv: Array<String>) {
