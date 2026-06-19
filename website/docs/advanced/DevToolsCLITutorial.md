@@ -95,9 +95,7 @@ rk devtools serve
 ```
 
 ```text
-rk-devtools: listening on 127.0.0.1:9090
-rk-devtools: writing captures to ./.rk-devtools/
-rk-devtools: waiting for app… (Ctrl-C to stop)
+serving bridge on 127.0.0.1:9090  -> captures in .rk-devtools
 ```
 
 Useful flags: `--port`, `--host`, `--out <dir>`, `--token <t>` (required for
@@ -136,14 +134,9 @@ DevToolsHub.registerOutput(
 )
 ```
 
-Launch the app; `rk devtools serve` prints the connection (TaskFlow streams two stores — its
-per-account board store and the root store):
-
-```text
-rk-devtools: client connected — TaskFlow
-rk-devtools: capturing store taskflow::TaskFlow
-rk-devtools: capturing store taskflow::TaskFlow-root
-```
+Launch the app; `rk devtools serve` is already running. TaskFlow streams two stores — its
+per-account board store and the root store. Once the app connects, captures begin appearing
+under `.rk-devtools/`. Confirm with `rk devtools stores` (Step 4).
 
 ---
 

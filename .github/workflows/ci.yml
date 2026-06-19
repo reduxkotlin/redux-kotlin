@@ -78,9 +78,11 @@ jobs:
       - name: Smoke-test the assembled rk CLI
         shell: bash
         run: |
+          set -euo pipefail
           ./gradlew --no-daemon --stacktrace :redux-kotlin-cli:installDist
           bin=redux-kotlin-cli/build/install/rk/bin/rk
           out=$("$bin" --help)
+          echo "$out"
           for grp in devtools snapshot; do
             echo "$out" | grep -q "$grp" || { echo "rk --help is missing group: $grp"; exit 1; }
           done

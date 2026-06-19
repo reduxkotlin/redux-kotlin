@@ -46,6 +46,9 @@ tasks.startScripts {
             "",
         ).joinToString("\n")
         val execLine = "exec $q${d}JAVACMD$q $q$d@$q"
+        require(unixScript.readText().contains(execLine)) {
+            "startScripts template changed: exec line not found, Java-17 guard not injected"
+        }
         unixScript.writeText(unixScript.readText().replace(execLine, guard + execLine))
     }
 }
