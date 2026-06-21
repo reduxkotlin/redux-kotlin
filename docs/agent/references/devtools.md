@@ -97,6 +97,7 @@ All query subcommands share a common filter/format layer
 | `--store <key>` | target store (`clientId::storeInstanceId`); auto-resolved if only one |
 | `--type '*Card*'` | glob filter on action type (`*` = any substring) |
 | `--since <id>` / `--until <id>` | inclusive actionId range |
+| `--since-time <t>` / `--until-time <t>` | inclusive timestamp range (epoch millis or ISO-8601 instant) |
 | `--last <N>` | keep only the final N results after other filters |
 | `--format actions\|diff\|full` | output tier (see below) |
 | `--pretty` | pretty-print JSON |

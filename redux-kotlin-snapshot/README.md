@@ -10,8 +10,10 @@ people.
 
 **Unpublished.** This is a developer tool, not a Maven artifact — it is not on
 Maven Central and not in `redux-kotlin-bom`. In-repo, example apps depend on it
-as a test-scoped `project(":redux-kotlin-snapshot")`. To run the CLI, install
-the unified `rk` binary from the repository:
+as a test-scoped `project(":redux-kotlin-snapshot")`. To run the CLI, install the
+unified `rk` binary via a package manager (`brew install reduxkotlin/tap/rk` on
+macOS Apple Silicon / Linux, `scoop install rk` on Windows — bundled JRE), or
+build it from the repository:
 
 ```
 ./gradlew :redux-kotlin-cli:installDist
