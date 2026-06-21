@@ -45,6 +45,8 @@ include(
     ":redux-kotlin-devtools-standalone",
     ":redux-kotlin-devtools-cli",
     ":redux-kotlin-snapshot",
+    ":redux-kotlin-cli",
+    ":redux-kotlin-cli-dist",
     ":examples:counter:common",
     ":examples:counter:android",
     ":examples:todos:common",

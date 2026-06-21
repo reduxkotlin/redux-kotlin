@@ -4,9 +4,9 @@ title: "How-to: Debug with the DevTools CLI"
 sidebar_label: DevTools CLI (How-to)
 ---
 
-# How-to: Debug a running app with `rk-devtools`
+# How-to: Debug a running app with `rk devtools`
 
-This walkthrough takes you end to end with the [DevTools CLI](./DevTools.md#the-rk-devtools-cli):
+This walkthrough takes you end to end with the [DevTools CLI](./DevTools.md#the-rk-cli):
 build the tool, point a running app at it, reproduce a bug, and pin down the
 exact action and state change that caused it — all from the terminal, no
 browser extension, no IDE debugger.
@@ -45,26 +45,37 @@ the in-flight bookkeeping behaves.
 
 ---
 
-## Step 1 — Build the CLI
+## Step 1 — Install the CLI
 
-`rk-devtools` installs from the repo with Gradle's `installDist`:
+**Homebrew / Scoop (recommended — bundled JRE, no Java required):**
 
 ```bash
-./gradlew :redux-kotlin-devtools-cli:installDist
+# macOS / Linux
+brew install reduxkotlin/tap/rk
+
+# Windows
+scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
+scoop install rk
+```
+
+**From source (any OS, needs JDK 17+):**
+
+```bash
+./gradlew :redux-kotlin-cli:installDist
 
 # resulting launcher:
-redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
+redux-kotlin-cli/build/install/rk/bin/rk
 ```
 
 Put it on your `PATH` for the session so the rest of the commands read cleanly:
 
 ```bash
-export PATH="$PWD/redux-kotlin-devtools-cli/build/install/rk-devtools/bin:$PATH"
-rk-devtools --help
+export PATH="$PWD/redux-kotlin-cli/build/install/rk/bin:$PATH"
+rk devtools --help
 ```
 
 ```text
-Usage: rk-devtools [<options>] <command> [<args>]...
+Usage: rk devtools [<options>] <command> [<args>]...
 
 Options:
   -h, --help  Show this message and exit
@@ -78,26 +89,24 @@ Commands:
   tail
 ```
 
-Run `rk-devtools <command> --help` for a command's flags (e.g. `rk-devtools actions --help`).
+Run `rk devtools <command> --help` for a command's flags (e.g. `rk devtools actions --help`).
 
-![rk-devtools --help in a terminal](./img/devtools-cli/01-help.png)
+![rk devtools --help in a terminal](./img/devtools-cli/01-help.png)
 
 ---
 
 ## Step 2 — Start the receiver
 
-`serve` hosts the bridge receiver on `127.0.0.1:9090` and writes one
+`rk devtools serve` hosts the bridge receiver on `127.0.0.1:9090` and writes one
 `<storeKey>.jsonl` capture per store under `.rk-devtools/`. Leave it running in
 its own terminal **before** you launch the app:
 
 ```bash
-rk-devtools serve
+rk devtools serve
 ```
 
 ```text
-rk-devtools: listening on 127.0.0.1:9090
-rk-devtools: writing captures to ./.rk-devtools/
-rk-devtools: waiting for app… (Ctrl-C to stop)
+serving bridge on 127.0.0.1:9090  -> captures in .rk-devtools
 ```
 
 Useful flags: `--port`, `--host`, `--out <dir>`, `--token <t>` (required for
@@ -136,14 +145,9 @@ DevToolsHub.registerOutput(
 )
 ```
 
-Launch the app; `serve` prints the connection (TaskFlow streams two stores — its
-per-account board store and the root store):
-
-```text
-rk-devtools: client connected — TaskFlow
-rk-devtools: capturing store taskflow::TaskFlow
-rk-devtools: capturing store taskflow::TaskFlow-root
-```
+Launch the app; `rk devtools serve` is already running. TaskFlow streams two stores — its
+per-account board store and the root store. Once the app connects, captures begin appearing
+under `.rk-devtools/`. Confirm with `rk devtools stores` (Step 4).
 
 ---
 
@@ -153,7 +157,7 @@ Move a card in the app (with failure-rate at 100% it'll snap back), then
 confirm the CLI is recording:
 
 ```bash
-rk-devtools stores
+rk devtools stores
 ```
 
 ```text
@@ -176,7 +180,7 @@ single store, the query commands resolve it automatically.
 ## Step 5 — Scan the recent action log
 
 ```bash
-rk-devtools actions --store taskflow::TaskFlow --last 5
+rk devtools actions --store taskflow::TaskFlow --last 5
 ```
 
 Output is **one JSON object per line** (pipe it to `jq`); `ts` is epoch millis:
@@ -194,7 +198,7 @@ rejection `CardOpFailed` at **3**. Filter to just the card traffic with a type
 glob:
 
 ```bash
-rk-devtools actions --store taskflow::TaskFlow --type '*Card*' --last 5
+rk devtools actions --store taskflow::TaskFlow --type '*Card*' --last 5
 ```
 
 ![filtered action log showing CardOpFailed](./img/devtools-cli/04-actions-filtered.png)
@@ -208,7 +212,7 @@ a `ModelState`, so the diff is keyed by model class. Look at what the rejection
 did:
 
 ```bash
-rk-devtools diff --store taskflow::TaskFlow --since 3 --until 3 --pretty
+rk devtools diff --store taskflow::TaskFlow --since 3 --until 3 --pretty
 ```
 
 The `diff` tier adds a `diff` array of `{op, path, before, after}` entries
@@ -243,7 +247,7 @@ serializer tier — JVM renders structured JSON; other targets may render
 Print the full state snapshot at that action to confirm the post-rollback shape:
 
 ```bash
-rk-devtools state --store taskflow::TaskFlow --at 3 --pretty
+rk devtools state --store taskflow::TaskFlow --at 3 --pretty
 ```
 
 `state` prints the whole serialized state at that action (a `ModelState`, keyed
@@ -274,14 +278,14 @@ move was cleanly reverted. If `inFlight` had retained `card-7`, that would be th
 While iterating, stream actions as they fire instead of re-running `actions`:
 
 ```bash
-rk-devtools tail --follow
+rk devtools tail --follow
 ```
 
 `--follow` polls the capture every 300ms and prints new actions (same JSON-line
 format as `actions`). Combine with `--type` to watch only what you care about:
 
 ```bash
-rk-devtools tail --follow --type '*Card*'
+rk devtools tail --follow --type '*Card*'
 ```
 
 ![tail --follow streaming actions](./img/devtools-cli/06-tail-follow.png)
@@ -292,12 +296,12 @@ rk-devtools tail --follow --type '*Card*'
 
 | Goal | Command |
 |---|---|
-| Everything since a known-good action | `rk-devtools actions --since 40` |
-| A bounded window | `rk-devtools actions --since 40 --until 50` |
-| Only actions in a time window | `rk-devtools actions --since-time 2026-06-15T12:04:00Z` |
-| Full state + diff for every action | `rk-devtools actions --format full --pretty` |
-| One specific store when several are captured | `rk-devtools diff --store 'taskflow::TaskFlow' --last 5` |
-| Inspect captures with the GUI too | `rk-devtools serve --ui` |
+| Everything since a known-good action | `rk devtools actions --since 40` |
+| A bounded window | `rk devtools actions --since 40 --until 50` |
+| Only actions in a time window | `rk devtools actions --since-time 2026-06-15T12:04:00Z` |
+| Full state + diff for every action | `rk devtools actions --format full --pretty` |
+| One specific store when several are captured | `rk devtools diff --store 'taskflow::TaskFlow' --last 5` |
+| Inspect captures with the GUI too | `rk devtools serve --ui` |
 
 ---
 
@@ -312,7 +316,7 @@ bug report, diff two runs, or decode it programmatically with the bridge codec
 
 - [DevTools reference](./DevTools.md) — full module map, store wiring, in-app
   drawer, remote streaming, standalone monitor, security notes.
-- [CLI README](https://github.com/reduxkotlin/redux-kotlin/tree/master/redux-kotlin-devtools-cli) —
+- [CLI README](https://github.com/reduxkotlin/redux-kotlin/tree/master/redux-kotlin-cli) —
   command/flag table.
 - [Agent walkthrough](https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md) —
   the same loop driven by an AI agent.

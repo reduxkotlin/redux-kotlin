@@ -102,5 +102,5 @@ every host.
 - [effects-sync.md](./effects-sync.md) — the virtual-time sync E2E.
 - [compose-binding.md](./compose-binding.md) — the render-isolation proof.
 - [state-persistence.md](./state-persistence.md) — restore-path testing (registry-primed restore).
-- [snapshot.md](./snapshot.md) — golden UI snapshots (`rk-snapshot`, `assertGolden`, the `snapshotUi` batch).
+- [snapshot.md](./snapshot.md) — golden UI snapshots (`rk snapshot`, `assertGolden`, the `snapshotUi` batch).
 - [README](./README.md)

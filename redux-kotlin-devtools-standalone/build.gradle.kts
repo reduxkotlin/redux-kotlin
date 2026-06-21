@@ -58,8 +58,14 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ReduxKotlinDevTools"
-            // Compose packaging wants plain MAJOR.MINOR.PATCH — strip any -SNAPSHOT suffix.
+            // Compose validates every declared targetFormat's version eagerly at configuration on
+            // its host OS (e.g. MSI on Windows requires a strict integer MAJOR.MINOR.BUILD). Strip
+            // any -SNAPSHOT/-alpha qualifier AND normalize to exactly three integer components so an
+            // incomplete/odd version (e.g. "1") can't produce an invalid MSI version on Windows.
             val distVersion = project.version.toString().substringBefore("-")
+                .split(".").mapNotNull { it.toIntOrNull() }
+                .let { p -> listOf(p.getOrElse(0) { 1 }, p.getOrElse(1) { 0 }, p.getOrElse(2) { 0 }) }
+                .joinToString(".")
             packageVersion = distVersion
             macOS {
                 // Dmg additionally requires MAJOR > 0; lift 0.x.y until the project reaches 1.0.

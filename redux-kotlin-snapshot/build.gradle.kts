@@ -1,7 +1,6 @@
 plugins {
     id("convention.common")
     kotlin("jvm")
-    application
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
@@ -11,11 +10,6 @@ plugins {
 // redux-kotlin-devtools-cli fix (Compose 1.11.x + Skiko load fine at 17). Do NOT raise to 21.
 kotlin {
     jvmToolchain(17)
-}
-
-application {
-    applicationName = "rk-snapshot"
-    mainClass.set("org.reduxkotlin.snapshot.cli.MainKt")
 }
 
 dependencies {

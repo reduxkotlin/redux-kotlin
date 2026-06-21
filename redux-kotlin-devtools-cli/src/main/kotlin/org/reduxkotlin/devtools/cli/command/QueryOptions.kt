@@ -28,7 +28,7 @@ internal fun parseTimeMillis(raw: String): Long = raw.toLongOrNull() ?: Instant.
 internal fun resolveStore(dir: File, key: String?): StoreRef {
     val stores = discoverStores(dir)
     val problem = when {
-        stores.isEmpty() -> "no captures found in ${dir.path} (is `rk-devtools serve` running?)"
+        stores.isEmpty() -> "no captures found in ${dir.path} (is `rk devtools serve` running?)"
 
         key != null && stores.none { it.key == key } ->
             "store '$key' not found; available: ${stores.joinToString { it.key }}"

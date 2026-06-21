@@ -28,21 +28,25 @@ import org.reduxkotlin.snapshot.SnapshotReport
 import java.io.File
 
 /**
- * Builds the `rk-snapshot` command for [app]. Exit codes: 0 ok, 1 render/verify failure, 2 usage.
- * Internal: the public entry point is [runCli], which keeps the Clikt dependency off this module's
- * public API.
+ * Builds the `snapshot` command for [app]. Exit codes: 0 ok, 1 render/verify failure, 2 usage.
+ * Public so the unified `rk` CLI can mount it as a subcommand; library consumers building their
+ * OWN binary should call [runCli] instead — it avoids leaking the [CliktCommand] return type and
+ * the Clikt dependency into their public API.
  */
-internal fun snapshotCommand(app: SnapshotApp): CliktCommand = SnapshotCommand(app)
+public fun snapshotCommand(app: SnapshotApp): CliktCommand = SnapshotCommand(app)
 
 /**
- * Runs the `rk-snapshot` CLI for this registry — the entry point a consuming app calls from its own
+ * Runs the snapshot CLI for this registry — the entry point a consuming app calls from its own
  * `main`. Keeps Clikt types from leaking across the module boundary.
+ *
+ * Callers should follow this with `exitProcess(0)`: Skiko / Compose leave non-daemon threads alive
+ * after the command returns, which would prevent the process from exiting cleanly.
  */
 public fun SnapshotApp.runCli(argv: Array<String>) {
     snapshotCommand(this).main(argv)
 }
 
-private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name = "rk-snapshot") {
+private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name = "snapshot") {
     private val list by option("--list", help = "Print scenes + presets as JSON").flag()
     private val scene by option("--scene", help = "Scene name")
     private val preset by option("--preset", help = "Preset name")

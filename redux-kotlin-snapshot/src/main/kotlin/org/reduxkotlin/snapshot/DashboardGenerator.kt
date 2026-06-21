@@ -35,11 +35,11 @@ internal object DashboardGenerator {
         val t = report.totals
         val cards = shots.joinToString("\n") { card(it, outDir) }
         return """<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>rk-snapshot — ${e(report.runId)}</title>
+<html lang="en"><head><meta charset="utf-8"><title>rk snapshot — ${e(report.runId)}</title>
 <style>$STYLE</style></head>
 <body>
 <header>
-  <h1>rk-snapshot · <code>${e(report.runId)}</code></h1>
+  <h1>rk snapshot · <code>${e(report.runId)}</code></h1>
   <div class="totals">
     <span>${t.total} total</span>
     <span class="ok">${t.ok} ok</span>

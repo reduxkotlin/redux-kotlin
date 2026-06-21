@@ -42,12 +42,15 @@ published but carry no `.api` dump, so they're not listed.
 
 Unpublished developer tools (no `.api` dump, not on Maven):
 `redux-kotlin-devtools-standalone` is the `convention.control` Compose desktop monitor app, and
-`redux-kotlin-devtools-cli` is the `rk-devtools` clikt tool wrapping the standalone server +
-capture queries (`serve`/`stores`/`actions`/`diff`/`state`/`tail`); install via
-`./gradlew :redux-kotlin-devtools-cli:installDist`.
-`redux-kotlin-snapshot` is the `rk-snapshot` clikt tool: it renders a redux-kotlin Compose screen
+`redux-kotlin-devtools-cli` is the library behind `rk devtools` (clikt commands for the standalone server +
+capture queries: `serve`/`stores`/`actions`/`diff`/`state`/`tail`); the installable tool is `rk` from
+`./gradlew :redux-kotlin-cli:installDist` (binary: `redux-kotlin-cli/build/install/rk/bin/rk`).
+`redux-kotlin-snapshot` is the library behind `rk snapshot`: it renders a redux-kotlin Compose screen
 headlessly from a known state (`f(state) → PNG`), diffs against a committed golden, and emits an HTML
-dashboard. Run it via a consuming app's `main` (which calls `runCli`) or the TaskFlow `snapshotUi`
+dashboard. Run it via `rk snapshot` or a consuming app's `main` (which calls `runCli`) or the TaskFlow `snapshotUi`
 task; see `docs/agent/references/snapshot.md`.
+`redux-kotlin-cli-dist` is the Compose app-image + JReleaser packaging module: `createDistributable` builds
+a per-OS bundled-JRE app-image and `packageRkArchive` archives it; JReleaser publishes the archives to the
+Homebrew tap (`reduxkotlin/homebrew-tap`) and Scoop bucket (`reduxkotlin/scoop-bucket`) on a tagged release.
 
 `examples/*` are `convention.control` (not published, no `.api`).

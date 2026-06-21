@@ -133,7 +133,7 @@ dependencies {
 | Routing | `redux-kotlin-routing` (routed `(model, action)` reducer DSL), `redux-kotlin-routing-codegen` (KSP `@Reduce` processor — in-repo, not yet on Maven Central) |
 | Bundles | `redux-kotlin-bundle`, `redux-kotlin-bundle-compose`, `redux-kotlin-bom` (Maven BOM) |
 | DevTools (experimental) | `redux-kotlin-devtools-core`, `-bridge`, `-remote`, `-inapp`, `-inapp-noop`, `-ui` — aligned by the BOM but exempt from semver until the surface stabilizes |
-| Dev tools (in-repo, unpublished) | `redux-kotlin-snapshot` — the `rk-snapshot` CLI: headlessly render Compose screens from state to PNG with golden diffing (`f(state) -> UI`); `redux-kotlin-devtools-cli`, `redux-kotlin-devtools-standalone` |
+| Dev tools | `redux-kotlin-cli` — the unified `rk` binary (`rk devtools` + `rk snapshot`); `redux-kotlin-devtools-standalone` (in-repo). Install `rk` via Homebrew/Scoop (bundled JRE, no Java needed) or build from source — see the [CLI README](redux-kotlin-cli/README.md). |
 
 ## Core API
 
@@ -217,17 +217,17 @@ The repo ships a DevTools family for inspecting a running redux-kotlin app:
   `redux-kotlin-devtools-inapp-noop`.
 - **Standalone desktop monitor** (`redux-kotlin-devtools-standalone`) — observe any app
   (including headless/native) from outside its process via the WebSocket bridge.
-- **CLI** (`redux-kotlin-devtools-cli`) — the `rk-devtools` terminal tool: capture, query,
-  diff, and tail action streams.
+- **CLI** (`redux-kotlin-cli`) — the `rk` unified terminal tool: `rk devtools` captures, queries,
+  diffs, and tails action streams; `rk snapshot` renders Compose screens headlessly.
 - **Remote streaming** (`redux-kotlin-devtools-remote`) — stream to the Redux DevTools
   browser extension.
 
 See the [integration guide](docs/devtools.md) and the
 [website DevTools page](https://www.reduxkotlin.org/advanced/devtools).
 
-For *visual* verification, `redux-kotlin-snapshot` (the `rk-snapshot` CLI)
+For *visual* verification, `rk snapshot` (the snapshot subcommand of the unified `rk` CLI)
 headlessly renders Compose screens from state to PNG with golden-image diffing —
-`f(state) -> UI`. See its [README](redux-kotlin-snapshot/README.md) and the
+`f(state) -> UI`. See the [snapshot module README](redux-kotlin-snapshot/README.md) and the
 [snapshot testing guide](https://www.reduxkotlin.org/advanced/snapshot-testing).
 
 ## Extensions
