@@ -17,7 +17,7 @@ The ten published core modules (each "use for X"):
 
 <!-- assemble:modules:start -->
 - `redux-kotlin` — core contract: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
-- `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper).
+- `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper). **Deprecated** — prefer `redux-kotlin-concurrent`.
 - `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; the CallerSerialized strategy).
 - `redux-kotlin-granular` — `subscribeTo` / `subscribeFields` field-level subscriptions.
 - `redux-kotlin-registry` — `StoreRegistry` / `TypedStoreRegistry` keyed multi-store container.

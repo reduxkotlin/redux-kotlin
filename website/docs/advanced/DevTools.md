@@ -21,6 +21,24 @@ full stability promise.
 
 :::
 
+:::info Availability
+
+All six DevTools libraries are on **Maven Central**, group `org.reduxkotlin`,
+published with the rest of the stack. The current release is **`1.0.0-alpha01`**.
+There is no umbrella `redux-kotlin-devtools` artifact — depend on the specific
+modules below (replace `<version>` with `1.0.0-alpha01`).
+
+`master` snapshots publish as **`1.0.0-SNAPSHOT`** to the Central Portal
+snapshots repository — add it and use `1.0.0-SNAPSHOT` as the version:
+
+```kotlin
+repositories {
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
+}
+```
+
+:::
+
 ## Artifacts overview
 
 | Artifact | Kind | Role |
@@ -257,6 +275,8 @@ scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
 scoop install rk
 ```
 
+The macOS bottle is **Apple Silicon only** for now; on an Intel Mac, build from source.
+
 Or build from source (needs JDK 17+):
 
 ```sh
@@ -273,7 +293,7 @@ Add that `bin/` directory to your `PATH`, or symlink the binary.
 |---|---|
 | `rk devtools serve` | Hosts the bridge receiver on `127.0.0.1:9090` and writes one `<storeKey>.jsonl` capture per connected store into `.rk-devtools/`. Options: `--port`, `--host`, `--token`, `--out`, `--ui` (also launch the GUI monitor). |
 | `rk devtools stores` | Lists captured stores (`clientId::storeInstanceId` keys). |
-| `rk devtools actions` | Prints the action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until`, `--last N`, `--format actions\|diff\|full`, `--pretty`. |
+| `rk devtools actions` | Prints the action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until` (actionId range), `--since-time`/`--until-time` (epoch millis or ISO-8601), `--last N`, `--format actions\|diff\|full`, `--pretty`. |
 | `rk devtools diff` | Same filters; each line includes the per-field JSON-diff for the action. |
 | `rk devtools state --at <id>` | Full state snapshot recorded at an actionId. |
 | `rk devtools tail [--follow]` | Recent actions; `--follow` polls for new ones live. |

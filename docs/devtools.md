@@ -385,6 +385,8 @@ scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
 scoop install rk
 ```
 
+The macOS bottle is **Apple Silicon only** for now; on an Intel Mac, build from source.
+
 **From source (needs JDK 17+):**
 
 ```
@@ -397,7 +399,7 @@ redux-kotlin-cli/build/install/rk/bin/rk
 |---|---|
 | `rk devtools serve` | Hosts the receiver on `127.0.0.1:9090`; writes one `<storeKey>.jsonl` capture per connected store into `.rk-devtools/`. Options: `--port`, `--host`, `--token`, `--out`, `--ui` (also launch the GUI monitor). |
 | `rk devtools stores` | Lists captured stores (`clientId::storeInstanceId`). |
-| `rk devtools actions` | Action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until`, `--last N`, `--format actions\|diff\|full`, `--pretty`. |
+| `rk devtools actions` | Action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until` (actionId), `--since-time`/`--until-time` (epoch millis or ISO-8601), `--last N`, `--format actions\|diff\|full`, `--pretty`. |
 | `rk devtools diff` | Same filters; each line includes the per-field JSON diff. |
 | `rk devtools state --at <id>` | Full state snapshot at an actionId. |
 | `rk devtools tail [--follow]` | Recent actions; `--follow` polls live. |
