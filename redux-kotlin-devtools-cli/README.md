@@ -5,7 +5,10 @@ installable binary of its own. The bridge receiver and capture queries
 (`serve`/`stores`/`actions`/`diff`/`state`/`tail`) are exposed as clikt
 subcommands that the unified `rk` CLI mounts under `rk devtools`.
 
-Install the unified `rk` binary from the repository:
+End users install the `rk` binary via a package manager (bundled JRE, no Java
+required): `brew install reduxkotlin/tap/rk` (macOS Apple Silicon / Linux) or
+`scoop install rk` (Windows) — see [`../redux-kotlin-cli/README.md`](../redux-kotlin-cli/README.md).
+To build from the repository instead:
 
 ```
 ./gradlew :redux-kotlin-cli:installDist
@@ -35,7 +38,7 @@ JAVA_HOME=/path/to/jdk17+ rk devtools --help
 |---|---|
 | `rk devtools serve` | Host the receiver on `127.0.0.1:9090`; write captures. Options: `--port`, `--host`, `--token`, `--out`, `--ui` (also launch the GUI monitor). |
 | `rk devtools stores` | List captured stores (`clientId::storeInstanceId`). |
-| `rk devtools actions` | Print the action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until`, `--last N`, `--format actions\|diff\|full`, `--pretty`. |
+| `rk devtools actions` | Print the action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until` (actionId), `--since-time`/`--until-time` (epoch millis or ISO-8601), `--last N`, `--format actions\|diff\|full`, `--pretty`. |
 | `rk devtools diff` | Same filters; each line includes the per-field JSON diff. |
 | `rk devtools state --at <id>` | Full state snapshot at an actionId. |
 | `rk devtools tail [--follow]` | Recent actions; `--follow` polls live. |

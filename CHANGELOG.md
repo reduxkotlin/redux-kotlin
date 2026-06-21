@@ -52,9 +52,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   Plus two unpublished developer tools in the repo: `redux-kotlin-devtools-standalone`
   (Compose desktop monitor app, `./gradlew :redux-kotlin-devtools-standalone:run`) and
-  `redux-kotlin-devtools-cli` (`rk-devtools` clikt tool — install with
-  `./gradlew :redux-kotlin-devtools-cli:installDist`, then run
-  `redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools`).
+  `redux-kotlin-devtools-cli` (the library behind `rk devtools` in the unified `rk` CLI —
+  `brew install reduxkotlin/tap/rk` / `scoop install rk`, or build from source with
+  `./gradlew :redux-kotlin-cli:installDist`, then run `redux-kotlin-cli/build/install/rk/bin/rk devtools`).
   See [docs/devtools.md](docs/devtools.md) for the integration guide.
 
   The six published DevTools modules are version-aligned by `redux-kotlin-bom` but

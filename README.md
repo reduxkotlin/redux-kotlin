@@ -66,8 +66,8 @@ Requirements:
 - Kotlin 1.9 or newer (the published artefacts are built with Kotlin 2.3)
 - JVM/Android consumers: JDK 17+ on Android; library bytecode is JVM 17
 - Android: `minSdk 21` or higher
-- Supported KMP targets: `jvm`, `js` (browser/node), `android`, `iosArm64`, `iosX64`,
-  `iosSimulatorArm64`, `macosArm64`, `macosX64`, `linuxArm64`, `linuxX64`, `mingwX64`
+- Supported KMP targets: `jvm`, `js` (browser/node), `wasmJs`, `android`, `iosArm64`,
+  `iosSimulatorArm64`, `macosArm64`, `linuxX64`, `mingwX64` (the core module also adds `linuxArm64`)
 
 ### Recommended: the bundles
 
