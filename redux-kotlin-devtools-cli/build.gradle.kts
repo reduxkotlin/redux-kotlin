@@ -1,28 +1,16 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id("convention.common")
     kotlin("jvm")
-    application
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
 }
 
+// Pin the compile JDK (not just the bytecode target) so the build is deterministic regardless of
+// the developer's default Java, and so we never accidentally compile against a >17 JDK API. The
+// foojay resolver (settings.gradle.kts) auto-downloads JDK 17 when it isn't already installed.
 kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-    }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-application {
-    applicationName = "rk-devtools"
-    mainClass.set("org.reduxkotlin.devtools.cli.MainKt")
+    jvmToolchain(17)
 }
 
 dependencies {

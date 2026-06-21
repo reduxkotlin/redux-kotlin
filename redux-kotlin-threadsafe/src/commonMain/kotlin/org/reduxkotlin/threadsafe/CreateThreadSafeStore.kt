@@ -39,6 +39,10 @@ import org.reduxkotlin.typedReducer
         "createConcurrentStore(reducer, preloadedState, enhancer = enhancer) keeps the same contract " +
         "with lock-free reads and serialized writes. " +
         "See https://reduxkotlin.org/introduction/threading for migration notes.",
+    replaceWith = ReplaceWith(
+        "createConcurrentStore(reducer, preloadedState, enhancer = enhancer)",
+        "org.reduxkotlin.concurrent.createConcurrentStore",
+    ),
 )
 public fun <State> createThreadSafeStore(
     reducer: Reducer<State>,
@@ -53,6 +57,10 @@ public fun <State> createThreadSafeStore(
     "redux-kotlin-threadsafe is deprecated in favor of redux-kotlin-concurrent: " +
         "use createTypedConcurrentStore from org.reduxkotlin.concurrent. " +
         "See https://reduxkotlin.org/introduction/threading for migration notes.",
+    replaceWith = ReplaceWith(
+        "createTypedConcurrentStore(reducer, preloadedState, enhancer = enhancer)",
+        "org.reduxkotlin.concurrent.createTypedConcurrentStore",
+    ),
 )
 public inline fun <State, reified Action : Any> createTypedThreadSafeStore(
     crossinline reducer: TypedReducer<State, Action>,
@@ -67,5 +75,9 @@ public inline fun <State, reified Action : Any> createTypedThreadSafeStore(
     "redux-kotlin-threadsafe is deprecated in favor of redux-kotlin-concurrent: " +
         "use Store.asConcurrent() from org.reduxkotlin.concurrent. " +
         "See https://reduxkotlin.org/introduction/threading for migration notes.",
+    replaceWith = ReplaceWith(
+        "this.asConcurrent()",
+        "org.reduxkotlin.concurrent.asConcurrent",
+    ),
 )
 public fun <State> Store<State>.asThreadSafe(): ThreadSafeStore<State> = ThreadSafeStore(store)

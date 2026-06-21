@@ -28,7 +28,8 @@ The ten published core modules (each "use for X"):
 - `redux-kotlin-compose-saveable` — `StateSaver` + `Store<S>.rememberSaveableState` store-anchored snapshot persistence (rotation + process death) via `SaveableStateRegistry`.
 <!-- assemble:modules:end -->
 
-More modules exist (routing/bundle/bom/devtools/codegen) → see `docs/agent/api-map.md`.
+More modules exist (routing/bundle/bom/devtools/codegen) and unpublished dev tools
+(the unified `rk` CLI — `rk devtools` + `rk snapshot`; built by `redux-kotlin-cli`) → see `docs/agent/api-map.md`.
 
 `examples/` = sample apps; `examples/taskflow` is the canonical app.
 
@@ -70,6 +71,7 @@ Canonical example: `examples/taskflow`.
 
 ## Deeper knowledge
 
-- **T1** per-concern guides → `docs/agent/references/` (all ten live: feature-slice, store-setup, compose-binding, effects-sync, testing, platform-shims, modularization, devtools, store-consistency-model, state-persistence — see `docs/agent/references/README.md`).
+- **T1** per-concern guides → `docs/agent/references/` (all eleven live: feature-slice, store-setup, compose-binding, effects-sync, testing, platform-shims, modularization, devtools, store-consistency-model, state-persistence, snapshot — see `docs/agent/references/README.md`).
+  - Snapshot / golden UI testing → `docs/agent/references/snapshot.md`.
 - Task → guide routing (decision table) → `docs/agent/references/README.md`.
 - **T2** → `examples/taskflow/ARCHITECTURE.md` (full architecture + design rules) and `docs/agent/api-map.md` (module → `.api` index).

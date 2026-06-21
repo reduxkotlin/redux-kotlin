@@ -32,10 +32,10 @@ mavenPublishing {
     )
     coordinates(project.group.toString(), project.name, project.version.toString())
 
-    // No-arg targets the Central Publisher Portal (the OSSRH replacement). Release is
-    // left manual (drop/publish from the Portal UI); pass automaticRelease = true to
-    // fully automate once the flow is trusted.
-    publishToMavenCentral()
+    // Targets the Central Publisher Portal (the OSSRH replacement). automaticRelease
+    // = true publishes the deployment automatically once validation passes, instead of
+    // leaving it staged for a manual Drop/Publish in the Portal UI.
+    publishToMavenCentral(automaticRelease = true)
 
     // Only sign when a key is configured. Locally (publishToLocal / publishToMavenLocal)
     // no key is present and Maven Central doesn't require signatures for local repos, so

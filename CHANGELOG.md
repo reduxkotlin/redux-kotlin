@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+> **Heading toward 1.0.** The development baseline is now `1.0.0-SNAPSHOT`. The
+> first 1.0 release is planned as a pre-release, `1.0.0-alpha01`, published from
+> a `v1.0.0-alpha01` tag via the release workflow. DevTools modules ship
+> alongside but remain experimental and exempt from semver.
+
 ### Added
 
 - New module `redux-kotlin-thunk`: ported from the standalone
@@ -115,6 +120,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   mounts appear without reopening), and the Outputs tab reflects the truthful
   hub-global output state — toggles act on the hub's outputs, not a per-drawer
   copy.
+
+- `redux-kotlin-bom`: no longer constrains `redux-kotlin-routing-codegen` — the KSP
+  processor is not published yet (in-repo only); the constraint returns when it ships.
 
 ### Deprecated
 

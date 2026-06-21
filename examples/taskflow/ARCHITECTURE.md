@@ -966,7 +966,7 @@ TaskFlow ships with the Redux-Kotlin DevTools wired in (see the repo-level
   launch and each account store appears in the store picker as it logs in.
 
 The bridge is loopback-only by default; run `./gradlew :redux-kotlin-devtools-standalone:run`
-(or `rk-devtools serve`) before launching TaskFlow to capture its streams.
+(or `rk devtools serve`) before launching TaskFlow to capture its streams.
 
 ---
 

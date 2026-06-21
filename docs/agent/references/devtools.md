@@ -22,14 +22,14 @@ last_verified: { commit: 300b1fbd, date: 2026-06-04 }
 
 ## What it is
 
-The DevTools CLI (`rk-devtools`) gives agents and developers a read-only window into a live or
+The DevTools CLI (`rk devtools`) gives agents and developers a read-only window into a live or
 recently-run redux-kotlin app. The app emits a structured event stream over a local bridge; the CLI
 receives it, writes per-store JSONL captures, and exposes query subcommands that agents can call at
 any point in a debugging session to answer questions like "what actions fired just before the crash?"
 or "which field changed between actions 40 and 50?"
 
 Without DevTools the loop is: guess → edit → run → read log. With DevTools:
-write → run → `rk-devtools diff --last 10` → targeted fix.
+write → run → `rk devtools diff --last 10` → targeted fix.
 
 ## App opt-in (debug builds only)
 
@@ -63,12 +63,12 @@ address and supply a matching `--token` on both sides.
 ### Step 1 — start the receiver (`serve`)
 
 ```
-rk-devtools serve
-rk-devtools serve --ui          # also open the GUI monitor window
-rk-devtools serve --port 9091   # non-default port
+rk devtools serve
+rk devtools serve --ui          # also open the GUI monitor window
+rk devtools serve --port 9091   # non-default port
 ```
 
-`rk-devtools serve` (`redux-kotlin-devtools-cli/src/main/kotlin/org/reduxkotlin/devtools/cli/command/ServeCommand.kt → ServeCommand`)
+`rk devtools serve` (`redux-kotlin-devtools-cli/src/main/kotlin/org/reduxkotlin/devtools/cli/command/ServeCommand.kt → ServeCommand`)
 binds the bridge WebSocket receiver on `127.0.0.1:9090` (configurable) and writes one
 `<storeKey>.jsonl` capture file per connected store into `.rk-devtools/` in the working directory.
 Run it in a background terminal before launching the app; it persists captures across app restarts.
@@ -77,7 +77,7 @@ Run it in a background terminal before launching the app; it persists captures a
 ### Step 2 — discover connected stores (`stores`)
 
 ```
-rk-devtools stores
+rk devtools stores
 ```
 
 Lists every store key present in `.rk-devtools/` with its human name. A key has the form
@@ -111,8 +111,8 @@ Output tiers
 #### `actions` — action log
 
 ```
-rk-devtools actions --last 20
-rk-devtools actions --store taskflow::root --type '*Card*' --last 10
+rk devtools actions --last 20
+rk devtools actions --store taskflow::root --type '*Card*' --last 10
 ```
 
 Prints the action stream (newest-last) at the `actions` tier. Good for "what happened?"
@@ -120,8 +120,8 @@ Prints the action stream (newest-last) at the `actions` tier. Good for "what hap
 #### `diff` — state changes
 
 ```
-rk-devtools diff --store taskflow::root --type '*Card*' --last 10
-rk-devtools diff --last 5
+rk devtools diff --store taskflow::root --type '*Card*' --last 10
+rk devtools diff --last 5
 ```
 
 Same filter options; defaults to the `diff` tier so each line includes the per-field change set.
@@ -130,7 +130,7 @@ Good for "what changed and when?"
 #### `state` — snapshot at a point in time
 
 ```
-rk-devtools state --at 42
+rk devtools state --at 42
 ```
 
 Prints the full state snapshot recorded at actionId 42 (one JSON object). Good for "what was the
@@ -139,8 +139,8 @@ store at the moment of the crash?"
 #### `tail` — live follow
 
 ```
-rk-devtools tail --follow
-rk-devtools tail --follow --type '*Error*'
+rk devtools tail --follow
+rk devtools tail --follow --type '*Error*'
 ```
 
 Prints current captures then polls for new actions. `--follow` keeps polling (300 ms interval) until
@@ -162,12 +162,12 @@ only when you need to reconstruct complete store state at a single point.
 
 ## Typical agent workflow
 
-1. `rk-devtools serve` — start receiver in background before test run.
+1. `rk devtools serve` — start receiver in background before test run.
 2. Run/reproduce the scenario in the app.
-3. `rk-devtools stores` — confirm the store connected.
-4. `rk-devtools actions --last 30` — get the tail of the action log.
-5. `rk-devtools diff --type '*FailedAction*' --last 5` — isolate the diff around the failure.
-6. `rk-devtools state --at <id>` — inspect full state at the suspect action.
+3. `rk devtools stores` — confirm the store connected.
+4. `rk devtools actions --last 30` — get the tail of the action log.
+5. `rk devtools diff --type '*FailedAction*' --last 5` — isolate the diff around the failure.
+6. `rk devtools state --at <id>` — inspect full state at the suspect action.
 7. Apply targeted fix; re-run from step 2 to confirm the diff changes as expected.
 
 ## Design reference

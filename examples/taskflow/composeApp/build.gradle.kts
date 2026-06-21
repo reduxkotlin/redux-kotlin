@@ -27,7 +27,10 @@ kotlin {
     jvm()
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        // Force the single Chrome-headless --no-sandbox Karma launcher (shared
+        // karma.config.d) so wasmJsBrowserTest works on CI; the default
+        // ChromiumHeadless isn't on the Windows runner and can't sandbox on Ubuntu 24.04.
+        browser { testTask { useKarma { useConfigDirectory(rootDir.resolve("karma.config.d")) } } }
         binaries.executable()
     }
     // The AGP-9 KMP-library `android {}` accessor is only generated when the plugin sits in plugins{}.
@@ -97,6 +100,10 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
             implementation(compose.desktop.currentOs)
+            // Reference integration of the headless snapshot library (renders TaskFlow screens to
+            // PNG). Test-scoped on purpose: the render backend (Skiko) + Clikt CLI are dev tooling
+            // and must NOT leak into the runnable desktop app / packaged distributable.
+            implementation(project(":redux-kotlin-snapshot"))
         }
     }
 }
@@ -119,4 +126,21 @@ compose.desktop {
     application {
         mainClass = "org.reduxkotlin.sample.taskflow.MainKt"
     }
+}
+
+// Headless snapshot CLI for TaskFlow screens (rk-snapshot driving the taskFlowSnapshots registry).
+// Paths in --args resolve against the repo root (workingDir below); a ready-to-run manifest ships at
+// examples/taskflow/composeApp/snapshots/shots.json:
+//   ./gradlew :examples:taskflow:composeApp:snapshotUi \
+//     --args="--batch examples/taskflow/composeApp/snapshots/shots.json --out-dir build/snapshots --dashboard"
+tasks.register<JavaExec>("snapshotUi") {
+    group = "render"
+    description = "Headless-render TaskFlow screens from seeded state to PNG (see TaskFlowSnapshots.kt)."
+    // The harness lives in jvmTest (dev tooling, kept off the production app classpath), so run it
+    // from the test compilation — its runtime classpath already includes jvmMain + commonMain.
+    val jvmTestCompilation = kotlin.jvm().compilations.getByName("test")
+    dependsOn(jvmTestCompilation.compileTaskProvider)
+    classpath(jvmTestCompilation.output.allOutputs, jvmTestCompilation.runtimeDependencyFiles)
+    mainClass.set("org.reduxkotlin.sample.taskflow.snapshot.SnapshotMainKt")
+    workingDir = rootProject.projectDir
 }

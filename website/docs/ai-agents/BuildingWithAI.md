@@ -87,6 +87,43 @@ nav), and `ui` (theme, locals, widgets).
 - DevTools debugging loop — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
 - Store consistency model (sync writes, async notify) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/store-consistency-model.md
 - State persistence & restore (process death, preloadedState, saveable) — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/state-persistence.md
+- Snapshot / golden UI testing — https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/snapshot.md
+
+## DevTools CLI — `rk`
+
+The unified `rk` binary bundles `rk devtools` (bridge receiver + capture queries) and
+`rk snapshot` (headless Compose renderer).
+
+**Install — Homebrew/Scoop (bundled JRE, no Java required):**
+
+```bash
+# macOS / Linux
+brew install reduxkotlin/tap/rk
+
+# Windows
+scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
+scoop install rk
+```
+
+**From source (any OS, needs JDK 17+):**
+
+```bash
+git clone https://github.com/reduxkotlin/redux-kotlin.git
+cd redux-kotlin
+./gradlew :redux-kotlin-cli:installDist
+# binary: redux-kotlin-cli/build/install/rk/bin/rk
+```
+
+Add `redux-kotlin-cli/build/install/rk/bin` to your `PATH`, then use:
+- `rk devtools serve` — receive a running app's action stream; `rk devtools actions|diff|state|tail` to query.
+- `rk snapshot --scene <name> --preset <name> --out shot.png` — render a Compose screen from state.
+
+Full guide: https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
+
+> **Note:** `rk snapshot` only renders the binary's built-in scenes. To render
+> **your own app's screens**, depend on `redux-kotlin-snapshot` as a library and
+> call `yourRegistry.runCli(args)` from your `main` (then `exitProcess(0)` — Skiko
+> leaves non-daemon threads alive).
 
 ## Verify loop
 

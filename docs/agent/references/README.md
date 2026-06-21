@@ -14,6 +14,7 @@ checked to resolve (path exists, symbol present). See [_template.md](./_template
 | Compose binding (Rule C) | [compose-binding.md](./compose-binding.md) | ✅ |
 | Effects + sync (Rule E) | [effects-sync.md](./effects-sync.md) | ✅ |
 | Testing & the verify loop | [testing.md](./testing.md) | ✅ |
+| Snapshot / golden UI testing | [snapshot.md](./snapshot.md) | ✅ |
 | The 5 platform shims | [platform-shims.md](./platform-shims.md) | ✅ |
 | Modularization | [modularization.md](./modularization.md) | ✅ |
 | Store consistency model | [store-consistency-model.md](./store-consistency-model.md) | ✅ |

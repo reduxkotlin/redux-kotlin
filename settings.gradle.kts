@@ -11,6 +11,9 @@ pluginManagement {
 
 plugins {
     id("com.gradle.develocity") version "3.19.2"
+    // Auto-provisions a matching JDK for Gradle Java toolchains (e.g. the CLI's jvmToolchain(17)),
+    // so the build JDK is deterministic regardless of the developer's default Java.
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
 }
 
 includeBuild("build-conventions/")
@@ -41,6 +44,9 @@ include(
     ":redux-kotlin-devtools-ui",
     ":redux-kotlin-devtools-standalone",
     ":redux-kotlin-devtools-cli",
+    ":redux-kotlin-snapshot",
+    ":redux-kotlin-cli",
+    ":redux-kotlin-cli-dist",
     ":examples:counter:common",
     ":examples:counter:android",
     ":examples:todos:common",

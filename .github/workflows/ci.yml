@@ -75,6 +75,22 @@ jobs:
           echo "Tests failed after ${max_attempts} attempts"
           exit 1
 
+      - name: Smoke-test the assembled rk CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon --stacktrace :redux-kotlin-cli:installDist
+          bin=redux-kotlin-cli/build/install/rk/bin/rk
+          out=$("$bin" --help)
+          echo "$out"
+          for grp in devtools snapshot; do
+            echo "$out" | grep -q "$grp" || { echo "rk --help is missing group: $grp"; exit 1; }
+          done
+          dout=$("$bin" devtools --help)
+          for cmd in serve actions; do
+            echo "$dout" | grep -q "$cmd" || { echo "rk devtools --help missing: $cmd"; exit 1; }
+          done
+
       - name: Upload test reports on failure
         if: failure()
         uses: actions/upload-artifact@v7

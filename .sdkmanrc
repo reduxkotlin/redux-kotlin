@@ -1,0 +1,3 @@
+# Pins the JDK for building/running redux-kotlin (the tree targets Java 17).
+# With SDKMAN installed, run `sdk env` (or `sdk env install`) in the repo root to select it.
+java=17.0.13-tem
