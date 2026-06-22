@@ -8,12 +8,25 @@ committed golden image and can emit a static HTML dashboard of the run — ideal
 for rapid visual verification and visual regression testing, by agents and by
 people.
 
-**Unpublished.** This is a developer tool, not a Maven artifact — it is not on
-Maven Central and not in `redux-kotlin-bom`. In-repo, example apps depend on it
-as a test-scoped `project(":redux-kotlin-snapshot")`. To run the CLI, install the
-unified `rk` binary via a package manager (`brew install reduxkotlin/tap/rk` on
-macOS Apple Silicon / Linux, `scoop install rk` on Windows — bundled JRE), or
-build it from the repository:
+**Published (experimental).** On Maven Central as
+`org.reduxkotlin:redux-kotlin-snapshot`, aligned by `redux-kotlin-bom`, but
+**exempt from semver** until its surface stabilizes — it is a JVM/desktop
+developer & test tool. Depend on it from a JVM or desktop source set to define
+your own scenes:
+
+```kotlin
+// build.gradle.kts — a JVM or desktop source set (this is a desktop-only artifact)
+testImplementation("org.reduxkotlin:redux-kotlin-snapshot:<version>")
+// Supply the host Skiko runtime to actually rasterize. A desktop app already has
+// this; otherwise add it explicitly:
+testImplementation(compose.desktop.currentOs)
+```
+
+In-repo, example apps depend on it as a test-scoped
+`project(":redux-kotlin-snapshot")`. To run the bundled CLI, install the unified
+`rk` binary via a package manager (`brew install reduxkotlin/tap/rk` on macOS
+Apple Silicon / Linux, `scoop install rk` on Windows — bundled JRE), or build it
+from the repository:
 
 ```
 ./gradlew :redux-kotlin-cli:installDist

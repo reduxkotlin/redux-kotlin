@@ -21,8 +21,9 @@ last_verified: { commit: b3303317, date: 2026-06-16 }
 
 ## What it is
 
-`redux-kotlin-snapshot` is an unpublished JVM dev tool (plain `kotlin("jvm")` + `application`; not on
-Maven, not in the BOM, no `.api` dump). It treats the UI as a pure function of state — `f(state) → UI`
+`redux-kotlin-snapshot` is a published JVM/desktop dev tool (`kotlin("jvm")` via
+`convention.publishing-jvm`; on Maven Central as `org.reduxkotlin:redux-kotlin-snapshot`, in the BOM,
+ABI-tracked — but **experimental, exempt from semver**). It treats the UI as a pure function of state — `f(state) → UI`
 — seeds a real redux-kotlin store, renders the resulting Compose frame headlessly to a PNG, and
 optionally diffs that PNG against a committed golden. A batch run also emits a static HTML dashboard.
 

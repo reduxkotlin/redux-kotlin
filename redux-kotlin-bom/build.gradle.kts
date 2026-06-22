@@ -33,5 +33,8 @@ dependencies {
         api("$g:redux-kotlin-devtools-inapp:$v")
         api("$g:redux-kotlin-devtools-inapp-noop:$v")
         api("$g:redux-kotlin-devtools-ui:$v")
+        // redux-kotlin-snapshot — experimental headless renderer (JVM/desktop);
+        // aligned by the BOM but exempt from semver until its surface stabilizes.
+        api("$g:redux-kotlin-snapshot:$v")
     }
 }

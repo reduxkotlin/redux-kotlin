@@ -22,12 +22,16 @@ That gives you two things at once:
 - **Visual regression testing** — accept a golden once, then fail the build
   when a later render drifts beyond tolerance.
 
-:::note Unpublished developer tool
+:::note Experimental — exempt from semver
 
-`redux-kotlin-snapshot` is a JVM developer tool. It is **not** published to
-Maven Central and **not** in `redux-kotlin-bom`. In this repository, example
-apps depend on it as a test-scoped `project(":redux-kotlin-snapshot")`, and the
-`rk snapshot` CLI subcommand is installed from source via `redux-kotlin-cli`. It requires **JDK 17+**.
+`redux-kotlin-snapshot` is a JVM/desktop developer & test tool published to Maven
+Central as `org.reduxkotlin:redux-kotlin-snapshot` and aligned by
+`redux-kotlin-bom`, but **exempt from semver** until its surface stabilizes.
+Depend on it from a JVM or desktop source set (it is a desktop-only artifact, so
+add `compose.desktop.currentOs` to supply the host Skiko runtime). In this
+repository, example apps depend on it as a test-scoped
+`project(":redux-kotlin-snapshot")`, and the `rk snapshot` CLI subcommand ships
+in `redux-kotlin-cli`. Requires **JDK 17+**.
 
 :::
 
