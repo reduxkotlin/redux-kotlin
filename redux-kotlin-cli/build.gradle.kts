@@ -4,6 +4,12 @@ plugins {
     id("convention.common")
     kotlin("jvm")
     application
+    // For compose.desktop.currentOs — the host Skiko runtime that `rk snapshot`
+    // needs to rasterize. redux-kotlin-snapshot deliberately exports only the
+    // host-agnostic compose.desktop.common (so its published POM stays portable);
+    // the running binary supplies the host native runtime here.
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.multiplatform)
 }
 
 // Pin the compile JDK so installDist is deterministic regardless of the developer's default Java.
@@ -57,5 +63,7 @@ dependencies {
     implementation(project(":redux-kotlin-devtools-cli"))
     implementation(project(":redux-kotlin-snapshot"))
     implementation(libs.clikt)
+    // Host Skiko/AWT runtime so the bundled `rk snapshot` can rasterize off-screen.
+    implementation(compose.desktop.currentOs)
     testImplementation(kotlin("test"))
 }

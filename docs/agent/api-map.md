@@ -40,15 +40,20 @@ Read the committed `.api` dump for a module's public surface; regenerate with `.
 `redux-kotlin-bom` (BOM platform) and `redux-kotlin-routing-codegen` (KSP processor) are
 published but carry no `.api` dump, so they're not listed.
 
+Published, experimental — exempt from semver (ABI tracked in
+`redux-kotlin-snapshot/api/redux-kotlin-snapshot.api`):
+`redux-kotlin-snapshot` is the library behind `rk snapshot` — on Maven Central as
+`org.reduxkotlin:redux-kotlin-snapshot` and in the BOM. It renders a redux-kotlin Compose screen
+headlessly from a known state (`f(state) → PNG`), diffs against a committed golden, and emits an HTML
+dashboard. JVM/desktop-only (depend on it from a JVM/desktop source set + `compose.desktop.currentOs`).
+Run it via `rk snapshot`, a consuming app's `main` (which calls `runCli`), or the TaskFlow `snapshotUi`
+task; see `docs/agent/references/snapshot.md`.
+
 Unpublished developer tools (no `.api` dump, not on Maven):
 `redux-kotlin-devtools-standalone` is the `convention.control` Compose desktop monitor app, and
 `redux-kotlin-devtools-cli` is the library behind `rk devtools` (clikt commands for the standalone server +
 capture queries: `serve`/`stores`/`actions`/`diff`/`state`/`tail`); the installable tool is `rk` from
 `./gradlew :redux-kotlin-cli:installDist` (binary: `redux-kotlin-cli/build/install/rk/bin/rk`).
-`redux-kotlin-snapshot` is the library behind `rk snapshot`: it renders a redux-kotlin Compose screen
-headlessly from a known state (`f(state) → PNG`), diffs against a committed golden, and emits an HTML
-dashboard. Run it via `rk snapshot` or a consuming app's `main` (which calls `runCli`) or the TaskFlow `snapshotUi`
-task; see `docs/agent/references/snapshot.md`.
 `redux-kotlin-cli-dist` is the Compose app-image + JReleaser packaging module: `createDistributable` builds
 a per-OS bundled-JRE app-image and `packageRkArchive` archives it; JReleaser publishes the archives to the
 Homebrew tap (`reduxkotlin/homebrew-tap`) and Scoop bucket (`reduxkotlin/scoop-bucket`) on a tagged release.

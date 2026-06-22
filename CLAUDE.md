@@ -7,8 +7,9 @@ gate and conventions that aren't obvious from the source.
 
 ## Modules
 
-Twenty-one published modules (library modules apply `convention.library-mpp-*`
-+ `convention.publishing-mpp`; the BOM applies `java-platform` +
+Twenty-two published modules (library modules apply `convention.library-mpp-*`
++ `convention.publishing-mpp`, or — for the JVM-only `redux-kotlin-snapshot`
+tool — `convention.publishing-jvm`; the BOM applies `java-platform` +
 `convention.publishing-platform`). The recommended consumer entry points are
 the bundles; everything else is à-la-carte.
 
@@ -46,14 +47,16 @@ the bundles; everything else is à-la-carte.
 
 - `redux-kotlin-devtools-core`, `-bridge`, `-remote`, `-inapp`, `-inapp-noop` (release no-op facade), `-ui`.
 
+**Snapshot (experimental — BOM-aligned but exempt from semver):**
+
+- `redux-kotlin-snapshot` — JVM/desktop headless Compose renderer (`f(state) → PNG`, golden diffing, HTML dashboard); the library behind `rk snapshot`. Published via `convention.publishing-jvm` (the only JVM-only published module); ABI-tracked. Desktop-only — consumers add `compose.desktop.currentOs` for the Skiko runtime.
+
 **Unpublished repo tools** (`convention.control` or plain JVM, no publishing
 plugin): `redux-kotlin-routing-codegen` (KSP `@Reduce`/`@ReduxInitial`
 processor — JVM-only, consumed via `project(...)`, listed in the BOM but
 publishing is a pre-release follow-up), `redux-kotlin-routing-codegen-sample`,
 `redux-kotlin-devtools-standalone` (Compose desktop monitor),
 `redux-kotlin-devtools-cli` (library — powers `rk devtools`; exposes `devToolsCommand()`),
-`redux-kotlin-snapshot` (library — powers `rk snapshot`; renders `f(state) → PNG`,
-diffs against goldens, emits an HTML dashboard; exposes `snapshotCommand(app)` / `SnapshotApp.runCli`),
 `redux-kotlin-cli` (the unified `rk` binary; `./gradlew :redux-kotlin-cli:installDist`
 → `redux-kotlin-cli/build/install/rk/bin/rk`),
 `redux-kotlin-cli-dist` (Compose bundled-JRE packaging → `brew install reduxkotlin/tap/rk`

@@ -33,6 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   defaults at construction, so the first read/render already reflects rehydrated state.
 - `redux-kotlin-multimodel`: `ModelState.withAll(other: ModelState)` overlay overload backing
   `preloadedState`.
+- `redux-kotlin-snapshot` is now **published** to Maven Central
+  (`org.reduxkotlin:redux-kotlin-snapshot`) and constrained by `redux-kotlin-bom` — previously an
+  in-repo-only tool. **Experimental**, exempt from semver like the DevTools family. Published via a
+  new `convention.publishing-jvm` (the repo's first JVM-only publishing convention) and ABI-tracked
+  under `redux-kotlin-snapshot/api/`. JVM/desktop-only: depend on it from a JVM/desktop source set
+  and add `compose.desktop.currentOs` for the host Skiko runtime.
 - **New DevTools family** — action/state/diff/pipeline inspection for redux-kotlin apps.
   Six published modules:
   - `redux-kotlin-devtools-core` — the `devTools(config)` store enhancer, `DevToolsConfig`,
