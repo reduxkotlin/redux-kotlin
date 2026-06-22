@@ -12,7 +12,7 @@
 [![Slack chat](https://img.shields.io/badge/kotlinlang-%23redux-green?logo=slack&style=flat-square)][slack]
 [![Dokka docs](https://img.shields.io/badge/docs-dokka-orange?style=flat-square&logo=kotlin)](http://reduxkotlin.github.io/redux-kotlin)
 [![Version maven-central](https://img.shields.io/maven-central/v/org.reduxkotlin/redux-kotlin?logo=apache-maven&style=flat-square)](https://mvnrepository.com/artifact/org.reduxkotlin/redux-kotlin/latest)
-[![Version maven-snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Foss.sonatype.org%2Fcontent%2Frepositories%2Fsnapshots%2Forg%2Freduxkotlin%2Fredux-kotlin%2Fmaven-metadata.xml&logo=apache-maven&label=maven-snapshot&style=flat-square)](https://oss.sonatype.org/content/repositories/snapshots/org/reduxkotlin/redux-kotlin/)
+[![Version maven-snapshot](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Forg%2Freduxkotlin%2Fredux-kotlin%2Fmaven-metadata.xml&logo=apache-maven&label=maven-snapshot&style=flat-square)](https://central.sonatype.com/repository/maven-snapshots/org/reduxkotlin/redux-kotlin/)
 
 A redux standard for Kotlin that supports multiplatform projects.
 
@@ -51,15 +51,23 @@ Video TBA
 ## How to add to project
 
 Artifacts are hosted on Maven Central. Replace `<version>` with the latest release shown by the
-badge above.
+badge above — currently **`1.0.0-alpha01`**, the first `1.0.0` pre-release (whole module set; API
+stabilizing toward `1.0.0`). Snapshots of `master` publish as `1.0.0-SNAPSHOT` to the Central Portal
+snapshots repository — add it to use them:
+
+```kotlin
+repositories {
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
+}
+```
 
 Requirements:
 
 - Kotlin 1.9 or newer (the published artefacts are built with Kotlin 2.3)
 - JVM/Android consumers: JDK 17+ on Android; library bytecode is JVM 17
 - Android: `minSdk 21` or higher
-- Supported KMP targets: `jvm`, `js` (browser/node), `android`, `iosArm64`, `iosX64`,
-  `iosSimulatorArm64`, `macosArm64`, `macosX64`, `linuxArm64`, `linuxX64`, `mingwX64`
+- Supported KMP targets: `jvm`, `js` (browser/node), `wasmJs`, `android`, `iosArm64`,
+  `iosSimulatorArm64`, `macosArm64`, `linuxX64`, `mingwX64` (the core module also adds `linuxArm64`)
 
 ### Recommended: the bundles
 

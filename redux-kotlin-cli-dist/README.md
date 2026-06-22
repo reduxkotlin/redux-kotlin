@@ -24,7 +24,9 @@ scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
 scoop install rk
 ```
 
-No Java installation required — the JRE is bundled.
+No Java installation required — the JRE is bundled. The macOS bottle is **Apple Silicon
+only** as of `1.0.0-alpha02` (Intel runners were dropped); Intel-Mac users build `rk` from
+source via `:redux-kotlin-cli:installDist`.
 
 ## Developer notes
 

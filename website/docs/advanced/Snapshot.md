@@ -84,6 +84,8 @@ scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
 scoop install rk
 ```
 
+The macOS bottle is **Apple Silicon only** for now; on an Intel Mac, build from source.
+
 **From source (needs JDK 17+):**
 
 ```

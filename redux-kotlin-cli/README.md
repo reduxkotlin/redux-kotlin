@@ -23,7 +23,8 @@ scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
 scoop install rk
 ```
 
-Available once the first tagged release is published.
+Published from `1.0.0-alpha01` onward (latest: `1.0.0-alpha02`). The macOS bottle is
+**Apple Silicon only** for now — on an Intel Mac, build from source (below).
 
 ### From source (any OS, needs JDK 17+)
 

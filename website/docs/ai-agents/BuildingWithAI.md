@@ -31,16 +31,23 @@ bag, Compose bindings) on that same contract. Take the core, add only what you n
 ## Dependencies (Maven Central, group `org.reduxkotlin`)
 
 ```kotlin
-// latest published release
-implementation("org.reduxkotlin:redux-kotlin:0.6.1")
+// latest published release (1.0.0 pre-release line)
+implementation("org.reduxkotlin:redux-kotlin:1.0.0-alpha01")
 // add companions as needed, e.g.:
-// implementation("org.reduxkotlin:redux-kotlin-compose:0.6.1")
+// implementation("org.reduxkotlin:redux-kotlin-compose:1.0.0-alpha01")
+```
+
+For app code prefer the one-dependency bundle and align à-la-carte modules with the BOM:
+
+```kotlin
+implementation("org.reduxkotlin:redux-kotlin-bundle-compose:1.0.0-alpha01") // or redux-kotlin-bundle (no Compose)
+implementation(platform("org.reduxkotlin:redux-kotlin-bom:1.0.0-alpha01"))  // then add modules without versions
 ```
 
 ## Module map
 
 - `redux-kotlin` — core contract: `Store`/`TypedStore`, `Reducer`, `Middleware`, `createStore`, `applyMiddleware`, `combineReducers`, `compose`.
-- `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper).
+- `redux-kotlin-threadsafe` — `createThreadSafeStore` (atomicfu-locked store wrapper). **Deprecated** — prefer `redux-kotlin-concurrent`.
 - `redux-kotlin-concurrent` — `createConcurrentStore` (lock-free reads + reentrant-lock-serialized writes; the CallerSerialized strategy).
 - `redux-kotlin-granular` — `subscribeTo` / `subscribeFields` field-level subscriptions.
 - `redux-kotlin-registry` — `StoreRegistry` / `TypedStoreRegistry` keyed multi-store container.
@@ -124,6 +131,24 @@ Full guide: https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/r
 > **your own app's screens**, depend on `redux-kotlin-snapshot` as a library and
 > call `yourRegistry.runCli(args)` from your `main` (then `exitProcess(0)` — Skiko
 > leaves non-daemon threads alive).
+
+## DevTools CLI — `rk-devtools`
+
+A terminal tool that inspects a running redux-kotlin app — action log, per-field
+JSON diffs, per-store `.jsonl` captures — ideal for agents and headless
+debugging (`serve` → reproduce → `actions`/`diff`/`state`). It is **not** a Maven
+dependency and not yet on a package manager; today you build it from the
+redux-kotlin repo with the JVM `application` plugin's `installDist`:
+
+```
+git clone https://github.com/reduxkotlin/redux-kotlin && cd redux-kotlin
+./gradlew :redux-kotlin-devtools-cli:installDist   # needs JDK 17+
+# binary: redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
+```
+
+(A sibling tool, `rk-snapshot` — `:redux-kotlin-snapshot:installDist` — renders a
+Compose screen from state to PNG with golden diffing.) Agent guide:
+https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/devtools.md
 
 ## Verify loop
 
