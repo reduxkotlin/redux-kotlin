@@ -56,12 +56,38 @@ ReduxDevToolsHost(
 | Symbol | Role |
 |---|---|
 | `ReduxDevToolsHost(config, content)` | Composable root wrapper; adds the overlay |
-| `ReduxDevTools.open()` / `.close()` | Programmatic drawer control |
+| `ReduxDevToolsPanel(instanceId, startTab, theme)` | Embeddable inspector body (no bubble/drawer) for your own UI |
+| `ReduxDevTools.open()` / `.close()` | Programmatic drawer control (overlay drawer only — not embedded panels) |
 | `InAppConfig` | `triggers`, `startTab`, `theme`, `instanceId` |
 | `DevToolsTrigger` | `BUBBLE` / `EDGE_SWIPE` |
 
 Output toggles in the Outputs tab are **hub-global** — they act on the outputs
 registered with `DevToolsHub`, across all sessions.
+
+## Embedding the inspector (`ReduxDevToolsPanel`)
+
+When you already have your own debug surface (e.g. a host app's debug drawer) and
+just want the DevTools **inspector** inside it — without the floating bubble or
+overlay drawer — use `ReduxDevToolsPanel`. It renders only the tab body
+(Actions/State/Diff/Pipeline/Outputs) and fills the space you give it:
+
+```kotlin
+import org.reduxkotlin.devtools.inapp.ReduxDevToolsPanel
+import org.reduxkotlin.devtools.ui.DevToolsTab
+
+// Inside your own drawer/sheet/pane:
+Box(Modifier.fillMaxSize()) {
+    ReduxDevToolsPanel(
+        instanceId = null,            // null → all sessions + a store picker (matches the host)
+        startTab = DevToolsTab.ACTIONS,
+    )
+}
+```
+
+It reads from the same global `DevToolsHub` as `ReduxDevToolsHost`, so a host and
+an embedded panel can coexist (each keeps its own tab/selection). The panel does
+**not** touch the overlay drawer's open-state — `ReduxDevTools.open()/.close()`
+control only the `ReduxDevToolsHost` overlay, never embedded panels.
 
 ## See also
 

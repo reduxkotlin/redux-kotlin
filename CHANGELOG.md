@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `redux-kotlin-devtools-inapp`: new public composable `ReduxDevToolsPanel(instanceId, startTab,
+  theme)` — an **embeddable** DevTools inspector (the Actions/State/Diff/Pipeline/Outputs tabs with
+  no bubble or overlay drawer) for mounting inside your own UI, e.g. a host app's debug drawer. The
+  inspector body was extracted into a shared `InspectorBody`, so `ReduxDevToolsHost` is unchanged.
+  Mirrored as an inert no-op in `redux-kotlin-devtools-inapp-noop` (release-stripped).
 - New module `redux-kotlin-thunk`: ported from the standalone
   [reduxkotlin/redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin-thunk) repo into
   the monorepo — `Thunk` typealias + `createThunkMiddleware`. Published under the same maven
