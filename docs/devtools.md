@@ -65,7 +65,8 @@ Package: `org.reduxkotlin.devtools.inapp`
 | Symbol | Role |
 |---|---|
 | `ReduxDevToolsHost(config, content)` | Composable root wrapper; adds the overlay (bubble + edge-swipe trigger, drawer) |
-| `ReduxDevTools.open()` / `ReduxDevTools.close()` | Programmatic drawer control |
+| `ReduxDevToolsPanel(instanceId, startTab, theme)` | Embeddable inspector body (tabs only, no bubble/drawer) for mounting in your own UI; reads the same `DevToolsHub`, does not touch the overlay drawer state |
+| `ReduxDevTools.open()` / `ReduxDevTools.close()` | Programmatic drawer control (overlay drawer only — not embedded panels) |
 | `InAppConfig` | Drawer options: `triggers`, `startTab`, `theme`, `instanceId` |
 | `DevToolsTrigger` | `BUBBLE` / `EDGE_SWIPE` |
 | `DevToolsThemeMode` | `DARK` (default) / `LIGHT` / `SYSTEM` — lives in `org.reduxkotlin.devtools.ui` |
@@ -77,7 +78,7 @@ on those targets). Use the no-op on those targets.
 ### `redux-kotlin-devtools-inapp-noop`
 
 The zero-overhead release sibling. Mirrors the `org.reduxkotlin.devtools.inapp`
-API (`ReduxDevToolsHost`, `ReduxDevTools`, `InAppConfig`, the enum types) **and**
+API (`ReduxDevToolsHost`, `ReduxDevToolsPanel`, `ReduxDevTools`, `InAppConfig`, the enum types) **and**
 the core facade (`devTools`, `devToolsMiddleware`, `devToolsCombineReducers`,
 `named`, `DevToolsConfig`, `KotlinxValueSerializer`, …) with empty bodies. Has
 no dependency on Compose material3, Ktor, or core. Available on all targets,
