@@ -46,7 +46,7 @@ repositories {
 | `redux-kotlin-devtools-core` | published library | Store enhancer (`devTools`), `DevToolsConfig`, the process-global `DevToolsHub`/`DevToolsSession`, pipeline instrumentation, JSON diffing. Always required in debug builds. |
 | `redux-kotlin-devtools-bridge` | published library | `BridgeOutput` — streams a session to the standalone monitor / CLI over WebSocket; also the `.jsonl` recording codec. |
 | `redux-kotlin-devtools-remote` | published library | `RemoteOutput` — streams to an external Redux DevTools monitor (browser extension / `@redux-devtools/cli`). |
-| `redux-kotlin-devtools-inapp` | published library | `ReduxDevToolsHost` — the in-app Compose Multiplatform drawer. |
+| `redux-kotlin-devtools-inapp` | published library | `ReduxDevToolsHost` — the in-app Compose Multiplatform drawer; and `ReduxDevToolsPanel` — the embeddable inspector (tabs only) for mounting inside your own UI. |
 | `redux-kotlin-devtools-inapp-noop` | published library | Zero-overhead release sibling mirroring the inapp + core API for build-variant substitution. |
 | `redux-kotlin-devtools-ui` | published library | Shared Compose UI panels (`DevToolsTab`, `DevToolsThemeMode`) used by the drawer and the standalone monitor. |
 | `redux-kotlin-devtools-standalone` | unpublished tool | Compose desktop monitor app (run from the repo). |
@@ -194,6 +194,32 @@ ReduxDevToolsHost(
 The drawer's **Outputs** tab toggles outputs registered on the hub. Toggles are
 **hub-global**: enabling the bridge output there enables it for every session it
 serves, not just the store currently shown.
+
+## Embedding the inspector (`ReduxDevToolsPanel`)
+
+If you already have your own debug surface (for example a host app's debug
+drawer) and want just the DevTools **inspector** inside it — without the floating
+bubble or overlay drawer — use `ReduxDevToolsPanel`. It renders only the tab body
+(Actions / State / Diff / Pipeline / Outputs) and fills the space you give it:
+
+```kotlin
+import org.reduxkotlin.devtools.inapp.ReduxDevToolsPanel
+import org.reduxkotlin.devtools.ui.DevToolsTab
+
+// Inside your own drawer / sheet / pane:
+Box(Modifier.fillMaxSize()) {
+    ReduxDevToolsPanel(
+        instanceId = null,            // null → all sessions + a store picker (matches the host)
+        startTab = DevToolsTab.ACTIONS,
+    )
+}
+```
+
+It reads from the same global `DevToolsHub` as `ReduxDevToolsHost`, so a host and
+an embedded panel can be shown at once — each keeps its own tab/selection. The
+panel does **not** touch the overlay drawer's open-state: `ReduxDevTools.open()` /
+`ReduxDevTools.close()` control only the `ReduxDevToolsHost` overlay, never
+embedded panels.
 
 ## Remote streaming (browser extension)
 
