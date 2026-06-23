@@ -77,33 +77,64 @@ internal fun Drawer(
         ) {
             Column(Modifier.fillMaxSize().background(RkTokens.InkSurface)) {
                 DrawerHeader(state, registry, onClose)
-                val tabs = DevToolsTab.entries
-                TabRow(selectedTabIndex = tabs.indexOf(state.activeTab), containerColor = RkTokens.InkSurface) {
-                    tabs.forEach { t ->
-                        Tab(selected = t == state.activeTab, onClick = { model.setTab(t) }, text = { Text(t.name) })
-                    }
-                }
-                Box(Modifier.fillMaxWidth().weight(1f)) {
-                    when (state.activeTab) {
-                        DevToolsTab.ACTIONS -> DrawerActionLog(
-                            rows = rows,
-                            filter = state.filter,
-                            onFilter = model::setFilter,
-                            selectedStoreId = selectedStoreId,
-                            selectedActionId = selectedActionId,
-                            onSelect = onSelect,
-                        )
+                InspectorBody(
+                    state = state,
+                    model = model,
+                    rows = rows,
+                    selectedStoreId = selectedStoreId,
+                    selectedActionId = selectedActionId,
+                    onSelect = onSelect,
+                    onToggleOutput = onToggleOutput,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
 
-                        DevToolsTab.STATE -> StateTab(state.selected?.state)
+/**
+ * The inspector body — the tab row + selected tab content (ACTIONS/STATE/DIFF/PIPELINE/OUTPUTS),
+ * with NO drawer chrome (scrim/header/sizing). Shared by [Drawer] (which adds the chrome) and the
+ * embeddable [org.reduxkotlin.devtools.inapp.ReduxDevToolsPanel] (which renders it directly inside
+ * a host's own surface). Fills the [modifier] it is given.
+ */
+@Composable
+internal fun InspectorBody(
+    state: InAppState,
+    model: InAppModel,
+    rows: List<ActionLogRow>,
+    selectedStoreId: String?,
+    selectedActionId: Int?,
+    onSelect: (storeId: String, actionId: Int) -> Unit,
+    onToggleOutput: (String, Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier) {
+        val tabs = DevToolsTab.entries
+        TabRow(selectedTabIndex = tabs.indexOf(state.activeTab), containerColor = RkTokens.InkSurface) {
+            tabs.forEach { t ->
+                Tab(selected = t == state.activeTab, onClick = { model.setTab(t) }, text = { Text(t.name) })
+            }
+        }
+        Box(Modifier.fillMaxWidth().weight(1f)) {
+            when (state.activeTab) {
+                DevToolsTab.ACTIONS -> DrawerActionLog(
+                    rows = rows,
+                    filter = state.filter,
+                    onFilter = model::setFilter,
+                    selectedStoreId = selectedStoreId,
+                    selectedActionId = selectedActionId,
+                    onSelect = onSelect,
+                )
 
-                        DevToolsTab.DIFF -> DiffTab(state.selected?.diff ?: emptyList())
+                DevToolsTab.STATE -> StateTab(state.selected?.state)
 
-                        DevToolsTab.PIPELINE ->
-                            PipelineTab(state.structure, state.selected?.let { state.tracesById[it.actionId] })
+                DevToolsTab.DIFF -> DiffTab(state.selected?.diff ?: emptyList())
 
-                        DevToolsTab.OUTPUTS -> OutputsTab(state.outputs, onToggleOutput)
-                    }
-                }
+                DevToolsTab.PIPELINE ->
+                    PipelineTab(state.structure, state.selected?.let { state.tracesById[it.actionId] })
+
+                DevToolsTab.OUTPUTS -> OutputsTab(state.outputs, onToggleOutput)
             }
         }
     }
@@ -127,7 +158,7 @@ private fun DrawerHeader(state: InAppState, registry: StoreRegistryModel?, onClo
  * Hidden entirely when only one store is registered (single-store UX unchanged).
  */
 @Composable
-private fun StorePicker(registry: StoreRegistryModel, modifier: Modifier = Modifier) {
+internal fun StorePicker(registry: StoreRegistryModel, modifier: Modifier = Modifier) {
     val registryState by registry.state.collectAsState()
     val stores = registryState.stores
     // Single store: render exactly like original (action count, no picker chrome).

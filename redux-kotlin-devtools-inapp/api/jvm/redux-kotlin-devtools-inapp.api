@@ -37,6 +37,10 @@ public final class org/reduxkotlin/devtools/inapp/ReduxDevToolsHostKt {
 	public static final fun ReduxDevToolsHost (Lorg/reduxkotlin/devtools/inapp/InAppConfig;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class org/reduxkotlin/devtools/inapp/ReduxDevToolsPanelKt {
+	public static final fun ReduxDevToolsPanel (Ljava/lang/String;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class org/reduxkotlin/devtools/inapp/ui/ComposableSingletons$DrawerActionLogKt {
 	public static final field INSTANCE Lorg/reduxkotlin/devtools/inapp/ui/ComposableSingletons$DrawerActionLogKt;
 	public fun <init> ()V
