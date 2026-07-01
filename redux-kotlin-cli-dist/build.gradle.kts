@@ -95,7 +95,15 @@ jreleaser {
         github {
             repoOwner.set("reduxkotlin")
             name.set("redux-kotlin")
-            overwrite.set(true)
+            // Update the existing release in place instead of recreating it. overwrite=true
+            // deleted + recreated the release, which wiped the hand-written release notes the
+            // library Release workflow / maintainer put on the tag. update{ ASSETS } touches
+            // only the assets, leaving the release title and body untouched.
+            overwrite.set(false)
+            update {
+                enabled.set(true)
+                sections.set(setOf(org.jreleaser.model.UpdateSection.ASSETS))
+            }
             // Reuse the existing release tag as-is (e.g. 1.0.0-alpha02). JReleaser's default
             // tagName is `v{{projectVersion}}`, which would create a duplicate `v`-prefixed release.
             tagName.set("{{projectVersion}}")
