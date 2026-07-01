@@ -154,3 +154,16 @@ jobs:
           build_dir: public
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+  release-CLI:
+    name: Release rk CLI
+    # Publish the matching rk CLI (binaries + Homebrew + Scoop) for the same tag, only
+    # after Maven Central succeeds — so the CLI never lags the library again. Gated to
+    # real release tags: src-push builds and snapshots don't cut a CLI. Delegates to the
+    # reusable cli-release workflow; secrets: inherit passes GH_PUBLISH_TOKEN etc.
+    needs: [ release-Artefacts ]
+    if: ${{ github.event_name == 'release' }}
+    uses: ./.github/workflows/cli-release.yml
+    with:
+      version: ${{ github.event.release.tag_name }}
+    secrets: inherit

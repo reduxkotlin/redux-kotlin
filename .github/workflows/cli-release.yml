@@ -1,13 +1,29 @@
 name: rk CLI Release
 
+# The CLI is published by the library Release workflow (release.yml) as a reusable
+# workflow_call, right after Maven Central succeeds — so the rk binaries, Homebrew
+# formula, and Scoop manifest land at the same time as the library artifacts for a
+# given tag. workflow_dispatch stays for manually (re)publishing the CLI for an
+# existing release without re-running the Maven Central release.
+#
+# NOTE: this is intentionally NOT triggered on `release: [created]`. That path checks
+# out the release tag in detached-HEAD state, and JReleaser's fullRelease needs a
+# named branch for its git operations (it fails with "Could not checkout branch main
+# / Nothing to push"). release.yml drives it instead, and the publish job below checks
+# out `master` explicitly.
 on:
-  release:
-    types: [created]
+  workflow_call:
+    inputs:
+      version:
+        description: "Version/tag to build and publish the CLI under (e.g. 1.0.0-alpha03). Must match an existing release tag."
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to build/publish the CLI under (e.g. 1.0.0-alpha02). Use to (re)publish the CLI for an existing release without re-running the Maven Central release."
+        description: "Version to build/publish the CLI under (e.g. 1.0.0-alpha03). Use to (re)publish the CLI for an existing release without re-running the Maven Central release."
         required: true
+        type: string
 
 jobs:
   build:
@@ -21,6 +37,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          # Build the exact tagged commit (the version being released), not master HEAD.
+          ref: ${{ inputs.version }}
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -31,7 +50,7 @@ jobs:
         # PowerShell splits it on the dots, turning the version into "1"). Matches ci.yml/check.yml.
         shell: bash
         # -Pversion=<tag> so the archive filename uses the release version (matches JReleaser).
-        run: ./gradlew :redux-kotlin-cli-dist:packageRkArchive -Pversion=${{ github.event.inputs.version || github.event.release.tag_name || github.ref_name }} --stacktrace
+        run: ./gradlew :redux-kotlin-cli-dist:packageRkArchive -Pversion=${{ inputs.version }} --stacktrace
       - uses: actions/upload-artifact@v7
         with:
           name: rk-dist-${{ matrix.os }}
@@ -48,6 +67,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          # Check out the `master` branch (not the release tag): JReleaser's fullRelease
+          # runs git operations that require a named branch. Building from a detached tag
+          # ref makes it fail with "Could not checkout branch main / Nothing to push".
+          # fetch-depth: 0 so JReleaser has full history for its changelog.
+          ref: master
           fetch-depth: 0
       - uses: actions/setup-java@v5
         with:
@@ -62,9 +86,9 @@ jobs:
       - name: JReleaser full-release
         shell: bash
         # -Pversion so the Gradle-interpolated artifact paths match the downloaded archive names.
-        run: ./gradlew :redux-kotlin-cli-dist:jreleaserFullRelease -Pversion=${{ github.event.inputs.version || github.event.release.tag_name || github.ref_name }} --stacktrace
+        run: ./gradlew :redux-kotlin-cli-dist:jreleaserFullRelease -Pversion=${{ inputs.version }} --stacktrace
         env:
-          JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.version || github.event.release.tag_name || github.ref_name }}
+          JRELEASER_PROJECT_VERSION: ${{ inputs.version }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_TOKEN }}
           JRELEASER_SCOOP_GITHUB_TOKEN: ${{ secrets.GH_PUBLISH_TOKEN }}
@@ -75,3 +99,25 @@ jobs:
           path: |
             redux-kotlin-cli-dist/build/jreleaser/trace.log
             redux-kotlin-cli-dist/build/jreleaser/output.properties
+
+  notify-on-failure:
+    name: Report CLI release failure
+    needs: [build, publish]
+    if: failure()
+    runs-on: ubuntu-latest
+    # issues: write so a failed CLI release is surfaced as a tracked issue rather than a
+    # silent workflow failure (the alpha03 CLI failed silently while the library shipped).
+    permissions:
+      issues: write
+    steps:
+      - name: Open a tracking issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue create --repo "${{ github.repository }}" \
+            --title "rk CLI release failed for ${VERSION}" \
+            --body "The **rk CLI Release** workflow failed for \`${VERSION}\`. The library artifacts may have published without a matching CLI build, leaving Homebrew/Scoop behind. Re-run via \`gh workflow run cli-release.yml -f version=${VERSION}\` after fixing.
+
+          Failed run: ${RUN_URL}"
