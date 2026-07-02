@@ -10,6 +10,11 @@ import kotlin.test.assertTrue
 
 internal class BatchRunnerTest {
     private fun tmp(prefix: String): File = Files.createTempDirectory(prefix).toFile()
+    private fun newTmpDir(): File = File.createTempFile("rkbatch", "").let {
+        it.delete()
+        it.mkdirs()
+        it
+    }
 
     @Test fun parses_manifest_json() {
         val m = Json.decodeFromString(
@@ -54,5 +59,71 @@ internal class BatchRunnerTest {
         val report = BatchRunner(demoSnapshots).run(manifest, out, verify = true, goldenDir = gdir, runId = "t")
         assertEquals("match", report.shots.first { it.id == "ok1" }.verify?.result)
         assertEquals("missing-golden", report.shots.first { it.id == "absent" }.verify?.result)
+    }
+
+    @Test fun batch_writes_semantics_sidecars_when_requested() {
+        val manifest = BatchManifest(shots = listOf(ShotSpec(id = "d", scene = "demo", preset = "default")))
+        val outDir = newTmpDir()
+        val report = BatchRunner(demoSnapshots).run(
+            manifest,
+            outDir,
+            verify = false,
+            goldenDir = null,
+            runId = "r",
+            semantics = true,
+        )
+        val sidecar = File(outDir, "d.semantics.txt")
+        assertTrue(sidecar.isFile, "sidecar missing")
+        assertEquals(sidecar.path, report.shots.single().semanticsSidecar)
+        assertTrue((report.shots.single().semanticsBytes ?: 0) > 0)
+    }
+
+    @Test fun semantics_verify_missing_golden_is_non_failing() {
+        val manifest = BatchManifest(shots = listOf(ShotSpec(id = "d", scene = "demo", preset = "default")))
+        val goldenDir = newTmpDir() // empty
+        val report = BatchRunner(demoSnapshots).run(
+            manifest,
+            newTmpDir(),
+            verify = false,
+            goldenDir = goldenDir,
+            runId = "r",
+            verifySemantics = true,
+        )
+        assertEquals("missing-golden", report.shots.single().verifySemantics?.result)
+        assertEquals(0, report.totals.semanticsMismatched)
+    }
+
+    @Test fun update_semantics_writes_golden_then_verify_matches() {
+        val manifest = BatchManifest(shots = listOf(ShotSpec(id = "d", scene = "demo", preset = "default")))
+        val goldenDir = newTmpDir()
+        // 1) author baseline
+        BatchRunner(demoSnapshots).run(
+            manifest,
+            newTmpDir(),
+            verify = false,
+            goldenDir = goldenDir,
+            runId = "r",
+            updateSemantics = true,
+        )
+        assertTrue(File(goldenDir, "d.semantics.json").isFile)
+        // 2) verify against it
+        val report = BatchRunner(demoSnapshots).run(
+            manifest,
+            newTmpDir(),
+            verify = false,
+            goldenDir = goldenDir,
+            runId = "r2",
+            verifySemantics = true,
+        )
+        assertEquals("match", report.shots.single().verifySemantics?.result)
+        assertEquals(1, report.totals.semanticsMatched)
+    }
+
+    @Test fun totals_aggregate_render_ms() {
+        val manifest = BatchManifest(shots = listOf(ShotSpec(id = "d", scene = "demo", preset = "default")))
+        val report = BatchRunner(
+            demoSnapshots,
+        ).run(manifest, newTmpDir(), verify = false, goldenDir = null, runId = "r")
+        assertTrue(report.totals.renderMsTotal >= 0)
     }
 }
