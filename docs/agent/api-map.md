@@ -47,7 +47,7 @@ Published, experimental — exempt from semver (ABI tracked in
 headlessly from a known state (`f(state) → PNG`), diffs against a committed golden, emits an HTML
 dashboard, and extracts a deterministic bounds-free semantics dump (text/JSON node tree) that a
 `--verify-semantics` golden can gate on — a cheaper, less flaky regression signal than the pixel diff
-for an AI-agent loop. JVM/desktop-only (depend on it from a JVM/desktop source set + `compose.desktop.currentOs`).
+for an AI-agent loop (semantics surface ships in `1.0.0-alpha04`+). JVM/desktop-only (depend on it from a JVM/desktop source set + `compose.desktop.currentOs`).
 Run it via `rk snapshot`, a consuming app's `main` (which calls `runCli`), or the TaskFlow `snapshotUi`
 task; see `docs/agent/references/snapshot.md`.
 

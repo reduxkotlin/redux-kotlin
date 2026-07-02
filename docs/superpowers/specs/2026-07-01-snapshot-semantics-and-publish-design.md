@@ -238,8 +238,8 @@ Infra already targets Central; the work is cutting a **pinnable released version
 reconciling the skew.
 
 - **Single version line.** The snapshot module rides the same release-tag flow as the CLI.
-  The next release cuts `org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha03` to Maven
-  Central (from the `-Pversion=1.0.0-alpha03` tag build). `1.0.0-SNAPSHOT` stays the `master`
+  The next release cuts `org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha04` to Maven
+  Central (from the `-Pversion=1.0.0-alpha04` tag build). `1.0.0-SNAPSHOT` stays the `master`
   development baseline.
 - **Consumer docs.** Add a module README section: the pinned coordinate, the `repositories {}`
   (Maven Central) + `dependencies {}` snippet, and a note that scene authoring also needs the

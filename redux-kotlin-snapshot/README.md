@@ -225,7 +225,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha03")
+    implementation("org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha04")
 }
 ```
 
@@ -237,7 +237,9 @@ come along transitively — no need to declare them yourself, just add
 **Version note:** the repo's development baseline (`gradle.properties`) is
 `1.0.0-SNAPSHOT` on `master`. Released artifacts don't track that baseline
 directly — they ride the shared release-tag line with the rest of the CLI
-tooling, cut by a maintainer tag push; the next tag is `1.0.0-alpha03`.
+tooling, cut by a maintainer tag push. This semantics surface first ships in
+`1.0.0-alpha04` — `1.0.0-alpha03` was released 2026-06-23 (before this work), so pin
+`1.0.0-alpha04` or later.
 
 ## See also
 
