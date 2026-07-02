@@ -99,6 +99,11 @@ fun main(args: Array<String>) {
 | `--golden-dir <dir>` | Golden dir for a batch; its presence switches the batch into verify mode. |
 | `--json` | Emit the machine-readable report on stdout. |
 | `--dashboard` | Also write a static `index.html` over the batch report. |
+| `--semantics` | Emit the semantics dump (single shot: stdout + sidecar next to `--out`; batch: sidecar per shot). |
+| `--semantics-format json\|text` | Dump format for `--semantics` / semantics sidecars. Default `text`. |
+| `--verify-semantics-file <file>` | Semantics golden to compare against (single shot); mismatch exits 1. |
+| `--verify-semantics` | Enable the semantics golden gate for a batch. Needs `--golden-dir`. |
+| `--update-semantics` | Write/update the semantics golden(s) instead of verifying, then exit 0. Single shot needs `--verify-semantics-file`; batch needs `--golden-dir`. |
 
 **Exit codes:** `0` ok · `1` render or verify failure · `2` usage error.
 
@@ -139,6 +144,64 @@ rk snapshot --batch shots.json --out-dir build/snapshots --golden-dir goldens
 The batch writes `report.json` under `--out-dir`; `--dashboard` adds an
 `index.html` over it. A batch with any failed or mismatched shot exits 1.
 
+## Semantics for AI agents
+
+Alongside pixels, every render can emit a **semantics dump** — a deterministic,
+bounds-free tree of role/text/state, ordered by semantics-node id (owners) and
+layout order (children), never pixel position. It lets an agent assert content
+as text/JSON instead of reading a PNG, and gate on it the same way `--verify`
+gates on pixels. The typical loop:
+
+1. **Author baselines.** Render the batch and write a semantics golden per shot:
+   ```
+   rk snapshot --batch shots.json --golden-dir goldens --update-semantics
+   ```
+2. **Gate.** Re-run with the golden gate on; a drifted shot exits 1 with terse
+   `drift <id>: pixel=... semantics=...` lines (see `--dashboard` for the same
+   info in HTML):
+   ```
+   rk snapshot --batch shots.json --out-dir out --golden-dir goldens --verify-semantics
+   ```
+   Only for the shots that drifted, read `out/<id>.semantics.txt` (or
+   `out/<id>.semantics.json` with `--semantics-format json`) — or the pixel
+   `.diff.png` — to see what changed; matching shots need no further reading.
+3. **Single dump**, e.g. to inspect one scene directly:
+   ```
+   rk snapshot --scene demo --preset default --semantics                    # indented text
+   rk snapshot --scene demo --preset default --semantics --semantics-format json
+   ```
+
+### Dump JSON schema
+
+`--semantics-format json` (and every semantics golden) is a JSON **array of
+root nodes** — one root per Compose `SemanticsOwner` (a Popup/Dialog gets its
+own) — with no top-level wrapper object. Each `Node`:
+
+| Field | Type | Notes |
+|---|---|---|
+| `role` | `string \| null` | Accessibility role, lowercased (e.g. `button`). |
+| `text` | `string[]` | Text on this node, in order; a merge boundary absorbs descendants' text. |
+| `contentDescription` | `string[]` | Content descriptions on this node, in order. |
+| `testTag` | `string \| null` | Test tag. |
+| `enabled` | `boolean \| null` | `false` when explicitly disabled; otherwise `null` (tri-state — never `true`). |
+| `selected` | `boolean \| null` | Selected state, or `null` if unspecified. |
+| `toggle` | `string \| null` | `"On"` / `"Off"` / `"Indeterminate"`, or `null`. |
+| `children` | `Node[]` | Merged child nodes, in layout order. |
+
+No bounds/coordinates are included — the dump is deliberately independent of
+pixel position and stable across architectures.
+
+### Report v2 schema
+
+`report.json` is `schemaVersion: 2`. Beyond the pixel-era fields, each
+`ShotReport` adds `verifySemantics` (the `SemanticsVerifyReport`: golden path,
+`match`/`mismatch`/`missing-golden` result, and terse `delta` lines when
+mismatched), `semanticsSidecar` (path to the per-shot dump file, when
+`--semantics` or `--verify-semantics` wrote one), and `semanticsBytes`. `Totals`
+adds `semanticsMismatched`, `semanticsMissingGolden`, `semanticsMatched`, and
+`renderMsTotal`. Consumers should decode with `Json { ignoreUnknownKeys = true }`
+so older/newer report fields don't break parsing.
+
 ## In tests
 
 For JUnit-style assertions, `SnapshotApp.assertGolden(...)` renders a scene and
@@ -150,6 +213,27 @@ throwing `AssertionError` on mismatch and writing the actual PNG under
 ```kotlin
 @Test fun board() = mySnapshots.assertGolden(scene = "board", preset = "seeded")
 ```
+
+## Consuming from Maven Central
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation("org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha03")
+}
+```
+
+Scene authoring is part of the public API, so this module's Compose Multiplatform,
+clikt, and kotlinx-serialization dependencies are `api` (not `implementation`) and
+come along transitively — no need to declare them yourself, just add
+`compose.desktop.currentOs` for the host Skiko runtime (see above).
+
+**Version note:** the repo's development baseline (`gradle.properties`) is
+`1.0.0-SNAPSHOT` on `master`. Released artifacts don't track that baseline
+directly — they ride the shared release-tag line with the rest of the CLI
+tooling, cut by a maintainer tag push; the next tag is `1.0.0-alpha03`.
 
 ## See also
 
