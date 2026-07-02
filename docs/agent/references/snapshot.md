@@ -6,11 +6,13 @@ derives_from:
   - redux-kotlin-snapshot/src/main/kotlin/org/reduxkotlin/snapshot/cli/Cli.kt → runCli
   - redux-kotlin-snapshot/src/main/kotlin/org/reduxkotlin/snapshot/SnapshotTestSupport.kt → assertGolden
   - redux-kotlin-snapshot/src/main/kotlin/org/reduxkotlin/snapshot/GoldenStore.kt → GoldenStore
+  - redux-kotlin-snapshot/src/main/kotlin/org/reduxkotlin/snapshot/Semantics.kt → SemanticsDump
+  - redux-kotlin-snapshot/src/main/kotlin/org/reduxkotlin/snapshot/RenderBackend.kt → RenderResult
   - examples/taskflow/composeApp/src/jvmTest/kotlin/org/reduxkotlin/sample/taskflow/snapshot/TaskFlowSnapshots.kt → taskFlowSnapshots
 api_files: []
 rules: [C]
 assembles_into: [AGENTS.md, claude-skill]
-last_verified: { commit: b3303317, date: 2026-06-16 }
+last_verified: { commit: 6deca3bf, date: 2026-07-02 }
 ---
 
 # Snapshot / golden UI loop
@@ -84,6 +86,11 @@ fun main(args: Array<String>) = taskFlowSnapshots.runCli(args)
 | `--golden-dir <dir>` | Golden dir; its presence switches the batch to verify mode |
 | `--json` | Emit machine JSON on stdout |
 | `--dashboard` | Also write a static `index.html` over the batch report |
+| `--semantics` | Emit the semantics dump — single shot: to stdout (and a sidecar next to `--out`); batch: a `<id>.semantics.txt`/`.json` sidecar per shot |
+| `--semantics-format json\|text` | Dump format for `--semantics` / the sidecars (default `text`) |
+| `--verify-semantics-file <golden>` | Compare the semantics dump against this golden (single shot); mismatch exits 1 |
+| `--verify-semantics` | Enable the semantics golden gate for a batch (needs `--golden-dir`); a semantics mismatch counts as failure |
+| `--update-semantics` | (Re)write the semantics golden(s) instead of verifying, then exit 0 (single needs `--verify-semantics-file`; batch needs `--golden-dir`) |
 
 ### Exit codes
 
@@ -126,6 +133,32 @@ It renders, compares against `goldenDir/<name>.png` via
 mismatch throws `AssertionError` and writes the actual PNG under `build/snapshots/` for inspection.
 Run with `-Dsnapshot.record=true` to (over)write the golden instead of asserting — the standard
 "review the diff, then accept" record step.
+
+## Semantics dump & semantics golden
+
+Beside the pixels, a render also carries a **semantics dump** — a deterministic, bounds-free tree of
+the rendered nodes (role, text, contentDescription, testTag, enabled/selected/toggle), ordered stably
+(owners by node id, children in layout order). It has two forms: a compact indented `text` form
+(default) and a canonical `json` form. The JSON is a top-level array of root nodes and is the single
+form used for both `--semantics-format json` output and the stored semantics golden.
+
+Why an agent wants it: reading the dump as text is far cheaper than reading a PNG, and a **semantics
+golden** is a less flaky regression signal than the pixel diff — it ignores anti-aliasing and is
+architecture-independent (it carries no bounds), so it stays stable across dev arm64 vs CI x64.
+
+- **Single shot:** `--semantics` prints the dump (`--semantics-format text|json`) and, with `--out`,
+  also writes a `<out>.semantics.txt`/`.json` sidecar. `--verify-semantics-file <golden>` compares and
+  exits 1 on mismatch (printing a line-diff delta); a missing golden exits 2 with a fix-it message.
+- **Batch:** `--semantics` writes a per-shot sidecar; `--verify-semantics` (needs `--golden-dir`) gates
+  the run — a semantics mismatch is counted and forces exit 1, and the summary prints one terse
+  `drift <id>: pixel=… semantics=…` line per drifted shot so the agent reads the sidecar (or PNG) only
+  for shots that actually changed. `report.json` (schema v2) records per-shot `verifySemantics`
+  (verdict + delta), `semanticsSidecar`, and `semanticsBytes`.
+- **Author/refresh baselines** with `--update-semantics` (single needs `--verify-semantics-file`, batch
+  needs `--golden-dir`): it writes the canonical goldens and exits 0 without gating.
+
+Extraction is non-fatal: if the semantics can't be read, the dump degrades to empty and the PNG is
+still produced. This surface first ships in `redux-kotlin-snapshot:1.0.0-alpha03`.
 
 ## The batch + dashboard loop (TaskFlow)
 

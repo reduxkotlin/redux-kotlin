@@ -44,8 +44,10 @@ Published, experimental — exempt from semver (ABI tracked in
 `redux-kotlin-snapshot/api/redux-kotlin-snapshot.api`):
 `redux-kotlin-snapshot` is the library behind `rk snapshot` — on Maven Central as
 `org.reduxkotlin:redux-kotlin-snapshot` and in the BOM. It renders a redux-kotlin Compose screen
-headlessly from a known state (`f(state) → PNG`), diffs against a committed golden, and emits an HTML
-dashboard. JVM/desktop-only (depend on it from a JVM/desktop source set + `compose.desktop.currentOs`).
+headlessly from a known state (`f(state) → PNG`), diffs against a committed golden, emits an HTML
+dashboard, and extracts a deterministic bounds-free semantics dump (text/JSON node tree) that a
+`--verify-semantics` golden can gate on — a cheaper, less flaky regression signal than the pixel diff
+for an AI-agent loop. JVM/desktop-only (depend on it from a JVM/desktop source set + `compose.desktop.currentOs`).
 Run it via `rk snapshot`, a consuming app's `main` (which calls `runCli`), or the TaskFlow `snapshotUi`
 task; see `docs/agent/references/snapshot.md`.
 
