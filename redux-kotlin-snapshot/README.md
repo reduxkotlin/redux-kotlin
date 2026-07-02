@@ -156,14 +156,17 @@ gates on pixels. The typical loop:
    ```
    rk snapshot --batch shots.json --golden-dir goldens --update-semantics
    ```
-2. **Gate.** Re-run with the golden gate on; a drifted shot exits 1 with terse
+2. **Gate.** Re-run with the golden gate on, adding `--semantics` so per-shot
+   sidecars are on disk to read; a drifted shot exits 1 with terse
    `drift <id>: pixel=... semantics=...` lines (see `--dashboard` for the same
    info in HTML):
    ```
-   rk snapshot --batch shots.json --out-dir out --golden-dir goldens --verify-semantics
+   rk snapshot --batch shots.json --out-dir out --golden-dir goldens --verify-semantics --semantics
    ```
-   Only for the shots that drifted, read `out/<id>.semantics.txt` (or
-   `out/<id>.semantics.json` with `--semantics-format json`) — or the pixel
+   `--verify-semantics` alone only prints the delta and does not write a
+   sidecar — `--semantics` is what writes `out/<id>.semantics.txt` (or
+   `out/<id>.semantics.json` with `--semantics-format json`) for every shot.
+   Only for the shots that drifted, read that sidecar — or the pixel
    `.diff.png` — to see what changed; matching shots need no further reading.
 3. **Single dump**, e.g. to inspect one scene directly:
    ```
@@ -196,8 +199,9 @@ pixel position and stable across architectures.
 `report.json` is `schemaVersion: 2`. Beyond the pixel-era fields, each
 `ShotReport` adds `verifySemantics` (the `SemanticsVerifyReport`: golden path,
 `match`/`mismatch`/`missing-golden` result, and terse `delta` lines when
-mismatched), `semanticsSidecar` (path to the per-shot dump file, when
-`--semantics` or `--verify-semantics` wrote one), and `semanticsBytes`. `Totals`
+mismatched), `semanticsSidecar` (path to the per-shot dump file, written only
+when `--semantics` was passed — `--verify-semantics` alone does not write
+one), and `semanticsBytes`. `Totals`
 adds `semanticsMismatched`, `semanticsMissingGolden`, `semanticsMatched`, and
 `renderMsTotal`. Consumers should decode with `Json { ignoreUnknownKeys = true }`
 so older/newer report fields don't break parsing.
