@@ -56,8 +56,8 @@ internal class DashboardGeneratorTest {
             ),
         )
         val outDir = File.createTempFile("dash", "").let {
-            it.delete();
-            it.mkdirs();
+            it.delete()
+            it.mkdirs()
             it
         }
         val html = DashboardGenerator.generate(report, outDir).readText()
