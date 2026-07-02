@@ -53,7 +53,7 @@ internal class BatchRunner(
         )
     }
 
-    @Suppress("TooGenericExceptionCaught", "LongParameterList", "CyclomaticComplexMethod")
+    @Suppress("TooGenericExceptionCaught", "LongParameterList")
     private fun runShot(
         spec: ShotSpec,
         defaults: ManifestDefaults,
@@ -67,11 +67,7 @@ internal class BatchRunner(
     ): ShotReport {
         val inputDesc = if (spec.preset != null) "preset=${spec.preset}" else "json"
         return try {
-            val input = when {
-                spec.preset != null -> SnapshotInput.Preset(spec.preset)
-                spec.stateJson != null -> SnapshotInput.Json(spec.stateJson)
-                else -> throw SnapshotException("shot '${spec.id}' needs 'preset' or 'stateJson'")
-            }
+            val input = resolveInput(spec)
             val shot = app.resolve(
                 spec.scene,
                 input,
@@ -90,24 +86,10 @@ internal class BatchRunner(
             }
             val canonical = result.semantics.toCanonicalJson()
 
-            if (updateSemantics && goldenDir != null) {
-                File(goldenDir, "${spec.id}.semantics.json").apply {
-                    parentFile?.mkdirs()
-                    writeText(canonical)
-                }
-            }
-            val sidecar = if (semantics) {
-                writeSidecar(
-                    spec,
-                    result.semantics,
-                    canonical,
-                    outDir,
-                    semanticsFormat,
-                )
-            } else {
-                null
-            }
-            val semVerify = if (verifySemantics) verifySemanticsShot(spec, canonical, goldenDir) else null
+            val (sidecar, semVerify) = applySemanticsExtras(
+                spec, result.semantics, canonical, outDir, goldenDir,
+                semantics, verifySemantics, updateSemantics, semanticsFormat,
+            )
 
             ShotReport(
                 id = spec.id, scene = spec.scene, input = inputDesc, theme = shot.theme,
@@ -124,6 +106,40 @@ internal class BatchRunner(
         } catch (e: Exception) {
             ShotReport(id = spec.id, scene = spec.scene, input = inputDesc, status = "error", error = e.message)
         }
+    }
+
+    /** Resolves a [ShotSpec] into the [SnapshotInput] the app should render, or throws if neither is set. */
+    private fun resolveInput(spec: ShotSpec): SnapshotInput = when {
+        spec.preset != null -> SnapshotInput.Preset(spec.preset)
+        spec.stateJson != null -> SnapshotInput.Json(spec.stateJson)
+        else -> throw SnapshotException("shot '${spec.id}' needs 'preset' or 'stateJson'")
+    }
+
+    /**
+     * Handles the golden-update, sidecar-write, and semantics-verify trio for a rendered shot.
+     * Returns the sidecar file (if written) and the semantics verify report (if requested).
+     */
+    @Suppress("LongParameterList")
+    private fun applySemanticsExtras(
+        spec: ShotSpec,
+        dump: SemanticsDump,
+        canonical: String,
+        outDir: File,
+        goldenDir: File?,
+        semantics: Boolean,
+        verifySemantics: Boolean,
+        updateSemantics: Boolean,
+        semanticsFormat: String,
+    ): Pair<File?, SemanticsVerifyReport?> {
+        if (updateSemantics && goldenDir != null) {
+            File(goldenDir, "${spec.id}.semantics.json").apply {
+                parentFile?.mkdirs()
+                writeText(canonical)
+            }
+        }
+        val sidecar = if (semantics) writeSidecar(spec, dump, canonical, outDir, semanticsFormat) else null
+        val semVerify = if (verifySemantics) verifySemanticsShot(spec, canonical, goldenDir) else null
+        return sidecar to semVerify
     }
 
     private fun writeSidecar(
