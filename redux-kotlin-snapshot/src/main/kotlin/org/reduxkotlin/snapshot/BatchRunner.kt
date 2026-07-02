@@ -12,31 +12,58 @@ internal class BatchRunner(
     private val app: SnapshotApp,
     private val backend: RenderBackend = ImageComposeSceneBackend(),
     private val differ: Differ = Differ(),
+    private val semanticsDiffer: SemanticsDiffer = SemanticsDiffer(),
 ) {
-    fun run(manifest: BatchManifest, outDir: File, verify: Boolean, goldenDir: File?, runId: String): SnapshotReport {
+    @Suppress("LongParameterList")
+    fun run(
+        manifest: BatchManifest,
+        outDir: File,
+        verify: Boolean,
+        goldenDir: File?,
+        runId: String,
+        semantics: Boolean = false,
+        verifySemantics: Boolean = false,
+        updateSemantics: Boolean = false,
+        semanticsFormat: String = "text",
+    ): SnapshotReport {
         outDir.mkdirs()
-        val shots = manifest.shots.map { runShot(it, manifest.defaults, outDir, verify, goldenDir) }
+        val shots = manifest.shots.map {
+            runShot(
+                it, manifest.defaults, outDir, verify, goldenDir,
+                semantics, verifySemantics, updateSemantics, semanticsFormat,
+            )
+        }
         return SnapshotReport(
             runId = runId,
             outDir = outDir.path,
             totals = Totals(
                 total = shots.size,
-                ok = shots.count { it.status == "ok" && it.verify?.result != "mismatch" },
+                ok = shots.count {
+                    it.status == "ok" && it.verify?.result != "mismatch" && it.verifySemantics?.result != "mismatch"
+                },
                 failed = shots.count { it.status == "error" },
                 mismatched = shots.count { it.verify?.result == "mismatch" },
                 missingGolden = shots.count { it.verify?.result == "missing-golden" },
+                semanticsMismatched = shots.count { it.verifySemantics?.result == "mismatch" },
+                semanticsMissingGolden = shots.count { it.verifySemantics?.result == "missing-golden" },
+                semanticsMatched = shots.count { it.verifySemantics?.result == "match" },
+                renderMsTotal = shots.sumOf { it.renderMs ?: 0 },
             ),
             shots = shots,
         )
     }
 
-    @Suppress("TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught", "LongParameterList", "CyclomaticComplexMethod")
     private fun runShot(
         spec: ShotSpec,
         defaults: ManifestDefaults,
         outDir: File,
         verify: Boolean,
         goldenDir: File?,
+        semantics: Boolean,
+        verifySemantics: Boolean,
+        updateSemantics: Boolean,
+        semanticsFormat: String,
     ): ShotReport {
         val inputDesc = if (spec.preset != null) "preset=${spec.preset}" else "json"
         return try {
@@ -54,12 +81,34 @@ internal class BatchRunner(
                 density = spec.density ?: defaults.density,
             )
             val start = System.currentTimeMillis()
-            val png = app.renderResult(shot, backend).png
+            val result = app.renderResult(shot, backend)
             val ms = System.currentTimeMillis() - start
+            val png = result.png
             val outFile = File(outDir, spec.out ?: "${spec.id}.png").apply {
                 parentFile?.mkdirs()
                 writeBytes(png)
             }
+            val canonical = result.semantics.toCanonicalJson()
+
+            if (updateSemantics && goldenDir != null) {
+                File(goldenDir, "${spec.id}.semantics.json").apply {
+                    parentFile?.mkdirs()
+                    writeText(canonical)
+                }
+            }
+            val sidecar = if (semantics) {
+                writeSidecar(
+                    spec,
+                    result.semantics,
+                    canonical,
+                    outDir,
+                    semanticsFormat,
+                )
+            } else {
+                null
+            }
+            val semVerify = if (verifySemantics) verifySemanticsShot(spec, canonical, goldenDir) else null
+
             ShotReport(
                 id = spec.id, scene = spec.scene, input = inputDesc, theme = shot.theme,
                 sizePx = listOf(
@@ -68,10 +117,36 @@ internal class BatchRunner(
                 ),
                 out = outFile.path, bytes = png.size, renderMs = ms, status = "ok",
                 verify = if (verify) verifyShot(spec, png, goldenDir, outDir) else null,
+                verifySemantics = semVerify,
+                semanticsSidecar = sidecar?.path,
+                semanticsBytes = if (semantics || verifySemantics) canonical.toByteArray().size else null,
             )
         } catch (e: Exception) {
             ShotReport(id = spec.id, scene = spec.scene, input = inputDesc, status = "error", error = e.message)
         }
+    }
+
+    private fun writeSidecar(
+        spec: ShotSpec,
+        dump: SemanticsDump,
+        canonical: String,
+        outDir: File,
+        format: String,
+    ): File {
+        val ext = if (format == "json") "semantics.json" else "semantics.txt"
+        val body = if (format == "json") canonical else dump.toText()
+        return File(outDir, "${spec.id}.$ext").apply {
+            parentFile?.mkdirs()
+            writeText(body)
+        }
+    }
+
+    private fun verifySemanticsShot(spec: ShotSpec, canonical: String, goldenDir: File?): SemanticsVerifyReport {
+        val goldenFile = File(goldenDir ?: File("."), "${spec.id}.semantics.json")
+        val golden = goldenFile.takeIf { it.isFile }?.readText()
+            ?: return SemanticsVerifyReport(goldenFile.path, "missing-golden")
+        val r = semanticsDiffer.compare(golden, canonical)
+        return SemanticsVerifyReport(goldenFile.path, r.result, r.delta.takeIf { it.isNotEmpty() })
     }
 
     private fun verifyShot(spec: ShotSpec, png: ByteArray, goldenDir: File?, outDir: File): VerifyReport {
