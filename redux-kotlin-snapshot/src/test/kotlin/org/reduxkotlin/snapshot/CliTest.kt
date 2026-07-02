@@ -204,4 +204,45 @@ internal class CliTest {
         assertTrue(jsonContent.isNotEmpty())
         assertTrue(jsonContent.trimStart().startsWith("["), jsonContent)
     }
+
+    @Test fun batch_verify_semantics_without_golden_dir_exits_2() {
+        val manifest = File(tmp, "vs.json").apply {
+            writeText("""{"shots":[{"id":"a","scene":"demo","preset":"default"}]}""")
+        }
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--batch", manifest.path, "--out-dir", File(tmp, "vsout").path, "--verify-semantics"))
+        assertEquals(2, r.statusCode, r.output)
+    }
+
+    @Test fun batch_semantics_writes_sidecars() {
+        val manifest = File(tmp, "sc.json").apply {
+            writeText("""{"shots":[{"id":"a","scene":"demo","preset":"default"}]}""")
+        }
+        val outDir = File(tmp, "scout")
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--batch", manifest.path, "--out-dir", outDir.path, "--semantics"))
+        assertEquals(0, r.statusCode, r.output)
+        assertTrue(File(outDir, "a.semantics.txt").isFile)
+    }
+
+    @Test fun batch_semantics_mismatch_exits_1_and_lists_drifted() {
+        val goldenDir = File(tmp, "sg").apply { mkdirs() }
+        File(goldenDir, "a.semantics.json").writeText("[]") // wrong baseline -> drift
+        val manifest = File(tmp, "sm.json").apply {
+            writeText("""{"shots":[{"id":"a","scene":"demo","preset":"default"}]}""")
+        }
+        val r = snapshotCommand(demoSnapshots).test(
+            listOf(
+                "--batch",
+                manifest.path,
+                "--out-dir",
+                File(tmp, "smout").path,
+                "--golden-dir",
+                goldenDir.path,
+                "--verify-semantics",
+            ),
+        )
+        assertEquals(1, r.statusCode, r.output)
+        assertTrue("a" in r.output && "mismatch" in r.output, r.output)
+    }
 }
