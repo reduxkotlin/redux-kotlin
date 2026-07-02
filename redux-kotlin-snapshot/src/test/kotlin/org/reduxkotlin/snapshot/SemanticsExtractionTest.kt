@@ -65,7 +65,7 @@ internal class SemanticsExtractionTest {
     private fun allNodes(dump: SemanticsDump): List<SemanticsDump.Node> {
         val out = mutableListOf<SemanticsDump.Node>()
         fun walk(n: SemanticsDump.Node) {
-            out += n;
+            out += n
             n.children.forEach(::walk)
         }
         dump.roots.forEach(::walk)
