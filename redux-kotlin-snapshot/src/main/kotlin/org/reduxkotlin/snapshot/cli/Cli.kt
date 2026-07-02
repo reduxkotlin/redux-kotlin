@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.core.CliktError
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import kotlinx.serialization.SerializationException
@@ -21,6 +22,8 @@ import org.reduxkotlin.snapshot.DiffDefaults
 import org.reduxkotlin.snapshot.DiffVerdict
 import org.reduxkotlin.snapshot.Differ
 import org.reduxkotlin.snapshot.ImageComposeSceneBackend
+import org.reduxkotlin.snapshot.RenderResult
+import org.reduxkotlin.snapshot.SemanticsDiffer
 import org.reduxkotlin.snapshot.SnapshotApp
 import org.reduxkotlin.snapshot.SnapshotException
 import org.reduxkotlin.snapshot.SnapshotInput
@@ -61,6 +64,24 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
     private val goldenDir by option("--golden-dir", help = "Golden dir; its presence verifies the batch").file()
     private val jsonMode by option("--json", help = "Emit machine JSON on stdout").flag()
     private val dashboard by option("--dashboard", help = "Also write a static index.html over the report").flag()
+    private val semantics by option(
+        "--semantics",
+        help = "Emit the semantics dump (stdout single; sidecar batch)",
+    ).flag()
+    private val semanticsFormat by option("--semantics-format", help = "Dump format")
+        .choice("json", "text").default("text")
+    private val verifySemanticsFile by option(
+        "--verify-semantics-file",
+        help = "Semantics golden to compare against (single shot)",
+    ).file()
+    private val verifySemantics by option(
+        "--verify-semantics",
+        help = "Enable the semantics golden gate (batch; needs --golden-dir)",
+    ).flag()
+    private val updateSemantics by option(
+        "--update-semantics",
+        help = "Write/update semantics golden(s), then exit 0",
+    ).flag()
 
     override fun run() {
         val b = batch
@@ -72,49 +93,98 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
     }
 
     // Converting any render failure into a clean CLI error (exit 1) is the intended "never crash"
-    // contract; the multiple throws are usage/validation guards. Both are idiomatic for a CLI.
-    @Suppress("ThrowsCount", "TooGenericExceptionCaught")
+    // contract. Sub-steps (parse input, render, each gate) are split into helpers below to keep
+    // this orchestration method within the complexity/length budget.
     private fun runSingle() {
         val sceneName = scene ?: throw CliktError("missing --scene (or pass --list)", statusCode = 2)
         if ((preset == null) == (stateJson == null)) {
             throw CliktError("provide exactly one of --preset or --state-json", statusCode = 2)
         }
-        val input = try {
-            preset?.let { SnapshotInput.Preset(it) }
-                ?: SnapshotInput.Json(Json.parseToJsonElement(stateJson!!))
-        } catch (e: SerializationException) {
-            throw CliktError("invalid --state-json: ${e.message}", cause = e, statusCode = 2)
-        }
-        val png = try {
-            val shot = app.resolve(sceneName, input, theme, width, height, null)
-            app.renderResult(shot, BACKEND).png
-        } catch (e: SnapshotException) {
-            throw CliktError(e.message ?: "usage error", cause = e, statusCode = 2)
-        } catch (e: Exception) {
-            throw CliktError("render failed: ${e.message}", cause = e, statusCode = 1)
-        }
+        val result = renderSingle(sceneName, parseSingleInput())
+        val png = result.png
         out?.apply {
             parentFile?.mkdirs()
             writeBytes(png)
         }
-        verify?.let { golden ->
-            if (!golden.isFile) {
-                throw CliktError(
-                    "--verify golden not found: ${golden.absolutePath}\n" +
-                        "  Generate it first with --out ${golden.path} (no --verify), then re-run with --verify.",
-                    statusCode = 2,
-                )
-            }
-            val r = Differ().compare(
-                golden.readBytes(),
-                png,
-                tolerance = DiffDefaults.TOLERANCE,
-                maxDiffPercent = DiffDefaults.BATCH_MAX_DIFF_PERCENT,
-            )
-            echo("verify: ${r.verdict} (${"%.3f".format(r.diffPercent)}%)")
-            if (r.verdict == DiffVerdict.MISMATCH) throw CliktError("golden mismatch", statusCode = 1)
+
+        val canonical = result.semantics.toCanonicalJson()
+        if (updateSemantics) {
+            writeSemanticsGolden(canonical)
+            return
         }
+        emitSemanticsDump(result, canonical)
+        verifySemanticsGate(canonical)
+        verifyPixelGate(png)
         out?.let { echo("wrote ${it.path} (${png.size} B)") }
+    }
+
+    private fun parseSingleInput(): SnapshotInput = try {
+        preset?.let { SnapshotInput.Preset(it) }
+            ?: SnapshotInput.Json(Json.parseToJsonElement(stateJson!!))
+    } catch (e: SerializationException) {
+        throw CliktError("invalid --state-json: ${e.message}", cause = e, statusCode = 2)
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun renderSingle(sceneName: String, input: SnapshotInput) = try {
+        val shot = app.resolve(sceneName, input, theme, width, height, null)
+        app.renderResult(shot, BACKEND)
+    } catch (e: SnapshotException) {
+        throw CliktError(e.message ?: "usage error", cause = e, statusCode = 2)
+    } catch (e: Exception) {
+        throw CliktError("render failed: ${e.message}", cause = e, statusCode = 1)
+    }
+
+    private fun writeSemanticsGolden(canonical: String) {
+        val golden = verifySemanticsFile
+            ?: throw CliktError("--update-semantics needs --verify-semantics-file", statusCode = 2)
+        golden.parentFile?.mkdirs()
+        golden.writeText(canonical)
+        echo("wrote semantics golden ${golden.path}")
+    }
+
+    private fun emitSemanticsDump(result: RenderResult, canonical: String) {
+        if (!semantics) return
+        val dump = if (semanticsFormat == "json") canonical else result.semantics.toText()
+        val sidecarExt = if (semanticsFormat == "json") ".semantics.json" else ".semantics.txt"
+        out?.let { File(it.path + sidecarExt).writeText(dump) }
+        echo(dump)
+    }
+
+    private fun verifySemanticsGate(canonical: String) {
+        val golden = verifySemanticsFile ?: return
+        if (!golden.isFile) {
+            throw CliktError(
+                "--verify-semantics-file golden not found: ${golden.absolutePath}\n" +
+                    "  Generate it first with --update-semantics --verify-semantics-file ${golden.path}.",
+                statusCode = 2,
+            )
+        }
+        val r = SemanticsDiffer().compare(golden.readText(), canonical)
+        echo("verify-semantics: ${r.result}")
+        if (r.result == "mismatch") {
+            r.delta.forEach { echo(it) }
+            throw CliktError("semantics golden mismatch", statusCode = 1)
+        }
+    }
+
+    private fun verifyPixelGate(png: ByteArray) {
+        val golden = verify ?: return
+        if (!golden.isFile) {
+            throw CliktError(
+                "--verify golden not found: ${golden.absolutePath}\n" +
+                    "  Generate it first with --out ${golden.path} (no --verify), then re-run with --verify.",
+                statusCode = 2,
+            )
+        }
+        val r = Differ().compare(
+            golden.readBytes(),
+            png,
+            tolerance = DiffDefaults.TOLERANCE,
+            maxDiffPercent = DiffDefaults.BATCH_MAX_DIFF_PERCENT,
+        )
+        echo("verify: ${r.verdict} (${"%.3f".format(r.diffPercent)}%)")
+        if (r.verdict == DiffVerdict.MISMATCH) throw CliktError("golden mismatch", statusCode = 1)
     }
 
     private fun runBatch(file: File) {
