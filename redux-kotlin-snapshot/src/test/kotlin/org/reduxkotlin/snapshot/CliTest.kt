@@ -111,4 +111,55 @@ internal class CliTest {
         assertEquals(0, r.statusCode, r.output)
         assertTrue(File(outDir, "index.html").isFile)
     }
+
+    @Test fun single_semantics_text_prints_dump() {
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--scene", "demo", "--preset", "default", "--semantics"))
+        assertEquals(0, r.statusCode, r.output)
+        assertTrue("node" in r.output, r.output)
+    }
+
+    @Test fun single_semantics_json_prints_json() {
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--scene", "demo", "--preset", "default", "--semantics", "--semantics-format", "json"))
+        assertEquals(0, r.statusCode, r.output)
+        assertTrue(r.output.trimStart().startsWith("["), r.output)
+    }
+
+    @Test fun update_semantics_then_verify_matches() {
+        val golden = File(tmp, "demo.semantics.json")
+        val g = snapshotCommand(demoSnapshots).test(
+            listOf(
+                "--scene",
+                "demo",
+                "--preset",
+                "default",
+                "--update-semantics",
+                "--verify-semantics-file",
+                golden.path,
+            ),
+        )
+        assertEquals(0, g.statusCode, g.output)
+        assertTrue(golden.isFile)
+        val v = snapshotCommand(demoSnapshots).test(
+            listOf("--scene", "demo", "--preset", "default", "--verify-semantics-file", golden.path),
+        )
+        assertEquals(0, v.statusCode, v.output)
+        assertTrue("match" in v.output, v.output)
+    }
+
+    @Test fun verify_semantics_mismatch_exits_1() {
+        val golden = File(tmp, "wrong.semantics.json").apply { writeText("[]") }
+        val r = snapshotCommand(demoSnapshots).test(
+            listOf("--scene", "demo", "--preset", "default", "--verify-semantics-file", golden.path),
+        )
+        assertEquals(1, r.statusCode, r.output)
+        assertTrue("mismatch" in r.output, r.output)
+    }
+
+    @Test fun update_semantics_without_file_exits_2() {
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--scene", "demo", "--preset", "default", "--update-semantics"))
+        assertEquals(2, r.statusCode, r.output)
+    }
 }
