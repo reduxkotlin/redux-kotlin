@@ -61,7 +61,9 @@ public class SemanticsDump(
             n.selected?.let { add("selected=$it") }
             n.toggle?.let { add("toggle=$it") }
         }
-        sb.append(indent).append("node").append(if (fields.isEmpty()) "" else " " + fields.joinToString(" ")).append('\n')
+        sb.append(
+            indent,
+        ).append("node").append(if (fields.isEmpty()) "" else " " + fields.joinToString(" ")).append('\n')
         n.children.forEach { appendNode(it, depth + 1, sb) }
     }
 
@@ -70,6 +72,10 @@ public class SemanticsDump(
     public companion object {
         /** An empty dump (no semantics captured). */
         public val EMPTY: SemanticsDump = SemanticsDump(roots = emptyList(), texts = emptyList())
-        private val CANONICAL = Json { prettyPrint = true; encodeDefaults = true; prettyPrintIndent = "  " }
+        private val CANONICAL = Json {
+            prettyPrint = true
+            encodeDefaults = true
+            prettyPrintIndent = "  "
+        }
     }
 }

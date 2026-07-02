@@ -6,15 +6,26 @@ import kotlin.test.assertTrue
 
 internal class SemanticsTest {
     private fun leaf(text: String) = SemanticsDump.Node(
-        role = null, text = listOf(text), contentDescription = emptyList(),
-        testTag = null, enabled = null, selected = null, toggle = null, children = emptyList(),
+        role = null,
+        text = listOf(text),
+        contentDescription = emptyList(),
+        testTag = null,
+        enabled = null,
+        selected = null,
+        toggle = null,
+        children = emptyList(),
     )
 
     private val sample = SemanticsDump(
         roots = listOf(
             SemanticsDump.Node(
-                role = "button", text = listOf("Save"), contentDescription = emptyList(),
-                testTag = "save", enabled = false, selected = null, toggle = null,
+                role = "button",
+                text = listOf("Save"),
+                contentDescription = emptyList(),
+                testTag = "save",
+                enabled = false,
+                selected = null,
+                toggle = null,
                 children = listOf(leaf("Icon")),
             ),
         ),
