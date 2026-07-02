@@ -124,6 +124,6 @@ internal class BatchRunnerTest {
         val report = BatchRunner(
             demoSnapshots,
         ).run(manifest, newTmpDir(), verify = false, goldenDir = null, runId = "r")
-        assertTrue(report.totals.renderMsTotal >= 0)
+        assertEquals(report.shots.sumOf { it.renderMs ?: 0 }, report.totals.renderMsTotal)
     }
 }

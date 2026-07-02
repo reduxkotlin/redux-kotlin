@@ -214,6 +214,35 @@ internal class CliTest {
         assertEquals(2, r.statusCode, r.output)
     }
 
+    @Test fun batch_update_semantics_without_golden_dir_exits_2() {
+        val manifest = File(tmp, "us.json").apply {
+            writeText("""{"shots":[{"id":"a","scene":"demo","preset":"default"}]}""")
+        }
+        val r = snapshotCommand(demoSnapshots)
+            .test(listOf("--batch", manifest.path, "--out-dir", File(tmp, "usout").path, "--update-semantics"))
+        assertEquals(2, r.statusCode, r.output)
+    }
+
+    @Test fun batch_update_semantics_exits_0_and_writes_golden_without_pixel_gate() {
+        val goldenDir = File(tmp, "ug").apply { mkdirs() }
+        val manifest = File(tmp, "ug.json").apply {
+            writeText("""{"shots":[{"id":"a","scene":"demo","preset":"default"}]}""")
+        }
+        val r = snapshotCommand(demoSnapshots).test(
+            listOf(
+                "--batch",
+                manifest.path,
+                "--out-dir",
+                File(tmp, "ugout").path,
+                "--golden-dir",
+                goldenDir.path,
+                "--update-semantics",
+            ),
+        )
+        assertEquals(0, r.statusCode, r.output)
+        assertTrue(File(goldenDir, "a.semantics.json").isFile)
+    }
+
     @Test fun batch_semantics_writes_sidecars() {
         val manifest = File(tmp, "sc.json").apply {
             writeText("""{"shots":[{"id":"a","scene":"demo","preset":"default"}]}""")

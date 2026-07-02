@@ -113,21 +113,6 @@ public final class org/reduxkotlin/snapshot/SceneDefaults {
 	public final fun setWidth (Ljava/lang/Integer;)V
 }
 
-public final class org/reduxkotlin/snapshot/SemanticsDiffResult {
-	public static final field $stable I
-	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
-	public final fun getDelta ()Ljava/util/List;
-	public final fun getResult ()Ljava/lang/String;
-}
-
-public final class org/reduxkotlin/snapshot/SemanticsDiffer {
-	public static final field $stable I
-	public fun <init> ()V
-	public fun <init> (I)V
-	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun compare (Ljava/lang/String;Ljava/lang/String;)Lorg/reduxkotlin/snapshot/SemanticsDiffResult;
-}
-
 public final class org/reduxkotlin/snapshot/SemanticsDump {
 	public static final field $stable I
 	public static final field Companion Lorg/reduxkotlin/snapshot/SemanticsDump$Companion;

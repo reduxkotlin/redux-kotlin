@@ -1,11 +1,11 @@
 package org.reduxkotlin.snapshot
 
 /** Result of a semantics comparison: a lowercase [result] and a bounded, readable [delta]. */
-public class SemanticsDiffResult(
+internal class SemanticsDiffResult(
     /** `match` when the canonical forms are equal, else `mismatch`. */
-    public val result: String,
+    val result: String,
     /** Line-level delta (`-` golden-only, `+` actual-only); empty on match. Capped, may end with an overflow marker. */
-    public val delta: List<String>,
+    val delta: List<String>,
 )
 
 /**
@@ -14,9 +14,9 @@ public class SemanticsDiffResult(
  * the gate is equality, and the line diff is a readable-enough signal. Lines present in both forms
  * are elided; a changed value line surfaces as a `-`/`+` pair.
  */
-public class SemanticsDiffer(private val maxDeltaLines: Int = 40) {
+internal class SemanticsDiffer(private val maxDeltaLines: Int = 40) {
     /** Compares [golden] vs [actual] canonical strings. */
-    public fun compare(golden: String, actual: String): SemanticsDiffResult {
+    fun compare(golden: String, actual: String): SemanticsDiffResult {
         if (golden == actual) return SemanticsDiffResult("match", emptyList())
         val g = golden.lines()
         val a = actual.lines()
