@@ -162,4 +162,46 @@ internal class CliTest {
             .test(listOf("--scene", "demo", "--preset", "default", "--update-semantics"))
         assertEquals(2, r.statusCode, r.output)
     }
+
+    @Test fun missing_verify_semantics_file_exits_2_with_fixit_message() {
+        val golden = File(tmp, "absent.semantics.json")
+        val r = snapshotCommand(demoSnapshots).test(
+            listOf("--scene", "demo", "--preset", "default", "--verify-semantics-file", golden.path),
+        )
+        assertEquals(2, r.statusCode, r.output)
+        assertTrue(golden.absolutePath in r.output, "should name the missing semantics golden path")
+        assertTrue("--update-semantics" in r.output, "should tell the user how to generate it")
+    }
+
+    @Test fun single_semantics_with_out_writes_sidecar_files() {
+        val outText = File(tmp, "shot.png")
+        val rText = snapshotCommand(demoSnapshots).test(
+            listOf("--scene", "demo", "--preset", "default", "--out", outText.path, "--semantics"),
+        )
+        assertEquals(0, rText.statusCode, rText.output)
+        val sidecarText = File(tmp, "shot.png.semantics.txt")
+        assertTrue(sidecarText.isFile, "expected sidecar at ${sidecarText.path}")
+        assertTrue(sidecarText.length() > 0)
+
+        val outJson = File(tmp, "shotj.png")
+        val rJson = snapshotCommand(demoSnapshots).test(
+            listOf(
+                "--scene",
+                "demo",
+                "--preset",
+                "default",
+                "--out",
+                outJson.path,
+                "--semantics",
+                "--semantics-format",
+                "json",
+            ),
+        )
+        assertEquals(0, rJson.statusCode, rJson.output)
+        val sidecarJson = File(tmp, "shotj.png.semantics.json")
+        assertTrue(sidecarJson.isFile, "expected sidecar at ${sidecarJson.path}")
+        val jsonContent = sidecarJson.readText()
+        assertTrue(jsonContent.isNotEmpty())
+        assertTrue(jsonContent.trimStart().startsWith("["), jsonContent)
+    }
 }
