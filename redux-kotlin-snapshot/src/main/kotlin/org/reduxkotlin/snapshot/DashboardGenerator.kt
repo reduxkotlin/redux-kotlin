@@ -23,7 +23,7 @@ internal object DashboardGenerator {
 
     private fun rank(s: ShotReport): Int = when {
         s.status == "error" -> 0
-        s.verify?.result == "mismatch" -> 1
+        s.verify?.result == "mismatch" || s.verifySemantics?.result == "mismatch" -> 1
         s.verify?.result == "missing-golden" -> 2
         else -> 3
     }
@@ -46,6 +46,7 @@ internal object DashboardGenerator {
     <span class="fail">${t.failed} failed</span>
     <span class="fail">${t.mismatched} mismatched</span>
     <span class="warn">${t.missingGolden} missing-golden</span>
+    <span class="fail">${t.semanticsMismatched} semantics-mismatched</span>
   </div>
 </header>
 <main>
@@ -125,6 +126,13 @@ $LIGHTBOX
         else -> """<span class="pill ok">ok</span>"""
     }
 
+    private fun semanticsPillFor(s: ShotReport): String? = when (s.verifySemantics?.result) {
+        "mismatch" -> """<span class="pill bad">semantics mismatch</span>"""
+        "missing-golden" -> """<span class="pill warn">no semantics golden</span>"""
+        "match" -> """<span class="pill ok">semantics match</span>"""
+        else -> null
+    }
+
     private fun rel(path: String, outDir: File): String =
         runCatching { File(path).relativeTo(outDir).path }.getOrNull() ?: File(path).name
 
@@ -148,8 +156,8 @@ $LIGHTBOX
     }
 
     private fun card(s: ShotReport, outDir: File): String {
-        val bad = s.status == "error" || s.verify?.result == "mismatch"
-        val pill = pillFor(s)
+        val bad = s.status == "error" || s.verify?.result == "mismatch" || s.verifySemantics?.result == "mismatch"
+        val pill = pillFor(s) + (semanticsPillFor(s)?.let { " $it" } ?: "")
         val imgs = imgsFor(s, outDir)
         val meta = buildString {
             append("""<div class="meta">""")

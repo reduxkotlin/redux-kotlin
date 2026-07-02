@@ -39,4 +39,21 @@ internal class DashboardGeneratorTest {
         assertTrue("lbOpen(" in html && """id="lb"""" in html, "zoom lightbox missing")
         assertTrue("image-rendering:auto" in html, "thumbnails should downscale smoothly")
     }
+
+    @Test fun dashboard_shows_semantics_mismatch() {
+        val report = SnapshotReport(
+            runId = "r", outDir = "o",
+            totals = Totals(total = 1, ok = 0, failed = 0, mismatched = 0, missingGolden = 0, semanticsMismatched = 1),
+            shots = listOf(
+                ShotReport(
+                    id = "a", scene = "demo", input = "preset=default", status = "ok",
+                    verifySemantics = SemanticsVerifyReport("a.semantics.json", "mismatch", listOf("- x", "+ y")),
+                ),
+            ),
+        )
+        val outDir = File.createTempFile("dash", "").let { it.delete(); it.mkdirs(); it }
+        val html = DashboardGenerator.generate(report, outDir).readText()
+        assertTrue("semantics" in html.lowercase(), "should mention semantics")
+        assertTrue("mismatch" in html, "should show the semantics verdict")
+    }
 }
