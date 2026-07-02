@@ -1229,20 +1229,20 @@ Read the current README first, then add/extend, matching its style:
    - Single dump: `rk snapshot --scene demo --preset default --semantics` (text) or `--semantics-format json`.
 3. **Dump JSON schema:** document the `Node` object fields (`role, text, contentDescription, testTag, enabled, selected, toggle, children`) and that the top level is a JSON array of roots, no bounds.
 4. **Report v2 schema:** note `schemaVersion: 2`, the new `ShotReport` fields (`verifySemantics`, `semanticsSidecar`, `semanticsBytes`) and `Totals` fields (`semanticsMismatched`, `semanticsMissingGolden`, `semanticsMatched`, `renderMsTotal`); note consumers should read with `ignoreUnknownKeys = true`.
-5. **Consuming from Maven Central:** the coordinate `org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha03` with a Gradle snippet:
+5. **Consuming from Maven Central:** the coordinate `org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha04` with a Gradle snippet:
    ```kotlin
    repositories { mavenCentral() }
-   dependencies { implementation("org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha03") }
+   dependencies { implementation("org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha04") }
    ```
    plus a note that scene authoring transitively pulls Compose/clikt/serialization (`api` deps).
-6. A **version note:** `1.0.0-SNAPSHOT` is the `master` baseline; released artifacts ride the shared release-tag line with the CLI (next: `1.0.0-alpha03`).
+6. A **version note:** `1.0.0-SNAPSHOT` is the `master` baseline; released artifacts ride the shared release-tag line with the CLI (next: `1.0.0-alpha04`).
 
 - [ ] **Step 4: Verify a local publish resolves (artifact + POM + jars)**
 
 Run: `./gradlew :redux-kotlin-snapshot:publishToMavenLocal`
 Then confirm the coordinate landed with sources + javadoc jars:
 Run: `ls ~/.m2/repository/org/reduxkotlin/redux-kotlin-snapshot/1.0.0-SNAPSHOT/`
-Expected: a `.pom`, the main `.jar`, `-sources.jar`, and `-javadoc.jar` (the local publish uses the `1.0.0-SNAPSHOT` baseline; the released `alpha03` coordinate is produced by CI on the maintainer tag push — a follow-up action, not run here).
+Expected: a `.pom`, the main `.jar`, `-sources.jar`, and `-javadoc.jar` (the local publish uses the `1.0.0-SNAPSHOT` baseline; the released `alpha04` coordinate is produced by CI on the maintainer tag push — a follow-up action, not run here).
 
 - [ ] **Step 5: Run the full module test suite**
 
@@ -1260,7 +1260,7 @@ git commit -m "docs(snapshot): document semantics flags, schemas, and Maven Cent
 
 ## Release follow-up (maintainer, out of band)
 
-Cutting `org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha03` to Maven Central is a signed CI publish triggered by a maintainer tag push (`-Pversion=1.0.0-alpha03`, `signingInMemoryKey` present). Not performed by this plan. Confirm the snapshot module is in the release publish set when the tag is cut.
+Cutting `org.reduxkotlin:redux-kotlin-snapshot:1.0.0-alpha04` to Maven Central is a signed CI publish triggered by a maintainer tag push (`-Pversion=1.0.0-alpha04`, `signingInMemoryKey` present). Not performed by this plan. Confirm the snapshot module is in the release publish set when the tag is cut.
 
 ## Self-Review (completed by plan author)
 

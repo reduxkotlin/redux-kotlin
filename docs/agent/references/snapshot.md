@@ -158,7 +158,8 @@ architecture-independent (it carries no bounds), so it stays stable across dev a
   needs `--golden-dir`): it writes the canonical goldens and exits 0 without gating.
 
 Extraction is non-fatal: if the semantics can't be read, the dump degrades to empty and the PNG is
-still produced. This surface first ships in `redux-kotlin-snapshot:1.0.0-alpha03`.
+still produced. This surface first ships in `redux-kotlin-snapshot:1.0.0-alpha04` (`1.0.0-alpha03`
+released 2026-06-23, before this work).
 
 ## The batch + dashboard loop (TaskFlow)
 
