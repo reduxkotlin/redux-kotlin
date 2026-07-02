@@ -197,7 +197,7 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
         }
         val runId = "run-${System.currentTimeMillis()}"
         val report = BatchRunner(app, BACKEND).run(
-            manifest, outDir, verify = goldenDir != null, goldenDir, runId,
+            manifest, outDir, verify = goldenDir != null && !updateSemantics, goldenDir, runId,
             semantics = semantics, verifySemantics = verifySemantics,
             updateSemantics = updateSemantics, semanticsFormat = semanticsFormat,
         )
@@ -220,6 +220,10 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
             )
             echoDrift(report) { echo(it) }
         }
+        // --update-semantics (re)writes each shot's canonical form and exits 0 without gating —
+        // BatchRunner already wrote the semantics goldens above; the pixel/semantics failure gate
+        // below only applies to normal and --verify-semantics runs.
+        if (updateSemantics) return
         if (report.totals.failed > 0 || report.totals.mismatched > 0 || report.totals.semanticsMismatched > 0) {
             throw CliktError(
                 "batch had ${report.totals.failed} failed / ${report.totals.mismatched} mismatched / " +
