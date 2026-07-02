@@ -189,13 +189,18 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
 
     private fun runBatch(file: File) {
         requireManifest(file)
+        requireBatchSemanticsGuards(verifySemantics, updateSemantics, goldenDir)
         val manifest = try {
             Json.decodeFromString(BatchManifest.serializer(), file.readText())
         } catch (e: SerializationException) {
             throw CliktError("invalid --batch manifest: ${e.message}", cause = e, statusCode = 2)
         }
         val runId = "run-${System.currentTimeMillis()}"
-        val report = BatchRunner(app, BACKEND).run(manifest, outDir, verify = goldenDir != null, goldenDir, runId)
+        val report = BatchRunner(app, BACKEND).run(
+            manifest, outDir, verify = goldenDir != null, goldenDir, runId,
+            semantics = semantics, verifySemantics = verifySemantics,
+            updateSemantics = updateSemantics, semanticsFormat = semanticsFormat,
+        )
         val json = Json { prettyPrint = true }.encodeToString(SnapshotReport.serializer(), report)
         File(outDir, "report.json").apply {
             parentFile?.mkdirs()
@@ -209,11 +214,16 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
             echo(json)
         } else {
             val t = report.totals
-            echo("batch: ${t.ok}/${t.total} ok, ${t.failed} failed, ${t.mismatched} mismatched -> ${outDir.path}")
+            echo(
+                "batch: ${t.ok}/${t.total} ok, ${t.failed} failed, ${t.mismatched} mismatched, " +
+                    "${t.semanticsMismatched} semantics-mismatched -> ${outDir.path}",
+            )
+            echoDrift(report) { echo(it) }
         }
-        if (report.totals.failed > 0 || report.totals.mismatched > 0) {
+        if (report.totals.failed > 0 || report.totals.mismatched > 0 || report.totals.semanticsMismatched > 0) {
             throw CliktError(
-                "batch had ${report.totals.failed} failed / ${report.totals.mismatched} mismatched",
+                "batch had ${report.totals.failed} failed / ${report.totals.mismatched} mismatched / " +
+                    "${report.totals.semanticsMismatched} semantics-mismatched",
                 statusCode = 1,
             )
         }
@@ -264,5 +274,32 @@ private class SnapshotCommand(private val app: SnapshotApp) : CliktCommand(name 
 
     private companion object {
         val BACKEND = ImageComposeSceneBackend()
+    }
+}
+
+// Kept as a top-level function (rather than a SnapshotCommand member) so the batch semantics
+// guard doesn't push the command class over detekt's TooManyFunctions budget, and so runBatch's
+// own ThrowsCount stays within the two-throw limit.
+private fun requireBatchSemanticsGuards(verifySemantics: Boolean, updateSemantics: Boolean, goldenDir: File?) {
+    if (verifySemantics && goldenDir == null) {
+        throw CliktError("--verify-semantics needs --golden-dir", statusCode = 2)
+    }
+    if (updateSemantics && goldenDir == null) {
+        throw CliktError("--update-semantics (batch) needs --golden-dir", statusCode = 2)
+    }
+}
+
+// Terse drift-only block: one line per shot that errored or mismatched (pixel or semantics),
+// with any semantics delta lines indented beneath it. Top-level (not a SnapshotCommand member)
+// for the same TooManyFunctions/ThrowsCount budget reasons as [requireBatchSemanticsGuards].
+private fun echoDrift(report: SnapshotReport, echo: (String) -> Unit) {
+    report.shots.filter {
+        it.status == "error" || it.verify?.result == "mismatch" || it.verifySemantics?.result == "mismatch"
+    }.forEach { s ->
+        echo(
+            "  drift ${s.id}: pixel=${s.verify?.result ?: "-"} semantics=${s.verifySemantics?.result ?: "-"} " +
+                "png=${s.out ?: "-"} diff=${s.verify?.diffImage ?: "-"} sidecar=${s.semanticsSidecar ?: "-"}",
+        )
+        s.verifySemantics?.delta?.forEach { echo("    $it") }
     }
 }
