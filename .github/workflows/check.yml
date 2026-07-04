@@ -36,7 +36,9 @@ jobs:
         continue-on-error: true
         run: |
           ls '${{ github.workspace }}/build/reports/detekt/'
-          cp '${{ github.workspace }}/build/reports/detekt/detekt.sarif' '${{ github.workspace }}/detekt.sarif.json'
+          # detekt 2.0 names report files after the task minus its `detekt` prefix,
+          # so the root `detektAll` task emits `all.sarif` (was `detekt.sarif` in 1.x).
+          cp '${{ github.workspace }}/build/reports/detekt/all.sarif' '${{ github.workspace }}/detekt.sarif.json'
           echo "$(
             jq --arg github_workspace ${{ github.workspace }} \
               '. | ( .runs[].results[].locations[].physicalLocation.artifactLocation.uri |= if test($github_workspace) then .[($github_workspace | length | . + 1):] else . end )' \
@@ -97,6 +99,12 @@ jobs:
         run: ./gradlew check -x detekt -x detektAll --scan
 
       - name: Gradle Test Local Publishing
+        # Only the main host (macOS) builds every native target, so it's the only
+        # runner that can publish the full multiplatform set — matching the real
+        # release, which publishes from a single macOS host. On ubuntu/windows the
+        # apple/native klibs aren't built and publishToLocal fails generating their
+        # publication metadata (FileNotFoundException on the missing klib).
+        if: ${{ matrix.os.runner == 'macos-latest' }}
         run: ./gradlew publishToLocal --scan
 
       - uses: actions/upload-artifact@v7

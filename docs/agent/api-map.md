@@ -33,17 +33,31 @@ Read the committed `.api` dump for a module's public surface; regenerate with `.
 | `:redux-kotlin-devtools-core` | `redux-kotlin-devtools-core/api/redux-kotlin-devtools-core.klib.api` | DevTools entry points: `devTools` enhancer + `DevToolsConfig`, `DevToolsHub`/`DevToolsSession` (incl. `maxAge`, `outputsFlow`), `devToolsMiddleware`, `devToolsCombineReducers`, `DevToolsOutput` (with `isRunning`), state/action diffing (`DiffOp`, `DiffEntry`). |
 | `:redux-kotlin-devtools-bridge` | `redux-kotlin-devtools-bridge/api/redux-kotlin-devtools-bridge.klib.api` | Wire protocol between app and DevTools UI (`BridgeMessage`, `BridgeConfig`, `BridgeOutput`) plus the `.jsonl` recording codec (`RecordingHeader`, `encodeRecording`/`decodeRecording`/`decodeRecordingLenient`). |
 | `:redux-kotlin-devtools-remote` | `redux-kotlin-devtools-remote/api/redux-kotlin-devtools-remote.klib.api` | Remote DevTools transport config (`RemoteConfig`). |
-| `:redux-kotlin-devtools-inapp` | `redux-kotlin-devtools-inapp/api/redux-kotlin-devtools-inapp.klib.api` | In-app DevTools overlay: triggers/config (`DevToolsTrigger`, `InAppConfig`, `DevToolsTab`). |
-| `:redux-kotlin-devtools-inapp-noop` | `redux-kotlin-devtools-inapp-noop/api/redux-kotlin-devtools-inapp-noop.klib.api` | No-op in-app DevTools (same config types, stripped for release builds). |
+| `:redux-kotlin-devtools-inapp` | `redux-kotlin-devtools-inapp/api/redux-kotlin-devtools-inapp.klib.api` | In-app DevTools: overlay host (`ReduxDevToolsHost`) + embeddable inspector (`ReduxDevToolsPanel` — tabs only, no bubble/drawer, for mounting in your own UI); triggers/config (`DevToolsTrigger`, `InAppConfig`, `DevToolsTab`). |
+| `:redux-kotlin-devtools-inapp-noop` | `redux-kotlin-devtools-inapp-noop/api/redux-kotlin-devtools-inapp-noop.klib.api` | No-op in-app DevTools (same host + panel + config types, stripped for release builds). |
 | `:redux-kotlin-devtools-ui` | `redux-kotlin-devtools-ui/api/redux-kotlin-devtools-ui.klib.api` | Compose DevTools UI panels — package `org.reduxkotlin.devtools.ui` (`DevToolsTab`, `DevToolsThemeMode`, `ui.model` view-state, `RkTokens`). |
 
 `redux-kotlin-bom` (BOM platform) and `redux-kotlin-routing-codegen` (KSP processor) are
 published but carry no `.api` dump, so they're not listed.
 
+Published, experimental — exempt from semver (ABI tracked in
+`redux-kotlin-snapshot/api/redux-kotlin-snapshot.api`):
+`redux-kotlin-snapshot` is the library behind `rk snapshot` — on Maven Central as
+`org.reduxkotlin:redux-kotlin-snapshot` and in the BOM. It renders a redux-kotlin Compose screen
+headlessly from a known state (`f(state) → PNG`), diffs against a committed golden, emits an HTML
+dashboard, and extracts a deterministic bounds-free semantics dump (text/JSON node tree) that a
+`--verify-semantics` golden can gate on — a cheaper, less flaky regression signal than the pixel diff
+for an AI-agent loop (semantics surface ships in `1.0.0-alpha04`+). JVM/desktop-only (depend on it from a JVM/desktop source set + `compose.desktop.currentOs`).
+Run it via `rk snapshot`, a consuming app's `main` (which calls `runCli`), or the TaskFlow `snapshotUi`
+task; see `docs/agent/references/snapshot.md`.
+
 Unpublished developer tools (no `.api` dump, not on Maven):
 `redux-kotlin-devtools-standalone` is the `convention.control` Compose desktop monitor app, and
-`redux-kotlin-devtools-cli` is the `rk-devtools` clikt tool wrapping the standalone server +
-capture queries (`serve`/`stores`/`actions`/`diff`/`state`/`tail`); install via
-`./gradlew :redux-kotlin-devtools-cli:installDist`.
+`redux-kotlin-devtools-cli` is the library behind `rk devtools` (clikt commands for the standalone server +
+capture queries: `serve`/`stores`/`actions`/`diff`/`state`/`tail`); the installable tool is `rk` from
+`./gradlew :redux-kotlin-cli:installDist` (binary: `redux-kotlin-cli/build/install/rk/bin/rk`).
+`redux-kotlin-cli-dist` is the Compose app-image + JReleaser packaging module: `createDistributable` builds
+a per-OS bundled-JRE app-image and `packageRkArchive` archives it; JReleaser publishes the archives to the
+Homebrew tap (`reduxkotlin/homebrew-tap`) and Scoop bucket (`reduxkotlin/scoop-bucket`) on a tagged release.
 
 `examples/*` are `convention.control` (not published, no `.api`).

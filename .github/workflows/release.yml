@@ -94,13 +94,12 @@ jobs:
       fail-fast: false
       matrix:
         repository:
-          - name: GitHub Packages
-            tasks: publishAllPublicationsToGitHubRepository
-            enabled: ${{ github.event.inputs.skipGitHub != 'y' }}
+          # GitHub Packages is intentionally not published: it rejects the Compose
+          # Android AAR publications with HTTP 422, and Maven Central is the canonical
+          # distribution channel. Re-add a matrix entry here if that changes.
           - name: Maven Central
-            # Uploads all modules to the Central Publisher Portal and leaves the
-            # deployment for a manual Drop/Publish in the Portal UI. Swap for
-            # `publishAndReleaseToMavenCentral` to auto-release once the flow is trusted.
+            # Uploads all modules to the Central Publisher Portal and auto-releases
+            # them (automaticRelease = true in convention.publishing).
             tasks: publishToMavenCentral
             enabled: ${{ github.event.inputs.skipMavenCentral != 'y' }}
     steps:
@@ -138,7 +137,13 @@ jobs:
         run: |
           REPO_NAME=${{ github.repository }}
           REPO_NAME=${REPO_NAME#${{ github.repository_owner }}/}
-          cp -avr build/dokka/html/ public;
+          # The `dokka` artifact uploads `**/build/dokka`, and download-artifact strips
+          # the common ancestor, so the HTML lands at `html/` rather than the old
+          # `build/dokka/html/`. Locate the generated html dir (the one with index.html)
+          # rather than hardcoding a path.
+          DOKKA_HTML="$(find . -type d -name html -exec test -e '{}/index.html' ';' -print | head -1)"
+          test -n "$DOKKA_HTML" || { echo "no Dokka html/ with index.html found"; find . -type d -name html; exit 1; }
+          cp -avr "${DOKKA_HTML}/" public;
           find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec gzip -f -k {} \;
           echo "/${REPO_NAME} /${REPO_NAME}/${REPO_NAME}/index.html 301" > public/_redirects;
           echo "/${REPO_NAME}/index.html /${REPO_NAME}/${REPO_NAME}/index.html 301" >> public/_redirects;
@@ -149,3 +154,16 @@ jobs:
           build_dir: public
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+  release-CLI:
+    name: Release rk CLI
+    # Publish the matching rk CLI (binaries + Homebrew + Scoop) for the same tag, only
+    # after Maven Central succeeds — so the CLI never lags the library again. Gated to
+    # real release tags: src-push builds and snapshots don't cut a CLI. Delegates to the
+    # reusable cli-release workflow; secrets: inherit passes GH_PUBLISH_TOKEN etc.
+    needs: [ release-Artefacts ]
+    if: ${{ github.event_name == 'release' }}
+    uses: ./.github/workflows/cli-release.yml
+    with:
+      version: ${{ github.event.release.tag_name }}
+    secrets: inherit

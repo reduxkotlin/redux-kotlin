@@ -99,6 +99,10 @@ public final class org/reduxkotlin/devtools/inapp/ReduxDevToolsHostKt {
 	public static final fun ReduxDevToolsHost (Lorg/reduxkotlin/devtools/inapp/InAppConfig;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class org/reduxkotlin/devtools/inapp/ReduxDevToolsPanelKt {
+	public static final fun ReduxDevToolsPanel (Ljava/lang/String;Lorg/reduxkotlin/devtools/ui/DevToolsTab;Lorg/reduxkotlin/devtools/ui/DevToolsThemeMode;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class org/reduxkotlin/devtools/ui/DevToolsTab : java/lang/Enum {
 	public static final field ACTIONS Lorg/reduxkotlin/devtools/ui/DevToolsTab;
 	public static final field DIFF Lorg/reduxkotlin/devtools/ui/DevToolsTab;

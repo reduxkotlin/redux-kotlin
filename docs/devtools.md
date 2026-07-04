@@ -20,7 +20,7 @@ the agent-oriented CLI walkthrough lives at
 The DevTools ship as separate artifacts so release builds can link none of
 the debug infrastructure. Published libraries: `-core`, `-bridge`, `-remote`,
 `-inapp`, `-inapp-noop`, `-ui`. Unpublished repo tools: `-standalone` (the
-desktop monitor app) and `-cli` (the `rk-devtools` terminal tool).
+desktop monitor app) and `-cli` (library — powers `rk devtools`).
 
 ### `redux-kotlin-devtools-core`
 
@@ -65,7 +65,8 @@ Package: `org.reduxkotlin.devtools.inapp`
 | Symbol | Role |
 |---|---|
 | `ReduxDevToolsHost(config, content)` | Composable root wrapper; adds the overlay (bubble + edge-swipe trigger, drawer) |
-| `ReduxDevTools.open()` / `ReduxDevTools.close()` | Programmatic drawer control |
+| `ReduxDevToolsPanel(instanceId, startTab, theme)` | Embeddable inspector body (tabs only, no bubble/drawer) for mounting in your own UI; reads the same `DevToolsHub`, does not touch the overlay drawer state |
+| `ReduxDevTools.open()` / `ReduxDevTools.close()` | Programmatic drawer control (overlay drawer only — not embedded panels) |
 | `InAppConfig` | Drawer options: `triggers`, `startTab`, `theme`, `instanceId` |
 | `DevToolsTrigger` | `BUBBLE` / `EDGE_SWIPE` |
 | `DevToolsThemeMode` | `DARK` (default) / `LIGHT` / `SYSTEM` — lives in `org.reduxkotlin.devtools.ui` |
@@ -77,7 +78,7 @@ on those targets). Use the no-op on those targets.
 ### `redux-kotlin-devtools-inapp-noop`
 
 The zero-overhead release sibling. Mirrors the `org.reduxkotlin.devtools.inapp`
-API (`ReduxDevToolsHost`, `ReduxDevTools`, `InAppConfig`, the enum types) **and**
+API (`ReduxDevToolsHost`, `ReduxDevToolsPanel`, `ReduxDevTools`, `InAppConfig`, the enum types) **and**
 the core facade (`devTools`, `devToolsMiddleware`, `devToolsCombineReducers`,
 `named`, `DevToolsConfig`, `KotlinxValueSerializer`, …) with empty bodies. Has
 no dependency on Compose material3, Ktor, or core. Available on all targets,
@@ -367,26 +368,42 @@ state off the loopback interface requires a non-loopback `host` **and** a shared
 `token` (sent in the handshake, verified by the monitor against the connecting
 peer). The bridge is debug-only — never ship it in a release build.
 
-## The `rk-devtools` CLI
+## The `rk` CLI
 
-`redux-kotlin-devtools-cli` wraps the same bridge receiver in a terminal tool —
-ideal for agents, scripts, and headless debugging. It is unpublished; install it
-from the repository:
+`redux-kotlin-devtools-cli` is a library that powers the `rk devtools` command
+group in the unified `rk` binary — ideal for agents, scripts, and headless
+debugging. It is unpublished; install `rk` via a package manager (recommended)
+or build it from source:
+
+**Homebrew / Scoop (bundled JRE — no Java required):**
+
+```bash
+# macOS / Linux
+brew install reduxkotlin/tap/rk
+
+# Windows
+scoop bucket add reduxkotlin https://github.com/reduxkotlin/scoop-bucket
+scoop install rk
+```
+
+The macOS bottle is **Apple Silicon only** for now; on an Intel Mac, build from source.
+
+**From source (needs JDK 17+):**
 
 ```
-./gradlew :redux-kotlin-devtools-cli:installDist
+./gradlew :redux-kotlin-cli:installDist
 # binary:
-redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools
+redux-kotlin-cli/build/install/rk/bin/rk
 ```
 
 | Command | What it does |
 |---|---|
-| `rk-devtools serve` | Hosts the receiver on `127.0.0.1:9090`; writes one `<storeKey>.jsonl` capture per connected store into `.rk-devtools/`. Options: `--port`, `--host`, `--token`, `--out`, `--ui` (also launch the GUI monitor). |
-| `rk-devtools stores` | Lists captured stores (`clientId::storeInstanceId`). |
-| `rk-devtools actions` | Action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until`, `--last N`, `--format actions\|diff\|full`, `--pretty`. |
-| `rk-devtools diff` | Same filters; each line includes the per-field JSON diff. |
-| `rk-devtools state --at <id>` | Full state snapshot at an actionId. |
-| `rk-devtools tail [--follow]` | Recent actions; `--follow` polls live. |
+| `rk devtools serve` | Hosts the receiver on `127.0.0.1:9090`; writes one `<storeKey>.jsonl` capture per connected store into `.rk-devtools/`. Options: `--port`, `--host`, `--token`, `--out`, `--ui` (also launch the GUI monitor). |
+| `rk devtools stores` | Lists captured stores (`clientId::storeInstanceId`). |
+| `rk devtools actions` | Action log. Filters: `--store`, `--type '*Card*'`, `--since`/`--until` (actionId), `--since-time`/`--until-time` (epoch millis or ISO-8601), `--last N`, `--format actions\|diff\|full`, `--pretty`. |
+| `rk devtools diff` | Same filters; each line includes the per-field JSON diff. |
+| `rk devtools state --at <id>` | Full state snapshot at an actionId. |
+| `rk devtools tail [--follow]` | Recent actions; `--follow` polls live. |
 
 The agent-oriented walkthrough of the full debugging loop lives in
 [docs/agent/references/devtools.md](agent/references/devtools.md).

@@ -1,5 +1,6 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("convention.control")
@@ -12,7 +13,13 @@ plugins {
 kotlin {
     // Desktop-only for now: the wasmJs web viewer was removed because the server had no
     // viewer-facing fanout (it only ingested); it returns when a broadcast path exists.
-    jvm()
+    // Pin bytecode to 17 (convention.control sets no jvmTarget) so consumers compiled against a
+    // JDK 17 toolchain — e.g. redux-kotlin-devtools-cli — can load these classes on a 17 JVM.
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
 
     sourceSets {
         commonMain.dependencies {
@@ -51,8 +58,14 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ReduxKotlinDevTools"
-            // Compose packaging wants plain MAJOR.MINOR.PATCH — strip any -SNAPSHOT suffix.
+            // Compose validates every declared targetFormat's version eagerly at configuration on
+            // its host OS (e.g. MSI on Windows requires a strict integer MAJOR.MINOR.BUILD). Strip
+            // any -SNAPSHOT/-alpha qualifier AND normalize to exactly three integer components so an
+            // incomplete/odd version (e.g. "1") can't produce an invalid MSI version on Windows.
             val distVersion = project.version.toString().substringBefore("-")
+                .split(".").mapNotNull { it.toIntOrNull() }
+                .let { p -> listOf(p.getOrElse(0) { 1 }, p.getOrElse(1) { 0 }, p.getOrElse(2) { 0 }) }
+                .joinToString(".")
             packageVersion = distVersion
             macOS {
                 // Dmg additionally requires MAJOR > 0; lift 0.x.y until the project reaches 1.0.

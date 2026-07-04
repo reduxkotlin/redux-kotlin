@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `redux-kotlin-devtools-inapp`: new public composable `ReduxDevToolsPanel(instanceId, startTab,
+  theme)` — an **embeddable** DevTools inspector (the Actions/State/Diff/Pipeline/Outputs tabs with
+  no bubble or overlay drawer) for mounting inside your own UI, e.g. a host app's debug drawer. The
+  inspector body was extracted into a shared `InspectorBody`, so `ReduxDevToolsHost` is unchanged.
+  Mirrored as an inert no-op in `redux-kotlin-devtools-inapp-noop` (release-stripped).
 - New module `redux-kotlin-thunk`: ported from the standalone
   [reduxkotlin/redux-kotlin-thunk](https://github.com/reduxkotlin/redux-kotlin-thunk) repo into
   the monorepo — `Thunk` typealias + `createThunkMiddleware`. Published under the same maven
@@ -33,6 +38,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   defaults at construction, so the first read/render already reflects rehydrated state.
 - `redux-kotlin-multimodel`: `ModelState.withAll(other: ModelState)` overlay overload backing
   `preloadedState`.
+- `redux-kotlin-snapshot` is now **published** to Maven Central
+  (`org.reduxkotlin:redux-kotlin-snapshot`) and constrained by `redux-kotlin-bom` — previously an
+  in-repo-only tool. **Experimental**, exempt from semver like the DevTools family. Published via a
+  new `convention.publishing-jvm` (the repo's first JVM-only publishing convention) and ABI-tracked
+  under `redux-kotlin-snapshot/api/`. JVM/desktop-only: depend on it from a JVM/desktop source set
+  and add `compose.desktop.currentOs` for the host Skiko runtime.
 - **New DevTools family** — action/state/diff/pipeline inspection for redux-kotlin apps.
   Six published modules:
   - `redux-kotlin-devtools-core` — the `devTools(config)` store enhancer, `DevToolsConfig`,
@@ -52,9 +63,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   Plus two unpublished developer tools in the repo: `redux-kotlin-devtools-standalone`
   (Compose desktop monitor app, `./gradlew :redux-kotlin-devtools-standalone:run`) and
-  `redux-kotlin-devtools-cli` (`rk-devtools` clikt tool — install with
-  `./gradlew :redux-kotlin-devtools-cli:installDist`, then run
-  `redux-kotlin-devtools-cli/build/install/rk-devtools/bin/rk-devtools`).
+  `redux-kotlin-devtools-cli` (the library behind `rk devtools` in the unified `rk` CLI —
+  `brew install reduxkotlin/tap/rk` / `scoop install rk`, or build from source with
+  `./gradlew :redux-kotlin-cli:installDist`, then run `redux-kotlin-cli/build/install/rk/bin/rk devtools`).
   See [docs/devtools.md](docs/devtools.md) for the integration guide.
 
   The six published DevTools modules are version-aligned by `redux-kotlin-bom` but
