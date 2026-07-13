@@ -37,6 +37,56 @@ compose.desktop {
     }
 }
 
+// macOS only: make the bundled JRE's libjvm.dylib findable by an rpath SEARCH, not just by matching
+// an already-loaded image's install name.
+//
+// Temurin's runtime links AWT against `@rpath/libjvm.dylib`, but the only LC_RPATH on those dylibs is
+// `@loader_path/.` — and libjvm.dylib lives in `lib/server/`. That normally resolves anyway: the
+// launcher dlopens libjvm first, and dyld matches the dependency against the loaded image's install
+// name (`@rpath/libjvm.dylib`). Any packager that rewrites LC_ID_DYLIB breaks that match and dyld
+// falls back to a search that cannot succeed. Homebrew does exactly this (Keg#fix_dynamic_linkage
+// rewrites EVERY dylib's id to its absolute opt path), which broke `rk devtools serve --ui` — the JVM
+// booted, then dlopen(libjawt.dylib) died with "Library not loaded: @rpath/libjvm.dylib".
+//
+// Adding `@loader_path/<...>/server` to each dependent makes the search resolve regardless of the id,
+// so the image survives relocation by brew or anything else. (Homebrew's own openjdk build ships this
+// rpath for the same reason.) Mutating a Mach-O invalidates its signature, so each patched file — and
+// then the bundle — is re-signed ad-hoc, matching what jpackage produced.
+val hardenRuntimeRpaths by tasks.registering {
+    dependsOn("createDistributable")
+    onlyIf { System.getProperty("os.name").lowercase().contains("mac") }
+    val appDir = layout.buildDirectory.dir("compose/binaries/main/app")
+    inputs.dir(appDir)
+    outputs.upToDateWhen { false } // in-place binary patch; no separate output to track
+    doLast {
+        val app = appDir.get().asFile.resolve("rk.app")
+        val libDir = app.resolve("Contents/runtime/Contents/Home/lib")
+        check(libDir.isDirectory) { "bundled runtime not found at $libDir" }
+        val serverDir = libDir.resolve("server")
+        var patched = 0
+        libDir.walkTopDown().filter { it.isFile && it.extension == "dylib" }.forEach { dylib ->
+            val links = providers.exec {
+                commandLine("otool", "-L", dylib.absolutePath)
+            }.standardOutput.asText.get()
+            if (!links.contains("@rpath/libjvm.dylib")) return@forEach
+            val rel = serverDir.relativeTo(dylib.parentFile).path.ifEmpty { "." }
+            providers.exec {
+                commandLine("install_name_tool", "-add_rpath", "@loader_path/$rel", dylib.absolutePath)
+                isIgnoreExitValue = true // already-present rpath is not an error for us
+            }.standardOutput.asText.get()
+            providers.exec {
+                commandLine("codesign", "--force", "--sign", "-", dylib.absolutePath)
+            }.standardOutput.asText.get()
+            patched++
+        }
+        check(patched > 0) { "no runtime dylib links @rpath/libjvm.dylib — the runtime layout changed" }
+        providers.exec {
+            commandLine("codesign", "--force", "--sign", "-", "--deep", app.absolutePath)
+        }.standardOutput.asText.get()
+        logger.lifecycle("hardenRuntimeRpaths: added @loader_path/server to $patched runtime dylib(s)")
+    }
+}
+
 // Archives the per-OS app-image under build/distributions with the JReleaser platform suffix
 // (e.g. rk-1.0.0-osx-aarch_64.zip). Each CI runner builds + archives its own host's image;
 // JReleaser (Task 3) consumes these by exact path. macOS/Windows → zip; Linux → tar.gz.
@@ -45,7 +95,7 @@ compose.desktop {
 tasks.register<Zip>("packageRkArchiveZip") {
     val osName = System.getProperty("os.name").lowercase()
     onlyIf { osName.contains("mac") || osName.contains("windows") }
-    dependsOn("createDistributable")
+    dependsOn("createDistributable", hardenRuntimeRpaths)
     val ver = project.version.toString()
     val platform = rkJReleaserPlatform()
     archiveFileName.set("rk-$ver-$platform.zip")
