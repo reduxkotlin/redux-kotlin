@@ -24,6 +24,31 @@ import org.reduxkotlin.devtools.monitor.ui.MonitorApp
 import java.io.File
 import java.net.BindException
 
+/**
+ * Renders an actionable message for a GUI launch that failed on a missing system library, or null
+ * when [error] is not that case and should keep its stack trace.
+ *
+ * Only Linux is affected: the app-image bundles a JRE but no X11 client libraries, and AWT loads
+ * them by SONAME through the system linker.
+ */
+internal fun missingNativeLibraryHint(error: UnsatisfiedLinkError, osName: String): String? {
+    val missing = if (osName.lowercase().contains("linux")) {
+        Regex("""([\w.+-]+\.so(?:\.\d+)*): cannot open shared object file""")
+            .find(error.message.orEmpty())
+            ?.groupValues
+            ?.get(1)
+    } else {
+        null
+    } ?: return null
+    return """
+        cannot start the GUI: $missing is missing — the bundled runtime ships a JRE, but the X11
+        client libraries the GUI draws through have to come from the system.
+          Debian/Ubuntu:  sudo apt install libxtst6 libxi6 libxrender1
+          Fedora/RHEL:    sudo dnf install libXtst libXi libXrender
+        Drop --ui to serve the bridge headlessly.
+    """.trimIndent()
+}
+
 /** `serve` — host the bridge receiver, write per-store captures, optionally launch the GUI. */
 internal class ServeCommand : CliktCommand(name = "serve") {
     private val port by option("--port", help = "port to listen on").int().default(9090)
@@ -43,20 +68,34 @@ internal class ServeCommand : CliktCommand(name = "serve") {
         Runtime.getRuntime().addShutdownHook(Thread { flushAll(ingest, dir) })
         echo("serving bridge on $host:$bound  -> captures in ${dir.path}")
         if (ui) {
-            application {
-                Window(
-                    onCloseRequest = {
-                        server.stop()
-                        exitApplication()
-                    },
-                    title = "Redux DevTools Monitor",
-                ) {
-                    MonitorApp(ingest, rememberMonitorState(ingest, endpoint = "ws://$host:$bound"))
-                }
-            }
+            launchUi(server, ingest, bound)
         } else {
             runBlocking { awaitCancellation() }
         }
+    }
+
+    /**
+     * Runs the GUI, turning a missing system native library into an actionable one-line error.
+     *
+     * The bundled JRE carries no X11 client libraries — jpackage cannot ship them — so on a bare
+     * Linux box AWT dies in `dlopen(libawt_xawt.so)` with a stack trace nobody can act on.
+     */
+    private fun launchUi(server: MonitorServer, ingest: MonitorIngest, bound: Int) = try {
+        application {
+            Window(
+                onCloseRequest = {
+                    server.stop()
+                    exitApplication()
+                },
+                title = "Redux DevTools Monitor",
+            ) {
+                MonitorApp(ingest, rememberMonitorState(ingest, endpoint = "ws://$host:$bound"))
+            }
+        }
+    } catch (e: UnsatisfiedLinkError) {
+        val hint = missingNativeLibraryHint(e, System.getProperty("os.name").orEmpty())
+            ?: throw e
+        throw PrintMessage(hint, statusCode = 1, printError = true)
     }
 
     /** Starts [server], mapping startup failures to one-line CLI errors instead of stack traces. */
