@@ -5,6 +5,8 @@ import java.net.InetSocketAddress
 import java.net.ServerSocket
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /** Verifies `serve`'s startup-failure paths report one-line CLI errors instead of stack traces. */
@@ -37,5 +39,25 @@ class ServeCommandTest {
             "token" in result.stderr,
             "expected the missing-token usage error, got:\n${result.stderr}",
         )
+    }
+
+    /** The verbatim error a bare Ubuntu box throws for `--ui`; it must name the lib and the fix. */
+    @Test fun missing_x11_library_on_linux_names_the_library_and_the_packages() {
+        val error = UnsatisfiedLinkError(
+            "/home/u/rk/lib/runtime/lib/libawt_xawt.so: libXtst.so.6: " +
+                "cannot open shared object file: No such file or directory",
+        )
+        val hint = missingNativeLibraryHint(error, "Linux")
+        assertNotNull(hint, "expected a hint for a missing X11 library")
+        assertTrue("libXtst.so.6" in hint, "hint must name the missing library, got:\n$hint")
+        assertTrue("apt install" in hint, "hint must say how to install it, got:\n$hint")
+    }
+
+    /** Anything that is not a missing system library keeps its stack trace. */
+    @Test fun unrelated_link_errors_are_not_rewritten() {
+        val unrelated = UnsatisfiedLinkError("no skiko in java.library.path")
+        assertNull(missingNativeLibraryHint(unrelated, "Linux"))
+        val macOs = UnsatisfiedLinkError("libXtst.so.6: cannot open shared object file")
+        assertNull(missingNativeLibraryHint(macOs, "Mac OS X"))
     }
 }
