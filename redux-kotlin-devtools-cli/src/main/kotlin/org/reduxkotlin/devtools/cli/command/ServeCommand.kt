@@ -9,6 +9,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -59,19 +60,27 @@ internal class ServeCommand : CliktCommand(name = "serve") {
     }
 
     /** Starts [server], mapping startup failures to one-line CLI errors instead of stack traces. */
-    @Suppress("TooGenericExceptionCaught") // cause chains are scanned for BindException, rest rethrown
+    // TooGenericExceptionCaught: the cause chain is scanned for BindException; anything else is rethrown.
+    // SwallowedException: startup failures are reported as one-line CLI errors by design — the message
+    // is the whole contract, and Clikt's errors take no cause.
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
     private fun startServer(server: MonitorServer): Int = try {
         server.start()
-    } catch (e: IllegalStateException) {
-        // e.g. non-loopback bind without a token
-        throw UsageError(e.message ?: "invalid server configuration").initCause(e)
     } catch (e: Exception) {
+        // Ktor reports a failed bind by cancelling the engine job, so the BindException arrives
+        // wrapped in a CancellationException — which is itself an IllegalStateException. Scan the
+        // cause chain before treating an IllegalStateException as a configuration error.
         if (generateSequence<Throwable>(e) { it.cause }.any { it is BindException }) {
             throw PrintMessage(
                 "port $port already in use on $host (--port to change)",
                 statusCode = 1,
                 printError = true,
             )
+        }
+        // e.g. non-loopback bind without a token. UsageError fixes its cause at construction, so
+        // initCause() on it always throws "Can't overwrite cause" — pass the message only.
+        if (e is IllegalStateException && e !is CancellationException) {
+            throw UsageError(e.message ?: "invalid server configuration")
         }
         throw e
     }
