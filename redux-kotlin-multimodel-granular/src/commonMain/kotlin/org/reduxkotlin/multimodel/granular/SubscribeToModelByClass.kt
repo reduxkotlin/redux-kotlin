@@ -3,6 +3,7 @@ package org.reduxkotlin.multimodel.granular
 import org.reduxkotlin.Store
 import org.reduxkotlin.StoreSubscription
 import org.reduxkotlin.granular.FieldSubscriptionScope
+import org.reduxkotlin.granular.SelectorSubscriptions
 import org.reduxkotlin.granular.subscribeTo
 import org.reduxkotlin.multimodel.ModelState
 import kotlin.reflect.KClass
@@ -29,6 +30,21 @@ import kotlin.reflect.KClass
  * pathway must exist for non-Kotlin consumers.
  */
 public fun <M : Any, F> Store<ModelState>.subscribeToModel(
+    modelClass: KClass<M>,
+    selector: (M) -> F,
+    triggerOnSubscribe: Boolean = true,
+    listener: (oldValue: F, newValue: F) -> Unit,
+): StoreSubscription = subscribeTo(
+    selector = { state -> selector(state.get(modelClass)) },
+    triggerOnSubscribe = triggerOnSubscribe,
+    listener = listener,
+)
+
+/**
+ * Adds a model selector to a dynamic [SelectorSubscriptions] scope. This is
+ * the shared-fan-out counterpart of [Store.subscribeToModel].
+ */
+public fun <M : Any, F> SelectorSubscriptions<ModelState>.subscribeToModel(
     modelClass: KClass<M>,
     selector: (M) -> F,
     triggerOnSubscribe: Boolean = true,

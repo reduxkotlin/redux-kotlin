@@ -1,6 +1,14 @@
 public final class org/reduxkotlin/compose/FieldStateKt {
 	public static final fun fieldState (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KProperty1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+	public static final fun fieldState (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/granular/SelectorSubscriptions;Lkotlin/reflect/KProperty1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+	public static final fun selectorState (Lorg/reduxkotlin/TypedStore;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 	public static final fun selectorState (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+	public static final fun selectorState (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/granular/SelectorSubscriptions;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+	public static final fun selectorState (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/granular/SelectorSubscriptions;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+}
+
+public final class org/reduxkotlin/compose/SelectorSubscriptionsKt {
+	public static final fun rememberSelectorSubscriptions (Lorg/reduxkotlin/TypedStore;Landroidx/compose/runtime/Composer;I)Lorg/reduxkotlin/granular/SelectorSubscriptions;
 }
 
 public final class org/reduxkotlin/compose/StableStore {

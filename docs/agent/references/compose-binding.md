@@ -103,6 +103,18 @@ Full treatment → [testing.md](./testing.md).
 
 - Reading a whole model (`val board by s.fieldStateOf(BoardModel::class) { it }`) then indexing in the
   body re-recomposes the leaf on every board change — defeats Rule C.
+- `selectorState` prevents unrelated recomposition, but an ordinary selector still runs for every store
+  notification and every `State.value` read. For an expensive derived projection, declare its narrow
+  inputs with `memoizedSelector` and hoist the resulting selector outside the composable (or `remember`
+  it with every captured parameter as a key).
+- A screen with many sibling bindings can share one store callback by hoisting
+  `val subscriptions = store.rememberSelectorSubscriptions()` and passing it to
+  `store.selectorState(subscriptions) { ... }` / `store.fieldState(subscriptions, MyState::field)`.
+  This reduces store fan-out, not arbitrary selector evaluation; use memoization as well when the
+  transform itself is expensive.
+- A selector that captures a changing parameter is intentionally retained by the original
+  `selectorState { ... }` overload. Use `selectorState(parameter) { ... }` (and the scoped keyed
+  counterpart) so Compose tears down the old subscription and installs the selector for the new key.
 - Forgetting `key(...)` makes Compose track items positionally, so a move recomposes everything after
   the insertion point.
 - Calling `Clock.System.now()` or generating an id inside a reducer breaks Rule G and makes the reducer
