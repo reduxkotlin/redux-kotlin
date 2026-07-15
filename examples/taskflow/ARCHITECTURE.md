@@ -250,7 +250,7 @@ flowchart TB
   subgraph UI["UI layer (Compose, main thread)"]
     SCREENS["Screens: Login · BoardList · Board · CardDetail · Profile · Settings · Switcher"]
     COMPS["Pure components: KanbanCard · FabMenu · SyncIndicator · AdaptiveNav · …"]
-    BIND["Bindings: rememberStableStore · selectorState · fieldStateOf"]
+    BIND["Bindings: rememberSelectorStore · selectorState · fieldStateOf"]
   end
   subgraph STATE["State layer (app/ composition + per-feature slices)"]
     STORES["Root + per-account stores (app/AppStore · app/AccountStore · app/AccountRegistry)"]
@@ -690,6 +690,11 @@ account gets one account `SelectorStore`; screens receive the relevant facade an
 - `fieldStateOf(M::class) { slice }` — a typed single-model slice.
 - `selectorState { ms -> derived }` — a cross-model derivation that recomposes only when
   the **value-equal** result changes.
+
+When a selector captures a changing identifier or filter, use `selectorState(key) { ... }` (and the
+matching keyed `fieldStateOf`) so the binding replaces its retained selector. The account and root
+stores use platform main-thread `NotificationContext`s: background effects dispatch safely, then
+selector comparisons and Compose invalidations run serially on the UI thread.
 
 Each facade has one underlying store callback for its Compose root. This reduces subscriber fan-out,
 but all active selectors still compare after a dispatch; expensive derived work uses `memoizedSelector`.

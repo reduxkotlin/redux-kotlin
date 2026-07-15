@@ -25,6 +25,13 @@ import org.reduxkotlin.granular.SelectorSubscriptions
  * `org.reduxkotlin.granular.memoizedSelector` for expensive derived
  * projections, and bind the narrowest value rather than reading [state]
  * directly from composition.
+ *
+ * This facade does not choose a callback thread. A concurrent store dispatched
+ * from effects or other workers must use a serial notification context that
+ * marshals subscriber callbacks to the platform UI thread; on Android, use
+ * `coalescingNotificationContext` around the Android main handler. Do
+ * not use an inline worker callback or a multi-threaded executor for Compose
+ * bindings.
  */
 @Stable
 public class SelectorStore<S> internal constructor(
@@ -39,7 +46,8 @@ public class SelectorStore<S> internal constructor(
  * selector-subscription group when this call site leaves composition. Pass
  * the same facade to descendants that should share delivery. Selectors that
  * capture a changing Compose value must use the keyed [SelectorStore.selectorState]
- * overload.
+ * overload. The source store is responsible for serial, UI-thread callback
+ * delivery when it may be dispatched off-main.
  */
 @Composable
 public fun <S> rememberSelectorStore(store: Store<S>): SelectorStore<S> {
