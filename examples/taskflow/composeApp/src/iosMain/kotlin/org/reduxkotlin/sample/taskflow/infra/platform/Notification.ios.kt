@@ -7,9 +7,9 @@ import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 
 /**
- * iOS [mainNotificationContext]: runs callbacks inline when already on the main thread,
- * else dispatches asynchronously onto the main queue — avoids a stale frame for
- * main-thread dispatches.
+ * iOS [mainNotificationContext]: runs an idle callback inline on the main thread;
+ * otherwise it joins the FIFO main-queue drain, avoiding a stale frame without
+ * overtaking older worker notifications.
  *
  * @return a [NotificationContext] backed by the main `dispatch_queue`.
  */

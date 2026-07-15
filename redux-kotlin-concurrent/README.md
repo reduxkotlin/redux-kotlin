@@ -26,7 +26,7 @@ println(store.state.count)
 
 `createConcurrentStore(reducer, preloadedState, notificationContext, onError, enhancer)`
 keeps the core contract. `NotificationContext` controls which thread subscribers
-are notified on; `coalescingNotificationContext` batches notifications inline on
+are notified on; `coalescingNotificationContext` serializes notifications onto
 the target thread when possible. `onError` isolates listener failures.
 
 ## See also

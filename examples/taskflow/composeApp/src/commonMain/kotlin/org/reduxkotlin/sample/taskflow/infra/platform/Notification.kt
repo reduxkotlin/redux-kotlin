@@ -8,8 +8,9 @@ import org.reduxkotlin.concurrent.NotificationContext
  *
  * The concurrent store invokes listeners on the dispatching thread by default
  * ([NotificationContext.Inline]); since dispatches may originate off-main (e.g. from
- * effect coroutines on a background dispatcher), each `actual` posts the callback onto
- * the platform's main/UI thread so Compose state reads never run off-main.
+ * effect coroutines on a background dispatcher), each `actual` serializes callbacks onto
+ * the platform's main/UI thread so Compose state reads never run off-main and an idle UI
+ * dispatch remains synchronous without overtaking older queued work.
  *
  * @return a [NotificationContext] that runs subscriber callbacks on the main thread.
  */
