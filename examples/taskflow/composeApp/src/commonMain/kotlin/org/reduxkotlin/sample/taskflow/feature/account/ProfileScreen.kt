@@ -35,8 +35,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
 import org.reduxkotlin.sample.taskflow.feature.boardlist.BoardListModel
@@ -68,12 +69,24 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  * @param modifier the [Modifier] for the screen root.
  */
 @Composable
-public fun ProfileScreen(accountStore: Store<ModelState>, rootStore: Store<ModelState>, modifier: Modifier = Modifier) {
-    val a = rememberStableStore(accountStore).value
-    val selfId by a.fieldStateOf(SessionModel::class) { it.accountId }
-    val self by a.fieldStateOf(CollaboratorsModel::class) { it.byId[selfId] }
-    val bio by a.fieldStateOf(SessionModel::class) { it.bio }
-    val boardCount by a.fieldStateOf(BoardListModel::class) { it.order.size }
+public fun ProfileScreen(
+    accountStore: Store<ModelState>,
+    rootStore: Store<ModelState>,
+    modifier: Modifier = Modifier,
+) {
+    ProfileScreen(rememberSelectorStore(accountStore), rememberSelectorStore(rootStore), modifier)
+}
+
+@Composable
+internal fun ProfileScreen(
+    accountStore: SelectorStore<ModelState>,
+    rootStore: SelectorStore<ModelState>,
+    modifier: Modifier = Modifier,
+) {
+    val selfId by accountStore.fieldStateOf(SessionModel::class) { it.accountId }
+    val self by accountStore.fieldStateOf(selfId, CollaboratorsModel::class) { it.byId[selfId] }
+    val bio by accountStore.fieldStateOf(SessionModel::class) { it.bio }
+    val boardCount by accountStore.fieldStateOf(BoardListModel::class) { it.order.size }
 
     val identity = self ?: return
 

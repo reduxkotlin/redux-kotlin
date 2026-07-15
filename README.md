@@ -129,7 +129,7 @@ dependencies {
 |---|---|
 | Core & stores | `redux-kotlin` (core contracts + `createStore`), `redux-kotlin-concurrent` (`createConcurrentStore` — the recommended thread-safe store), `redux-kotlin-threadsafe` (**deprecated** — fully-synchronized predecessor), `redux-kotlin-thunk` (async actions middleware) |
 | State shape | `redux-kotlin-granular` (field-level subscriptions), `redux-kotlin-registry` (keyed multi-store container), `redux-kotlin-multimodel` (`ModelState` typesafe model bag), `redux-kotlin-multimodel-granular` (granular subscriptions over `ModelState`) |
-| Compose | `redux-kotlin-compose` (`fieldState` / `selectorState` bindings), `redux-kotlin-compose-multimodel` (bindings for `ModelState`), `redux-kotlin-compose-saveable` (snapshot persistence across rotation + process death) |
+| Compose | `redux-kotlin-compose` (`fieldState` / `selectorState` bindings and `SelectorStore` shared fan-out), `redux-kotlin-compose-multimodel` (bindings for `ModelState`), `redux-kotlin-compose-saveable` (snapshot persistence across rotation + process death) |
 | Routing | `redux-kotlin-routing` (routed `(model, action)` reducer DSL), `redux-kotlin-routing-codegen` (KSP `@Reduce` processor — in-repo, not yet on Maven Central) |
 | Bundles | `redux-kotlin-bundle`, `redux-kotlin-bundle-compose`, `redux-kotlin-bom` (Maven BOM) |
 | DevTools (experimental) | `redux-kotlin-devtools-core`, `-bridge`, `-remote`, `-inapp`, `-inapp-noop`, `-ui` — aligned by the BOM but exempt from semver until the surface stabilizes |

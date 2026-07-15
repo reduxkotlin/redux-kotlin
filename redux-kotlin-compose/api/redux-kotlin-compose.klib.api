@@ -6,6 +6,23 @@
 // - Show declarations: true
 
 // Library unique name: <org.reduxkotlin:redux-kotlin-compose>
+final class <#A: kotlin/Any?> org.reduxkotlin.compose/SelectorStore : org.reduxkotlin/TypedStore<#A, kotlin/Any> { // org.reduxkotlin.compose/SelectorStore|null[0]
+    final val getState // org.reduxkotlin.compose/SelectorStore.getState|{}getState[0]
+        final fun <get-getState>(): kotlin/Function0<#A> // org.reduxkotlin.compose/SelectorStore.getState.<get-getState>|<get-getState>(){}[0]
+    final val replaceReducer // org.reduxkotlin.compose/SelectorStore.replaceReducer|{}replaceReducer[0]
+        final fun <get-replaceReducer>(): kotlin/Function1<kotlin/Function2<#A, kotlin/Any, #A>, kotlin/Unit> // org.reduxkotlin.compose/SelectorStore.replaceReducer.<get-replaceReducer>|<get-replaceReducer>(){}[0]
+    final val state // org.reduxkotlin.compose/SelectorStore.state|{}state[0]
+        final fun <get-state>(): #A // org.reduxkotlin.compose/SelectorStore.state.<get-state>|<get-state>(){}[0]
+    final val store // org.reduxkotlin.compose/SelectorStore.store|{}store[0]
+        final fun <get-store>(): org.reduxkotlin/TypedStore<#A, kotlin/Any> // org.reduxkotlin.compose/SelectorStore.store.<get-store>|<get-store>(){}[0]
+    final val subscribe // org.reduxkotlin.compose/SelectorStore.subscribe|{}subscribe[0]
+        final fun <get-subscribe>(): kotlin/Function1<kotlin/Function0<kotlin/Unit>, kotlin/Function0<kotlin/Unit>> // org.reduxkotlin.compose/SelectorStore.subscribe.<get-subscribe>|<get-subscribe>(){}[0]
+
+    final var dispatch // org.reduxkotlin.compose/SelectorStore.dispatch|{}dispatch[0]
+        final fun <get-dispatch>(): kotlin/Function1<kotlin/Any, kotlin/Any> // org.reduxkotlin.compose/SelectorStore.dispatch.<get-dispatch>|<get-dispatch>(){}[0]
+        final fun <set-dispatch>(kotlin/Function1<kotlin/Any, kotlin/Any>) // org.reduxkotlin.compose/SelectorStore.dispatch.<set-dispatch>|<set-dispatch>(kotlin.Function1<kotlin.Any,kotlin.Any>){}[0]
+}
+
 final value class <#A: kotlin/Any?> org.reduxkotlin.compose/StableStore { // org.reduxkotlin.compose/StableStore|null[0]
     constructor <init>(org.reduxkotlin/TypedStore<#A, kotlin/Any>) // org.reduxkotlin.compose/StableStore.<init>|<init>(org.reduxkotlin.TypedStore<1:0,kotlin.Any>){}[0]
 
@@ -17,6 +34,11 @@ final value class <#A: kotlin/Any?> org.reduxkotlin.compose/StableStore { // org
     final fun toString(): kotlin/String // org.reduxkotlin.compose/StableStore.toString|toString(){}[0]
 }
 
+final val org.reduxkotlin.compose/org_reduxkotlin_compose_SelectorStore$stableprop // org.reduxkotlin.compose/org_reduxkotlin_compose_SelectorStore$stableprop|#static{}org_reduxkotlin_compose_SelectorStore$stableprop[0]
+
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin.compose/SelectorStore<#A>).org.reduxkotlin.compose/fieldState(kotlin.reflect/KProperty1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/fieldState|fieldState@org.reduxkotlin.compose.SelectorStore<0:0>(kotlin.reflect.KProperty1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin.compose/SelectorStore<#A>).org.reduxkotlin.compose/selectorState(kotlin/Any?, kotlin/Function1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/selectorState|selectorState@org.reduxkotlin.compose.SelectorStore<0:0>(kotlin.Any?;kotlin.Function1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin.compose/SelectorStore<#A>).org.reduxkotlin.compose/selectorState(kotlin/Function1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/selectorState|selectorState@org.reduxkotlin.compose.SelectorStore<0:0>(kotlin.Function1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose/fieldState(kotlin.reflect/KProperty1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/fieldState|fieldState@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(kotlin.reflect.KProperty1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose/fieldState(org.reduxkotlin.granular/SelectorSubscriptions<#A>, kotlin.reflect/KProperty1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/fieldState|fieldState@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(org.reduxkotlin.granular.SelectorSubscriptions<0:0>;kotlin.reflect.KProperty1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose/selectorState(kotlin/Any?, kotlin/Function1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/selectorState|selectorState@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(kotlin.Any?;kotlin.Function1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
@@ -24,4 +46,6 @@ final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kot
 final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose/selectorState(org.reduxkotlin.granular/SelectorSubscriptions<#A>, kotlin/Any?, kotlin/Function1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/selectorState|selectorState@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(org.reduxkotlin.granular.SelectorSubscriptions<0:0>;kotlin.Any?;kotlin.Function1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?, #B: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose/selectorState(org.reduxkotlin.granular/SelectorSubscriptions<#A>, kotlin/Function1<#A, #B>, androidx.compose.runtime/Composer?, kotlin/Int): androidx.compose.runtime/State<#B> // org.reduxkotlin.compose/selectorState|selectorState@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(org.reduxkotlin.granular.SelectorSubscriptions<0:0>;kotlin.Function1<0:0,0:1>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>;1§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> (org.reduxkotlin/TypedStore<#A, kotlin/Any>).org.reduxkotlin.compose/rememberSelectorSubscriptions(androidx.compose.runtime/Composer?, kotlin/Int): org.reduxkotlin.granular/SelectorSubscriptions<#A> // org.reduxkotlin.compose/rememberSelectorSubscriptions|rememberSelectorSubscriptions@org.reduxkotlin.TypedStore<0:0,kotlin.Any>(androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>}[0]
+final fun <#A: kotlin/Any?> org.reduxkotlin.compose/rememberSelectorStore(org.reduxkotlin/TypedStore<#A, kotlin/Any>, androidx.compose.runtime/Composer?, kotlin/Int): org.reduxkotlin.compose/SelectorStore<#A> // org.reduxkotlin.compose/rememberSelectorStore|rememberSelectorStore(org.reduxkotlin.TypedStore<0:0,kotlin.Any>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>}[0]
 final fun <#A: kotlin/Any?> org.reduxkotlin.compose/rememberStableStore(org.reduxkotlin/TypedStore<#A, kotlin/Any>, androidx.compose.runtime/Composer?, kotlin/Int): org.reduxkotlin.compose/StableStore<#A> // org.reduxkotlin.compose/rememberStableStore|rememberStableStore(org.reduxkotlin.TypedStore<0:0,kotlin.Any>;androidx.compose.runtime.Composer?;kotlin.Int){0§<kotlin.Any?>}[0]
+final fun org.reduxkotlin.compose/org_reduxkotlin_compose_SelectorStore$stableprop_getter(): kotlin/Int // org.reduxkotlin.compose/org_reduxkotlin_compose_SelectorStore$stableprop_getter|org_reduxkotlin_compose_SelectorStore$stableprop_getter(){}[0]

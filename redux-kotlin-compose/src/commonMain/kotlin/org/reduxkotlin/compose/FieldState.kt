@@ -85,6 +85,24 @@ public fun <S, F> Store<S>.selectorState(
 }
 
 /**
+ * Returns a Compose [State] for [selector] through this facade's shared
+ * subscription group. Use [rememberSelectorStore] once at the composition
+ * root, then pass the resulting [SelectorStore] to binding components.
+ */
+@Composable
+public fun <S, F> SelectorStore<S>.selectorState(selector: (S) -> F): State<F> =
+    (this as Store<S>).selectorState(subscriptions, selector)
+
+/**
+ * Shared-facade counterpart of [selectorState] that replaces the retained
+ * selector whenever [key] changes. Use it when [selector] captures a
+ * changing id, filter, or other Compose value.
+ */
+@Composable
+public fun <S, F> SelectorStore<S>.selectorState(key: Any?, selector: (S) -> F): State<F> =
+    (this as Store<S>).selectorState(subscriptions, key, selector)
+
+/**
  * Property-reference convenience for [selectorState]. The property reference
  * is stable, so it does not need an explicit key.
  */
@@ -114,6 +132,16 @@ public fun <S, F> Store<S>.fieldState(subscriptions: SelectorSubscriptions<S>, p
     ) { stableSelector, listener ->
         subscriptions.subscribeTo(stableSelector, triggerOnSubscribe = false, listener = listener)
     }
+
+/**
+ * Property-reference convenience for this [SelectorStore]'s shared
+ * subscription group. Property references are stable and need no key.
+ */
+@OptIn(ExperimentalObjCRefinement::class)
+@HiddenFromObjC
+@Composable
+public fun <S, F> SelectorStore<S>.fieldState(property: KProperty1<S, F>): State<F> =
+    (this as Store<S>).fieldState(subscriptions, property)
 
 @Composable
 private fun <S, F> Store<S>.selectorStateBinding(
