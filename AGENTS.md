@@ -23,7 +23,7 @@ The ten published core modules (each "use for X"):
 - `redux-kotlin-registry` — `StoreRegistry` / `TypedStoreRegistry` keyed multi-store container.
 - `redux-kotlin-multimodel` — `ModelState` typesafe heterogeneous model bag.
 - `redux-kotlin-multimodel-granular` — granular subscriptions for `ModelState`.
-- `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
+- `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`, `SelectorStore`).
 - `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
 - `redux-kotlin-compose-saveable` — `StateSaver` + `Store<S>.rememberSaveableState` store-anchored snapshot persistence (rotation + process death) via `SaveableStateRegistry`.
 <!-- assemble:modules:end -->

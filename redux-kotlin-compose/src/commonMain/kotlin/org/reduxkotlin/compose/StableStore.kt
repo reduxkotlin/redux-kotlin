@@ -35,6 +35,9 @@ import kotlin.jvm.JvmInline
  *
  * The wrapper is a value class to keep the runtime overhead at zero
  * once the JIT has inlined it.
+ *
+ * For Compose selector bindings that should also share one underlying store
+ * callback, use [SelectorStore] from [rememberSelectorStore] instead.
  */
 @Stable
 @JvmInline

@@ -684,12 +684,15 @@ board open, stop on dispose). Defaults: every 4 s, toggleable via Settings.
 ## 13. UI / Compose binding & render isolation
 
 The UI is a showcase for **render isolation ("Rule C")**: no composable selects the board,
-its cards, or its columns wholesale. Each screen wraps its store via
-`rememberStableStore(store).value`, then binds the smallest slices:
+its cards, or its columns wholesale. `AppShell` creates one root `SelectorStore` and each active
+account gets one account `SelectorStore`; screens receive the relevant facade and bind the smallest slices:
 
 - `fieldStateOf(M::class) { slice }` — a typed single-model slice.
 - `selectorState { ms -> derived }` — a cross-model derivation that recomposes only when
   the **value-equal** result changes.
+
+Each facade has one underlying store callback for its Compose root. This reduces subscriber fan-out,
+but all active selectors still compare after a dispatch; expensive derived work uses `memoizedSelector`.
 
 ```mermaid
 flowchart TB

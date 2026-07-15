@@ -23,8 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.core.FakeServiceConfig
@@ -55,9 +56,13 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  */
 @Composable
 public fun SettingsScreen(rootStore: Store<ModelState>, modifier: Modifier = Modifier) {
-    val r = rememberStableStore(rootStore).value
-    val theme by r.fieldStateOf(AppSettingsModel::class) { it.theme }
-    val cfg by r.fieldStateOf(AppSettingsModel::class) { it.fakeService }
+    SettingsScreen(rememberSelectorStore(rootStore), modifier)
+}
+
+@Composable
+internal fun SettingsScreen(rootStore: SelectorStore<ModelState>, modifier: Modifier = Modifier) {
+    val theme by rootStore.fieldStateOf(AppSettingsModel::class) { it.theme }
+    val cfg by rootStore.fieldStateOf(AppSettingsModel::class) { it.fakeService }
 
     Column(
         modifier = modifier
@@ -73,15 +78,15 @@ public fun SettingsScreen(rootStore: Store<ModelState>, modifier: Modifier = Mod
             verticalArrangement = Arrangement.spacedBy(Dimens.space4),
         ) {
             SectionHeader("APPEARANCE")
-            ThemeRow(theme = theme, onTheme = { r.dispatch(SetTheme(it)) })
+            ThemeRow(theme = theme, onTheme = { rootStore.dispatch(SetTheme(it)) })
 
             SectionHeader("FAKE BACKEND · DEMO KNOBS")
             FakeBackendSection(
                 cfg = cfg,
-                onLatency = { max -> r.dispatch(SetLatency(cfg.latencyMinMs, max)) },
-                onFailureRate = { rate -> r.dispatch(SetFailureRate(rate)) },
-                onBotEnabled = { enabled -> r.dispatch(SetBotEnabled(enabled)) },
-                onOnline = { online -> r.dispatch(SetOnline(online)) },
+                onLatency = { max -> rootStore.dispatch(SetLatency(cfg.latencyMinMs, max)) },
+                onFailureRate = { rate -> rootStore.dispatch(SetFailureRate(rate)) },
+                onBotEnabled = { enabled -> rootStore.dispatch(SetBotEnabled(enabled)) },
+                onOnline = { online -> rootStore.dispatch(SetOnline(online)) },
             )
         }
     }

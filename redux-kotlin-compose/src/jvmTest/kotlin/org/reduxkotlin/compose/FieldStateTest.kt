@@ -300,6 +300,30 @@ class FieldStateTest {
     }
 
     @Test
+    fun selectorStore_shares_one_store_subscription_and_disposes_with_its_composition_root() = runComposeUiTest {
+        val store = SubscriptionCountingStore(newStore())
+        val visible = mutableStateOf(true)
+        setContent {
+            if (visible.value) {
+                val selectorStore = rememberSelectorStore(store)
+                val counter by selectorStore.fieldState(CounterState::counter)
+                val label by selectorStore.fieldState(CounterState::label)
+                Text("counter=$counter label=$label")
+            }
+        }
+        waitForIdle()
+        assertEquals(1, store.activeSubscriptions)
+
+        store.dispatch(Increment())
+        waitForIdle()
+        onAllNodesWithText("counter=1 label=init").assertCountEquals(1)
+
+        visible.value = false
+        waitForIdle()
+        assertEquals(0, store.activeSubscriptions)
+    }
+
+    @Test
     fun keyedSelectorState_replaces_a_selector_that_captures_a_changing_parameter() = runComposeUiTest {
         val store = newStore()
         val selectCounter = mutableStateOf(true)

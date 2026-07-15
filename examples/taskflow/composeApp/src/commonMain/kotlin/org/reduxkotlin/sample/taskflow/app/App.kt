@@ -31,8 +31,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.compose.saveable.rememberSaveableState
 import org.reduxkotlin.devtools.inapp.InAppConfig
 import org.reduxkotlin.devtools.inapp.ReduxDevToolsHost
@@ -82,7 +83,7 @@ import kotlin.time.Clock
  * account's isolated store to the navigation shell, board lifecycle, periodic sync, and bot.
  *
  * Wiring discipline (Rule C/E): the singleton Coil loader is initialized first; every store read in
- * composition goes through [rememberStableStore] + a minimal [fieldStateOf] slice; subscriber
+ * composition goes through root-scoped [SelectorStore] bindings and a minimal [fieldStateOf] slice; subscriber
  * callbacks marshal to the main thread via each store's `NotificationContext`, so the background
  * effect/sync/bot coroutines can dispatch off-main safely.
  */
@@ -131,6 +132,7 @@ public fun App() {
 @Composable
 private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
     val registry = remember(localStore) { AccountRegistry(appStore, localStore) }
+    val rootStore = rememberSelectorStore(appStore)
     // Gate the first paint until the account directory is loaded — otherwise the read below sees
     // the empty initial AccountsModel and flashes Login during the disk read.
     var booted by remember(localStore) { mutableStateOf(false) }
@@ -140,12 +142,12 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
         localStore.ensureSeeded()
         val activeId = localStore.loadActiveAccountId()
         val accounts = localStore.loadAccounts()
-        appStore.dispatch(LoadAccountsSucceeded(accounts, activeId))
+        rootStore.dispatch(LoadAccountsSucceeded(accounts, activeId))
         booted = true
     }
 
-    val theme by rememberStableStore(appStore).value.fieldStateOf(AppSettingsModel::class) { it.theme }
-    val activeId by rememberStableStore(appStore).value.fieldStateOf(AccountsModel::class) { it.activeAccountId }
+    val theme by rootStore.fieldStateOf(AppSettingsModel::class) { it.theme }
+    val activeId by rootStore.fieldStateOf(AccountsModel::class) { it.activeAccountId }
 
     // Hold the first content paint until the window insets have been dispatched. On a process-death
     // restore the OS delivers `systemBars` insets a frame AFTER the first composition, so edge-to-edge
@@ -180,19 +182,19 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
                             CircularProgressIndicator()
                         }
 
-                    id == null -> LoginScreen(appStore)
+                    id == null -> LoginScreen(rootStore)
 
                     else -> {
                         // Persist the active account id for process-death rehydration (§13e).
                         LaunchedEffect(id) { localStore.saveActiveAccountId(id) }
-                        ActiveAccount(appStore = appStore, registry = registry, activeId = id)
+                        ActiveAccount(appStore = rootStore, registry = registry, activeId = id)
                     }
                 }
             }
         }
 
         // Logout: when an account drops out of AccountsModel, tear its store + coroutines down.
-        AccountDisposalEffect(appStore = appStore, registry = registry)
+        AccountDisposalEffect(appStore = rootStore, registry = registry)
     }
 }
 
@@ -206,9 +208,10 @@ private fun AppShell(appStore: Store<ModelState>, localStore: LocalStore) {
  * @param activeId the currently active account.
  */
 @Composable
-private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry, activeId: AccountId) {
+private fun ActiveAccount(appStore: SelectorStore<ModelState>, registry: AccountRegistry, activeId: AccountId) {
     val handle = remember(activeId) { registry.getOrCreate(activeId, SeedData.accountDetail(activeId)) }
     val accountStore = handle.store
+    val accountSelectorStore = rememberSelectorStore(accountStore)
 
     // Persist + restore this account's volatile UI (nav + filter) across process death / config change.
     // The library applies the restore synchronously in composition (before the nav read below), so the
@@ -216,27 +219,27 @@ private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry
     // collides across accounts at this same call site.
     accountStore.rememberSaveableState(accountUiSaver, key = "account-ui-${activeId.v}")
 
-    val nav by rememberStableStore(accountStore).value.fieldStateOf(NavModel::class) { it }
+    val nav by accountSelectorStore.fieldStateOf(NavModel::class) { it }
 
     // Lifecycle effects key on the *active board* (the lowest Board in the stack), not the top of
     // the stack — so drilling into CardDetail/ComposeCard keeps the board loaded and the sync ticking.
     BoardLifecycleEffect(
-        accountStore = accountStore,
+        accountStore = accountSelectorStore,
         registry = registry,
         activeId = activeId,
         activeBoardId = nav.activeBoardId,
     )
-    PeriodicSyncEffect(appStore = appStore, accountStore = accountStore, activeBoardId = nav.activeBoardId)
+    PeriodicSyncEffect(appStore = appStore, accountStore = accountSelectorStore, activeBoardId = nav.activeBoardId)
 
     var showSwitcher by remember { mutableStateOf(false) }
 
     // System back pops a stack frame (or flips CardDetail Edit -> View — see [navReducer]). Disabled
     // at the root so the host's system back exits / backgrounds the app.
-    BackHandler(enabled = nav.stack.size > 1) { accountStore.dispatch(Back) }
+    BackHandler(enabled = nav.stack.size > 1) { accountSelectorStore.dispatch(Back) }
 
     BoxWithConstraintsRouting(
         appStore = appStore,
-        accountStore = accountStore,
+        accountStore = accountSelectorStore,
         nav = nav,
         onOpenSwitcher = { showSwitcher = true },
     )
@@ -274,8 +277,8 @@ private fun ActiveAccount(appStore: Store<ModelState>, registry: AccountRegistry
  */
 @Composable
 private fun BoxWithConstraintsRouting(
-    appStore: Store<ModelState>,
-    accountStore: Store<ModelState>,
+    appStore: SelectorStore<ModelState>,
+    accountStore: SelectorStore<ModelState>,
     nav: NavModel,
     onOpenSwitcher: () -> Unit,
 ) {
@@ -344,7 +347,7 @@ private fun BoxWithConstraintsRouting(
  * to the side of the sheet by design.
  */
 @Composable
-private fun RouteScreen(route: Route, appStore: Store<ModelState>, accountStore: Store<ModelState>) {
+private fun RouteScreen(route: Route, appStore: SelectorStore<ModelState>, accountStore: SelectorStore<ModelState>) {
     val content: @Composable () -> Unit = {
         when (route) {
             is Route.BoardList -> BoardListScreen(accountStore)
@@ -437,8 +440,8 @@ private const val MODE_FLIP_SCALE = 0.03f
  * @param onOpenSwitcher opens the switcher overlay.
  */
 @Composable
-private fun SwitcherAvatarButton(appStore: Store<ModelState>, onOpenSwitcher: () -> Unit) {
-    val accounts by rememberStableStore(appStore).value.fieldStateOf(AccountsModel::class) { it }
+private fun SwitcherAvatarButton(appStore: SelectorStore<ModelState>, onOpenSwitcher: () -> Unit) {
+    val accounts by appStore.fieldStateOf(AccountsModel::class) { it }
     val active = accounts.activeAccountId?.let { accounts.accounts[it] }
     IconButton(onClick = onOpenSwitcher) {
         if (active != null) {
@@ -502,10 +505,13 @@ private fun BoardLifecycleEffect(
  * @param activeBoardId id of the active board, or `null` if no board is on the stack.
  */
 @Composable
-private fun PeriodicSyncEffect(appStore: Store<ModelState>, accountStore: Store<ModelState>, activeBoardId: BoardId?) {
-    val online by rememberStableStore(appStore).value.fieldStateOf(AppSettingsModel::class) { it.fakeService.online }
-    val intervalMs by rememberStableStore(appStore).value
-        .fieldStateOf(AppSettingsModel::class) { it.fakeService.syncIntervalMs }
+private fun PeriodicSyncEffect(
+    appStore: SelectorStore<ModelState>,
+    accountStore: Store<ModelState>,
+    activeBoardId: BoardId?,
+) {
+    val online by appStore.fieldStateOf(AppSettingsModel::class) { it.fakeService.online }
+    val intervalMs by appStore.fieldStateOf(AppSettingsModel::class) { it.fakeService.syncIntervalMs }
 
     LaunchedEffect(activeBoardId, intervalMs) {
         if (activeBoardId != null) {
@@ -531,8 +537,8 @@ private fun PeriodicSyncEffect(appStore: Store<ModelState>, accountStore: Store<
  * @param registry the registry whose dropped accounts must be torn down.
  */
 @Composable
-private fun AccountDisposalEffect(appStore: Store<ModelState>, registry: AccountRegistry) {
-    val ids by rememberStableStore(appStore).value.fieldStateOf(AccountsModel::class) { it.accounts.keys }
+private fun AccountDisposalEffect(appStore: SelectorStore<ModelState>, registry: AccountRegistry) {
+    val ids by appStore.fieldStateOf(AccountsModel::class) { it.accounts.keys }
     var previous by remember { mutableStateOf<Set<AccountId>>(emptySet()) }
     LaunchedEffect(ids) {
         val removed = previous - ids

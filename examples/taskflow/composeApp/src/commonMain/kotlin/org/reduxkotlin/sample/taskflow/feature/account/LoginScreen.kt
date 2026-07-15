@@ -27,8 +27,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.app.getModel
 import org.reduxkotlin.sample.taskflow.core.AccountId
@@ -52,8 +53,12 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  */
 @Composable
 public fun LoginScreen(rootStore: Store<ModelState>, modifier: Modifier = Modifier) {
-    val store = rememberStableStore(rootStore).value
-    val auth by store.fieldStateOf(AuthFlowModel::class) { it }
+    LoginScreen(rememberSelectorStore(rootStore), modifier)
+}
+
+@Composable
+internal fun LoginScreen(rootStore: SelectorStore<ModelState>, modifier: Modifier = Modifier) {
+    val auth by rootStore.fieldStateOf(AuthFlowModel::class) { it }
     val scope = rememberCoroutineScope()
     val scheme = MaterialTheme.colorScheme
 
@@ -98,11 +103,11 @@ public fun LoginScreen(rootStore: Store<ModelState>, modifier: Modifier = Modifi
                     inFlight = auth.inFlight,
                     onContinue = {
                         val picked = SeedData.accounts.first { it.id == selectedId }
-                        store.dispatch(LoginRequested)
+                        rootStore.dispatch(LoginRequested)
                         scope.launch {
-                            val latency = store.getModel<AppSettingsModel>().fakeService.latencyMaxMs
+                            val latency = rootStore.getModel<AppSettingsModel>().fakeService.latencyMaxMs
                             delay(latency.toLong())
-                            store.dispatch(AccountLoggedIn(picked))
+                            rootStore.dispatch(AccountLoggedIn(picked))
                         }
                     },
                 )

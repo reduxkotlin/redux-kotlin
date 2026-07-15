@@ -20,8 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AccountSummary
@@ -59,8 +60,17 @@ public fun SwitcherScreen(
     onAddAccount: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val store = rememberStableStore(rootStore).value
-    val accountsModel by store.fieldStateOf(AccountsModel::class) { it }
+    SwitcherScreen(rememberSelectorStore(rootStore), statusLineFor, onAddAccount, modifier)
+}
+
+@Composable
+internal fun SwitcherScreen(
+    rootStore: SelectorStore<ModelState>,
+    statusLineFor: (AccountId) -> String,
+    onAddAccount: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val accountsModel by rootStore.fieldStateOf(AccountsModel::class) { it }
     val accounts = accountsModel.accounts
     val activeId = accountsModel.activeAccountId
 

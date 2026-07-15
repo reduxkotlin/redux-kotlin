@@ -105,7 +105,7 @@ Boardlist spine:
 `examples/taskflow/composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/feature/boardlist → BoardListScreen`.
 Board callout:
 `examples/taskflow/composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/feature/board/BoardScreen.kt → BoardScreen`.
-The screen wraps its store once via `rememberStableStore(store).value`, then binds slices with
+The route creates a root-scoped `rememberSelectorStore(store)` facade, then the screen binds slices with
 `fieldStateOf` (a whole field, value-equal) or `selectorState` (a derived snapshot); per ARCHITECTURE
 §17, each narrowly-bound leaf is wrapped in `key(...)` so it recomposes independently. Child composables
 receive finished immutable data plus a remembered callback — the store never reaches a child. Editor
