@@ -645,7 +645,7 @@ death via `redux-kotlin-compose-saveable`:
 - `AppShell` gates the first paint behind a `booted` flag until the account directory loads
   from SQLDelight, preventing a Login-screen flash for returning users. `activeAccountId` is
   read via `fieldStateOf` (lock-free, lag-free).
-- Subscriber callbacks use `coalescingNotificationContext` (inline when already on main,
+- Subscriber callbacks use `coalescingNotificationContext` (inline only when the main-thread queue is idle,
   otherwise posts to main) so bindings never lag a dispatch.
 
 ---

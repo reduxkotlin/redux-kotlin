@@ -138,9 +138,9 @@ DevTools action log — a background actor (sync, taskflow's bot) may have legit
 With a concurrent store, writes are synchronous but subscriber callbacks follow the
 `NotificationContext`. Wrap the platform main-thread post with
 `redux-kotlin-concurrent/src/commonMain/kotlin/org/reduxkotlin/concurrent/NotificationContext.kt → coalescingNotificationContext`
-(`isOnTargetThread` + `post`): **main-thread** dispatches (including the restore dispatch) notify
-inline with no extra frame of latency; off-main effect dispatches still marshal to main, arriving
-on a later loop iteration (that lag is inherent to posting, not removed by coalescing). The Compose
+(`isOnTargetThread` + `post`): an **idle main-thread** dispatch (including a restore dispatch)
+notifies inline with no extra frame of latency; a main-thread dispatch behind older work joins that
+FIFO queue, and off-main effect dispatches still marshal to main on a later loop iteration. The Compose
 bindings read `getState()` synchronously on every read, so any recomposition renders current state;
 the notification only schedules recomposition — see
 [store-consistency-model.md](./store-consistency-model.md) for the exact publish/notify ordering.
@@ -159,8 +159,9 @@ Its hard-won lessons, in checklist form:
 5. First paint gated on app bootstrap (account directory loaded from db) so returning users never
    see a Login flash; on Android, also gated on window-insets dispatch to avoid a status-bar jump
    on process-death restore.
-6. `coalescingNotificationContext` as the main `NotificationContext` so main-thread dispatches
-   notify inline (no lag frame); off-main sync/effects dispatches marshal to main as before.
+6. `coalescingNotificationContext` as the main `NotificationContext` so idle main-thread dispatches
+   notify inline (no lag frame), while dispatches behind older work keep FIFO order and off-main
+   sync/effects dispatches marshal to main as before.
 7. Board data survives restore ONLY because the board-load effect keys on **state**
    (`DisposableEffect(activeId, activeBoardId)` over the restored nav slice), not on `Navigate`
    events — see "Restore replays no events" above. A "no cards after restore" report against this
