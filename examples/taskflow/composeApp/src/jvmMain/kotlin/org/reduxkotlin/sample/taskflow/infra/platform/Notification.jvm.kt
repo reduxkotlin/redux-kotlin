@@ -8,9 +8,9 @@ import javax.swing.SwingUtilities
  * JVM (desktop) [mainNotificationContext]: runs subscriber callbacks on the Swing
  * Event Dispatch Thread.
  *
- * Runs the block inline when already on the EDT (avoids a needless re-post and keeps
- * subscribers synchronous with the dispatch); otherwise marshals it via
- * [SwingUtilities.invokeLater].
+ * Runs an idle block inline on the EDT (avoids a needless re-post and keeps
+ * subscribers synchronous with the dispatch); otherwise it joins the FIFO drain
+ * marshaled via [SwingUtilities.invokeLater].
  *
  * @return a [NotificationContext] that runs callbacks on the EDT.
  */

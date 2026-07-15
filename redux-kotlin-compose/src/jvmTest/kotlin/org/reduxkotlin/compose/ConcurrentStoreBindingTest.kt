@@ -11,6 +11,7 @@ import androidx.compose.ui.test.runComposeUiTest
 import org.junit.Test
 import org.reduxkotlin.concurrent.ConcurrentStore
 import org.reduxkotlin.concurrent.NotificationContext
+import org.reduxkotlin.concurrent.coalescingNotificationContext
 import org.reduxkotlin.concurrent.createConcurrentStore
 
 private data class BState(val count: Int = 0, val label: String = "init")
@@ -40,6 +41,20 @@ private class QueueingContext : NotificationContext {
 private fun queuedConcurrentStore(): Pair<ConcurrentStore<BState>, QueueingContext> {
     val queue = QueueingContext()
     return createConcurrentStore(::bReducer, BState(), notificationContext = queue) to queue
+}
+
+private class CoalescingQueue {
+    private val scheduled = ArrayDeque<() -> Unit>()
+    var onTarget: Boolean = false
+
+    val context = coalescingNotificationContext(
+        isOnTargetThread = { onTarget },
+        post = { scheduled.addLast(it) },
+    )
+
+    fun drain() {
+        while (scheduled.isNotEmpty()) scheduled.removeFirst()()
+    }
 }
 
 /**
@@ -109,5 +124,26 @@ class ConcurrentStoreBindingTest {
         queue.drain() // cleanliness; must not change the rendered value
         waitForIdle()
         onAllNodesWithText("count=7").assertCountEquals(1)
+    }
+
+    @Test
+    fun selectorStateDoesNotRecomposeAheadOfAnOlderWorkerNotification() = runComposeUiTest {
+        val queue = CoalescingQueue()
+        val store = createConcurrentStore(::bReducer, BState(), notificationContext = queue.context)
+        setContent {
+            val count by store.selectorState(BState::count)
+            Text("count=$count")
+        }
+        waitForIdle()
+
+        store.dispatch(Add())
+        queue.onTarget = true
+        store.dispatch(Add())
+        waitForIdle()
+        onAllNodesWithText("count=0").assertCountEquals(1)
+
+        queue.drain()
+        waitForIdle()
+        onAllNodesWithText("count=2").assertCountEquals(1)
     }
 }

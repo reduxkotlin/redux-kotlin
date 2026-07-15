@@ -75,5 +75,8 @@ Wrap your platform main-thread post with `coalescingNotificationContext`:
         post = { block -> handler.post(block) },
     )
 
-A main-thread dispatch then notifies subscribers inline (no extra frame of latency), while off-main
-dispatches still marshal to the main thread.
+An idle main-thread dispatch then notifies subscribers inline (no extra frame of latency), while
+off-main dispatches still marshal to the main thread. If an older off-main notification is already
+queued, a later main-thread dispatch joins that FIFO queue rather than overtaking it. Platform posts
+must accept their callback or throw; adapt a boolean-returning scheduler such as Android
+`Handler.post` with `check(handler.post(block))`.

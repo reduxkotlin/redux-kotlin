@@ -1,5 +1,8 @@
 package org.reduxkotlin.concurrent
 
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
+
 /**
  * Decides on which thread/dispatcher a [ConcurrentStore]'s listener callbacks
  * (and the store's `onError` handler) are invoked.
@@ -11,8 +14,12 @@ package org.reduxkotlin.concurrent
  * never a payload (later dispatches may already have landed).
  *
  * Implementations MUST execute posted blocks for a given store one at a time,
- * in post order, with a happens-before edge between consecutive blocks (any
- * single-threaded executor, main-thread post, or inline execution qualifies).
+ * in FIFO order at the [post] synchronization point, with a happens-before
+ * edge between consecutive blocks. Concurrent callers have no external total
+ * order beyond that point. A target-thread implementation may run a block
+ * inline only when no earlier block is queued or draining; a block posted
+ * reentrantly runs after the current block returns. Any single-threaded
+ * executor, main-thread post, or inline execution qualifies.
  * Handing blocks to a multi-threaded executor is unsupported: diff-based
  * consumers (redux-kotlin-granular's per-entry last value, and therefore
  * `selectorState`/`fieldState`) assume serial notification and will lose or
@@ -45,8 +52,8 @@ public fun interface NotificationContext {
 }
 
 /**
- * A [NotificationContext] that runs the callback **inline** when already on the target thread, and
- * otherwise hands it to [post] for marshaling.
+ * A [NotificationContext] that serializes callbacks onto the target thread.
+ * An idle target-thread post runs inline; all other posts join a FIFO queue.
  *
  * Avoids the read-after-dispatch lag a purely-posting context introduces: when a UI thread dispatches
  * and a subscriber updates UI state, an always-posting context (e.g. a bare `Handler.post`) delivers
@@ -55,20 +62,95 @@ public fun interface NotificationContext {
  * synchronous store), while off-thread dispatches still marshal via [post] (preserving the
  * off-main-effects rule).
  *
- * "Coalescing" refers to this inline-vs-marshal routing only — bursts are NOT collapsed: every
- * dispatch still delivers exactly one callback per subscriber.
+ * "Coalescing" means a burst has at most one active scheduled drain; it never
+ * collapses callbacks. Every dispatch still delivers exactly one callback per
+ * subscriber. A drain processes a bounded batch before posting a continuation,
+ * letting sustained notification traffic yield to the target event loop.
  *
  * @param isOnTargetThread returns true when the calling thread is the target (e.g. the main thread).
- * @param post marshals [block] to the target thread (e.g. `handler::post`); used only when
- *   [isOnTargetThread] returns false.
- * @return a [NotificationContext] that coalesces to inline execution on the target thread.
+ * @param post asynchronously marshals [block] to the target thread (e.g.
+ *   `handler::post`). It must either accept the block or throw; adapters with a
+ *   rejection result must throw when rejected. It is never called while the
+ *   context lock is held.
+ * @return a serial [NotificationContext] that keeps the idle target-thread
+ *   fast path without allowing it to overtake queued work.
  */
 public fun coalescingNotificationContext(
     isOnTargetThread: () -> Boolean,
     post: (block: () -> Unit) -> Unit,
-): NotificationContext = NotificationContext { block ->
-    if (isOnTargetThread()) block() else post(block)
+): NotificationContext = CoalescingNotificationContext(isOnTargetThread, post)
+
+private class CoalescingNotificationContext(
+    private val isOnTargetThread: () -> Boolean,
+    private val postToTarget: (block: () -> Unit) -> Unit,
+) : NotificationContext {
+    private val lock = SynchronizedObject()
+    private val queue = ArrayDeque<() -> Unit>()
+    private var draining = false
+    private val drain: () -> Unit = ::drain
+
+    private fun releaseDrainClaim() {
+        synchronized(lock) { draining = false }
+    }
+
+    private fun scheduleDrain() {
+        try {
+            postToTarget(drain)
+        } catch (@Suppress("TooGenericExceptionCaught") throwable: Throwable) {
+            // Keep queued callbacks retryable when the target loop is shutting down.
+            releaseDrainClaim()
+            throw throwable
+        }
+    }
+
+    private fun drain() {
+        var firstFailure: Throwable? = null
+        var delivered = 0
+        while (delivered < MAX_CALLBACKS_PER_DRAIN) {
+            val callback = synchronized(lock) { queue.removeFirstOrNull() } ?: break
+            try {
+                callback()
+            } catch (@Suppress("TooGenericExceptionCaught") throwable: Throwable) {
+                if (firstFailure == null) firstFailure = throwable
+            }
+            delivered++
+        }
+
+        val hasMore = synchronized(lock) {
+            if (queue.isEmpty()) {
+                draining = false
+                false
+            } else {
+                true
+            }
+        }
+        if (hasMore) scheduleDrain()
+        firstFailure?.let { throw it }
+    }
+
+    override fun post(block: () -> Unit) {
+        val startDrain = synchronized(lock) {
+            queue.addLast(block)
+            if (draining) {
+                false
+            } else {
+                draining = true
+                true
+            }
+        }
+        if (startDrain) {
+            try {
+                if (isOnTargetThread()) drain() else scheduleDrain()
+            } catch (@Suppress("TooGenericExceptionCaught") throwable: Throwable) {
+                // isOnTargetThread may fail too; no failure may retain the claim.
+                releaseDrainClaim()
+                throw throwable
+            }
+        }
+    }
 }
+
+private const val MAX_CALLBACKS_PER_DRAIN: Int = 64
 
 /**
  * Default `onError` handler for [createConcurrentStore]: prints the throwable and
