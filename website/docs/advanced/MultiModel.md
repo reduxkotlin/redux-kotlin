@@ -136,9 +136,10 @@ implementation("org.reduxkotlin:redux-kotlin-compose-multimodel:<version>")
 
 ```kotlin
 import org.reduxkotlin.compose.multimodel.fieldState
+import org.reduxkotlin.compose.SelectorStore
 
 @Composable
-fun ProfileHeader(store: Store<ModelState>) {
+fun ProfileHeader(store: SelectorStore<ModelState>) {
     val displayName by store.fieldState(LoggedInUserModel::displayName)
     Text("Hello, $displayName")
 }
@@ -154,7 +155,7 @@ val displayName by store.fieldStateOf(LoggedInUserModel::class) { it.displayName
 ```
 
 See [Compose integration — multi-model stores](compose-integration#multi-model-stores)
-for skippability (`StableStore`) and lifecycle details.
+for `SelectorStore` setup, keyed bindings, threading, and lifecycle details.
 
 ## See also
 

@@ -22,8 +22,9 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.compose.saveable.rememberSaveableState
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
@@ -130,10 +131,11 @@ class ProcessDeathRestoreUiTest {
     private fun ActiveAccountReplica(registry: AccountRegistry, activeId: AccountId) {
         val handle = remember(activeId) { registry.getOrCreate(activeId, SeedData.accountDetail(activeId)) }
         val accountStore = handle.store
+        val selectorStore = rememberSelectorStore(accountStore)
 
         accountStore.rememberSaveableState(accountUiSaver, key = "account-ui-${activeId.v}")
 
-        val nav by rememberStableStore(accountStore).value.fieldStateOf(NavModel::class) { it }
+        val nav by selectorStore.fieldStateOf(NavModel::class) { it }
 
         BoardLifecycleEffectReplica(
             accountStore = accountStore,
@@ -142,7 +144,7 @@ class ProcessDeathRestoreUiTest {
             activeBoardId = nav.activeBoardId,
         )
 
-        RoutingReplica(accountStore = accountStore, nav = nav)
+        RoutingReplica(accountStore = selectorStore, nav = nav)
     }
 
     /** Mirror of App.kt's private `BoardLifecycleEffect` (bot kept on for fidelity). */
@@ -169,7 +171,7 @@ class ProcessDeathRestoreUiTest {
 
     /** Mirror of App.kt's private routing: render every stack layer bottom-to-top. */
     @Composable
-    private fun RoutingReplica(accountStore: Store<ModelState>, nav: NavModel) {
+    private fun RoutingReplica(accountStore: SelectorStore<ModelState>, nav: NavModel) {
         Box(modifier = Modifier.fillMaxSize()) {
             nav.stack.forEach { route ->
                 key(route) {
