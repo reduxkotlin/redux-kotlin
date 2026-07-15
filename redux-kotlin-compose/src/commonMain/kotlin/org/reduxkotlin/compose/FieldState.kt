@@ -6,6 +6,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import org.reduxkotlin.Store
+import org.reduxkotlin.StoreSubscription
+import org.reduxkotlin.granular.SelectorSubscriptions
 import org.reduxkotlin.granular.subscribeTo
 import kotlin.experimental.ExperimentalObjCRefinement
 import kotlin.native.HiddenFromObjC
@@ -15,125 +17,129 @@ import kotlin.reflect.KProperty1
  * Returns a Compose [State] that always reflects `selector(store.state)`.
  *
  * The value is read synchronously from the store on every [State.value]
- * access — the [State] re-evaluates `selector(store.state)` each read.
- * The store subscription is used **only** to schedule recomposition: when
- * the selected value changes (`===` then `==`) the subscriber bumps an
- * internal tick that the value getter observes, so reading Composables
- * recompose. Updates fire only when the selected value actually changes,
- * so a `Store<S>` with N `selectorState` calls only recomposes the subset
- * of UI that reads fields that actually moved.
+ * access. Its subscription only schedules recomposition when the selected
+ * value changes, so it remains current even when a concurrent store posts
+ * notifications asynchronously. The selector is retained for the lifetime of
+ * this store binding; use [selectorState] with an explicit key when it closes
+ * over a parameter that can change.
  *
- * Because the value is always pulled from `store.state` at read time, the
- * binding is correct even when the store delivers notifications
- * asynchronously (e.g. a concurrent store that posts callbacks to the main
- * thread): a recomposition triggered by anything — including an unrelated
- * state change — reads the freshest store state, never a stale cached
- * snapshot lagging a frame behind the notification.
- *
- * A B3 re-sample runs inside the [DisposableEffect], AFTER the subscription is installed: it
- * compares the value at first composition against the current value and bumps the tick **only if
- * it changed**. The subscribe-then-resample order is load-bearing — every change before the
- * install is caught by the re-sample, every change after it by the subscription, so no window
- * remains (the worst-case overlap is one redundant same-value bump). This catches a change that
- * landed between first composition and the install (e.g. a fast async load), for which no real
- * notification is delivered — without it the binding would stay stuck on the first-frame value.
- * Because the bump is conditional, an unchanged value adds no mount-time recomposition (so render
- * isolation is preserved: a binding only recomposes when its selected value actually moves).
- *
- * The captured [selector] lambda is stable across recompositions: it
- * is remembered against `this` (the store). If the selector closes
- * over outer Composable state that should refresh the binding, the
- * outer state is **frozen at first composition** — use
- * [fieldState] with a property reference instead, or unsubscribe and
- * resubscribe by hand inside a `LaunchedEffect` keyed on the variable.
- *
- * The [selector] runs on every read; if it is expensive, hoist/memoize it outside the composable.
+ * For expensive derived values, pass a stable
+ * `org.reduxkotlin.granular.memoizedSelector` instance. For several sibling
+ * bindings, use [rememberSelectorSubscriptions] and the scoped overload to
+ * share one underlying store callback.
  */
 @Composable
-public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> {
-    val store = this
-    val rememberedSelector = remember(store) { selector }
-    val tick = remember(store, rememberedSelector) { mutableIntStateOf(0) }
-    // Value observed at first composition; the effect compares against it to detect a change that
-    // landed before the subscription was installed.
-    val initial = remember(store, rememberedSelector) { rememberedSelector(store.state) }
-    DisposableEffect(store, rememberedSelector) {
-        // Install the subscription FIRST, then re-sample — the order is load-bearing: a change
-        // landing before the install is caught by the re-sample below; a change landing after it
-        // is caught by the subscription. With the reverse order, a change landing between the
-        // re-sample and the install (e.g. inside subscribe() itself, or a fast off-main dispatch)
-        // was never observed. Worst-case overlap is one redundant same-value tick bump.
-        val sub = store.subscribeTo(
-            selector = rememberedSelector,
-            triggerOnSubscribe = false,
-        ) { _, _ ->
-            tick.intValue++
-        }
-        // B3 re-sample: if the selected value changed between first composition and this point
-        // (e.g. a fast async load), bump the tick so the getter re-reads. Conditional, so an
-        // unchanged value adds no mount-time recomposition (preserves render isolation).
-        if (rememberedSelector(store.state) != initial) tick.intValue++
-        onDispose { sub() }
-    }
-    return remember(store, rememberedSelector) {
-        object : State<F> {
-            override val value: F
-                get() {
-                    // Observe the tick so this read recomposes when the subscription reports a change;
-                    // the value itself is always read fresh from getState() below.
-                    @Suppress("UNUSED_EXPRESSION")
-                    tick.intValue
-                    return rememberedSelector(store.state)
-                }
-        }
-    }
+public fun <S, F> Store<S>.selectorState(selector: (S) -> F): State<F> = selectorStateBinding(
+    selectorKey = Unit,
+    selector = selector,
+    subscriptionKey = Unit,
+) { stableSelector, listener ->
+    subscribeTo(stableSelector, triggerOnSubscribe = false, listener = listener)
 }
 
 /**
- * Property-reference convenience overload of [selectorState] for the
- * single-field case. Equivalent to `selectorState(property::get)` but
- * lets the call site use `store.fieldState(MyState::myField)`.
- *
- * Like [selectorState], the value is read synchronously from
- * `store.state` on every [State.value] access; the subscription only
- * schedules recomposition, so the value is correct even when the store
- * delivers notifications asynchronously (e.g. a concurrent store posting
- * to the main thread). Like [selectorState] it installs the subscription and then runs a
- * conditional B3 re-sample, so a change landing any time before the install is caught.
- *
- * Hidden from Swift via [HiddenFromObjC] (KProperty1 is Kotlin-only).
+ * Returns a Compose [State] for [selector], replacing its retained selector
+ * whenever [key] changes. Use this overload for a selector that closes over a
+ * changing id, filter, or other Compose value.
+ */
+@Composable
+public fun <S, F> Store<S>.selectorState(key: Any?, selector: (S) -> F): State<F> = selectorStateBinding(
+    selectorKey = key,
+    selector = selector,
+    subscriptionKey = Unit,
+) { stableSelector, listener ->
+    subscribeTo(stableSelector, triggerOnSubscribe = false, listener = listener)
+}
+
+/**
+ * Returns a Compose [State] backed by [subscriptions], letting sibling
+ * bindings share one underlying store callback. Obtain [subscriptions] from
+ * this store with [rememberSelectorSubscriptions] and hoist it to the common
+ * screen or subtree that owns the bindings.
+ */
+@Composable
+public fun <S, F> Store<S>.selectorState(subscriptions: SelectorSubscriptions<S>, selector: (S) -> F): State<F> =
+    selectorStateBinding(
+        selectorKey = Unit,
+        selector = selector,
+        subscriptionKey = subscriptions,
+    ) { stableSelector, listener ->
+        subscriptions.subscribeTo(stableSelector, triggerOnSubscribe = false, listener = listener)
+    }
+
+/**
+ * Scoped counterpart of [selectorState] that replaces the retained selector
+ * whenever [key] changes while keeping the binding in [subscriptions].
+ */
+@Composable
+public fun <S, F> Store<S>.selectorState(
+    subscriptions: SelectorSubscriptions<S>,
+    key: Any?,
+    selector: (S) -> F,
+): State<F> = selectorStateBinding(
+    selectorKey = key,
+    selector = selector,
+    subscriptionKey = subscriptions,
+) { stableSelector, listener ->
+    subscriptions.subscribeTo(stableSelector, triggerOnSubscribe = false, listener = listener)
+}
+
+/**
+ * Property-reference convenience for [selectorState]. The property reference
+ * is stable, so it does not need an explicit key.
  */
 @OptIn(ExperimentalObjCRefinement::class)
 @HiddenFromObjC
 @Composable
-public fun <S, F> Store<S>.fieldState(property: KProperty1<S, F>): State<F> {
-    val store = this
-    val tick = remember(store, property) { mutableIntStateOf(0) }
-    // Value observed at first composition; the effect compares against it to detect a change that
-    // landed before the subscription was installed.
-    val initial = remember(store, property) { property.get(store.state) }
-    DisposableEffect(store, property) {
-        // Subscribe first, then re-sample (see selectorState — the order is load-bearing).
-        val sub = store.subscribeTo(
-            property = property,
-            triggerOnSubscribe = false,
-        ) { _, _ ->
-            tick.intValue++
-        }
-        // B3 re-sample: bump only if the value changed between first composition and this point,
-        // so an unchanged value adds no mount-time recomposition.
-        if (property.get(store.state) != initial) tick.intValue++
-        onDispose { sub() }
+public fun <S, F> Store<S>.fieldState(property: KProperty1<S, F>): State<F> = selectorStateBinding(
+    selectorKey = property,
+    selector = property::get,
+    subscriptionKey = Unit,
+) { stableSelector, listener ->
+    subscribeTo(stableSelector, triggerOnSubscribe = false, listener = listener)
+}
+
+/**
+ * Property-reference convenience for a shared [subscriptions] scope. The
+ * scope must have been created for this store.
+ */
+@OptIn(ExperimentalObjCRefinement::class)
+@HiddenFromObjC
+@Composable
+public fun <S, F> Store<S>.fieldState(subscriptions: SelectorSubscriptions<S>, property: KProperty1<S, F>): State<F> =
+    selectorStateBinding(
+        selectorKey = property,
+        selector = property::get,
+        subscriptionKey = subscriptions,
+    ) { stableSelector, listener ->
+        subscriptions.subscribeTo(stableSelector, triggerOnSubscribe = false, listener = listener)
     }
-    return remember(store, property) {
+
+@Composable
+private fun <S, F> Store<S>.selectorStateBinding(
+    selectorKey: Any?,
+    selector: (S) -> F,
+    subscriptionKey: Any?,
+    subscribe: ((S) -> F, (F, F) -> Unit) -> StoreSubscription,
+): State<F> {
+    val store = this
+    val rememberedSelector = remember(store, selectorKey) { selector }
+    val tick = remember(store, rememberedSelector, subscriptionKey) { mutableIntStateOf(0) }
+    val initial = remember(store, rememberedSelector, subscriptionKey) { rememberedSelector(store.state) }
+    DisposableEffect(store, rememberedSelector, subscriptionKey) {
+        val subscription = subscribe(rememberedSelector) { _, _ -> tick.intValue++ }
+        // Subscribe first, then re-sample. This closes the window between the
+        // initial read and effect installation without an unconditional mount bump.
+        if (rememberedSelector(store.state) != initial) tick.intValue++
+        onDispose { subscription() }
+    }
+    return remember(store, rememberedSelector, subscriptionKey) {
         object : State<F> {
             override val value: F
                 get() {
-                    // Observe the tick so this read recomposes when the subscription reports a change;
-                    // the value itself is always read fresh from getState() below.
                     @Suppress("UNUSED_EXPRESSION")
                     tick.intValue
-                    return property.get(store.state)
+                    return rememberedSelector(store.state)
                 }
         }
     }

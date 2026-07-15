@@ -9,10 +9,10 @@ import org.reduxkotlin.StoreEnhancer
  *
  * The granular API itself is a set of extension functions on
  * [org.reduxkotlin.Store]; no store wrapping is needed for correctness.
- * This marker exists so future per-store optimisations (e.g. folding a
- * field registry directly into a store wrapper instead of attaching a
- * separate subscriber per [subscribeFields] block) can take advantage of
- * the enhancer hook without breaking call sites that already use it.
+ * This marker intentionally remains a no-op. Shared selector fan-out is
+ * provided by [selectorSubscriptions], which subscribes to the final store
+ * instance and therefore cannot be bypassed by the ordering of concurrent,
+ * routing, or bundle wrappers in an enhancer chain.
  */
 public fun <State> granularSubscriptionsEnhancer(): StoreEnhancer<State> = { storeCreator ->
     { reducer, initialState, en ->

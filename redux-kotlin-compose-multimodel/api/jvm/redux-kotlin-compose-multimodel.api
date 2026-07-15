@@ -1,4 +1,5 @@
 public final class org/reduxkotlin/compose/multimodel/ModelFieldStateKt {
 	public static final fun fieldStateOf (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+	public static final fun fieldStateOf (Lorg/reduxkotlin/TypedStore;Lorg/reduxkotlin/granular/SelectorSubscriptions;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 }
 
