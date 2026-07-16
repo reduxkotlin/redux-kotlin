@@ -29,7 +29,7 @@ the bundles; everything else is à-la-carte.
 
 **Compose trio:**
 
-- `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`).
+- `redux-kotlin-compose` — Compose `State<T>` bindings (`fieldState`, `selectorState`, `SelectorStore`; `StableStore` compatibility wrapper).
 - `redux-kotlin-compose-multimodel` — Compose bindings for `ModelState`.
 - `redux-kotlin-compose-saveable` — `rememberSaveableState` store-anchored snapshot persistence (survives rotation + process death) via Compose `SaveableStateRegistry` + kotlinx.serialization.
 

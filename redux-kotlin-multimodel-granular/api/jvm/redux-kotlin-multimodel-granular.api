@@ -2,6 +2,8 @@ public final class org/reduxkotlin/multimodel/granular/SubscribeToModelByClassKt
 	public static final fun onModel (Lorg/reduxkotlin/granular/FieldSubscriptionScope;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;)V
 	public static synthetic fun onModel$default (Lorg/reduxkotlin/granular/FieldSubscriptionScope;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public static final fun subscribeToModel (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function0;
+	public static final fun subscribeToModel (Lorg/reduxkotlin/granular/SelectorSubscriptions;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function0;
 	public static synthetic fun subscribeToModel$default (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlin/jvm/functions/Function0;
+	public static synthetic fun subscribeToModel$default (Lorg/reduxkotlin/granular/SelectorSubscriptions;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlin/jvm/functions/Function0;
 }
 

@@ -15,8 +15,9 @@ import kotlinx.collections.immutable.toPersistentMap
 import org.junit.Test
 import org.reduxkotlin.Store
 import org.reduxkotlin.bundle.createConcurrentModelStore
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.core.AccountId
@@ -120,7 +121,7 @@ class RenderIsolationTest {
             val recompositions = remember {
                 mutableMapOf<ColumnId, Int>().also { counts = it }
             }
-            val s = rememberStableStore(store).value
+            val s = rememberSelectorStore(store)
             Row {
                 listOf(colA, colB, colC).forEach { colId ->
                     key(colId) {
@@ -172,8 +173,12 @@ class RenderIsolationTest {
  * @param recompositions the shared per-column composition tally the test inspects.
  */
 @Composable
-private fun ColumnCardList(store: Store<ModelState>, colId: ColumnId, recompositions: MutableMap<ColumnId, Int>) {
-    val cardIds: PersistentList<CardId> by store.fieldStateOf(BoardModel::class) {
+private fun ColumnCardList(
+    store: SelectorStore<ModelState>,
+    colId: ColumnId,
+    recompositions: MutableMap<ColumnId, Int>,
+) {
+    val cardIds: PersistentList<CardId> by store.fieldStateOf(colId, BoardModel::class) {
         it.board?.columnById(colId)?.cardIds ?: persistentListOf()
     }
     // Side effect of (re)composition: bump this column's tally.

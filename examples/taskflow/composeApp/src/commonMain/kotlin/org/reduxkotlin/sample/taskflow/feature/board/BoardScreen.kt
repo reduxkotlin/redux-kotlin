@@ -46,8 +46,9 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.compose.selectorState
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.app.nav.OpenCard
@@ -97,7 +98,12 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  */
 @Composable
 public fun BoardScreen(store: Store<ModelState>, modifier: Modifier = Modifier) {
-    val s = rememberStableStore(store).value
+    BoardScreen(rememberSelectorStore(store), modifier)
+}
+
+@Composable
+internal fun BoardScreen(store: SelectorStore<ModelState>, modifier: Modifier = Modifier) {
+    val s = store
 
     val boardName by s.selectorState { ms ->
         ms.get<BoardModel>().board?.boardId?.let { ms.get<BoardListModel>().boards[it]?.name } ?: ""
@@ -136,8 +142,8 @@ public fun BoardScreen(store: Store<ModelState>, modifier: Modifier = Modifier) 
  */
 @Composable
 private fun BoardHeader(
-    store: Store<ModelState>,
-    s: Store<ModelState>,
+    store: SelectorStore<ModelState>,
+    s: SelectorStore<ModelState>,
     boardName: String,
     online: Boolean,
     pendingCount: Int,
@@ -192,7 +198,7 @@ private fun BoardHeader(
  * (Medium / Expanded, plus the Activity rail at Expanded).
  */
 @Composable
-private fun BoardBody(store: Store<ModelState>, s: Store<ModelState>) {
+private fun BoardBody(store: SelectorStore<ModelState>, s: SelectorStore<ModelState>) {
     val columns by s.selectorState { ms ->
         ms.get<BoardModel>().board?.columns?.map { ColDesc(it.id, it.title, it.wipLimit) }?.toPersistentList()
             ?: persistentListOf()
@@ -232,7 +238,7 @@ private fun BoardBody(store: Store<ModelState>, s: Store<ModelState>) {
 /** Compact: one column per page in a [HorizontalPager], with paging dots beneath. */
 @Composable
 private fun CompactColumns(
-    s: Store<ModelState>,
+    s: SelectorStore<ModelState>,
     columns: PersistentList<ColDesc>,
     collaborators: PersistentMap<AccountId, AccountSummary>,
     onCardClick: (CardId) -> Unit,
@@ -292,7 +298,7 @@ private fun PagingDots(count: Int, selected: Int) {
  */
 @Composable
 private fun WideColumns(
-    s: Store<ModelState>,
+    s: SelectorStore<ModelState>,
     columns: PersistentList<ColDesc>,
     collaborators: PersistentMap<AccountId, AccountSummary>,
     onCardClick: (CardId) -> Unit,
@@ -341,7 +347,7 @@ private fun WideColumns(
  */
 @Composable
 private fun ColumnView(
-    s: Store<ModelState>,
+    s: SelectorStore<ModelState>,
     colId: ColumnId,
     title: String,
     wipLimit: Int?,
@@ -349,10 +355,10 @@ private fun ColumnView(
     onCardClick: (CardId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val visibleCardIds by s.selectorState { ms ->
+    val visibleCardIds by s.selectorState(colId) { ms ->
         deriveVisibleCardIds(ms.get<BoardModel>(), ms.get<FilterModel>(), colId)
     }
-    val wip by s.selectorState { ms ->
+    val wip by s.selectorState(colId) { ms ->
         val c = ms.get<BoardModel>().board?.columnById(colId)
         WipState(c?.cardIds?.size ?: 0, c?.wipLimit ?: wipLimit)
     }
@@ -395,13 +401,13 @@ private fun ColumnView(
  */
 @Composable
 private fun CardCell(
-    s: Store<ModelState>,
+    s: SelectorStore<ModelState>,
     cardId: CardId,
     collaborators: PersistentMap<AccountId, AccountSummary>,
     onCardClick: (CardId) -> Unit,
 ) {
-    val card by s.fieldStateOf(BoardModel::class) { it.board?.cards?.get(cardId) }
-    val optimistic by s.fieldStateOf(SyncModel::class) { cardId in it.inFlight }
+    val card by s.fieldStateOf(cardId, BoardModel::class) { it.board?.cards?.get(cardId) }
+    val optimistic by s.fieldStateOf(cardId, SyncModel::class) { cardId in it.inFlight }
     card?.let {
         KanbanCard(
             card = it,
@@ -418,7 +424,7 @@ private fun CardCell(
  * only while [SyncModel.lastError] is non-null and the user has not locally dismissed it.
  */
 @Composable
-private fun BoardOverlays(store: Store<ModelState>, s: Store<ModelState>) {
+private fun BoardOverlays(store: SelectorStore<ModelState>, s: SelectorStore<ModelState>) {
     var expanded by remember { mutableStateOf(false) }
     val focusedColumnId by s.selectorState { ms ->
         ms.get<BoardModel>().board?.columns?.firstOrNull()?.id
@@ -458,7 +464,7 @@ private fun BoardOverlays(store: Store<ModelState>, s: Store<ModelState>) {
  * [ActivityModel]. Read-only, so it carries no callbacks.
  */
 @Composable
-private fun ActivityRail(s: Store<ModelState>, modifier: Modifier = Modifier) {
+private fun ActivityRail(s: SelectorStore<ModelState>, modifier: Modifier = Modifier) {
     val entries by s.fieldStateOf(ActivityModel::class) { it.entries }
     Surface(modifier = modifier, color = MaterialTheme.colorScheme.surfaceContainerLow, tonalElevation = 1.dp) {
         Column(modifier = Modifier.fillMaxSize().padding(Dimens.space4)) {

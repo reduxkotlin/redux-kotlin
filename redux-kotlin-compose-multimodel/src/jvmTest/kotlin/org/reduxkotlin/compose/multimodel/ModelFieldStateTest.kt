@@ -2,18 +2,20 @@ package org.reduxkotlin.compose.multimodel
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.runComposeUiTest
 import org.junit.Test
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.createStore
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.multimodel.combineModelReducers
 import org.reduxkotlin.multimodel.modelReducer
 
-private data class UserModel(val displayName: String = "")
+private data class UserModel(val displayName: String = "", val email: String = "")
 private data class FeedModel(val items: List<String> = emptyList())
 
 private data class SetDisplayName(val name: String)
@@ -31,7 +33,7 @@ class ModelFieldStateTest {
                 if (a is AppendFeed) f.copy(items = f.items + a.item) else f
             },
         ),
-        preloadedState = ModelState.of(UserModel("Ada"), FeedModel(listOf("a"))),
+        preloadedState = ModelState.of(UserModel("Ada", "ada@example.test"), FeedModel(listOf("a"))),
     )
 
     @Test
@@ -73,5 +75,23 @@ class ModelFieldStateTest {
         store.dispatch(SetDisplayName("Babbage"))
         waitForIdle()
         onAllNodesWithText("kclass=Babbage").assertCountEquals(1)
+    }
+
+    @Test
+    fun selectorStore_keyed_fieldStateOf_replaces_a_selector_that_captures_a_changing_parameter() = runComposeUiTest {
+        val store = newStore()
+        val showName = mutableStateOf(true)
+        setContent {
+            val selectorStore = rememberSelectorStore(store)
+            val value by selectorStore.fieldStateOf(showName.value, UserModel::class) { user ->
+                if (showName.value) user.displayName else user.email
+            }
+            Text(text = "value=$value")
+        }
+        onAllNodesWithText("value=Ada").assertCountEquals(1)
+
+        showName.value = false
+        waitForIdle()
+        onAllNodesWithText("value=ada@example.test").assertCountEquals(1)
     }
 }

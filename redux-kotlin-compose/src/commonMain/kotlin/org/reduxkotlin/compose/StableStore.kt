@@ -16,30 +16,29 @@ import kotlin.jvm.JvmInline
  *
  * Wrapping the store in this `@Stable` class restores skippability for
  * downstream Composables that take a [StableStore] parameter, without
- * requiring any change to the store implementation itself.
+ * requiring any change to the store implementation itself. For Compose state
+ * bindings, prefer [SelectorStore] from [rememberSelectorStore]: it is also
+ * stable, exposes [SelectorStore.selectorState] and [SelectorStore.fieldState]
+ * directly, delegates [Store.dispatch], and shares one store callback.
  *
  * Usage:
  * ```
  * @Composable
- * fun App(store: Store<AppState>) {
- *     val stable = rememberStableStore(store)
- *     Content(stable)
- * }
- *
- * @Composable
- * fun Content(store: StableStore<AppState>) {
- *     val user by store.value.fieldState(AppState::user)
- *     // …
- * }
+ * val bindings = rememberSelectorStore(store)
+ * val user by bindings.fieldState(AppState::user)
+ * bindings.dispatch(RefreshUser)
  * ```
  *
  * The wrapper is a value class to keep the runtime overhead at zero
  * once the JIT has inlined it.
+ *
+ * Use this compatibility wrapper only when another API requires a stable
+ * [Store] reference and cannot accept [SelectorStore].
  */
 @Stable
 @JvmInline
 public value class StableStore<S>(
-    /** The wrapped store. Access via `myStableStore.value`. */
+    /** The wrapped store for compatibility with APIs that require [Store]. */
     public val value: Store<S>,
 )
 

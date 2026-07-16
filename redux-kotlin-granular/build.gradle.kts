@@ -32,6 +32,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":redux-kotlin"))
+                implementation(libs.kotlinx.atomicfu)
             }
         }
         jvmCommonTest {

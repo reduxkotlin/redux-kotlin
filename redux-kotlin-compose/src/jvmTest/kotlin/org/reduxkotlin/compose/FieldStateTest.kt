@@ -11,7 +11,10 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.runComposeUiTest
 import org.junit.Test
 import org.reduxkotlin.Store
+import org.reduxkotlin.StoreSubscriber
+import org.reduxkotlin.StoreSubscription
 import org.reduxkotlin.createStore
+import kotlin.test.assertEquals
 
 private data class CounterState(val counter: Int = 0, val label: String = "init")
 private data class Increment(val amount: Int = 1)
@@ -24,6 +27,24 @@ private fun reducer(state: CounterState, action: Any): CounterState = when (acti
 }
 
 private fun newStore(): Store<CounterState> = createStore(::reducer, CounterState())
+
+private class SubscriptionCountingStore<S>(private val delegate: Store<S>) : Store<S> by delegate {
+    var activeSubscriptions: Int = 0
+        private set
+
+    override val subscribe: (StoreSubscriber) -> StoreSubscription = { subscriber ->
+        activeSubscriptions++
+        val unsubscribe = delegate.subscribe(subscriber)
+        var active = true
+        {
+            if (active) {
+                active = false
+                activeSubscriptions--
+                unsubscribe()
+            }
+        }
+    }
+}
 
 // Models a concurrent store: state writes apply synchronously, but
 // subscriber notifications are deferred (posted, drained later).
@@ -252,5 +273,74 @@ class FieldStateTest {
         store.dispatch(Increment(amount = 5))
         waitForIdle()
         onAllNodesWithText("doubled=10").assertCountEquals(1)
+    }
+
+    @Test
+    fun sharedSelectorSubscriptions_use_one_store_subscription_and_dispose_with_the_subtree() = runComposeUiTest {
+        val store = SubscriptionCountingStore(newStore())
+        val visible = mutableStateOf(true)
+        setContent {
+            if (visible.value) {
+                val subscriptions = store.rememberSelectorSubscriptions()
+                val counter by store.fieldState(subscriptions, CounterState::counter)
+                val label by store.fieldState(subscriptions, CounterState::label)
+                Text("counter=$counter label=$label")
+            }
+        }
+        waitForIdle()
+        assertEquals(1, store.activeSubscriptions)
+
+        store.dispatch(Increment())
+        waitForIdle()
+        onAllNodesWithText("counter=1 label=init").assertCountEquals(1)
+
+        visible.value = false
+        waitForIdle()
+        assertEquals(0, store.activeSubscriptions)
+    }
+
+    @Test
+    fun selectorStore_shares_one_store_subscription_and_disposes_with_its_composition_root() = runComposeUiTest {
+        val store = SubscriptionCountingStore(newStore())
+        val visible = mutableStateOf(true)
+        setContent {
+            if (visible.value) {
+                val selectorStore = rememberSelectorStore(store)
+                val counter by selectorStore.fieldState(CounterState::counter)
+                val label by selectorStore.fieldState(CounterState::label)
+                Text("counter=$counter label=$label")
+            }
+        }
+        waitForIdle()
+        assertEquals(1, store.activeSubscriptions)
+
+        store.dispatch(Increment())
+        waitForIdle()
+        onAllNodesWithText("counter=1 label=init").assertCountEquals(1)
+
+        visible.value = false
+        waitForIdle()
+        assertEquals(0, store.activeSubscriptions)
+    }
+
+    @Test
+    fun keyedSelectorState_replaces_a_selector_that_captures_a_changing_parameter() = runComposeUiTest {
+        val store = newStore()
+        val selectCounter = mutableStateOf(true)
+        setContent {
+            val value by store.selectorState(selectCounter.value) { state ->
+                if (selectCounter.value) state.counter.toString() else state.label
+            }
+            Text("selected=$value")
+        }
+        onAllNodesWithText("selected=0").assertCountEquals(1)
+
+        selectCounter.value = false
+        waitForIdle()
+        onAllNodesWithText("selected=init").assertCountEquals(1)
+
+        store.dispatch(SetLabel("updated"))
+        waitForIdle()
+        onAllNodesWithText("selected=updated").assertCountEquals(1)
     }
 }

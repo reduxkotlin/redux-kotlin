@@ -33,8 +33,10 @@ two affected columns' slices, and every other column stays frozen.
 
 From `redux-kotlin-compose` and `redux-kotlin-compose-multimodel` (`api_files` above):
 
-- **`rememberStableStore(store).value`** — wrap the incoming `Store<ModelState>` once per screen. The
-  `StableStore` value class memoizes the wrapper so it is stable across recompositions.
+- **`rememberSelectorStore(store)`** — create one `SelectorStore<ModelState>` near the root of a Compose
+  composition and pass it through the screen tree. Its bindings share one store callback while each
+  selected value retains independent equality checks and recomposition isolation. It is `@Stable` and
+  delegates `dispatch`, so binding components use it directly rather than unwrapping `StableStore.value`.
 - **`fieldStateOf(Model::class) { slice }`** — bind a single-model slice as Compose `State<T>`. Fires
   only when the selected value changes identity. Because reducers reuse unchanged instances (structural
   sharing), a sibling edit leaves an untouched card's reference identical → no recomposition.
@@ -45,13 +47,15 @@ From `redux-kotlin-compose` and `redux-kotlin-compose-multimodel` (`api_files` a
 ### The pattern
 
 ```
-val s = rememberStableStore(store).value
+val s = rememberSelectorStore(store)
 // per column, keyed so each is tracked independently:
 key(colId) {
-    val cardIds by s.selectorState { ms -> deriveVisibleCardIds(ms.get<BoardModel>(), ms.get<FilterModel>(), colId) }
+    val cardIds by s.selectorState(colId) { ms ->
+        deriveVisibleCardIds(ms.get<BoardModel>(), ms.get<FilterModel>(), colId)
+    }
     // per card, keyed:
     key(cardId) {
-        val card by s.fieldStateOf(BoardModel::class) { it.board?.cards?.get(cardId) }
+        val card by s.fieldStateOf(cardId, BoardModel::class) { it.board?.cards?.get(cardId) }
         KanbanCard(card = card, onClick = onCardClick)   // store never reaches the child
     }
 }
@@ -69,7 +73,9 @@ Two non-negotiables visible here:
 ## Leaves are pure
 
 A child composable never receives the store — only finished immutable data plus a remembered callback
-minted at the binding point (`remember(store) { { id -> store.dispatch(OpenCard(id)) } }`). Editor text
+minted at the binding point (`remember(store) { { id -> store.dispatch(OpenCard(id)) } }`). Binding
+components may receive the stable `SelectorStore`; they dispatch directly and pass callbacks down to
+pure leaves. Editor text
 and dialog-open flags stay in transient local `remember`, never the store.
 `examples/taskflow/composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/feature/board/KanbanCard.kt → KanbanCard`
 and `examples/taskflow/composeApp/src/commonMain/kotlin/org/reduxkotlin/sample/taskflow/feature/board/ColumnHeader.kt → ColumnHeader`
@@ -103,6 +109,21 @@ Full treatment → [testing.md](./testing.md).
 
 - Reading a whole model (`val board by s.fieldStateOf(BoardModel::class) { it }`) then indexing in the
   body re-recomposes the leaf on every board change — defeats Rule C.
+- `selectorState` prevents unrelated recomposition, but an ordinary selector still runs for every store
+  notification and every `State.value` read. For an expensive derived projection, declare its narrow
+  inputs with `memoizedSelector` and hoist the resulting selector outside the composable (or `remember`
+  it with every captured parameter as a key).
+- `SelectorStore` reduces store fan-out, not arbitrary selector evaluation: one root-scoped facade
+  replaces N store subscribers with one callback that still compares N active selectors. Use
+  memoization as well when the transform itself is expensive. `rememberSelectorSubscriptions()` and
+  its scoped overloads remain the lower-level option for a separately managed subtree/controller scope.
+- A selector that captures a changing parameter is intentionally retained by the original
+  `selectorState { ... }` overload. Use `selectorState(parameter) { ... }` (and the scoped keyed
+  counterpart) so Compose tears down the old subscription and installs the selector for the new key.
+- A Compose-bound concurrent store must deliver notifications serially on the UI thread. On Android,
+  use `coalescingNotificationContext` around the main `Handler`; do not leave
+  `NotificationContext.Inline` in place when effects dispatch from a worker, and never use a
+  multi-threaded executor for granular bindings.
 - Forgetting `key(...)` makes Compose track items positionally, so a move recomposes everything after
   the insertion point.
 - Calling `Clock.System.now()` or generating an id inside a reducer breaks Rule G and makes the reducer

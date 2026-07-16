@@ -13,9 +13,9 @@ import app.cash.sqldelight.async.coroutines.synchronous
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import coil3.compose.setSingletonImageLoaderFactory
 import org.junit.Test
-import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.concurrent.NotificationContext
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.app.AccountRegistry
@@ -36,7 +36,7 @@ import org.reduxkotlin.sample.taskflow.ui.image.fakeNoNetworkImageLoader
  * which per-account store the UI binds to, and each account's screen comes back EXACTLY as it was
  * last left — Nav state is isolated per account and is *remembered*, never reset on switch.
  *
- * The harness binds `store = rememberStableStore(registry.store(activeId)).value` and renders a tag
+ * The harness binds `store = rememberSelectorStore(registry.store(activeId))` and renders a tag
  * of `store.fieldStateOf(NavModel::class){ it.current::class.simpleName }`. A test-controlled
  * `mutableStateOf` for the active account drives the switch. Each account's store was independently
  * navigated (A → Settings, B → Profile) before the first frame; the test then drives A → B → A and
@@ -83,7 +83,7 @@ class AccountSwitchTest {
             // No-network ImageLoader so any AsyncImage in a screen falls back instead of hitting the net.
             setSingletonImageLoaderFactory { ctx -> fakeNoNetworkImageLoader(ctx) }
             val activeId = remember { active }.value
-            val store = rememberStableStore(registry.store(activeId)!!).value
+            val store = rememberSelectorStore(registry.store(activeId)!!)
             RouteTag(store)
         }
 
@@ -118,7 +118,7 @@ class AccountSwitchTest {
  * @param store the active account's store the harness re-binds on every account switch.
  */
 @Composable
-private fun RouteTag(store: Store<ModelState>) {
+private fun RouteTag(store: SelectorStore<ModelState>) {
     val routeName: String by store.fieldStateOf(NavModel::class) { it.current::class.simpleName ?: "?" }
     Text(text = "route:$routeName")
 }

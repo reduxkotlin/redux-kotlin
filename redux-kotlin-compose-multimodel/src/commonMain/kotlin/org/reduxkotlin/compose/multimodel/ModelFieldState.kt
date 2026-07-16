@@ -3,7 +3,9 @@ package org.reduxkotlin.compose.multimodel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.selectorState
+import org.reduxkotlin.granular.SelectorSubscriptions
 import org.reduxkotlin.multimodel.ModelState
 import kotlin.experimental.ExperimentalObjCRefinement
 import kotlin.native.HiddenFromObjC
@@ -40,6 +42,19 @@ public inline fun <reified M : Any, F> Store<ModelState>.fieldState(property: KP
     selectorState { state -> property.get(state.get<M>()) }
 
 /**
+ * Shared-subscription counterpart of [fieldState]. The [subscriptions] scope
+ * must have been created from this store and can be shared by sibling model
+ * bindings in the same Compose subtree.
+ */
+@OptIn(ExperimentalObjCRefinement::class)
+@HiddenFromObjC
+@Composable
+public inline fun <reified M : Any, F> Store<ModelState>.fieldState(
+    subscriptions: SelectorSubscriptions<ModelState>,
+    property: KProperty1<M, F>,
+): State<F> = selectorState(subscriptions) { state -> property.get(state.get<M>()) }
+
+/**
  * Non-inline [KClass]-keyed alternative to the reified [fieldState]
  * overload, for callers that hold the model type as a [KClass] rather
  * than as a compile-time generic (review I11 — inline reified is
@@ -48,3 +63,57 @@ public inline fun <reified M : Any, F> Store<ModelState>.fieldState(property: KP
 @Composable
 public fun <M : Any, F> Store<ModelState>.fieldStateOf(modelClass: KClass<M>, selector: (M) -> F): State<F> =
     selectorState { state -> selector(state.get(modelClass)) }
+
+/**
+ * Keyed counterpart of [fieldStateOf] that replaces the retained selector
+ * whenever [key] changes. Use it when [selector] captures a changing id,
+ * filter, or other Compose value.
+ */
+@Composable
+public fun <M : Any, F> Store<ModelState>.fieldStateOf(
+    key: Any?,
+    modelClass: KClass<M>,
+    selector: (M) -> F,
+): State<F> = selectorState(key) { state -> selector(state.get(modelClass)) }
+
+/**
+ * Shared-subscription counterpart of [fieldStateOf]. The [subscriptions]
+ * scope must have been created from this store.
+ */
+@Composable
+public fun <M : Any, F> Store<ModelState>.fieldStateOf(
+    subscriptions: SelectorSubscriptions<ModelState>,
+    modelClass: KClass<M>,
+    selector: (M) -> F,
+): State<F> = selectorState(subscriptions) { state -> selector(state.get(modelClass)) }
+
+/**
+ * Keyed shared-subscription counterpart of [fieldStateOf]. The selector is
+ * replaced whenever [key] changes while remaining in [subscriptions].
+ */
+@Composable
+public fun <M : Any, F> Store<ModelState>.fieldStateOf(
+    subscriptions: SelectorSubscriptions<ModelState>,
+    key: Any?,
+    modelClass: KClass<M>,
+    selector: (M) -> F,
+): State<F> = selectorState(subscriptions, key) { state -> selector(state.get(modelClass)) }
+
+/**
+ * Returns a Compose [State] for a slice of [modelClass] through this
+ * [SelectorStore]'s shared subscription group.
+ */
+@Composable
+public fun <M : Any, F> SelectorStore<ModelState>.fieldStateOf(modelClass: KClass<M>, selector: (M) -> F): State<F> =
+    selectorState { state -> selector(state.get(modelClass)) }
+
+/**
+ * Keyed [SelectorStore] counterpart of [fieldStateOf]. Use [key] when
+ * [selector] captures a changing Compose value.
+ */
+@Composable
+public fun <M : Any, F> SelectorStore<ModelState>.fieldStateOf(
+    key: Any?,
+    modelClass: KClass<M>,
+    selector: (M) -> F,
+): State<F> = selectorState(key) { state -> selector(state.get(modelClass)) }

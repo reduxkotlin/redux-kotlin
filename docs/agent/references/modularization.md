@@ -42,7 +42,7 @@ that does the job. Full per-module API lives in the `api_files` above.
 | `:redux-kotlin-registry` | a dynamic, keyed set of stores with one lifecycle each (taskflow's per-account stores). |
 | `:redux-kotlin-multimodel` | one store holds several unrelated model types in a typesafe `ModelState` bag. |
 | `:redux-kotlin-multimodel-granular` | granular subscriptions over a `ModelState` bag. |
-| `:redux-kotlin-compose` | Compose `State<T>` bindings (`fieldState`, `selectorState`, `StableStore`) for a single-model store. |
+| `:redux-kotlin-compose` | Compose `State<T>` bindings (`fieldState`, `selectorState`, `SelectorStore`) for a single-model store; `StableStore` is the compatibility wrapper for APIs that still require a stable raw store reference. |
 | `:redux-kotlin-compose-multimodel` | Compose bindings for a `ModelState` bag (`fieldStateOf`). |
 
 ### Decision rules

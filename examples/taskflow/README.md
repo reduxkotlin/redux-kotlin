@@ -21,7 +21,7 @@ middleware here maps to a specific bundle API — this README is the map.
   `on<Action> { … }` routing builder; no hand-written `when(action)` dispatch
   at the store boundary.
 - **Granular Compose subscriptions** — `fieldStateOf` / `selectorState` /
-  `rememberStableStore`, so a card move recomposes only the two affected
+  `rememberSelectorStore`, so a card move recomposes only the two affected
   columns, never the whole board.
 - **Concurrency** — the bundle's `createConcurrentModelStore` (lock-free reads,
   serialized writes), with subscriber callbacks marshalled to the main thread.
@@ -43,9 +43,9 @@ is `redux-kotlin-concurrent`, not `redux-kotlin-threadsafe`.**
 | `StoreRegistry<K, S>` | `store/AccountRegistry.kt` holds a `StoreRegistry<AccountId, ModelState>` — one isolated store per account, looked up lock-free. |
 | `getOrCreate(key) { … }` (registry) | `AccountRegistry.getOrCreate` builds the per-account store + its handle, mirrors the bare `Store` into the registry, and serves it lock-free on later lookups. (The bundle also ships a one-call `StoreRegistry.getOrCreateConcurrentModelStore` extension; TaskFlow builds the store itself because each account needs a richer handle carrying its scope / sync repo / bot job.) |
 | `ModelState` multi-model | `model/*.kt` defines the slots (`AccountsModel`, `AppSettingsModel`, `BoardModel`, `SyncModel`, `FilterModel`, `UndoModel`, …); `store/StoreExt.kt`'s `getModel<M>()` reads a typed slot for effects/handlers. |
-| `rememberStableStore(store)` | every screen (`App.kt`, `ui/screens/BoardScreen.kt`, …) wraps the store once so Compose treats it as stable. |
+| `rememberSelectorStore(store)` | `App.kt` creates one stable root facade and one per active account; bindings share one final-store callback and dispatch directly through the facade. |
 | `fieldStateOf(M::class) { … }` | the workhorse subscription (46 call sites). Each binds one model slot and projects a **minimal** slice — e.g. `CardCell` binds only its own `Card` and its optimistic flag. |
-| `selectorState { ms -> … }` | derived/cross-model state (visible card ids, WIP count, board name) computed in the selector, **never** in a composable body. |
+| `selectorState(key) { ms -> … }` | derived/cross-model state (visible card ids, WIP count, board name) computed in the selector, **never** in a composable body. Use the keyed form when the selector captures an id or filter. |
 | `applyMiddleware(...)` | `store/AccountStore.kt` stacks `activityLoggerMiddleware`, `undoMiddleware`, and the offline-first `effectsMiddleware` behind the per-account store. |
 
 ## Store topology

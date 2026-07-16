@@ -14,6 +14,26 @@ public final class org/reduxkotlin/granular/GranularSubscriptionsEnhancerKt {
 	public static final fun granularSubscriptionsEnhancer ()Lkotlin/jvm/functions/Function1;
 }
 
+public final class org/reduxkotlin/granular/MemoizedSelectorKt {
+	public static final fun memoizedSelector (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function1;
+	public static final fun memoizedSelector (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class org/reduxkotlin/granular/SelectorSubscriptions {
+	public abstract fun close ()V
+	public abstract fun subscribeTo (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function0;
+	public static synthetic fun subscribeTo$default (Lorg/reduxkotlin/granular/SelectorSubscriptions;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlin/jvm/functions/Function0;
+}
+
+public final class org/reduxkotlin/granular/SelectorSubscriptions$DefaultImpls {
+	public static synthetic fun subscribeTo$default (Lorg/reduxkotlin/granular/SelectorSubscriptions;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlin/jvm/functions/Function0;
+}
+
+public final class org/reduxkotlin/granular/SelectorSubscriptionsKt {
+	public static final fun selectorSubscriptions (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;)Lorg/reduxkotlin/granular/SelectorSubscriptions;
+	public static synthetic fun selectorSubscriptions$default (Lorg/reduxkotlin/TypedStore;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/reduxkotlin/granular/SelectorSubscriptions;
+}
+
 public final class org/reduxkotlin/granular/SubscribeFieldsKPropertyKt {
 	public static final fun subscribeTo (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KProperty1;ZLkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function0;
 	public static synthetic fun subscribeTo$default (Lorg/reduxkotlin/TypedStore;Lkotlin/reflect/KProperty1;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlin/jvm/functions/Function0;

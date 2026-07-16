@@ -30,8 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.app.nav.Navigate
 import org.reduxkotlin.sample.taskflow.core.BoardId
@@ -63,8 +64,12 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  */
 @Composable
 public fun BoardListScreen(accountStore: Store<ModelState>, modifier: Modifier = Modifier) {
-    val store = rememberStableStore(accountStore).value
-    val boardList by store.fieldStateOf(BoardListModel::class) { it }
+    BoardListScreen(rememberSelectorStore(accountStore), modifier)
+}
+
+@Composable
+internal fun BoardListScreen(accountStore: SelectorStore<ModelState>, modifier: Modifier = Modifier) {
+    val boardList by accountStore.fieldStateOf(BoardListModel::class) { it }
 
     LaunchedEffect(Unit) { accountStore.dispatch(LoadBoardListRequested) }
 

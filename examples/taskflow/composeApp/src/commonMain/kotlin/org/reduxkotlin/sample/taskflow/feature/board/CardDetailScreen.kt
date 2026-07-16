@@ -40,8 +40,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.reduxkotlin.Store
+import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
-import org.reduxkotlin.compose.rememberStableStore
+import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.compose.selectorState
 import org.reduxkotlin.multimodel.ModelState
 import org.reduxkotlin.sample.taskflow.app.nav.Back
@@ -94,8 +95,12 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  */
 @Composable
 public fun CardDetailScreen(store: Store<ModelState>, modifier: Modifier = Modifier) {
-    val s = rememberStableStore(store).value
-    val current by s.fieldStateOf(NavModel::class) { it.current }
+    CardDetailScreen(rememberSelectorStore(store), modifier)
+}
+
+@Composable
+internal fun CardDetailScreen(store: SelectorStore<ModelState>, modifier: Modifier = Modifier) {
+    val current by store.fieldStateOf(NavModel::class) { it.current }
     CardDetailScreen(store = store, route = current, modifier = modifier)
 }
 
@@ -111,8 +116,13 @@ public fun CardDetailScreen(store: Store<ModelState>, modifier: Modifier = Modif
  */
 @Composable
 public fun CardDetailScreen(store: Store<ModelState>, route: Route, modifier: Modifier = Modifier) {
+    CardDetailScreen(rememberSelectorStore(store), route, modifier)
+}
+
+@Composable
+internal fun CardDetailScreen(store: SelectorStore<ModelState>, route: Route, modifier: Modifier = Modifier) {
     if (route !is Route.CardDetail && route !is Route.ComposeCard) return
-    val s = rememberStableStore(store).value
+    val s = store
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val compact = widthSizeClass(maxWidth) == WindowSizeClass.Compact
@@ -163,7 +173,7 @@ private fun CardDetailContainer(compact: Boolean, content: @Composable () -> Uni
  * then [CancelCreateCard] to dismiss. Cancel dispatches [CancelCreateCard].
  */
 @Composable
-private fun CreateMode(store: Store<ModelState>, columnId: ColumnId) {
+private fun CreateMode(store: SelectorStore<ModelState>, columnId: ColumnId) {
     // rememberSaveable: the in-progress draft rides the SavedStateRegistry so it survives process
     // death / config change (Rule C still holds — keystrokes stay local, never touch the store).
     var title by rememberSaveable { mutableStateOf("") }
@@ -213,8 +223,13 @@ private fun CreateMode(store: Store<ModelState>, columnId: ColumnId) {
  * level `key(overlay)` resets local UI state across the flip.
  */
 @Composable
-private fun ViewEditMode(store: Store<ModelState>, s: Store<ModelState>, cardId: CardId, mode: Route.CardDetail.Mode) {
-    val card by s.fieldStateOf(BoardModel::class) { it.board?.cards?.get(cardId) }
+private fun ViewEditMode(
+    store: SelectorStore<ModelState>,
+    s: SelectorStore<ModelState>,
+    cardId: CardId,
+    mode: Route.CardDetail.Mode,
+) {
+    val card by s.fieldStateOf(cardId, BoardModel::class) { it.board?.cards?.get(cardId) }
     val current = card ?: return
 
     when (mode) {
@@ -240,9 +255,14 @@ private fun ViewEditMode(store: Store<ModelState>, s: Store<ModelState>, cardId:
  * [CardColumnNav] `selectorState`) and whose in-flight state is the card's optimistic flag.
  */
 @Composable
-private fun ViewCardBody(store: Store<ModelState>, s: Store<ModelState>, card: Card, onEdit: () -> Unit) {
-    val nav by s.selectorState { ms -> cardColumnNav(ms.get<BoardModel>(), card.id) }
-    val inFlight by s.fieldStateOf(SyncModel::class) { card.id in it.inFlight }
+private fun ViewCardBody(
+    store: SelectorStore<ModelState>,
+    s: SelectorStore<ModelState>,
+    card: Card,
+    onEdit: () -> Unit,
+) {
+    val nav by s.selectorState(card.id) { ms -> cardColumnNav(ms.get<BoardModel>(), card.id) }
+    val inFlight by s.fieldStateOf(card.id, SyncModel::class) { card.id in it.inFlight }
     val byId by s.fieldStateOf(CollaboratorsModel::class) { it.byId }
     val assignee = card.assigneeId?.let { byId[it] }
 
@@ -294,7 +314,7 @@ private fun CardAttachments(card: Card) {
  */
 @Composable
 private fun AssigneeAndMoveRow(
-    store: Store<ModelState>,
+    store: SelectorStore<ModelState>,
     card: Card,
     assignee: AccountSummary?,
     nav: CardColumnNav,
@@ -354,7 +374,7 @@ private fun AssigneeAndMoveRow(
  * predictive-back / ModeFlip animation still works when there's nothing to lose.
  */
 @Composable
-private fun EditCardBody(store: Store<ModelState>, card: Card, onDone: () -> Unit) {
+private fun EditCardBody(store: SelectorStore<ModelState>, card: Card, onDone: () -> Unit) {
     var title by remember(card.id) { mutableStateOf(card.title) }
     var description by remember(card.id) { mutableStateOf(card.description) }
     val idGen = LocalIdGenerator.current
