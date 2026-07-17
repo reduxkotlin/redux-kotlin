@@ -1,6 +1,7 @@
 package org.reduxkotlin.compose
 
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +16,7 @@ import org.reduxkotlin.StoreSubscriber
 import org.reduxkotlin.StoreSubscription
 import org.reduxkotlin.createStore
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 
 private data class CounterState(val counter: Int = 0, val label: String = "init")
 private data class Increment(val amount: Int = 1)
@@ -324,6 +326,47 @@ class FieldStateTest {
     }
 
     @Test
+    fun selectorStore_dispatch_forwards_the_action_and_delegate_result() = runComposeUiTest {
+        val store = newStore()
+        lateinit var selectorStore: SelectorStore<CounterState>
+        setContent { selectorStore = rememberSelectorStore(store) }
+        waitForIdle()
+
+        val action = Increment(amount = 3)
+        assertSame(action, selectorStore.dispatch(action))
+        assertEquals(3, store.state.counter)
+    }
+
+    @Test
+    fun selectorStore_parameter_skips_when_only_its_parent_recomposes() = runComposeUiTest {
+        val store = newStore()
+        val parentTick = mutableStateOf(0)
+        var childCompositions = 0
+        setContent {
+            val selectorStore = rememberSelectorStore(store)
+            val onChildComposition = remember {
+                {
+                    childCompositions++
+                    Unit
+                }
+            }
+            Text("parent=${parentTick.value}")
+            SelectorStoreProbe(selectorStore, onChildComposition)
+        }
+        waitForIdle()
+        val initialCompositions = childCompositions
+
+        parentTick.value++
+        waitForIdle()
+        assertEquals(initialCompositions, childCompositions)
+
+        store.dispatch(Increment())
+        waitForIdle()
+        assertEquals(initialCompositions + 1, childCompositions)
+        onAllNodesWithText("child=1").assertCountEquals(1)
+    }
+
+    @Test
     fun keyedSelectorState_replaces_a_selector_that_captures_a_changing_parameter() = runComposeUiTest {
         val store = newStore()
         val selectCounter = mutableStateOf(true)
@@ -343,4 +386,33 @@ class FieldStateTest {
         waitForIdle()
         onAllNodesWithText("selected=updated").assertCountEquals(1)
     }
+
+    @Test
+    fun selectorStore_keyedSelectorState_replaces_a_captured_parameter() = runComposeUiTest {
+        val store = newStore()
+        val selectCounter = mutableStateOf(true)
+        setContent {
+            val selectorStore = rememberSelectorStore(store)
+            val value by selectorStore.selectorState(selectCounter.value) { state ->
+                if (selectCounter.value) state.counter.toString() else state.label
+            }
+            Text("facade-selected=$value")
+        }
+        onAllNodesWithText("facade-selected=0").assertCountEquals(1)
+
+        selectCounter.value = false
+        waitForIdle()
+        onAllNodesWithText("facade-selected=init").assertCountEquals(1)
+
+        store.dispatch(SetLabel("facade-updated"))
+        waitForIdle()
+        onAllNodesWithText("facade-selected=facade-updated").assertCountEquals(1)
+    }
+}
+
+@Composable
+private fun SelectorStoreProbe(store: SelectorStore<CounterState>, onComposition: () -> Unit) {
+    onComposition()
+    val counter by store.fieldState(CounterState::counter)
+    Text("child=$counter")
 }

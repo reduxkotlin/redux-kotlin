@@ -31,7 +31,6 @@ import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.multimodel.fieldStateOf
 import org.reduxkotlin.compose.rememberSelectorStore
 import org.reduxkotlin.multimodel.ModelState
-import org.reduxkotlin.sample.taskflow.app.getModel
 import org.reduxkotlin.sample.taskflow.core.AccountId
 import org.reduxkotlin.sample.taskflow.core.AppSettingsModel
 import org.reduxkotlin.sample.taskflow.infra.SeedData
@@ -42,10 +41,10 @@ import org.reduxkotlin.sample.taskflow.ui.theme.Dimens
  * (ann / raj / mia from [SeedData]) and signs in without a password.
  *
  * Binding discipline (Rule C): reactive auth state ([AuthFlowModel.mode]/[AuthFlowModel.inFlight]/
- * [AuthFlowModel.error]) is read through a single [fieldStateOf] over the stable [rootStore]; the
- * seeded identity list is static data from [SeedData]. The only screen-level effect is the auth
- * simulation — `Continue` dispatches [LoginRequested] (sets `inFlight`), waits a fake latency taken
- * from [AppSettingsModel], then dispatches [AccountLoggedIn] for the picked account. Only the
+ * [AuthFlowModel.error]) and the fake auth latency are read through narrow [fieldStateOf] bindings
+ * over the stable [rootStore]; the seeded identity list is static data from [SeedData]. The only
+ * screen-level effect is the auth simulation — `Continue` captures the selected account and latency,
+ * dispatches [LoginRequested] (sets `inFlight`), waits, then dispatches [AccountLoggedIn]. Only the
  * selected-account id lives in local `remember`; everything else flows through the store.
  *
  * @param rootStore the root app store holding [AuthFlowModel] and [AppSettingsModel].
@@ -59,6 +58,7 @@ public fun LoginScreen(rootStore: Store<ModelState>, modifier: Modifier = Modifi
 @Composable
 internal fun LoginScreen(rootStore: SelectorStore<ModelState>, modifier: Modifier = Modifier) {
     val auth by rootStore.fieldStateOf(AuthFlowModel::class) { it }
+    val latencyMaxMs by rootStore.fieldStateOf(AppSettingsModel::class) { it.fakeService.latencyMaxMs }
     val scope = rememberCoroutineScope()
     val scheme = MaterialTheme.colorScheme
 
@@ -103,9 +103,9 @@ internal fun LoginScreen(rootStore: SelectorStore<ModelState>, modifier: Modifie
                     inFlight = auth.inFlight,
                     onContinue = {
                         val picked = SeedData.accounts.first { it.id == selectedId }
+                        val latency = latencyMaxMs
                         rootStore.dispatch(LoginRequested)
                         scope.launch {
-                            val latency = rootStore.getModel<AppSettingsModel>().fakeService.latencyMaxMs
                             delay(latency.toLong())
                             rootStore.dispatch(AccountLoggedIn(picked))
                         }

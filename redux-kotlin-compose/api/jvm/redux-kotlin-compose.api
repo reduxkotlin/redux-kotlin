@@ -10,15 +10,9 @@ public final class org/reduxkotlin/compose/FieldStateKt {
 	public static final fun selectorState (Lorg/reduxkotlin/compose/SelectorStore;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 }
 
-public final class org/reduxkotlin/compose/SelectorStore : org/reduxkotlin/TypedStore {
+public final class org/reduxkotlin/compose/SelectorStore {
 	public static final field $stable I
-	public fun getDispatch ()Lkotlin/jvm/functions/Function1;
-	public fun getGetState ()Lkotlin/jvm/functions/Function0;
-	public fun getReplaceReducer ()Lkotlin/jvm/functions/Function1;
-	public fun getState ()Ljava/lang/Object;
-	public fun getStore ()Lorg/reduxkotlin/TypedStore;
-	public fun getSubscribe ()Lkotlin/jvm/functions/Function1;
-	public fun setDispatch (Lkotlin/jvm/functions/Function1;)V
+	public final fun dispatch (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class org/reduxkotlin/compose/SelectorStoreKt {

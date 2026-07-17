@@ -7,7 +7,7 @@ import org.reduxkotlin.Store
 import org.reduxkotlin.granular.SelectorSubscriptions
 
 /**
- * A stable, Compose-root-scoped [Store] facade for selector bindings.
+ * A stable, Compose-root-scoped capability for selector bindings and dispatch.
  *
  * Create one instance with [rememberSelectorStore] near the root of each
  * Compose composition and pass it to the screens and components that bind
@@ -19,6 +19,11 @@ import org.reduxkotlin.granular.SelectorSubscriptions
  * single-store application normally needs one `SelectorStore` per Compose
  * root; separate windows, independently mounted compositions, or distinct
  * Redux stores need separate instances.
+ *
+ * This type intentionally does not implement [Store] or expose its source
+ * store. Compose code can select state and dispatch actions, but cannot read
+ * unobserved `Store.state`, subscribe manually, or replace the reducer. Keep
+ * the raw store at the composition host and in runtime/effect code.
  *
  * Shared delivery reduces store notification fan-out, but every active
  * selector is still compared after an update. Use
@@ -35,9 +40,12 @@ import org.reduxkotlin.granular.SelectorSubscriptions
  */
 @Stable
 public class SelectorStore<S> internal constructor(
-    private val delegate: Store<S>,
+    internal val source: Store<S>,
     internal val subscriptions: SelectorSubscriptions<S>,
-) : Store<S> by delegate
+) {
+    /** Dispatches [action] through the final source store. */
+    public fun dispatch(action: Any): Any = source.dispatch(action)
+}
 
 /**
  * Remembers a [SelectorStore] for [store].

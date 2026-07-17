@@ -224,12 +224,12 @@ private fun ActiveAccount(appStore: SelectorStore<ModelState>, registry: Account
     // Lifecycle effects key on the *active board* (the lowest Board in the stack), not the top of
     // the stack — so drilling into CardDetail/ComposeCard keeps the board loaded and the sync ticking.
     BoardLifecycleEffect(
-        accountStore = accountSelectorStore,
+        accountStore = accountStore,
         registry = registry,
         activeId = activeId,
         activeBoardId = nav.activeBoardId,
     )
-    PeriodicSyncEffect(appStore = appStore, accountStore = accountSelectorStore, activeBoardId = nav.activeBoardId)
+    PeriodicSyncEffect(appStore = appStore, accountStore = accountStore, activeBoardId = nav.activeBoardId)
 
     var showSwitcher by remember { mutableStateOf(false) }
 

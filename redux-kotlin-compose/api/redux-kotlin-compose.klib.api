@@ -6,21 +6,8 @@
 // - Show declarations: true
 
 // Library unique name: <org.reduxkotlin:redux-kotlin-compose>
-final class <#A: kotlin/Any?> org.reduxkotlin.compose/SelectorStore : org.reduxkotlin/TypedStore<#A, kotlin/Any> { // org.reduxkotlin.compose/SelectorStore|null[0]
-    final val getState // org.reduxkotlin.compose/SelectorStore.getState|{}getState[0]
-        final fun <get-getState>(): kotlin/Function0<#A> // org.reduxkotlin.compose/SelectorStore.getState.<get-getState>|<get-getState>(){}[0]
-    final val replaceReducer // org.reduxkotlin.compose/SelectorStore.replaceReducer|{}replaceReducer[0]
-        final fun <get-replaceReducer>(): kotlin/Function1<kotlin/Function2<#A, kotlin/Any, #A>, kotlin/Unit> // org.reduxkotlin.compose/SelectorStore.replaceReducer.<get-replaceReducer>|<get-replaceReducer>(){}[0]
-    final val state // org.reduxkotlin.compose/SelectorStore.state|{}state[0]
-        final fun <get-state>(): #A // org.reduxkotlin.compose/SelectorStore.state.<get-state>|<get-state>(){}[0]
-    final val store // org.reduxkotlin.compose/SelectorStore.store|{}store[0]
-        final fun <get-store>(): org.reduxkotlin/TypedStore<#A, kotlin/Any> // org.reduxkotlin.compose/SelectorStore.store.<get-store>|<get-store>(){}[0]
-    final val subscribe // org.reduxkotlin.compose/SelectorStore.subscribe|{}subscribe[0]
-        final fun <get-subscribe>(): kotlin/Function1<kotlin/Function0<kotlin/Unit>, kotlin/Function0<kotlin/Unit>> // org.reduxkotlin.compose/SelectorStore.subscribe.<get-subscribe>|<get-subscribe>(){}[0]
-
-    final var dispatch // org.reduxkotlin.compose/SelectorStore.dispatch|{}dispatch[0]
-        final fun <get-dispatch>(): kotlin/Function1<kotlin/Any, kotlin/Any> // org.reduxkotlin.compose/SelectorStore.dispatch.<get-dispatch>|<get-dispatch>(){}[0]
-        final fun <set-dispatch>(kotlin/Function1<kotlin/Any, kotlin/Any>) // org.reduxkotlin.compose/SelectorStore.dispatch.<set-dispatch>|<set-dispatch>(kotlin.Function1<kotlin.Any,kotlin.Any>){}[0]
+final class <#A: kotlin/Any?> org.reduxkotlin.compose/SelectorStore { // org.reduxkotlin.compose/SelectorStore|null[0]
+    final fun dispatch(kotlin/Any): kotlin/Any // org.reduxkotlin.compose/SelectorStore.dispatch|dispatch(kotlin.Any){}[0]
 }
 
 final value class <#A: kotlin/Any?> org.reduxkotlin.compose/StableStore { // org.reduxkotlin.compose/StableStore|null[0]
