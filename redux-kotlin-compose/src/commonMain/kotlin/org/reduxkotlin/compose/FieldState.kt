@@ -91,7 +91,7 @@ public fun <S, F> Store<S>.selectorState(
  */
 @Composable
 public fun <S, F> SelectorStore<S>.selectorState(selector: (S) -> F): State<F> =
-    (this as Store<S>).selectorState(subscriptions, selector)
+    source.selectorState(subscriptions, selector)
 
 /**
  * Shared-facade counterpart of [selectorState] that replaces the retained
@@ -100,7 +100,7 @@ public fun <S, F> SelectorStore<S>.selectorState(selector: (S) -> F): State<F> =
  */
 @Composable
 public fun <S, F> SelectorStore<S>.selectorState(key: Any?, selector: (S) -> F): State<F> =
-    (this as Store<S>).selectorState(subscriptions, key, selector)
+    source.selectorState(subscriptions, key, selector)
 
 /**
  * Property-reference convenience for [selectorState]. The property reference
@@ -141,7 +141,7 @@ public fun <S, F> Store<S>.fieldState(subscriptions: SelectorSubscriptions<S>, p
 @HiddenFromObjC
 @Composable
 public fun <S, F> SelectorStore<S>.fieldState(property: KProperty1<S, F>): State<F> =
-    (this as Store<S>).fieldState(subscriptions, property)
+    source.fieldState(subscriptions, property)
 
 @Composable
 private fun <S, F> Store<S>.selectorStateBinding(

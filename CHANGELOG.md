@@ -137,6 +137,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
+- `redux-kotlin-compose`: `StableStore` and `rememberStableStore` are deprecated because
+  `.value` exposes the raw store to Compose. Migrate binding components to
+  `rememberSelectorStore`, `selectorState` / `fieldState`, and method-form `dispatch`.
 - `redux-kotlin-threadsafe` is deprecated in favor of `redux-kotlin-concurrent`. All public
   declarations (`createThreadSafeStore`, `createTypedThreadSafeStore`, `ThreadSafeStore`,
   `Store.asThreadSafe`, `createThreadSafeStoreEnhancer`) now carry `@Deprecated` warnings.
@@ -146,6 +149,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **BREAKING (pre-1.0):** `redux-kotlin-compose`'s `SelectorStore` is now a narrow,
+  Compose-stable selection-and-dispatch capability instead of implementing `Store`.
+  Direct state reads, manual subscriptions, reducer replacement, and raw-store escape are
+  no longer available below the composition host. Runtime/effect code keeps the raw `Store`;
+  binding components use `selectorState` / `fieldState` and `dispatch(action)`.
 - **Behavior change:** `dispatch` from inside a reducer now throws
   `IllegalStateException` ("You may not dispatch while state is being reduced"),
   restoring the core Redux contract. Previously the nested dispatch was silently

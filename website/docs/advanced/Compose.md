@@ -30,19 +30,20 @@ It targets the platforms that Compose Multiplatform supports.
 ## Composition root: `SelectorStore`
 
 Create one `SelectorStore` at the root of each Compose composition, then pass it
-to the screens that bind state. The facade is `@Stable`, delegates `dispatch`,
-and shares one final-store subscription among its bindings. A component that
-only receives finished values and callbacks should not receive a store at all.
+to the screens that bind state. The capability is `@Stable`, provides
+`dispatch`, and shares one final-store subscription among its bindings without
+exposing direct state reads or the raw store. A component that only receives
+finished values and callbacks should not receive a store at all.
 
 ```kotlin
 import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.rememberSelectorStore
 
+// At the platform/composition host:
+setContent { App(rememberSelectorStore(store)) }
+
 @Composable
-fun App(store: Store<AppState>) {
-    val selectors = rememberSelectorStore(store)
-    Home(selectors)
-}
+fun App(store: SelectorStore<AppState>) = Home(store)
 ```
 
 ## Binding a field: `fieldState`
@@ -109,30 +110,45 @@ unconditionally whenever its parent does.
 
 `SelectorStore` restores skippability for downstream binding components and
 also removes N final-store subscribers in favor of one shared callback. It is
-the recommended facade for Compose bindings:
+deliberately not a `Store`: runtime and effect code keep the raw store, while
+Compose binding code can only select state and dispatch. It is the recommended
+capability for Compose bindings:
 
 ```kotlin
 import org.reduxkotlin.compose.SelectorStore
 import org.reduxkotlin.compose.fieldState
 import org.reduxkotlin.compose.rememberSelectorStore
 
-@Composable
-fun App(store: Store<AppState>) {
-    Content(rememberSelectorStore(store))
-}
+setContent { Content(rememberSelectorStore(store)) }
 
 @Composable
 fun Content(store: SelectorStore<AppState>) {
     val user by store.fieldState(AppState::user)
     val onRefresh = remember(store) { { store.dispatch(RefreshUser) } }
-    // Content is now skippable: it only recomposes when `user` changes.
+    UserContent(user = user, onRefresh = onRefresh)
 }
 ```
 
 Each active selector still compares after a store update. Keep selectors narrow
 and use `memoizedSelector` for expensive derived transforms. `StableStore`
-remains available as a compatibility wrapper only for an API that requires a
-stable raw `Store`; new bindings should use `SelectorStore`.
+remains binary compatible but is deprecated: its `.value` escape exposes the
+raw store and should not be used for new Compose bindings.
+
+### Stable command boundaries
+
+Do not replace a raw store with a large set of loose callback parameters or a
+second class that manually forwards every method. When a screen tree has many
+user intents, define a method-only command interface and pass one stable-identity
+implementation from the host. The interface must not expose state, engines,
+scopes, or other mutable runtime objects.
+
+If the command implementation may depend on Compose runtime, annotate it
+`@Stable`. If the command module must remain Compose-free, list the interface in
+the application's Compose compiler stability configuration instead. The latter
+is a contract, not an optimization hint: every implementation must retain a
+stable identity, and an adapter created with `remember` must include every
+captured callback in its keys. Event arguments should be complete immutable
+tap-time values so asynchronous work does not re-read mutable UI or store state.
 
 ## Threading and mobile targets
 

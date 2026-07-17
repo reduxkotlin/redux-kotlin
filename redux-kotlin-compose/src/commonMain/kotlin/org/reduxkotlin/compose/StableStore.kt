@@ -19,7 +19,8 @@ import kotlin.jvm.JvmInline
  * requiring any change to the store implementation itself. For Compose state
  * bindings, prefer [SelectorStore] from [rememberSelectorStore]: it is also
  * stable, exposes [SelectorStore.selectorState] and [SelectorStore.fieldState]
- * directly, delegates [Store.dispatch], and shares one store callback.
+ * directly, provides dispatch without exposing the raw store, and shares one
+ * store callback.
  *
  * Usage:
  * ```
@@ -37,6 +38,9 @@ import kotlin.jvm.JvmInline
  */
 @Stable
 @JvmInline
+@Deprecated(
+    message = "StableStore exposes the raw Store to Compose. Use rememberSelectorStore for selection and dispatch.",
+)
 public value class StableStore<S>(
     /** The wrapped store for compatibility with APIs that require [Store]. */
     public val value: Store<S>,
@@ -48,4 +52,12 @@ public value class StableStore<S>(
  * `remember(store) { StableStore(store) }`.
  */
 @Composable
+@Suppress("DEPRECATION")
+@Deprecated(
+    message = "StableStore exposes the raw Store to Compose. Use rememberSelectorStore for selection and dispatch.",
+    replaceWith = ReplaceWith(
+        expression = "rememberSelectorStore(store)",
+        imports = ["org.reduxkotlin.compose.rememberSelectorStore"],
+    ),
+)
 public fun <S> rememberStableStore(store: Store<S>): StableStore<S> = remember(store) { StableStore(store) }

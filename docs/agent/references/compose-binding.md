@@ -36,7 +36,8 @@ From `redux-kotlin-compose` and `redux-kotlin-compose-multimodel` (`api_files` a
 - **`rememberSelectorStore(store)`** — create one `SelectorStore<ModelState>` near the root of a Compose
   composition and pass it through the screen tree. Its bindings share one store callback while each
   selected value retains independent equality checks and recomposition isolation. It is `@Stable` and
-  delegates `dispatch`, so binding components use it directly rather than unwrapping `StableStore.value`.
+  provides `dispatch` without exposing direct state reads or the raw store, so binding components use
+  it directly rather than unwrapping `StableStore.value`.
 - **`fieldStateOf(Model::class) { slice }`** — bind a single-model slice as Compose `State<T>`. Fires
   only when the selected value changes identity. Because reducers reuse unchanged instances (structural
   sharing), a sibling edit leaves an untouched card's reference identical → no recomposition.
@@ -109,6 +110,17 @@ Full treatment → [testing.md](./testing.md).
 
 - Reading a whole model (`val board by s.fieldStateOf(BoardModel::class) { it }`) then indexing in the
   body re-recomposes the leaf on every board change — defeats Rule C.
+- `SelectorStore` is deliberately not a `Store`: keep the raw store in the platform host and runtime /
+  effect code. UI connectors select state and dispatch actions; pure leaves receive finished data and
+  callbacks. If an event needs current state, bind that exact value and capture it at the event edge.
+- `StableStore` is deprecated. Its `.value` escape restores the broad raw-store boundary that
+  `SelectorStore` is intended to remove.
+- For a broad event surface, pass one method-only command interface with stable identity instead of
+  duplicating every method in a forwarding wrapper. Annotate the implementation `@Stable`, or put a
+  Compose-free interface in the app's compiler stability configuration. Treat that configuration as
+  a correctness promise: implementations stay identity-stable, `remember` keys include every captured
+  callback, and async commands receive complete immutable tap-time arguments rather than re-reading UI
+  or store state.
 - `selectorState` prevents unrelated recomposition, but an ordinary selector still runs for every store
   notification and every `State.value` read. For an expensive derived projection, declare its narrow
   inputs with `memoizedSelector` and hoist the resulting selector outside the composable (or `remember`
