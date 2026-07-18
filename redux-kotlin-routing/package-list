@@ -1,0 +1,25 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:org.reduxkotlin.routing////PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/index.html
+$dokka.location:org.reduxkotlin.routing//createModelStore/#kotlin.Function1[kotlin.Function3[kotlin.Function2[org.reduxkotlin.multimodel.ModelState,kotlin.Any,org.reduxkotlin.multimodel.ModelState],org.reduxkotlin.multimodel.ModelState,kotlin.Any?,org.reduxkotlin.TypedStore[org.reduxkotlin.multimodel.ModelState,kotlin.Any]],kotlin.Function3[kotlin.Function2[org.reduxkotlin.multimodel.ModelState,kotlin.Any,org.reduxkotlin.multimodel.ModelState],org.reduxkotlin.multimodel.ModelState,kotlin.Any?,org.reduxkotlin.TypedStore[org.reduxkotlin.multimodel.ModelState,kotlin.Any]]]?#kotlin.Boolean#kotlin.Function5[kotlin.Any,kotlin.reflect.KClass[*],kotlin.Any,kotlin.Any,kotlin.String,kotlin.Unit]?#org.reduxkotlin.multimodel.ModelState?#kotlin.Function1[org.reduxkotlin.routing.RoutingBuilder,kotlin.Unit]/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/create-model-store.html
+$dokka.location:org.reduxkotlin.routing//get/org.reduxkotlin.routing.Reads#/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/get.html
+$dokka.location:org.reduxkotlin.routing//install/org.reduxkotlin.routing.RoutingBuilder#org.reduxkotlin.routing.ReduxModule/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/install.html
+$dokka.location:org.reduxkotlin.routing//writeSet/#kotlin.Function1[org.reduxkotlin.routing.WriteSetBuilder,kotlin.Unit]/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/write-set.html
+$dokka.location:org.reduxkotlin.routing/ModelHandlerScope///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-model-handler-scope/index.html
+$dokka.location:org.reduxkotlin.routing/ModelHandlerScope/on/#kotlin.Function2[TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any]),TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-model-handler-scope/on.html
+$dokka.location:org.reduxkotlin.routing/OnWrite///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-on-write/index.html
+$dokka.location:org.reduxkotlin.routing/Reads///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-reads/index.html
+$dokka.location:org.reduxkotlin.routing/Reads/get/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-reads/get.html
+$dokka.location:org.reduxkotlin.routing/Reduce///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-reduce/index.html
+$dokka.location:org.reduxkotlin.routing/ReduxInitial///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-redux-initial/index.html
+$dokka.location:org.reduxkotlin.routing/ReduxModule///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-redux-module/index.html
+$dokka.location:org.reduxkotlin.routing/ReduxModule/contribute/org.reduxkotlin.routing.RoutingBuilder#/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-redux-module/contribute.html
+$dokka.location:org.reduxkotlin.routing/RoutingBuilder///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-routing-builder/index.html
+$dokka.location:org.reduxkotlin.routing/RoutingBuilder/model/#TypeParam(bounds=[kotlin.Any])#kotlin.Function1[org.reduxkotlin.routing.ModelHandlerScope[TypeParam(bounds=[kotlin.Any])],kotlin.Unit]/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-routing-builder/model.html
+$dokka.location:org.reduxkotlin.routing/RoutingBuilder/onAction/#kotlin.Function2[org.reduxkotlin.routing.Reads,TypeParam(bounds=[kotlin.Any]),org.reduxkotlin.routing.WriteSet]/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-routing-builder/on-action.html
+$dokka.location:org.reduxkotlin.routing/RoutingBuilder/onBroadcast/#kotlin.Function2[kotlin.Any,TypeParam(bounds=[kotlin.Any]),kotlin.Any]/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-routing-builder/on-broadcast.html
+$dokka.location:org.reduxkotlin.routing/WriteSet///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-write-set/index.html
+$dokka.location:org.reduxkotlin.routing/WriteSetBuilder///PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-write-set-builder/index.html
+$dokka.location:org.reduxkotlin.routing/WriteSetBuilder/set/#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-write-set-builder/set.html
+$dokka.location:org.reduxkotlin.routing/WriteSetBuilder/set/#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/redux-kotlin-routing/org.reduxkotlin.routing/-write-set-builder/set.html
+org.reduxkotlin.routing
