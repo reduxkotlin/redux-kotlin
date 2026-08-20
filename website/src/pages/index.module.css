@@ -17,6 +17,11 @@
   gap: 1rem;
 }
 
+.agentBanner {
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
 .projectTitle {
   font-size: 3rem;
   margin: 0;

@@ -22,7 +22,7 @@ ReduxKotlin is published to Maven Central. Replace `<version>` with the latest
 release.
 
 :::info Current release
-The latest is **`1.0.0-alpha01`** — the first `1.0.0` pre-release, covering the
+The latest is **`1.0.0-alpha06`**, on the `1.0.0` pre-release line and covering the
 whole module set (core, concurrent, granular, multimodel, registry, routing,
 bundles, Compose bindings, and the experimental DevTools). The API is stabilizing
 toward `1.0.0`; pin an exact alpha and expect minor changes between alphas.

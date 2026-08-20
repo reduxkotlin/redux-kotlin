@@ -9,6 +9,7 @@ MAP=(
   "AGENTS.md|modules|$FRAG/modules.md"
   "docs/agent/AGENTS-external.md|rules|$FRAG/rules.md"
   "docs/agent/AGENTS-external.md|modules|$FRAG/modules.md"
+  "docs/agent/SKILL-external.md|rules|$FRAG/rules.md"
 )
 inject() { # stdin=content, $1=marker, $2=fragfile -> stdout
   awk -v s="<!-- assemble:$1:start -->" -v e="<!-- assemble:$1:end -->" -v f="$2" '
@@ -68,5 +69,23 @@ if [ -f "$PAGE" ] && [ -f "$SRC" ]; then
     printf '%s\n' "$rendered_page" > "$PAGE"
   fi
 fi
+
+# --- Stable raw setup files served by reduxkotlin.org ---
+publish_static() { # $1=source, $2=target
+  local source="$1" target="$2" rendered_static
+  [ -f "$source" ] || { echo "ASSEMBLE-FAIL: missing source $source"; rc=1; return; }
+  rendered_static="$(grep -v '<!-- assemble:' "$source")"
+  if [ "$CHECK" -eq 1 ]; then
+    if [ ! -f "$target" ] || ! diff -q <(printf '%s\n' "$rendered_static") "$target" >/dev/null; then
+      echo "ASSEMBLE-FAIL: $target out of sync — run scripts/assemble-agent-knowledge.sh"; rc=1
+    fi
+  else
+    mkdir -p "$(dirname "$target")"
+    printf '%s\n' "$rendered_static" > "$target"
+  fi
+}
+publish_static "docs/agent/AGENTS-external.md" "website/static/agent-setup/AGENTS.md"
+publish_static "docs/agent/SKILL-external.md" "website/static/agent-setup/SKILL.md"
+
 [ "$rc" -eq 0 ] && { [ "$CHECK" -eq 1 ] && echo "ASSEMBLE CHECK OK" || echo "ASSEMBLED"; } || echo "ASSEMBLE FAILED"
 exit "$rc"

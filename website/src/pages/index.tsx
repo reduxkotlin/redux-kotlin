@@ -6,6 +6,8 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 
+import AgentOnboardingBanner from '@site/src/components/AgentOnboardingBanner';
+
 import DevicesIcon from '@site/static/img/multiplatform-devices.svg';
 import CheckIcon from '@site/static/img/noun_Check_1870817.svg';
 import CubesIcon from '@site/static/img/cubes-solid.svg';
@@ -116,6 +118,7 @@ function HeroSplash(): ReactNode {
   return (
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
+        <AgentOnboardingBanner className={styles.agentBanner} />
         <div className={styles.heroTitle}>
           <img src={logoUrl} alt="ReduxKotlin logo" width={100} height={100} />
           <Heading as="h1" className={styles.projectTitle}>

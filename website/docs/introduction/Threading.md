@@ -105,11 +105,10 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation "org.reduxkotlin:redux-kotlin:1.0.0-alpha01"
+                implementation "org.reduxkotlin:redux-kotlin:1.0.0-alpha06"
             }
         }
     }
 }
 ```
 **ONLY USE THE ABOVE IF YOU DO NOT WANT THREAD SAFETY**
-

@@ -1,29 +1,3 @@
----
-id: building-with-ai-agents
-title: Building with AI Agents
-sidebar_label: Building with AI Agents
----
-
-import AgentOnboardingBanner from '@site/src/components/AgentOnboardingBanner';
-
-redux-kotlin is built to be **agent-ready**. Point your coding agent at the knowledge
-below and it can build Android / iOS / Web / Desktop apps on redux-kotlin with fewer
-tokens, fewer write→verify cycles, and correct-by-default patterns.
-
-<AgentOnboardingBanner />
-
-Click the banner once, then paste the copied prompt into Claude, Codex, Cursor, or
-OpenCode. Your agent will preserve existing project guidance, install the portable
-ReduxKotlin guide, and add the optional skill when its client supports Agent Skills.
-You can also <a href="/agent-setup/prompt.md">open the setup prompt directly</a>.
-
-## Manual setup: drop `AGENTS.md` in your repo
-
-Save the block below as `AGENTS.md` at your repo root. Any agent that reads `AGENTS.md`
-(Cursor, Copilot, Codex, Claude Code, …) will load it automatically.
-
-{/* assemble:agents-external:start */}
-````markdown title="AGENTS.md"
 # AGENTS.md — redux-kotlin
 
 Token-tight index for AI agents building an app **with** redux-kotlin
@@ -146,26 +120,3 @@ Full guide: https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/r
 After writing code, run (Gradle): build (`./gradlew build`), lint
 (`./gradlew detektAll`), and — if you publish a library module — `./gradlew apiCheck`.
 `explicitApi()` projects need a KDoc on every public declaration.
-````
-{/* assemble:agents-external:end */}
-
-## Optional: install the Agent Skill
-
-Clients that support Agent Skills get decision-routing and progressive disclosure over
-the same knowledge. Download the standalone <a href="/agent-setup/SKILL.md">`SKILL.md`</a> to
-`.agents/skills/redux-kotlin/SKILL.md` (Agent Skills / Codex) or
-`.claude/skills/redux-kotlin/SKILL.md` (Claude Code). The one-prompt setup above detects
-and handles this automatically.
-
-## Reference set
-
-The `AGENTS.md` above links to per-concern guides on GitHub (where their source anchors
-stay live). Start with
-[feature-slice](https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/feature-slice.md)
-and the [reference index](https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/README.md).
-
-## Verify loop
-
-After writing code your agent should run `./gradlew build` (compile + test + detekt +
-`apiCheck`) and `./gradlew detektAll`. Detail:
-[testing guide](https://github.com/reduxkotlin/redux-kotlin/blob/master/docs/agent/references/testing.md).

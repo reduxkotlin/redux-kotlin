@@ -51,7 +51,7 @@ Video TBA
 ## How to add to project
 
 Artifacts are hosted on Maven Central. Replace `<version>` with the latest release shown by the
-badge above — currently **`1.0.0-alpha01`**, the first `1.0.0` pre-release (whole module set; API
+badge above — currently **`1.0.0-alpha06`**, on the `1.0.0` pre-release line (whole module set; API
 stabilizing toward `1.0.0`). Snapshots of `master` publish as `1.0.0-SNAPSHOT` to the Central Portal
 snapshots repository — add it to use them:
 
