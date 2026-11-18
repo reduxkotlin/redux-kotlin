@@ -44,9 +44,6 @@ ecosystem will increase
 developer productivity and code reuse across platforms.
 
 [Droidcon NYC Slides](https://www.slideshare.net/PatrickJackson14/reduxkotlinorg-droidcon-nyc-2019)
-Video TBA
-
-## *** PLEASE FILL OUT THE [Redux on Mobile Survey](https://docs.google.com/forms/d/e/1FAIpQLScEQ9zGndU48AUeGKR6PPE13IqhIFmTL570wDodQUEilhwMzw/viewform?usp=sf_link) ***
 
 ## How to add to project
 
@@ -243,7 +240,6 @@ Raise an issue to add your external extension!
 Want to give feedback, contribute, or ask questions?
 
 - Chat on [#redux][slack] slack channel
-- Use [Trello boards](https://trello.com/reduxkotlinorg)
 - Raise GitHub [issues](https://github.com/reduxkotlin/redux-kotlin/issues)
 - Ask questions on
   GitHub [discussions](https://github.com/reduxkotlin/redux-kotlin/discussions/categories/q-a)
